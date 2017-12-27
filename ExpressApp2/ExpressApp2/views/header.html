@@ -1,15 +1,16 @@
 ﻿
-
 <div id="header_wrap02">
     <div id="header">
-        <a class="logo" href="/"><span class="hc">챗봇_학습관리포털</span></a>
+      <!-- <a class="logo" href="/"><span class="hc">챗봇_학습관리포털</span></a> -->
         <div class="gnb_wrap" id="menuLv1">
-            <a class="gnbm" href="/">Home</a><p class="cline">|</p>
-            <a class="gnbm" href="/list">My app</a><p class="cline">|</p>
+            <!--<a class="gnbm" href="/">Home</a><p class="cline">|</p>-->
+            <a class="gnbm" href="/list" id="myapp">My app</a><p class="cline">|</p>
             <a class="gnbm" href="#">DLG</a><p class="cline">|</p>
             <a class="gnbm" href="#">COMMON</a>
         </div>
-        <div class="user_login">
+      <!--
+          
+          <div class="user_login">
             
             <% if(id == ''){ %>
             <form action="/login" method="post" class="navbar-form navbar-right">
@@ -25,7 +26,7 @@
             <a class="navbar-brand navbar-right"> <%=id %> ::: Hello</a>
             <% }%>
         
-        </div>
+        </div> -->
         <div class="stb-select_w">
             <div class="stb-select-container">
                 <span class="selected">English</span><select class="language" id="selLocale" style="display: none;">
