@@ -12,6 +12,7 @@ router.get('/list', function (req, res) {
         {
             title: 'Express',
             id: '',
+            selMenu: 'm1',
             list: [
                 {
                     'title': '첫번째 게시물',
@@ -43,6 +44,7 @@ router.post('/login', function (req, res) {
         {
             title: 'Express',
             id: id,
+            selMenu: 'm1',
             list: []
         });
 });
