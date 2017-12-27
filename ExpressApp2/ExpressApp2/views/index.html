@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel='stylesheet' href='/stylesheets/style.css' />
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>
+		<%= title %>title</title>
+
+	<!-- 
+        <link rel="stylesheet" href="./common/css/css_common.html" />
+        -->
+    
+
+    <link rel="stylesheet" type="text/css" href="/css/ext/plugin/jquery_ui/jquery-ui-1.11.4.custom.min.css" />
+    <link rel="stylesheet" type="text/css" href="/js/treeview/jquery.treeview.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/js/freejqgrid/css/ui.jqgrid.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/js/freejqgrid/css/jqGrid.bootstrap.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/js/ext/ax/AXJ.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="/css/sub.css" />
+    <link rel="stylesheet" type="text/css" href="/js/jqcloud/jqcloud.css" />
+
+
+    
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> -->
+</head>
+
+<body>
+	
+    <!--<link rel="import" href="./header.html">-->
+    <%include  ./header.html%>
+    <div id="container" class="Tbl_wrap">
+        list.length<%= list.length  %>
+        <%
+        if(list.length > 0) {
+        %>
+
+        <table class="Tbl" id="sampleTable">
+            <thead>
+                <tr>
+                    <th class="txt_left"> index <span></span><!-- <span class="sortarr_down"></span> -->  </th> <!-- 이름 -->
+                    <th class="txt_left"> 앱이름 <span></span><!-- <span class="sortarr_down"></span> -->  </th> <!-- 이름 -->
+                    <th class="txt_right02"> 언어 <span></span></th> <!-- 언어 -->
+                    <th> 생성날짜 <span></span></th>
+                    <th> 기능 </th>
+                </tr>
+            </thead>
+            <%
+            for(var i=0; i
+            <list.length; i++) {
+                          %>
+                <tr>
+                    <td class="txt_left"><%= list[i].title %></td>
+                    <td class="txt_left"><%= list[i].writer %></td>
+                    <td class="txt_right"><%= list[i].date %></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <%
+                }
+                %>
+        </table>
+        <%
+        } else {
+        %>
+
+        <%
+        }
+        %>
+    </div>
+        <hr>
+        <footer>
+            <p>&copy; Company 2014</p>
+        </footer>
+	<!-- /container -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
