@@ -380,7 +380,8 @@ ul.tabs li.active { height: 38px;line-height: 38px;background: #002c5f;color:#ff
 .stb-select-container .stb-select li:hover{ background-color:#33567f; color:#fff}
 .stb-select-container .stb-select li:first-of-type {}
 .stb-select-container .stb-select li+li {margin-top: 8px}
-
+/* 로그인 */
+.loginOk{width:150px; position:absolute; right:150px; color:white; font-size:18px; margin:18px 0 0 5px;}
 /* popup   2017.07.28 추가*/
 .pop_wrap{ background:none}
 .popup {width:100%; padding:20px}

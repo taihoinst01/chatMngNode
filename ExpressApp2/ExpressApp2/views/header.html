@@ -4,7 +4,21 @@
       <!-- <a class="logo" href="/"><span class="hc">챗봇_학습관리포털</span></a> -->
         <div class="gnb_wrap" id="menuLv1">
             <!--<a class="gnbm" href="/">Home</a><p class="cline">|</p>-->
-            <a class="gnbm" href="/list" id="myapp">My app</a><p class="cline">|</p>
+            <%
+            if(id != '')
+            {
+                %>
+                    <a class="gnbm" href="/list" id="loginOk">My app</a><p class="cline">|</p>
+                <%
+            }
+            else
+            {
+                %>
+                    <a class="gnbm" href="/list" id="loginFail">My app</a><p class="cline">|</p>
+                <%
+            }
+            %>
+            <!--<a class="gnbm" href="/list" id="myapp">My app</a><p class="cline">|</p>-->
             <a class="gnbm" href="#">DLG</a><p class="cline">|</p>
             <a class="gnbm" href="#">COMMON</a>
         </div>
@@ -27,6 +41,20 @@
             <% }%>
         
         </div> -->
+        <div class="loginOk">
+            <%if(id != '')
+            {
+                %>
+                박진수
+                <%
+                             
+            }else
+            {
+                %>
+                로그인해주세요
+                <%
+            }%>
+        </div>
         <div class="stb-select_w">
             <div class="stb-select-container">
                 <span class="selected">English</span><select class="language" id="selLocale" style="display: none;">
