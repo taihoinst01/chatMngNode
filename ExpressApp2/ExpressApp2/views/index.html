@@ -32,44 +32,57 @@
 	
     <!--<link rel="import" href="./header.html">-->
     <%include  ./header.html%>
-    <div id="container" class="main">
-        list.length<%= list.length  %>
-        <%
-        if(list.length > 0) {
-        %>
+    <div id="wrap">
+        <div id="container" class="main">
 
-        <table class="Tbl" id="sampleTable">
-            <thead>
-                <tr>
-                    <th class="txt_left"> index <span></span><!-- <span class="sortarr_down"></span> -->  </th> <!-- 이름 -->
-                    <th class="txt_left"> 앱이름 <span></span><!-- <span class="sortarr_down"></span> -->  </th> <!-- 이름 -->
-                    <th class="txt_right02"> 언어 <span></span></th> <!-- 언어 -->
-                    <th> 생성날짜 <span></span></th>
-                    <th> 기능 </th>
-                </tr>
-            </thead>
-            <%
-            for(var i=0; i
-            <list.length; i++) {
-                          %>
-                <tr>
-                    <td class="txt_left"><%= list[i].title %></td>
-                    <td class="txt_left"><%= list[i].writer %></td>
-                    <td class="txt_right"><%= list[i].date %></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+            <div id="sub_cont03">
+                <!-- 챗봇앱 관리 -->
+                <div class="tbl_area">
+                        <div class="tbl_area_l">
+                            <a href="#" class="btn js-open-modal"  id="btn_crte_botCrte" onclick="addApp()">Create new app<!-- 신규챗봇추가 --></a>
+                        </div>
+                </div>
+
+
+                list.length<%= list.length  %>
+                <%
+                if(list.length > 0) {
+                %>
+
+                <table class="Tbl" id="sampleTable">
+                    <thead>
+                        <tr>
+                            <th class="txt_left"> Name <span></span><!-- <span class="sortarr_down"></span> -->  </th> <!-- 이름 -->
+                            <th class="txt_left"> Culture <span></span><!-- <span class="sortarr_down"></span> -->  </th> <!-- 이름 -->
+                            <th class="txt_right02"> Created date <span></span></th> <!-- 언어 -->
+                            <th class="txt_left"> Description <span></span></th>
+                            <th class="txt_right02">  </th>
+                        </tr>
+                    </thead>
+                    <%
+                    for(var i=0; i
+                    <list.length; i++) {
+                                %>
+                        <tr>
+                            <td class="txt_left"><%= list[i].title %></td>
+                            <td class="txt_left"><%= list[i].writer %></td>
+                            <td class="txt_right"><%= list[i].date %></td>
+                            <td class="txt_left"></td>
+                            <td class="txt_right02"></td>
+                        </tr>
+                        <%
+                        }
+                        %>
+                </table>
+                <%
+                } else {
+                %>
+
                 <%
                 }
                 %>
-        </table>
-        <%
-        } else {
-        %>
-
-        <%
-        }
-        %>
+            </div>
+        </div>
     </div>
         <hr>
         <footer>
