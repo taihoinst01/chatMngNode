@@ -27,10 +27,12 @@
         
         </div>
         <div class="stb-select_w">
-            <select class="language" id="selLocale">
-                <option value="en">English</option>
-                <option value="ko">Korea</option>
-            </select>
+            <div class="stb-select-container">
+                <span class="selected">English</span><select class="language" id="selLocale" style="display: none;">
+                    <option value="en" selected="">English</option>
+                    <option value="ko">Korea</option>
+                </select><ul class="stb-select" style="display:none;"><li value="en" selected="selected">English</li><li value="ko">Korea</li></ul>
+            </div>
         </div>
     </div>
 </div>
