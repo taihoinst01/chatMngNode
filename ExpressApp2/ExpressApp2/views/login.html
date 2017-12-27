@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        Login
+    </title>
+
+    <!-- 
+        <link rel="stylesheet" href="./common/css/css_common.html" />
+        -->
+    
+
+    <link rel="stylesheet" type="text/css" href="/css/ext/plugin/jquery_ui/jquery-ui-1.11.4.custom.min.css" />
+    <link rel="stylesheet" type="text/css" href="/js/treeview/jquery.treeview.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/js/freejqgrid/css/ui.jqgrid.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/js/freejqgrid/css/jqGrid.bootstrap.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/js/ext/ax/AXJ.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="/css/sub.css" />
+    <link rel="stylesheet" type="text/css" href="/js/jqcloud/jqcloud.css" />
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> test-->
+</head>
+    
+
+<body>
+    
+    <div id="header_wrap02">
+        <div id="header">
+            <div class="stb-select_w">
+                <div class="stb-select-container">
+                    <span class="selected">English</span><select class="language" id="selLocale" style="display: none;">
+                        <option value="en" selected="">English</option>
+                        <option value="ko">Korea</option>
+                    </select><ul class="stb-select" style="display:none;"><li value="en" selected="selected">English</li><li value="ko">Korea</li></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+   <div id="login_wrap">
+   
+   <!-- 비밀번호 변경 -->
+   <div id="div_change_password" class="modal_box w600"  style="height:400px">
+         <form name="changePwdFrm" id="changePwdFrm">
+         <input type="hidden" name="currLoginId" id="currLoginId" value=""/>
+         <header> <a href="#" class="js-modal-close close">×</a>
+           <h3><spring:message code='message.change.password'/></h3>
+         </header>
+         <div class="modal-body">
+           <p class="tit01"><spring:message code='message.user.id'/>:<span class="id" id="currPrtId" > taihoinst </span></p>
+           <p class="tit01"><spring:message code='message.input.previous.password'/></p>
+           <p><input type="text" name="currScrtNum" id="currScrtNum" title="<spring:message code='message.input.previous.password'/>" class="inbox02" style="width:100%"></p>
+           <p class="tit01"><spring:message code='message.input.new.password'/> <span class="ml10">(<spring:message code='message.input.password.rule'/> )</span></p>
+           <p><input type="password" name="newScrtNum" id="newScrtNum" title="<spring:message code='message.input.new.password'/>" class="inbox02" style="width:100%"></p>
+           <p class="tit01"><spring:message code='message.input.new.password.again'/></p>
+           <p><input type="password" name="newScrtNumConfirm" id="newScrtNumConfirm" title="<spring:message code='message.input.new.password.again'/>" class="inbox02" style="width:100%"></p>
+         </div>
+         <footer><a href="javascript://" class="btn" onclick="fn_changePwd();"><spring:message code='button.save'/></a> <a href="#" class="btn b02  btn-small js-modal-close"><spring:message code='button.cancel'/></a> </footer>
+         </form>
+   </div>
+   <!-- //비밀번호 변경 -->
+   
+   <div  class="login_out">
+        <div id="login_contain">
+            <div class="login_con">
+                <form name="loginfrm" id="loginfrm">
+                    <!-- <p class="login_logo"></p> -->
+                    <p class="Login_Logo_sub">ChatBot Manager</p>
+                    <!-- 로그인 폼 -->
+                    <div class="login_input">
+                        <p class="pin"><input type="text" name="mLoginId" id="mLoginId" title="ID" class="inbox id" placeholder="ID"  /></p>
+                        <p class="pin"><input type="password" name="mLoginPass" id="mLoginPass" title="password" class="inbox pw" placeholder="Password"/></p>
+                    </div>
+                </form>
+                <div class="btn_wrap"><a href="javascript://" id="sendLoginBtn" class="btn_login">login</a></div>
+            </div>
+   
+            <p class="login_footer">COPYRIGHTS <strong>Taihoint</strong>  ALL RIGHTS RESERVED.</p>
+        </div>
+   
+   </div>
+   
+   </div>
+   </div>
+
+</body>
+</html>
+

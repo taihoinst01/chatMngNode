@@ -46,9 +46,9 @@
                 </div>
 
 
-                list.length<%= list.length  %>
+                list.length(test) : <%= list.length  %>
                 <%
-                if(list.length > 0) {
+                    if(list.length > 0) {
                 %>
 
                 <table class="Tbl" id="sampleTable">
@@ -57,8 +57,8 @@
                             <th class="txt_left"> Name <span></span><!-- <span class="sortarr_down"></span> -->  </th> <!-- 이름 -->
                             <th class="txt_left"> Culture <span></span><!-- <span class="sortarr_down"></span> -->  </th> <!-- 이름 -->
                             <th class="txt_right02"> Created date <span></span></th> <!-- 언어 -->
-                            <th class="txt_left"> Description <span></span></th>
-                            <th class="txt_right02">  </th>
+                            <th class="txt_right02"> Description <span></span></th>
+                            <th class="txt_right02"> edit  </th>
                         </tr>
                     </thead>
                     <%
@@ -69,8 +69,8 @@
                             <td class="txt_left"><%= list[i].title %></td>
                             <td class="txt_left"><%= list[i].writer %></td>
                             <td class="txt_right"><%= list[i].date %></td>
-                            <td class="txt_left"></td>
-                            <td class="txt_right02"></td>
+                            <td class="txt_right"></td>
+                            <td class="txt_right0"></td>
                         </tr>
                         <%
                         }
