@@ -131,7 +131,7 @@ body.main{ background:none}
 #header .gnbm{ float:left; font-size:18px; color:#475d7e;margin:18px 0 0 5px; }
 #header .gnbm:hover{ color : skyblue;}
 #header .gnbm.on{ color:#73aaeb; font-weight:600}
-#header #loginOk{color:white;}
+#header #selMenus{color:white;}
 #header .cline{ float:left;width:30px; text-align:center;color:#475d7e; margin-top:18px}
 #header .user_login{ position:absolute;  color:#fff; text-align:right; right:180px ; top:14px}
 #header .user_login .user_id a{ font-size:14px !important; color:#fff !important;height:19px; line-height:19px; background:url(../images/ico_user.png) no-repeat 0 0; padding-left:23px; display:inline-block; vertical-align:middle; border: none !important}

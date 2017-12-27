@@ -5,22 +5,34 @@
         <div class="gnb_wrap" id="menuLv1">
             <!--<a class="gnbm" href="/">Home</a><p class="cline">|</p>-->
             <%
-            if(id != '')
+            if(selMenu == 'm1')
             {
                 %>
-                    <a class="gnbm" href="/list" id="loginOk">My app</a><p class="cline">|</p>
+                    <a class="gnbm" href="/list" id="selMenus">My app</a><p class="cline">|</p>
+                    <a class="gnbm" href="#">DLG</a><p class="cline">|</p>
+                     <a class="gnbm" href="#">COMMON</a>
                 <%
             }
-            else
+            else if(selMenu == 'm2')
             {
                 %>
-                    <a class="gnbm" href="/list" id="loginFail">My app</a><p class="cline">|</p>
+                    <a class="gnbm" href="/list" >My app</a><p class="cline">|</p>
+                    <a class="gnbm" href="#" id="selMenus">DLG</a><p class="cline">|</p>
+                     <a class="gnbm" href="#">COMMON</a>
+                <%
+            }
+            else if(selMenu == 'm3')
+            {
+                %>
+                    <a class="gnbm" href="/list" >My app</a><p class="cline">|</p>
+                    <a class="gnbm" href="#">DLG</a><p class="cline">|</p>
+                     <a class="gnbm" href="#" id="selMenus">COMMON</a>
                 <%
             }
             %>
-            <!--<a class="gnbm" href="/list" id="myapp">My app</a><p class="cline">|</p>-->
+            <!--<a class="gnbm" href="/list" id="myapp">My app</a><p class="cline">|</p>
             <a class="gnbm" href="#">DLG</a><p class="cline">|</p>
-            <a class="gnbm" href="#">COMMON</a>
+            <a class="gnbm" href="#">COMMON</a>-->
         </div>
       <!--
           
@@ -42,7 +54,7 @@
         
         </div> -->
         <div class="loginOk">
-            <%if(id != '')
+            <%if(id == '')
             {
                 %>
                 박진수
