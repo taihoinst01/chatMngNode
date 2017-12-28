@@ -269,7 +269,7 @@ button{cursor:pointer;}
 .process ul li.on {  background:url(../images/proc_on.gif) no-repeat; color:#fff; font-weight:bold}
 
 /* LOGIN Page */
-#login_wrap{width:100%; height:100%;  overflow:hidden;background:url(../images/login_bg.png) #e1e1e1 }
+#login_wrap{width:100%; height:100%;  overflow:hidden;background: #d8d4d4 }
 #login_out{position:absolute;width:100%; text-align:center; left:33%;right:33%}
 #login_contain{ position:absolute;width:470px; height:370px; margin:auto; top:220px;  left:37%;right:33% ; display:inline-block}
 
@@ -380,8 +380,8 @@ ul.tabs li.active { height: 38px;line-height: 38px;background: #002c5f;color:#ff
 .stb-select-container .stb-select li:hover{ background-color:#33567f; color:#fff}
 .stb-select-container .stb-select li:first-of-type {}
 .stb-select-container .stb-select li+li {margin-top: 8px}
-/* 로그인 */
-.loginOk{width:150px; position:absolute; right:150px; color:white; font-size:18px; margin:18px 0 0 5px;}
+/* 로그인  width:150px; position:absolute; right:5px; color:white; font-size:18px; margin:10px 0 0 5px; height: -webkit-fill-available; */
+.loginOk{width:80px; position:absolute; right:5px; color:white; font-size:18px; margin:0 0 0 0; height: -webkit-fill-available; } 
 /* popup   2017.07.28 추가*/
 .pop_wrap{ background:none}
 .popup {width:100%; padding:20px}

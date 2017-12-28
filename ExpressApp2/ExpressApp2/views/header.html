@@ -3,36 +3,56 @@
     <div id="header">
       <!-- <a class="logo" href="/"><span class="hc">챗봇_학습관리포털</span></a> -->
         <div class="gnb_wrap" id="menuLv1">
+            <ul class="headerUl">
             <!--<a class="gnbm" href="/">Home</a><p class="cline">|</p>-->
             <%
             if(selMenu == 'm1')
             {
                 %>
-                    <a class="gnbm" href="/list" id="selMenus">My app</a><p class="cline">|</p>
-                    <a class="gnbm" href="/dialog">DLG</a><p class="cline">|</p>
-                     <a class="gnbm" href="/common">COMMON</a>
+                    <li class="headerHover">
+                        <a class="gnbm" href="/list" id="selMenus">My app</a>
+                    </li>
+                    <li class="headerHover">
+                        <a class="gnbm" href="/dialog">DLG</a>
+                    </li>
+                    <li class="headerHover">
+                        <a class="gnbm" href="/common">COMMON</a>
+                    </li>
                 <%
             }
             else if(selMenu == 'm2')
             {
                 %>
-                    <a class="gnbm" href="/list" >My app</a><p class="cline">|</p>
-                    <a class="gnbm" href="#" id="selMenus">DLG</a><p class="cline">|</p>
-                     <a class="gnbm" href="#">COMMON</a>
+                    <li class="headerHover">
+                        <a class="gnbm" href="/list" >My app</a>
+                    </li>
+                    <li class="headerHover">
+                        <a class="gnbm" href="#" id="selMenus">DLG</a>
+                    </li>
+                    <li class="headerHover">
+                        <a class="gnbm" href="#">COMMON</a>
+                    </li>
                 <%
             }
             else if(selMenu == 'm3')
             {
                 %>
-                    <a class="gnbm" href="/list" >My app</a><p class="cline">|</p>
-                    <a class="gnbm" href="#">DLG</a><p class="cline">|</p>
-                     <a class="gnbm" href="#" id="selMenus">COMMON</a>
+                    <li class="headerHover">\
+                        <a class="gnbm" href="/list" >My app</a>
+                    </li>
+                    <li class="headerHover">
+                        <a class="gnbm" href="#">DLG</a>
+                    </li>
+                    <li class="headerHover">
+                        <a class="gnbm" href="#" id="selMenus">COMMON</a>
+                    </li>
                 <%
             }
             %>
             <!--<a class="gnbm" href="/list" id="myapp">My app</a><p class="cline">|</p>
             <a class="gnbm" href="#">DLG</a><p class="cline">|</p>
             <a class="gnbm" href="#">COMMON</a>-->
+            </ul>
         </div>
       <!--
           
@@ -54,14 +74,21 @@
         
         </div> -->
         <div class="loginOk">
-
-            <%if(sid)
-            {
-            %>
-                <%=sid%>
-                <a href="/users/logout" class="btn js-open-modal">로그아웃<!-- 신규챗봇추가 --></a>
+ 
+            <% if(sid) { %>
+                <ul class="headerUl">
+                    <li class="headerHover">
+                        <a href="#" id="loginId"> <%=sid%> </a>
+                    </li>
+                </ul>
+                
+                <!-- 레이어 팝업 추가해주세요.
+                <a href="/users/logout" class="btn js-open-modal">로그아웃</a>
+                -->
             <%                  
-            }else
+                }
+            <!-- 비로그인 접근 시 로그인 화면으로 이동-->
+            else
             {
                 %>
                 <script>
@@ -70,7 +97,9 @@
                 </script>
                 <%
             }%>
+            
         </div>
+        <!-- 언어선택
         <div class="stb-select_w">
             <div class="stb-select-container">
                 <span class="selected">English</span><select class="language" id="selLocale" style="display: none;">
@@ -79,5 +108,6 @@
                 </select><ul class="stb-select" style="display:none;"><li value="en" selected="selected">English</li><li value="ko">Korea</li></ul>
             </div>
         </div>
+        -->
     </div>
 </div>
