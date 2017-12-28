@@ -4,12 +4,13 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/dashboard', function (req, res) {
+    req.session.selMenu = 'm4'; 
     var appName = req.param('appName');
     res.render('dashboard',
         {
             appName: appName,
             title: 'Express',
-            selMenu: 'm1',
+            selMenu: 'm4',
             list: [
                 {
                     'title': '첫번째 게시물',

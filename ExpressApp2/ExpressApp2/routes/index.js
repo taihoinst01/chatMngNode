@@ -14,13 +14,13 @@ router.get('/', function (req, res) {
 });
 
 router.get('/list', function (req, res) {
-    req.session.menu = 'm1';
+    req.session.selMenu = 'm1';
     console.log("메뉴 : " + req.param.menu);
     
     res.render('index',
         {
             title: 'Express',
-            selMenu: req.session.menu,
+            selMenu: req.session.selMenu,
             list: [
                 {
                     'title': '첫번째 게시물',

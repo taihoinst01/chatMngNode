@@ -49,7 +49,7 @@ app.use(function(req, res, next) {
     }
 
     if(req.session.menu) {
-        res.locals.selMenu = req.session.menu;
+        res.locals.selMenu = req.session.selMenu;
     }
     else {
         res.locals.selMenu = undefined;
