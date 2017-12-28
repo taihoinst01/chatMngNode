@@ -14,7 +14,6 @@ router.get('/', function (req, res) {
 });
 
 router.get('/list', function (req, res) {
-    console.log("리스트");
     res.render('index',
         {
             title: 'Express',
@@ -37,13 +36,6 @@ router.get('/list', function (req, res) {
                 }
             ]
         });
-});
-
-router.post('/login', function (req, res) {  
-    req.session.sid = req.body.mLoginId;
-    req.session.save(function(){
-       res.redirect("/list");
-    });
 });
 
 module.exports = router;

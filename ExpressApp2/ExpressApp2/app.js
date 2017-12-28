@@ -36,7 +36,7 @@ app.use(session({
     saveUninitialized: true
    }));
 
-//페이지 요청시마다 세션값이 있는지 확인해서 있으면 넘겨준다
+//페이지 요청시마다 세션값이 있는지 확인
 app.use(function(req, res, next) {
     if(req.session.sid) {
         res.locals.sid = req.session.sid;
@@ -46,8 +46,7 @@ app.use(function(req, res, next) {
     }
     next();
 });
-
-  
+console.log("app.js 들어옴") ;
 app.use('/', routes);
 app.use('/users', users);
 

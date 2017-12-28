@@ -58,12 +58,16 @@
             <%if(sid)
             {
             %>
-            <%=sid%>
+                <%=sid%>
+                <a href="/logout" class="btn js-open-modal">로그아웃<!-- 신규챗봇추가 --></a>
             <%                  
             }else
             {
                 %>
-                로그인해주세요
+                <script>
+                    alert("로그인을 해주세요");
+                    location.href = '/';
+                </script>
                 <%
             }%>
         </div>
