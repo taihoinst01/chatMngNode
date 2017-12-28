@@ -116,6 +116,7 @@ body{ background:url(../images/bg01.gif) repeat-y}
 body.main{ background:none}
 #wrapper{ width:100%; height:100%; }
 #wrap{ position:absolute; top:58px; bottom:0; left:0;right:0; height:100%; }
+#wrap4Luis{ position:absolute; top:102px; bottom:0; left:0;right:0; height:100%; }
 #container{position:absolute; top:35px; bottom:0; left:236px; right:0;  min-width:990px;   }
 #container.main{left:35px;}
 #sub_cont{position:absolute; top:0; bottom:0; left:0; width:1050px;  }
@@ -125,6 +126,7 @@ body.main{ background:none}
 /* Head */
 #header_wrap{ position:absolute; top:0; width:100%; height:58px; background: #002c5f; min-width:1380px}
 #header_wrap02{ position:absolute; top:0; width:100%; height:42px; background: #002c5f; min-width:1380px}
+#header_wrap03{ position:absolute; top:42px; width:100%; height:60px; background: #9399a0; min-width:1380px}
 #header{ position:absolute; top:0; width:100%; display:inline-block}
 #header .logo{ width:128px; height:16px; background:url(../images/logo_title.png) no-repeat ; float:left; margin:20px 0 0 15px; }
 #header .gnb_wrap{ margin-left:50px; float:left; height: -webkit-fill-available;}
@@ -146,6 +148,13 @@ body.main{ background:none}
 
 #header .user_login{margin: 0px 0px 0px 0px; padding: 0px 10px 0px 10px; border : 0; float: left; height: -webkit-fill-available;}
 #header .user_login:hover{background-color:rgb(139, 173, 187) !important;}
+
+#header .gnb_wrap_for_Luis{ margin-left:10px; width:-webkit-fill-available;  padding: 0 15px 0 0; float:left; height: -webkit-fill-available;}
+#header .headerMenu_for_Luis{list-style:none; margin:0; padding:0; overflow:hidden;}
+#header .headerLi_for_Luis_left{margin: 0px 0px 0px 0px; padding: 10px 10px 0px 10px; font-weight: bold; float: left; height: -webkit-fill-available; }
+
+#header .headerLi_for_Luis_right{margin: 0px 0px 0px 0px; padding: 10px 10px 0px 10px; font-weight: bold; float: right; height: -webkit-fill-available; }
+#header .headerLi_for_Luis_right:hover{border-bottom:solid 6px #5b7d91;}
 
 /* LNB */
 #lnb{position:absolute; left:0; width:192px; height:100%; overflow:hidden}
