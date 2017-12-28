@@ -32,8 +32,9 @@
     <script type="text/javascript" src="/javascript/index.js"></script>
     
     <style type="text/css">
-        .appLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:120px; padding:10px; } 
-
+        .appLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:80px; padding:10px; } 
+        .layerMenu:hover{background-color:#a7a4a4 !important;}
+        
         .layoutFont { 
             box-sizing: border-box;
             display: flex;
@@ -50,7 +51,6 @@
             line-height: 24px;
             letter-spacing: 0.5px;
             background-image: none;
-            background-color: #ffffff;
             color: #2b2b2b;
             cursor: pointer; 
         }
@@ -101,7 +101,7 @@
                             <td class="txt_left"><%= list[i].writer %></td>
                             <td class="txt_right02"><%= list[i].date %></td>
                             <td class="txt_right02"></td>
-                            <td class="txt_right02"><input type="button" onclick="itemClick(event, this);" value="클릭"></td>
+                            <td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick(event, this);"></a></td>
                         </tr>
                         <%
                         }
@@ -124,9 +124,12 @@
 	<!-- /container -->
 
     <div id="lay" class="appLayout" >
-        레이어 내용(삭제)<br/>
-        <a href="#" class="editApp"  id="btn_crte_appEdit"><span class="layoutFont">Rename App</span></a> <br/> <!-- class="btn_edit js-open-modal" 수정아이콘 -->
-        <a href="#" class="delApp" ><span class="layoutFont">Delete App</span></a>
+        <div class="layerMenu" >
+            <a href="#" class="layerMenu a"  id="btn_crte_appEdit"><span class="layoutFont">Rename App</span></a> <!-- class="btn_edit js-open-modal" 수정아이콘 -->
+        </div>
+        <div class="layerMenu">
+            <a href="#" class="layerMenu b" ><span class="layoutFont">Delete App</span></a>
+        </div>
     </div>
 </body>
 

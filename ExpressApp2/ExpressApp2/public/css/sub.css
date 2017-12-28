@@ -46,6 +46,7 @@ h2.subtit02{ font-size:14px; font-weight:600; background:url(../images/ico_subti
 .tbl_area .optit{ display:inline-block; vertical-align:middle; margin:0 5px 25px 0}
 
 /*  table  버튼*/
+.btn_util{ width:30px; height:30px; background:url(../images/utilBtn.PNG) no-repeat 0 6px; display:inline-block; }
 .btn_edit{ width:30px; height:30px; background:url(../images/btn_bbs.gif) no-repeat 0 6px; display:inline-block; }
 .btn_edit:hover{ background-position:0 -72px}
 .btn_delete{ width:30px; height:30px; background:url(../images/btn_bbs.gif) no-repeat -67px 6px; display:inline-block; margin-left:10px ; }
