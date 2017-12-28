@@ -38,7 +38,7 @@
           
           <div class="user_login">
             
-            <% if(id == ''){ %>
+            <% if(sid == ''){ %>
             <form action="/login" method="post" class="navbar-form navbar-right">
                 <div class="form-group">
                     <input type="text" name="id" placeholder="id" class="form-control">
@@ -49,17 +49,17 @@
                 <button type="submit" class="btn btn-success" style="background:#cecece !important;">Sign in</button>
             </form>
             <% }else { %>
-            <a class="navbar-brand navbar-right"> <%=id %> ::: Hello</a>
+            <a class="navbar-brand navbar-right"> <%=sid %> ::: Hello</a>
             <% }%>
         
         </div> -->
         <div class="loginOk">
-            <%if(id == '')
+
+            <%if(sid)
             {
-                %>
-                박진수
-                <%
-                             
+            %>
+            <%=sid%>
+            <%                  
             }else
             {
                 %>

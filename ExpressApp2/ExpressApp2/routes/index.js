@@ -4,14 +4,20 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res) {
-    res.render('login');
+    if(req.session.sid) {
+        res.redirect("/list");
+    }
+    else{
+        res.render('login');   
+    }
+    
 });
 
 router.get('/list', function (req, res) {
+    console.log("리스트");
     res.render('index',
         {
             title: 'Express',
-            id: '',
             selMenu: 'm1',
             list: [
                 {
@@ -33,20 +39,11 @@ router.get('/list', function (req, res) {
         });
 });
 
-router.post('/login', function (req, res) {
-    var id = req.body.id;
-    var pwd = req.body.pwd;
-
-    console.log("id : " + id);
-    console.log("pwd : " + pwd);
-
-    res.render('index',
-        {
-            title: 'Express',
-            id: id,
-            selMenu: 'm1',
-            list: []
-        });
+router.post('/login', function (req, res) {  
+    req.session.sid = req.body.mLoginId;
+    req.session.save(function(){
+       res.redirect("/list");
+    });
 });
 
 module.exports = router;

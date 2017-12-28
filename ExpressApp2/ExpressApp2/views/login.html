@@ -23,7 +23,9 @@
     <link rel="stylesheet" type="text/css" href="/css/common.css" />
     <link rel="stylesheet" type="text/css" href="/css/sub.css" />
     <link rel="stylesheet" type="text/css" href="/js/jqcloud/jqcloud.css" />
-
+    
+    <script type="text/javascript" src="/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/javascript/login.js"></script>
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> test-->
 </head>
     
@@ -69,7 +71,7 @@
    <div  class="login_out">
         <div id="login_contain">
             <div class="login_con">
-                <form name="loginfrm" id="loginfrm">
+                <form action="/login" method="post" name="loginfrm" id="loginfrm">
                     <!-- <p class="login_logo"></p> -->
                     <p class="Login_Logo_sub">ChatBot Manager</p>
                     <!-- 로그인 폼 -->
