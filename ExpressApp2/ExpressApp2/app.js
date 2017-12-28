@@ -12,6 +12,7 @@ var session = require('express-session');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var luis = require('./routes/luis/luis');
 
 var app = express();
 
@@ -49,6 +50,7 @@ app.use(function(req, res, next) {
 console.log("app.js 들어옴") ;
 app.use('/', routes);
 app.use('/users', users);
+app.use('/luis', luis);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
