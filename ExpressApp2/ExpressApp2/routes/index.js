@@ -14,10 +14,13 @@ router.get('/', function (req, res) {
 });
 
 router.get('/list', function (req, res) {
+    req.session.menu = 'm1';
+    console.log("메뉴 : " + req.param.menu);
+    
     res.render('index',
         {
             title: 'Express',
-            selMenu: 'm1',
+            selMenu: req.session.menu,
             list: [
                 {
                     'title': '첫번째 게시물',
@@ -36,6 +39,11 @@ router.get('/list', function (req, res) {
                 }
             ]
         });
+});
+
+router.post('/ajaxTest', function (req, res) {
+    var responseData = {'title' : 'ajax테스트 게시물', 'writer' : req.session.sid, 'date': '2017-12-28'};
+    res.json(responseData);
 });
 
 module.exports = router;

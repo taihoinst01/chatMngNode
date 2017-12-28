@@ -47,6 +47,13 @@ app.use(function(req, res, next) {
     else {
         res.locals.sid = undefined;
     }
+
+    if(req.session.menu) {
+        res.locals.selMenu = req.session.menu;
+    }
+    else {
+        res.locals.selMenu = undefined;
+    }
     next();
 });
 console.log("app.js 들어옴") ;
