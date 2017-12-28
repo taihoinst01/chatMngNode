@@ -1,0 +1,22 @@
+.userappLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:80px; padding:10px; } 
+.userlayerMenu:hover{background-color:#a7a4a4 !important;}
+
+.userlayoutFont { 
+    box-sizing: border-box;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-flow: row nowrap;
+    -webkit-box-align: center;
+    align-items: center;
+    height: 40px;
+    width: 100%;
+    padding: 8px 24px;
+    font-family: "Segoe UI Semibold";
+    font-size: 15px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    background-image: none;
+    color: #2b2b2b;
+    cursor: pointer; 
+}

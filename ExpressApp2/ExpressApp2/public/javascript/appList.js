@@ -56,6 +56,9 @@ function abspos(e, object){
     this.y = e.clientY + (document.documentElement.scrollTop?document.documentElement.scrollTop:document.body.scrollTop);
     return this;
 }
+//end
+
+
 function GetAbsPosition(object) {
     var position = new Object;
     position.x = 0;
@@ -78,7 +81,7 @@ function GetAbsPosition(object) {
     position.cy = object.offsetHeight;
     
     return position;
-   }
+}
   
 function itemClick(e, object){
     //var ex_obj = $('.appLayout');

@@ -27,24 +27,24 @@
                         <a class="gnbm" href="/list" >My app</a>
                     </li>
                     <li class="headerHover">
-                        <a class="gnbm" href="#" id="selMenus">DLG</a>
+                        <a class="gnbm" href="/dialog" id="selMenus">DLG</a>
                     </li>
                     <li class="headerHover">
-                        <a class="gnbm" href="#">COMMON</a>
+                        <a class="gnbm" href="/common">COMMON</a>
                     </li>
                 <%
             }
             else if(selMenu == 'm3')
             {
                 %>
-                    <li class="headerHover">\
+                    <li class="headerHover">
                         <a class="gnbm" href="/list" >My app</a>
                     </li>
                     <li class="headerHover">
-                        <a class="gnbm" href="#">DLG</a>
+                        <a class="gnbm" href="/dialog">DLG</a>
                     </li>
                     <li class="headerHover">
-                        <a class="gnbm" href="#" id="selMenus">COMMON</a>
+                        <a class="gnbm" href="/common" id="selMenus">COMMON</a>
                     </li>
                 <%
             }
@@ -73,12 +73,12 @@
             <% }%>
         
         </div> -->
-        <div class="loginOk">
+        <div class="loginOk" onclick="userLayoutPop(event, this);">
  
             <% if(sid) { %>
                 <ul class="headerUl">
-                    <li class="headerHover">
-                        <a href="#" id="loginId"> <%=sid%> </a>
+                    <li class="headerHover" style="padding-top: 10px;">
+                         <%=sid%>
                     </li>
                 </ul>
                 
@@ -110,4 +110,14 @@
         </div>
         -->
     </div>
+    
+    <div id="userlay" class="userappLayout" >
+            <div class="userlayerMenu" >
+                <a href="#" class="userlayerMenu a"  id="btn_crte_appEdit"><span class="userlayoutFont">Rename App</span></a> <!-- class="btn_edit js-open-modal" 수정아이콘 -->
+            </div>
+            <div class="userlayerMenu">
+                <a href="#" class="userlayerMenu b" ><span class="userlayoutFont">Delete App</span></a>
+            </div>
+    </div>
+
 </div>
