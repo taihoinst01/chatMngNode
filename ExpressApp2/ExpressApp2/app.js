@@ -7,6 +7,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+//세션
+var session = require('express-session');
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
@@ -26,6 +29,25 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//세션
+app.use(session({
+    secret: '@#@$MYSIGN#@$#$',
+    resave: false,
+    saveUninitialized: true
+   }));
+
+//페이지 요청시마다 세션값이 있는지 확인해서 있으면 넘겨준다
+app.use(function(req, res, next) {
+    if(req.session.sid) {
+        res.locals.sid = req.session.sid;
+    } 
+    else {
+        res.locals.sid = undefined;
+    }
+    next();
+});
+
+  
 app.use('/', routes);
 app.use('/users', users);
 
