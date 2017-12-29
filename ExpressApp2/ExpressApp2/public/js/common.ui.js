@@ -259,11 +259,11 @@ $(document).ready(function() {
 
 
 //언어선택
-
+/*
  jQuery(document).ready(function ($) {
     $('.language').stbDropdown();
  });
-
+*/
 
 
 

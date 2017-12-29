@@ -6,9 +6,9 @@ var router = express.Router();
 router.get('/', function (req, res) {
     req.session.menu = 'm2';
 
-    res.render('dialog', {
+    res.render('board', {
         selMenu: req.session.menu,
-        title: 'dialog page'
+        title: 'board page'
     } );
 });
 

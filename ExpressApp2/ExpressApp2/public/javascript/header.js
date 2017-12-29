@@ -40,7 +40,7 @@ $(document).ready(function () {
             });
         });
 
-})
+});
 
 function GetAbsPosition(object) {
     var position = new Object;

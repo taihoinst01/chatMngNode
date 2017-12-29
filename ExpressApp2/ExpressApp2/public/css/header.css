@@ -21,3 +21,11 @@
     cursor: pointer; 
     
 }
+
+#header .currentPage {
+    background-color: rgb(139, 173, 187) !important;
+}
+
+#header .gnbm {
+    display:block;
+}
