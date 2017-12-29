@@ -1,4 +1,4 @@
-.userappLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:80px; padding:10px; } 
+.userappLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:80px; padding:10px; z-index: 999; } 
 .userlayerMenu:hover{background-color:#a7a4a4 !important;}
 
 .userlayoutFont { 
@@ -19,4 +19,5 @@
     background-image: none;
     color: #2b2b2b;
     cursor: pointer; 
+    
 }
