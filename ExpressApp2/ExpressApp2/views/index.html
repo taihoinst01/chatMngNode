@@ -29,14 +29,16 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+    <script type="text/javascript" src="/js/common.ui.js"></script>
     <script type="text/javascript" src="/javascript/appList.js"></script>
     <script type="text/javascript" src="/javascript/index.js"></script>
     <script type="text/javascript" src="/javascript/header.js"></script>
 
     <style type="text/css">
-        .appLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:80px; padding:10px; } 
+        .appLayout { position:absolute; z-index:999; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:80px; padding:10px; } 
         .layerMenu:hover{background-color:#a7a4a4 !important;}
-        
+        #layoutBackground { position:absolute; z-index:900; background-color:#000; display:none; left:0; top:0; } 
+
         .layoutFont { 
             box-sizing: border-box;
             display: flex;
@@ -74,13 +76,12 @@
                 <!-- 챗봇앱 관리 -->
                 <div class="tbl_area">
                         <div class="tbl_area_l">
-                            <a href="#" class="btn js-open-modal"  id="btn_crte_botCrte" onclick="addApp()">Create new app<!-- 신규챗봇추가 --></a>
-                            <button class="ajaxsend">ajaxsend</button>
+                            <a href="#" class="btn js-open-modal"  id="btn_crte_botCrte" onclick="addApp();">Create new app<!-- 신규챗봇추가 --></a>
+                            
                         </div>
                 </div>
 
 
-                list.length(test) : <%= list.length  %>
                 <%
                     if(list.length > 0) {
                 %>
@@ -135,6 +136,9 @@
         </div>
     </div>
 
+    <div id="layoutBackground" >
+    </div>
+
 
 <div class="mask"></div>    
 <!--신규 챗봇 등록 -->
@@ -185,8 +189,8 @@
     <!-- form end -->
 
     <footer>
-      <button class="btn disable" id="btnAppInsert" onclick="save('appInsert')" disabled="disabled"><spring:message code='button.save'/></button>
-      <a href="#" class="btn b02  btn-small js-modal-close"><spring:message code='button.cancel'/></a>
+      <button class="btn disable" id="btnAppInsert" onclick="save('appInsert')" disabled="disabled">Save</button>
+      <a href="#" class="btn b02  btn-small js-modal-close">Cancel</a>
     </footer>
 
 </div>
