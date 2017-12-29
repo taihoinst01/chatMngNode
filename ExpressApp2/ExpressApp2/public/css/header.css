@@ -41,7 +41,7 @@
     background-color : white; 
     text-align : center; 
     transition: All 0.2s ease; 
-    -webkit-transition: All 1s ease; 
+    -webkit-transition: All 0.5s ease; 
     -moz-transition: All 0.2s ease; 
     -o-transition: All 0.2s ease; 
 } 
