@@ -13,8 +13,8 @@ var session = require('express-session');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var luis = require('./routes/luis/luis');
-var dialog = require('./routes/dialog/dialog');
-var common = require('./routes/common/common');
+var board = require('./routes/board/board');
+var learning = require('./routes/learning/learning');
 
 var app = express();
 
@@ -60,8 +60,8 @@ console.log("app.js 들어옴") ;
 app.use('/', routes);
 app.use('/users', users);
 app.use('/luis', luis);
-app.use('/common', common);
-app.use('/dialog', dialog);
+app.use('/learning', learning);
+app.use('/board', board);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
