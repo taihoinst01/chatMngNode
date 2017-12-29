@@ -1,4 +1,17 @@
-﻿
+﻿<script>
+    
+
+    
+    $(document).ready(function(){
+        var obj = $("#wrap4Luis").offset();
+        $("#menu").css("top", obj.top);
+
+        $(".btn").click(function() {
+            $("#menu").toggleClass("open");
+        });
+    });
+
+</script>
 <div id="header_wrap03">
     <div id="header">
       <!-- <a class="logo" href="/"><span class="hc">챗봇_학습관리포털</span></a> -->
@@ -9,7 +22,7 @@
                 </li>
 
                 <li class="headerLi_for_Luis_right">
-                    <button class="" onclick="">Train</button>
+                    <button class="btn" onclick="">Train</button>
                 </li>
                 <li class="headerLi_for_Luis_right">
                     <button calss="" onclick="">Test</button>
@@ -29,4 +42,12 @@
             </ul>
         </div>
     </div>
+</div>
+<div id="menu"> 
+    가나다라마바사
+    가나다라마바사
+    가나다라마바사
+    가나다라마바사
+    가나다라마바사
+    가나다라마바사가나다라마바사가나다라마바사가나다라마바사
 </div>
