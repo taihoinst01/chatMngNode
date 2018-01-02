@@ -82,9 +82,23 @@ router.post('/admin/putAddApps', function (req, res){
     }
 });
 
-router.post('/ajaxTest', function (req, res) {
-    var responseData = {'title' : 'ajax테스트 게시물', 'writer' : req.session.sid, 'date': '2017-12-28'};
+router.post('/ajax1', function (req, res) {
+    console.log("동기동기 비동기");
+    var responseData = {'result': 'ok', 'title' : 'ajax테스트 게시물', 'writer' : req.session.sid, 'date': '2017-12-28'};
     res.json(responseData);
+});
+
+router.post('/ajax2', function(req, res, next) {
+
+    console.log('POST 방식으로 서버 호출됨');
+    //view에 있는 data 에서 던진 값을 받아서
+
+    var msg = req.body.msg;
+    msg = '[에코]' + msg;
+
+    //json 형식으로 보내 준다.
+    res.send({result:true, msg:msg});
+
 });
 
 module.exports = router;

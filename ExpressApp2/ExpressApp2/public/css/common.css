@@ -130,7 +130,8 @@ body.main{ background:none}
 #header{ position:absolute; top:0; width:100%; display:inline-block}
 #header .logo{ width:128px; height:16px; background:url(../images/logo_title.png) no-repeat ; float:left; margin:20px 0 0 15px; }
 #header .gnb_wrap{ margin-left:50px; float:left; height: -webkit-fill-available;}
-#header .gnbm{ float:left; font-size:18px; color:#475d7e;margin:10px 0 0 5px; }
+#header .gnbm{ float:left; font-size:18px; color:#475d7e; padding: 0.8rem 1rem;}
+#header .gnbm2{ padding: 1.5rem 1rem;}
 /*#header .gnbm:hover{ color : skyblue;}*/
 #header .gnbm.on{ color:#73aaeb; font-weight:600}
 #header #selMenus{color:white;}
@@ -154,7 +155,7 @@ body.main{ background:none}
 #header .headerMenu_for_Luis{list-style:none; margin:0; padding:0; overflow:hidden;}
 #header .headerLi_for_Luis_left{margin: 0px 0px 0px 0px; padding: 10px 10px 0px 10px; font-weight: bold; float: left; height: -webkit-fill-available; }
 
-#header .headerLi_for_Luis_right{margin: 0px 0px 0px 0px; padding: 10px 10px 0px 10px; font-weight: bold; float: right; height: -webkit-fill-available; }
+#header .headerLi_for_Luis_right{margin: 0px 0px 0px 0px; font-weight: bold; float: right; height: -webkit-fill-available; }
 #header .headerLi_for_Luis_right:hover{border-bottom:solid 6px #5b7d91;}
 
 /* LNB */

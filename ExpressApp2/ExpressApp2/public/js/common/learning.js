@@ -1,11 +1,13 @@
 $(document).ready(function () {
     $('.sideMainMenu').click(function(){
-        if($(this).prev().hasClass('sortarr_down')) {
-            $(this).prev().removeClass('sortarr_down');
-            $(this).prev().addClass('sortarr_up');
+        if($(this).children().hasClass('sortarr_down')) {
+
+            $(this).children().removeClass('sortarr_down');
+            $(this).children().addClass('sortarr_up');
         } else {
-            $(this).prev().removeClass('sortarr_up');
-            $(this).prev().addClass('sortarr_down');
+
+            $(this).children().removeClass('sortarr_up');
+            $(this).children().addClass('sortarr_down');
         }
         $(this).parent().parent().next().toggleClass('subMenu');
     });
