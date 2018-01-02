@@ -16,12 +16,14 @@ $(document).ready(function(){
         if ($("#learningTest").css('display') != 'none') {
             $("#learningTest").hide();
             $("#batchTestPanel").show();
-            $("#toggleDiv").toggleClass('open', 5000);
+            $("#toggleDiv").toggleClass('open' );
+            
             //$("#toggleDiv").css('right', '0px');
         } else {
+            
             $("#batchTestPanel").hide();
             $("#learningTest").show();
-            $("#toggleDiv").toggleClass('open', 5000);
+            $("#toggleDiv").toggleClass('open');
             //$("#toggleDiv").css('right', '-900px');
         }
     });
