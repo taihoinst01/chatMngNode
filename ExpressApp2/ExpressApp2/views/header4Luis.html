@@ -1,15 +1,31 @@
 ﻿<script>
     
 
-    
-    $(document).ready(function(){
-        var obj = $("#wrap4Luis").offset();
-        $("#menu").css("top", obj.top);
+$(document).ready(function(){
+    var obj = $("#wrap4Luis").offset();
+    $("#toggleDiv").css("top", obj.top);
+    $("#learningTest").css("top", obj.top);
+    $("#batchTestPanel").css("top", obj.top);
 
-        $(".btn").click(function() {
-            $("#menu").toggleClass("open");
-        });
+    $(".btn").click(function() {
+        $("#toggleDiv").toggle('slow');
     });
+
+    $("a[name=batchTest]").click(function() {
+
+        if ($("#learningTest").css('display') != 'none') {
+            $("#learningTest").hide();
+            $("#batchTestPanel").show();
+            $("#toggleDiv").toggleClass('open', 5000);
+            //$("#toggleDiv").css('right', '0px');
+        } else {
+            $("#batchTestPanel").hide();
+            $("#learningTest").show();
+            $("#toggleDiv").toggleClass('open', 5000);
+            //$("#toggleDiv").css('right', '-900px');
+        }
+    });
+});
 
 </script>
 
@@ -44,11 +60,21 @@
         </div>
     </div>
 </div>
-<div id="menu"> 
-    가나다라마바사
-    가나다라마바사
-    가나다라마바사
-    가나다라마바사
-    가나다라마바사
-    가나다라마바사가나다라마바사가나다라마바사가나다라마바사
+<div id="toggleDiv">
+    <div id="learningTest"> 
+        <div style="padding: 1rem; overflow: auto;">
+            <h2 style="float: left !important;">learning-test toggle</h2><br/>
+            <a class="b" href="#" style="float: right !important;" name="batchTest">Batch testing panel</a>
+            <hr style="display:block !important; margin: 30px 0 0 0; border: 0; height: 2px; background: #ccc;">
+        </div>
+    </div>
+
+
+    <div id="batchTestPanel"> 
+        <div style="padding: 1rem; overflow: auto;">
+            <h2 style="float: left !important;">Batch-test toggle</h2><br/>
+            <a class="b" href="#" style="float: right !important;" name="batchTest">Single testing panel</a>
+            <hr style="display:block !important; margin: 30px 0 0 0; border: 0; height: 2px; background: #ccc;">
+        </div>
+    </div>
 </div>
