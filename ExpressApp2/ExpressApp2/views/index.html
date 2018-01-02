@@ -54,7 +54,8 @@
 </head>
 
 <body class="main">
-	
+    <input type="hidden" name="deleteAppId" id="deleteAppId" /> <!-- app 삭제용 (edit레이어가 공통으로 사용되기 때문에 id 저장할 필요 있음)-->
+
     <!--<link rel="import" href="./header.html">-->
     <%include  ./header.html%>
     <div id="wrap">
@@ -91,7 +92,7 @@
                             <td class="txt_left"><%= list[i].culture %></td>
                             <td class="txt_left"><%= list[i].createdDateTime.split('T')[0] %></td>
                             <td class="txt_left"><%= list[i].description %></td>
-                            <td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick(event, this);"></a></td>
+                            <td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick(event, this,'<%= list[i].id %>');"></a></td>
                         </tr>
                         <%
                         }
@@ -118,7 +119,7 @@
             <a href="#" class="layerMenu a"  id="btn_crte_appEdit"><span class="layoutFont">Rename App</span></a> <!-- class="btn_edit js-open-modal" 수정아이콘 -->
         </div>
         <div class="layerMenu">
-            <a href="#" class="layerMenu b" ><span class="layoutFont">Delete App</span></a>
+            <a href="#" class="layerMenu b" onclick="deleteApp()"><span class="layoutFont">Delete App</span></a>
         </div>
     </div>
 
