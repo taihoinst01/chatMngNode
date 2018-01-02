@@ -20,6 +20,7 @@
     "morgan": "^1.7.0",
     "pug": "^2.0.0-beta6",
     "serve-favicon": "^2.3.0",
-    "mssql": "4.1.0"
+    "mssql": "4.1.0",
+    "crypto": "1.0.1"
   }
 }

@@ -1,5 +1,8 @@
 ﻿'use strict';
 var express = require('express');
+var crypto = require('crypto');
+var sql = require('mssql');
+var dbConfig = require('../config/dbConfig');
 var router = express.Router();
 
 /* GET users listing. */
