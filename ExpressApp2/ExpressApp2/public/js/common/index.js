@@ -33,6 +33,13 @@ function save(type){
         url: urlStr,
         isloading: true,
         success: function(data) {
+            console.log(data);
+            if(data.appId != undefined && data.appId != null && data.appId != ''){
+                $('#addAppClose').click();
+            }else{
+                alert(data.error.message);
+            }
+            /*
             var errorMessage = data.result;
 
             if(errorMessage == undefined) {
@@ -40,6 +47,7 @@ function save(type){
             } else {
                 alert(errorMessage);
             }
+            */
         }
     });
 }

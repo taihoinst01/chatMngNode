@@ -54,6 +54,7 @@ router.post('/admin/putAddApps', function (req, res){
     var client = new Client();
     
     try{
+        var appId;
         var options = {
             headers: {
                 'Content-Type': 'application/json',
@@ -66,7 +67,14 @@ router.post('/admin/putAddApps', function (req, res){
             }
         };
         client.post( HOST + '/luis/api/v2.0/apps/', options, function (data, response) {
-            console.log(data);// app id값
+            //console.log(data); // app id값
+            var responseData;
+            if(response.statusCode == 201){ // 등록 성공
+                responseData = {'appId': data};
+            }else{
+                responseData = data;
+            }
+            res.json(responseData);
         });
     }catch(e){
         console.log(e);
