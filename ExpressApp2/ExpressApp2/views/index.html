@@ -40,6 +40,11 @@
             color: #2b2b2b;
             cursor: pointer; 
         }
+
+        .dashLink:link {text-decoration:none; color:#0078D7;}
+        .dashLink:visited {text-decoration:none; color:#0078D7;}
+        .dashLink:active {text-decoration:none; color:#0078D7;}
+        .dashLink:hover {text-decoration:none; color:#0078D7;}
         
     </style>
 
@@ -83,7 +88,7 @@
                     <list.length; i++) {
                                 %>
                         <tr>
-                            <td class="txt_left"><a href="/luis/dashboard?appName=<%= list[i].title %>" ><%= list[i].title %></a></td> <!-- dyyo 1228추가 -->
+                            <td class="txt_left"><a href="/luis/dashboard?appName=<%= list[i].title %>" class="dashLink" ><%= list[i].title %></a></td> <!-- dyyo 1228추가 -->
                             <td class="txt_left"><%= list[i].writer %></td>
                             <td class="txt_right02"><%= list[i].date %></td>
                             <td class="txt_right02"></td>
