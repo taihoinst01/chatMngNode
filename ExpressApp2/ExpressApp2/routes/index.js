@@ -1,6 +1,10 @@
 ﻿'use strict';
 var express = require('express');
+var Client = require('node-rest-client').Client;
 var router = express.Router();
+
+var HOST = 'https://westus.api.cognitive.microsoft.com';
+var subKey = 'db5c8e83e84f4c9e9c21f5da0b5a48fd';
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -39,6 +43,43 @@ router.get('/list', function (req, res) {
                 }
             ]
         });
+});
+
+router.post('/admin/putAddApps', function (req, res){
+    var appService = req.body.appInsertService;
+    var appName = req.body.appInsertName;
+    var appCulture = req.body.appInsertCulture;
+    var appDes = req.body.appInsertDes;
+
+    var client = new Client();
+    
+    try{
+        var appId;
+        var options = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Ocp-Apim-Subscription-Key': subKey
+            },
+            data: {
+                'name': appName,
+                'description': appDes,
+                'culture': appCulture
+            }
+        };
+        client.post( HOST + '/luis/api/v2.0/apps/', options, function (data, response) {
+            //console.log(data); // app id값
+            var responseData;
+            if(response.statusCode == 201){ // 등록 성공
+                responseData = {'appId': data};
+            }else{
+                responseData = data;
+            }
+            res.json(responseData);
+        });
+    }catch(e){
+        console.log(e);
+    }
+
 });
 
 router.post('/ajaxTest', function (req, res) {
