@@ -19,7 +19,6 @@ $(document).ready(function () {
 
 })
 
-//app 등록
 function save(type){
     var urlStr, applyIdStr
     if(type === 'appInsert'){
@@ -39,15 +38,6 @@ function save(type){
             }else{
                 alert(data.error.message);
             }
-            /*
-            var errorMessage = data.result;
-
-            if(errorMessage == undefined) {
-                movePage();
-            } else {
-                alert(errorMessage);
-            }
-            */
         }
     });
 }
@@ -64,7 +54,7 @@ function appValidation(type){
             $('#btnAppInsert').attr("disabled", false);
         } else {
             $('#btnAppInsert').attr("disabled", "disabled");
-            $('#btnAppInsert').addClass(" disable");
+            $('#btnAppInsert').addClass("disable");
         }
     }
 }

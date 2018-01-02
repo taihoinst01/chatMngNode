@@ -3,8 +3,8 @@ var express = require('express');
 var Client = require('node-rest-client').Client;
 var router = express.Router();
 
-var HOST = 'https://westus.api.cognitive.microsoft.com';
-var subKey = 'db5c8e83e84f4c9e9c21f5da0b5a48fd';
+const HOST = 'https://westus.api.cognitive.microsoft.com'; // Luis api host
+var subKey = 'db5c8e83e84f4c9e9c21f5da0b5a48fd'; // Subscription Key
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -45,6 +45,7 @@ router.get('/list', function (req, res) {
         });
 });
 
+//Luis app insert
 router.post('/admin/putAddApps', function (req, res){
     var appService = req.body.appInsertService;
     var appName = req.body.appInsertName;
@@ -53,19 +54,19 @@ router.post('/admin/putAddApps', function (req, res){
 
     var client = new Client();
     
+    var appId;
+    var options = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Ocp-Apim-Subscription-Key': subKey
+        },
+        data: {
+            'name': appName,
+            'description': appDes,
+            'culture': appCulture
+        }
+    };
     try{
-        var appId;
-        var options = {
-            headers: {
-                'Content-Type': 'application/json',
-                'Ocp-Apim-Subscription-Key': subKey
-            },
-            data: {
-                'name': appName,
-                'description': appDes,
-                'culture': appCulture
-            }
-        };
         client.post( HOST + '/luis/api/v2.0/apps/', options, function (data, response) {
             //console.log(data); // app id값
             var responseData;
@@ -79,7 +80,6 @@ router.post('/admin/putAddApps', function (req, res){
     }catch(e){
         console.log(e);
     }
-
 });
 
 router.post('/ajaxTest', function (req, res) {
