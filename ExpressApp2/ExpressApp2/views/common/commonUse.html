@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" href="/css/header.css" />
 
 <%
-function dateToYYYYMMDD(date){
+function dateConverter(date){ //YYYYMMDDHHmmss
     function pad(num) {
         num = num + '';
         return num.length < 2 ? '0' + num : num;
@@ -30,14 +30,14 @@ function dateToYYYYMMDD(date){
 <script type="text/javascript" src="/js/import/ext/jquery.numberformatter-1.2.4.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="/js/import/treeview/jquery.treeview.js" charset="utf-8"></script>
 
-<script type="text/javascript" src="/js/import/ticommon.js?t=<%=dateToYYYYMMDD(new Date())%>" charset="utf-8"></script>
+<script type="text/javascript" src="/js/import/ticommon.js?t=<%=dateConverter(new Date())%>" charset="utf-8"></script>
 <script type="text/javascript" src="/js/import/jquery-ti-init.js" charset="utf-8"></script>
 <!-- <script type="text/javascript" src="/js/import/jqgrid-ti-grid2016.min.js" charset="utf-8"></script> -->
-<script type="text/javascript" src="/js/import/jquery-ti-common.js?t=<%=dateToYYYYMMDD(new Date())%>" charset="utf-8"></script>
-<script type="text/javascript" src="/js/import/jquery-ti-datepicker.js?t=<%=dateToYYYYMMDD(new Date())%>" charset="utf-8"></script>
-<script type="text/javascript" src="/js/import/jquery-ti-validate.min.js?t=<%=dateToYYYYMMDD(new Date())%>" charset="utf-8"></script>
-<script type="text/javascript" src="/js/import/jquery-ti-ajaxvalidate.min.js?t=<%=dateToYYYYMMDD(new Date())%>" charset="utf-8"></script>
-<script type="text/javascript" src="/js/import/jquery-ti-ajax.min.js?t=<%=dateToYYYYMMDD(new Date())%>" charset="utf-8"></script>
+<script type="text/javascript" src="/js/import/jquery-ti-common.js?t=<%=dateConverter(new Date())%>" charset="utf-8"></script>
+<script type="text/javascript" src="/js/import/jquery-ti-datepicker.js?t=<%=dateConverter(new Date())%>" charset="utf-8"></script>
+<script type="text/javascript" src="/js/import/jquery-ti-validate.min.js?t=<%=dateConverter(new Date())%>" charset="utf-8"></script>
+<script type="text/javascript" src="/js/import/jquery-ti-ajaxvalidate.min.js?t=<%=dateConverter(new Date())%>" charset="utf-8"></script>
+<script type="text/javascript" src="/js/import/jquery-ti-ajax.min.js?t=<%=dateConverter(new Date())%>" charset="utf-8"></script>
 
 <script type="text/javascript" src="/js/import/common.ui.js"></script>
 <script type="text/javascript" src="/js/common/header.js"></script>
