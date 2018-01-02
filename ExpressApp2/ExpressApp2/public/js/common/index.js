@@ -35,6 +35,7 @@ function save(type){
             console.log(data);
             if(data.appId != undefined && data.appId != null && data.appId != ''){
                 $('#addAppClose').click();
+                movePage();
             }else{
                 alert(data.error.message);
             }

@@ -20,7 +20,29 @@ router.get('/', function (req, res) {
 router.get('/list', function (req, res) {
     req.session.selMenu = 'm1';
     console.log("메뉴 : " + req.param.menu);
+
+    var client = new Client();
+
+    var options = {
+        headers: {
+            'Ocp-Apim-Subscription-Key': subKey
+        }
+    };
+    try{
+        client.get( HOST + '/luis/api/v2.0/apps/', options, function (data, response) {
+            console.log(data)
+            res.render('index',
+            {
+                title: 'Express',
+                selMenu: req.session.selMenu,
+                list: data
+            });
+        });
+    }catch(e){
+        console.log(e);
+    }
     
+    /*
     res.render('index',
         {
             title: 'Express',
@@ -43,6 +65,7 @@ router.get('/list', function (req, res) {
                 }
             ]
         });
+    */
 });
 
 //Luis app insert

@@ -76,22 +76,21 @@
                 <table class="Tbl" id="sampleTable">
                     <thead>
                         <tr>
-                            <th class="txt_left"> Name <span></span><!-- <span class="sortarr_down"></span> -->  </th> <!-- 이름 -->
-                            <th class="txt_left"> Culture <span></span><!-- <span class="sortarr_down"></span> -->  </th> <!-- 이름 -->
-                            <th class="txt_right02"> Created date <span></span></th> <!-- 언어 -->
-                            <th class="txt_right02"> Description <span></span></th>
+                                <th class="txt_left"> Name <span></span></th>
+                                <th class="txt_left"> Culture <span></span> </th>
+                                <th class="txt_left"> Created date <span></span></th>
+                                <th class="txt_left"> Description <span></span></th>
                             <th class="txt_right02"> edit  </th>
                         </tr>
                     </thead>
                     <%
-                    for(var i=0; i
-                    <list.length; i++) {
-                                %>
+                    for(var i=list.length-1; i > 0; i--) {
+                    %>
                         <tr>
-                            <td class="txt_left"><a href="/luis/dashboard?appName=<%= list[i].title %>" class="dashLink" ><%= list[i].title %></a></td> <!-- dyyo 1228추가 -->
-                            <td class="txt_left"><%= list[i].writer %></td>
-                            <td class="txt_right02"><%= list[i].date %></td>
-                            <td class="txt_right02"></td>
+                            <td class="txt_left"><a href="/luis/dashboard?appName=<%= list[i].name %>" class="dashLink" ><%= list[i].name %></a></td> <!-- dyyo 1228추가 -->
+                            <td class="txt_left"><%= list[i].culture %></td>
+                            <td class="txt_left"><%= list[i].createdDateTime.split('T')[0] %></td>
+                            <td class="txt_left"><%= list[i].description %></td>
                             <td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick(event, this);"></a></td>
                         </tr>
                         <%
