@@ -12,4 +12,19 @@ router.get('/', function (req, res) {
     } );
 });
 
+router.get('/entities', function (req, res) {
+
+    res.render('entities', {
+        selMenu: req.session.menu,
+        title: 'learning Entities page'
+    } );
+});
+
+router.get('/utterances', function (req, res) {
+
+    res.render('utterances', {
+        selMenu: req.session.menu,
+        title: 'learning utterances page'
+    } );
+});
 module.exports = router;
