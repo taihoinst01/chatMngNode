@@ -19,3 +19,50 @@ $(document).ready(function () {
 
 })
 
+//app 등록
+function save(type){
+    var urlStr, applyIdStr
+    if(type === 'appInsert'){
+        urlStr = 'admin/putAddApps';
+        applyIdStr = "appInsertForm";
+    }
+
+    $.tiAjax({
+        type: 'POST',
+        applyId: applyIdStr,
+        url: urlStr,
+        isloading: true,
+        success: function(data) {
+            var errorMessage = data.result;
+
+            if(errorMessage == undefined) {
+                movePage();
+            } else {
+                alert(errorMessage);
+            }
+        }
+    });
+}
+
+//app 등록 시 데이터 유효성 검사
+function appValidation(type){
+    if(type === 'appInsert'){
+        var service = $('#appInsertService').val();
+        var name = $('#appInsertName').val();
+        var culture = $('#appInsertCulture').val();
+
+        if(service != null && name != "" && culture != null) {
+            $('#btnAppInsert').removeClass("disable");
+            $('#btnAppInsert').attr("disabled", false);
+        } else {
+            $('#btnAppInsert').attr("disabled", "disabled");
+            $('#btnAppInsert').addClass(" disable");
+        }
+    }
+}
+
+//페이지 이동
+function movePage(){
+    location.reload();
+}
+
