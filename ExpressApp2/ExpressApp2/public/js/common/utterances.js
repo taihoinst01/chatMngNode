@@ -40,25 +40,68 @@ $(document).ready(function(){
 
     });
 
+    //다이얼로그 생성 모달 닫는 이벤트(초기화)
+    $(".js-modal-close").click(function() {
+        $('html').css({'overflow': 'auto', 'height': '100%'}); //scroll hidden 해제
+        //$('#element').off('scroll touchmove mousewheel'); // 터치무브 및 마우스휠 스크롤 가능
+
+        $('#appInsertDes').val('');
+        $("#intentList option:eq(0)").attr("selected", "selected");
+        //$('#intentList').find('option:first').attr('selected', 'selected');
+        initMordal('intentList', 'Select Intent');
+        initMordal('entityList', 'Select Entity');
+        $('#dlgLang').find('option:first').attr('selected', 'selected');
+        $('#layoutBackground').hide();
+    });
+
+    //체크박스 전체선택
+    $('div[type=checkbox]').click(function() {
+        var checkedVal = false;
+        if (typeof $('div[type=checkbox]').attr('checked') != 'undefined') {
+            $("input[name=ch1]").each(function() {
+                if ( !$(this).prop("checked") ) {
+                    $(this).prop("checked", true);
+                } 
+                checkedVal = true;
+            });
+        } else {
+            $("input[name=ch1]").each(function() {
+                if ( $(this).prop("checked") ) {
+                    $(this).prop("checked", false);
+                }
+                checkedVal = false;
+            });
+        }
+        changeBtnAble(checkedVal);
+    });
     
 });
 
 //checkbox 선택시 이벤트 $(this).attr("checked")
 $(document).on('click','input[name=ch1]',function(event){
+    var checkedVal = false;
+    var checkLen = $("input[name=ch1]").length;
     $("input[name=ch1]").each(function() {
         if ( $(this).prop("checked") ) {
-            $('#utterDelete').removeAttr('disabled');
-            $('#utterDelete').removeClass("disable");
-            return false;
+            checkedVal = true;
         }
     });
-
-    $('#utterDelete').attr("disabled", "disabled");
-    $('#utterDelete').addClass("disable");   
-
+    changeBtnAble(checkedVal);
 });
 
-
+function changeBtnAble(boolVal){
+    if (!boolVal) {
+        $('#utterDelete').attr("disabled", "disabled");
+        $('#utterDelete').addClass("disable");   
+        $('#utterLearn').attr("disabled", "disabled");
+        $('#utterLearn').addClass("disable");  
+    } else {
+        $('#utterDelete').removeAttr('disabled');
+        $('#utterDelete').removeClass("disable");
+        $('#utterLearn').removeAttr('disabled');
+        $('#utterLearn').removeClass("disable");
+    }
+}
 
 
 function utterInput(queryText) {
