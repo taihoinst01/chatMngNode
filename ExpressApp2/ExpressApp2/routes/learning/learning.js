@@ -5,36 +5,41 @@ var router = express.Router();
 /* GET users listing. */
 router.get('/', function (req, res) {
     req.session.menu = 'm3';
-
+    
     res.render('learning', {
         selMenu: req.session.menu,
+        selMenus: null,
         title: 'learning page'
-    } );
-});
-
-router.get('/entities', function (req, res) {
-
-    res.render('entities', {
-        selMenu: req.session.menu,
-        title: 'learning Entities page'
-    } );
-});
-
-router.get('/utterances', function (req, res) {
-
-    res.render('utterances', {
-        selMenu: req.session.menu,
-        title: 'learning utterances page'
     } );
 });
 
 router.get('/recommend', function (req, res) {
 
+    req.session.selMenus = 'ms1';
     res.render('recommend', {
-        selMenu: req.session.menu,
+        selMenus: req.session.selMenus,
         title: 'learning recommend page'
     } );
 });
+
+router.get('/utterances', function (req, res) {
+
+    req.session.selMenus = 'ms2';
+    res.render('utterances', {
+        selMenus: req.session.selMenus,
+        title: 'learning utterances page'
+    } );
+});
+
+router.get('/dialog', function (req, res) {
+
+    req.session.selMenus = 'ms3';
+    res.render('dialog', {
+        selMenus: req.session.selMenus,
+        title: 'learning dialog page'
+    } );
+});
+
 
 
 router.post('/utterInputAjax', function(req, res, next) {
@@ -45,6 +50,16 @@ router.post('/utterInputAjax', function(req, res, next) {
     //json 형식으로 보내 준다.
     res.send({result:true, iptUtterance:iptUtterance});
 
+});
+
+
+router.get('/entities', function (req, res) {
+
+    req.session.selMenus = 'ms4';
+    res.render('entities', {
+        selMenus: req.session.selMenus,
+        title: 'learning Entities page'
+    } );
 });
 
 module.exports = router;

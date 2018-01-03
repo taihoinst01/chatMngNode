@@ -171,6 +171,11 @@ body.main{ background:none}
 #footer{ width:100%;color:#aab1b5; border-top: solid 1px #d1d6da; margin-top:40px; text-align:center ; clear:both; display:inline-block;}
 #footer p{width:388px; padding-left:22px; margin:10px auto; display:inline-block; text-align:left; font-size:12px}
 
+/* header4Luis */
+.currentSelMenus {
+  border-bottom: solid 6px #5b7d91;
+}
+
 
 
 
