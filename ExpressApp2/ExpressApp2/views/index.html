@@ -55,7 +55,8 @@
 
 <body class="main">
     <input type="hidden" name="deleteAppId" id="deleteAppId" /> <!-- app 삭제용 (edit레이어가 공통으로 사용되기 때문에 id 저장할 필요 있음)-->
-
+    <input type="hidden" name="currentAppName" id="currentAppName" /> <!-- app 이름 재설정용 -->
+    
     <!--<link rel="import" href="./header.html">-->
     <%include  ./header.html%>
     <div id="wrap">
@@ -64,7 +65,7 @@
                 <!-- 챗봇앱 관리 -->
                 <div class="tbl_area">
                         <div class="tbl_area_l">
-                            <a href="#" class="btn js-open-modal"  id="btn_crte_botCrte" onclick="addApp();">Create new app<!-- 신규챗봇추가 --></a>
+                            <a href="#" class="btn js-open-modal"  id="btn_crte_botCrte" onclick="openModalBox('#new_chatbot')">Create new app<!-- 신규챗봇추가 --></a>
                             
                         </div>
                 </div>
@@ -92,7 +93,7 @@
                             <td class="txt_left"><%= list[i].culture %></td>
                             <td class="txt_left"><%= list[i].createdDateTime.split('T')[0] %></td>
                             <td class="txt_left"><%= list[i].description %></td>
-                            <td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick(event, this,'<%= list[i].id %>');"></a></td>
+                            <td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick(event, this, '<%= list[i].id %>', '<%= list[i].name %>');"></a></td>
                         </tr>
                         <%
                         }
@@ -116,7 +117,7 @@
 
     <div id="lay" class="appLayout" >
         <div class="layerMenu" >
-            <a href="#" class="layerMenu a"  id="btn_crte_appEdit"><span class="layoutFont">Rename App</span></a> <!-- class="btn_edit js-open-modal" 수정아이콘 -->
+            <a href="#" class="layerMenu a"  id="btn_crte_appEdit" onclick="openModalBox('#rename_chatbot')"><span class="layoutFont">Rename App</span></a> <!-- class="btn_edit js-open-modal" 수정아이콘 -->
         </div>
         <div class="layerMenu">
             <a href="#" class="layerMenu b" onclick="deleteApp()"><span class="layoutFont">Delete App</span></a>
@@ -183,7 +184,28 @@
 </div>
 <!--//신규 챗봇 등록 -->
 
+<!--루이스 APP 이름 재설정 -->
+<div id="rename_chatbot" class="modal_box w600" style="height: auto !important">
+    <header> <a href="#" id="renameAppClose" class="js-modal-close close">×</a>
+        <h3>Rename App</h3>
+    </header>
 
+    <!-- form start -->
+    <form name="renameForm" id="renameForm" method="post">
+        <div class="modal-body">
+        <p class="texcon01">App name  <span>(required) </span></p>
+        <p><input name="reName" type="text" class="inbox02" id="reName" style="width:100%" placeholder="Input name.." onkeyup="appValidation('renameApp')"></p>
+        </div>
+    </form>
+    <!-- form end -->
+
+    <footer>
+        <button class="btn disable" id="btnRenameApp" onclick="renameApp()" disabled="disabled">Save</button>
+        <a href="#" class="btn b02  btn-small js-modal-close">Cancel</a>
+    </footer>
+
+</div>
+<!--//루이스 APP 이름 재설정 -->
 </body>
 
     

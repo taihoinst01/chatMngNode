@@ -57,6 +57,16 @@ function appValidation(type){
             $('#btnAppInsert').attr("disabled", "disabled");
             $('#btnAppInsert').addClass("disable");
         }
+    }else if(type === 'renameApp'){
+        var name = $('#reName').val();
+
+        if(name != "") {
+            $('#btnRenameApp').removeClass("disable");
+            $('#btnRenameApp').attr("disabled", false);
+        } else {
+            $('#btnRenameApp').attr("disabled", "disabled");
+            $('#btnRenameApp').addClass("disable");
+        }
     }
 }
 
@@ -68,6 +78,25 @@ function deleteApp(){
         type: 'POST',
         data: params,
         url: '/admin/deleteApp',
+        isloading: true,
+        success: function(data) {
+            movePage();
+        }
+    });
+}
+
+//Luis app rename
+function renameApp(){
+    var renameAppId = $('#deleteAppId').val();
+    var renameAppName = $('#reName').val();
+    var params = {
+        'renameAppId': renameAppId,
+        'renameAppName': renameAppName
+    };
+    $.tiAjax({
+        type: 'POST',
+        data: params,
+        url: '/admin/renameApp',
         isloading: true,
         success: function(data) {
             movePage();
