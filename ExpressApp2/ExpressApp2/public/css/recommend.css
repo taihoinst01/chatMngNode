@@ -1,8 +1,16 @@
 .span_delete{
     margin-left: 30px;
     color: #2873ca;
+    font-size: 14px;
+    font-weight: 900;
 }
-
+.btn_delete{
+    width: 22px;
+    height: 26px;
+}
+.span_delete_disable{
+    color: #465361c4;
+}
 #headerDiv1 {
     margin-top: 1.5%;
 }

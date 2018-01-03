@@ -12,11 +12,22 @@ router.get('/', function (req, res) {
 
 router.get('/recommend', function (req, res) {
 
-    req.session.selMenus = 'ms1';
-    res.render('recommend', {
-        selMenus: req.session.selMenus,
-        title: 'learning recommend page'
-    } );
+    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query("SELECT SEQ,QUERY FROM TBL_QUERY_ANALYSIS_RESULT WHERE RESULT='D'")
+        }).then(result => {
+            let rows = result.recordset;
+                      
+            req.session.selMenus = 'ms1';
+            res.render('recommend', {
+                selMenus: req.session.selMenus,
+                title: 'learning recommend page',
+                list: rows
+            } );
+          sql.close();
+        }).catch(err => {
+          console.log(err);
+          sql.close();
+        });
 });
 
 router.get('/utterances', function (req, res) {
