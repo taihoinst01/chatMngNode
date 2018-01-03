@@ -1,3 +1,16 @@
-.deleteBtn {
-    background-color: white;
+.span_delete{
+    margin-left: 30px;
+    color: #2873ca;
+}
+
+#headerDiv1 {
+    margin-top: 1.5%;
+}
+
+.btn_delete {
+    margin-left: 40%;
+}
+
+.timeSelect{
+    width:250px;
 }
