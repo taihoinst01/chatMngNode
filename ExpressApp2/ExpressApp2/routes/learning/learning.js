@@ -5,12 +5,7 @@ var router = express.Router();
 /* GET users listing. */
 router.get('/', function (req, res) {
     req.session.selMenu = 'm3';
-    
-    res.render('learning', {
-        selMenu: req.session.selMenu,
-        selMenus: null,
-        title: 'learning page'
-    } );
+    res.redirect('/learning/entities');
 });
 
 router.get('/recommend', function (req, res) {

@@ -166,21 +166,20 @@ body.main{ background:none}
 #lnb p a:hover{ background-color:#ececec}
 #lnb p a.on{ background:url(../images/lnb_arr_on.gif) no-repeat 165px center #ececec; color:#002c5f; border-left:solid 5px #FF6600 ;padding-left:15px;}
 
-
 /* Footer */
 #footer{ width:100%;color:#aab1b5; border-top: solid 1px #d1d6da; margin-top:40px; text-align:center ; clear:both; display:inline-block;}
 #footer p{width:388px; padding-left:22px; margin:10px auto; display:inline-block; text-align:left; font-size:12px}
 
 /* header4Luis */
-.currentSelMenus {
+.currentSelMenus{
   border-bottom: solid 6px #5b7d91;
 }
 
-
-
-
-
-
+/* a링크 색상 변화 x */
+.aLinkColor:link {text-decoration:none; color:#0078D7;}
+.aLinkColor:visited {text-decoration:none; color:#0078D7;}
+.aLinkColor:active {text-decoration:none; color:#0078D7;}
+.aLinkColor:hover {text-decoration:none; color:#0078D7;}
 
 
 
