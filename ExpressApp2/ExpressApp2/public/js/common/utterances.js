@@ -53,7 +53,26 @@ $(document).ready(function(){
         $('#layoutBackground').hide();
     });
 
+    
 });
+
+//checkbox 선택시 이벤트 $(this).attr("checked")
+$(document).on('click','input[name=ch1]',function(event){
+    $("input[name=ch1]").each(function() {
+        if ( $(this).prop("checked") ) {
+            $('#utterDelete').removeAttr('disabled');
+            $('#utterDelete').removeClass("disable");
+            return false;
+        }
+    });
+
+    $('#utterDelete').attr("disabled", "disabled");
+    $('#utterDelete').addClass("disable");   
+
+});
+
+
+
 
 function utterInput(queryText) {
 
