@@ -4,10 +4,17 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function (req, res) {
+<<<<<<< HEAD
     req.session.selMenu = 'm3';
     
     res.render('learning', {
         selMenu: req.session.selMenu,
+=======
+    req.session.menu = 'm3';
+    
+    res.render('learning', {
+        selMenu: req.session.menu,
+>>>>>>> dbfe9e20227f53414e27c0c8ac76d1b059f3b23c
         selMenus: null,
         title: 'learning page'
     } );
