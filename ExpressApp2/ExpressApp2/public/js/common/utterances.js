@@ -51,12 +51,19 @@ function utterInput(queryText) {
         data: {'iptUtterance':queryText},      //데이터를 json 형식, 객체형식으로 전송
 
         success: function(result) {          //성공했을 때 함수 인자 값으로 결과 값 나옴
+            var entities = result['entities'];
+            if(entities != null) {
+                entities = entities.split(",");
+                console.log(entities);
+            }
 
             if ( result['result'] == true ) {
+                var utter = utterHighlight(entities,result['iptUtterance']);
+
                 $('#iptUtterance').val('');
                 var inputUttrHtml = '';
                 inputUttrHtml += '<tr><td><input name="ch1" class="tweak-input" type="checkbox"  onclick="" /></td>';
-                inputUttrHtml += '<td class="txt_left" >' + result['iptUtterance'] + '</td>';
+                inputUttrHtml += '<td class="txt_left" >' + utter + '</td>';
                 inputUttrHtml += '<td class="txt_right02" >' + 'inputIntent' + '</td></tr>';
                 
                 $('#entityUtteranceTextTable').find('tbody').prepend(inputUttrHtml);
@@ -64,4 +71,12 @@ function utterInput(queryText) {
         } //function끝
 
     }); // ------      ajax 끝-----------------
+}
+
+function utterHighlight(entities, utter) {
+    var result = utter;
+    for(var i = 0; i < entities.length; i++) {
+        result = result.replace(entities[i], '<span class="highlight">' + entities[i] + '</span>');
+    }
+    return result;
 }
