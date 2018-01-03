@@ -36,4 +36,15 @@ router.get('/recommend', function (req, res) {
     } );
 });
 
+
+router.post('/utterInputAjax', function(req, res, next) {
+ 
+    //view에 있는 data 에서 던진 값을 받아서
+    var iptUtterance = req.body.iptUtterance;
+
+    //json 형식으로 보내 준다.
+    res.send({result:true, iptUtterance:iptUtterance});
+
+});
+
 module.exports = router;
