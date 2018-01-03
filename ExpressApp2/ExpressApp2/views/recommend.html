@@ -15,9 +15,9 @@
         <link rel="stylesheet" href="./common/css/css_common.html" />
         -->
     
-        <link rel="stylesheet" type="text/css" href="/css/recommend.css" />   
+           
     <%include  ./common/commonUse.html%>
-    
+    <link rel="stylesheet" type="text/css" href="/css/recommend.css" />
     <!--    
     <style type="text/css">
         .appLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:120px; padding:10px; } 
@@ -33,21 +33,24 @@
 	
     <!--<link rel="import" href="./header.html">    -->
     <%include  ./header.html%>
+    <%include  ./header4Luis.html%>
 
-    <div id="wrap">
+    <!-- css는 recommend.css 에 만들었습니다 -->
+    <div id="wrap4Luis">
         <div id="container" class="main">
-            <h3>추가학습 추천 문장</h3>
-            <select name="">
-                <option value=""></option>
-            </select>
-            <button class="deleteBtn">
-                <span>
-                    <!-- 휴지통 이미지 자리입니다.
-                        <img src=""/>
-                    -->
-                </span>
-                delete
-            </button>
+            <h1>추가학습 추천 문장</h1>
+            <div id="headerDiv1">
+                <select name="" class="timeSelect">
+                    <option value="">어제</option>
+                    <option value="">저번주</option>
+                    <option value="">저번달</option>
+                </select>          
+                <button class="btn_delete">
+                    <span class="span_delete">
+                        delete
+                    </span>
+                </button>
+            </div>
             <table>
                 <tr>
                     <td class=""></td>
