@@ -32,9 +32,10 @@ function save(type){
         url: urlStr,
         isloading: true,
         success: function(data) {
-            console.log(data);
+            //console.log(data);
             if(data.appId != undefined && data.appId != null && data.appId != ''){
                 $('#addAppClose').click();
+                movePage();
             }else{
                 alert(data.error.message);
             }
@@ -57,6 +58,21 @@ function appValidation(type){
             $('#btnAppInsert').addClass("disable");
         }
     }
+}
+
+//Luis app delete
+function deleteApp(){
+    var deleteAppId = $('#deleteAppId').val();
+    var params = {'deleteAppId': deleteAppId};
+    $.tiAjax({
+        type: 'POST',
+        data: params,
+        url: '/admin/deleteApp',
+        isloading: true,
+        success: function(data) {
+            movePage();
+        }
+    });
 }
 
 //페이지 이동
