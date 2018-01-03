@@ -99,6 +99,30 @@ router.post('/admin/deleteApp', function (req, res){
     
 });
 
+//Luis app rename
+router.post('/admin/renameApp', function (req, res){
+    var appId = req.body.renameAppId;
+    var appName = req.body.renameAppName;
+    var client = new Client();
+    var options = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Ocp-Apim-Subscription-Key': subKey
+        },
+        data: {
+            'name': appName
+        }
+    };
+    try{
+        client.put( HOST + '/luis/api/v2.0/apps/' + appId , options, function (data, response) {
+            res.json(data);
+        });
+    }catch(e){
+        console.log(e);
+    }
+    
+});
+
 router.post('/ajax1', function (req, res) {
     console.log("동기동기 비동기");
     var responseData = {'result': 'ok', 'title' : 'ajax테스트 게시물', 'writer' : req.session.sid, 'date': '2017-12-28'};

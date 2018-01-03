@@ -20,6 +20,8 @@ $(document).ready(function(){
     $(".js-modal-close").click(function() {
         //$('html, body').css({'overflow': 'auto', 'height': '100%'}); //scroll hidden 해제
         //$('#element').off('scroll touchmove mousewheel'); // 터치무브 및 마우스휠 스크롤 가능
+        $('#deleteAppId').val('');
+        $('#currentAppName').val('');
         $('#layoutBackground').hide();
     });
 
@@ -44,6 +46,7 @@ $(document).ready(function(){
                     //alert( 'popup out click' );
                     $(this).hide();
                     $('#deleteAppId').val('');
+                    $('#currentAppName').val('');
                 }
             }
         });
@@ -51,7 +54,11 @@ $(document).ready(function(){
 })
 
 
-function addApp(){
+function openModalBox(target){
+    if(target === '#rename_chatbot'){
+        $('#lay').css('display','none');
+        $('#reName').val($('#currentAppName').val());
+    }
     // 화면의 높이와 너비를 변수로 만듭니다.
     var maskHeight = $(document).height();
     var maskWidth = $(window).width();
@@ -65,10 +72,10 @@ function addApp(){
     var top = ( $(window).scrollTop() + ( $(window).height() - $('#new_chatbot').height()) / 2 );
 
     // css 스타일을 변경합니다.
-    $('#new_chatbot').css({'left':left,'top':top, 'position':'absolute'});
+    $(target).css({'left':left,'top':top, 'position':'absolute'});
 
     // 레이어 팝업을 띄웁니다.
-    $('#new_chatbot').show();
+    $(target).show();
 
     $('html, body').css({'overflow': 'hidden', 'height': '100%'});
         $('#element').on('scroll touchmove mousewheel', function(event) { // 터치무브와 마우스휠 스크롤 방지
@@ -78,6 +85,7 @@ function addApp(){
     });
     wrapWindowByMask();
 }
+
 function wrapWindowByMask(){ //화면의 높이와 너비를 구한다. 
     var maskHeight = $(document).height(); 
     var maskWidth = $(window).width(); //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채운다. 
@@ -118,7 +126,7 @@ function GetAbsPosition(object) {
     return position;
 }
   
-function itemClick(e, object, deleteAppId){
+function itemClick(e, object, deleteAppId, appName){
     //var ex_obj = $('.appLayout');
     var ex_obj = document.getElementById('lay');
     if(!e) e = window.Event;
@@ -130,6 +138,7 @@ function itemClick(e, object, deleteAppId){
     if ($('.appLayout').css('display') == 'none') {
         $('.appLayout').show();
         $('#deleteAppId').val(deleteAppId);
+        $('#currentAppName').val(appName);
     }
     //ex_obj.style.display = ex_obj.style.display=='none'?'block':'none';
 }
