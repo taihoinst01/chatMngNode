@@ -55,23 +55,43 @@ router.post('/utterInputAjax', function(req, res, next) {
     //view에 있는 data 에서 던진 값을 받아서
     var iptUtterance = req.body.iptUtterance;
 
-    new sql.ConnectionPool(dbConfig).connect().then(pool => {
-        return pool.request().query("SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD('" + iptUtterance + "')")
-        }).then(result => {
-            let rows = result.recordset;
+    (async () => {
+        try {
+            let pool = await sql.connect(dbConfig)
+            let result1 = await pool.request()
+                .input('iptUtterance', sql.NVarChar, iptUtterance)
+                .query('SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(@iptUtterance)')
             
+            let rows = result1.recordset;
+
             if(rows.length > 0) {
                 var entities = rows[0]['RESULT'];
+                var entityArr = entities.split(',');
+
+                let queryArr = new Array(entityArr.length);
+
+                for(var i = 0; i < entityArr.length; i++) {
+                    queryArr[i] = await pool.request()
+                    .input('iptUtterance', sql.NVarChar, iptUtterance)
+                    .query("SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'")
+
+                    console.dir(queryArr[i])
+                }
+
                 res.send({result:true, iptUtterance:iptUtterance, entities:entities});
             } else {
                 res.send({result:true, iptUtterance:iptUtterance});
             }
+        
+        } catch (err) {
+            // ... error checks
+        }
+    })()
+    
+    sql.on('error', err => {
+        // ... error handler
+    })
 
-          sql.close();
-        }).catch(err => {
-          console.log(err);
-          sql.close();
-        });
 });
 
 
