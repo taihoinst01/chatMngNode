@@ -18,7 +18,7 @@ $('html').click(function(e) {
 $(document).ready(function(){
 
     $(".js-modal-close").click(function() {
-        //$('html, body').css({'overflow': 'auto', 'height': '100%'}); //scroll hidden 해제
+        $('html').css({'overflow': 'auto', 'height': '100%'}); //scroll hidden 해제
         //$('#element').off('scroll touchmove mousewheel'); // 터치무브 및 마우스휠 스크롤 가능
         $('#deleteAppId').val('');
         $('#currentAppName').val('');

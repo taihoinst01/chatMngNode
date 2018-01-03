@@ -72,11 +72,3 @@ function utterInput(queryText) {
 
     }); // ------      ajax 끝-----------------
 }
-
-function utterHighlight(entities, utter) {
-    var result = utter;
-    for(var i = 0; i < entities.length; i++) {
-        result = result.replace(entities[i], '<span class="highlight">' + entities[i] + '</span>');
-    }
-    return result;
-}

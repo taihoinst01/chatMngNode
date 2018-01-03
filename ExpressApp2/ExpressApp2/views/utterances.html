@@ -15,14 +15,11 @@
     <script type="text/javascript" src="/js/common/utterances.js"></script>
 
     <style type="text/css">
-        .in-line{
-            width:100%;
-            height:40px;
-        }
-
         .highlight{
             background-color: aqua;
         }
+        .in-line{width:100%; height:40px; }
+        #layoutBackground { position:absolute; z-index:900; background-color:#000; display:none; left:0; top:0; } 
     </style>
 </head>
 
@@ -95,7 +92,7 @@
                 <div class="utterRight" >
                     <div style="width:100%">
                         <h3 style="float:left;">추천 다이얼로그</h3>
-                        <button class="btn disable" style="float:right;" id="utterDelete" disabled="disabled">create</button>
+                        <button class="btn" style="float:right;" id="recommandDlgBtn" onclick="openModalBox('#create_dlg')">create</button>  <!-- disabled="disabled" -->
                     </div>
                     <!-- 추천 다이얼로그 list 출력 div -->
                     <div class="utterList">
@@ -117,6 +114,58 @@
         <p>&copy; Company 2014</p>
     </footer>
     
+
+
+
+    <!--신규 다이얼로그 등록 -->
+    <div id="create_dlg" class="modal_box w600" style="height: auto !important">
+        <header> <a href="#" id="addAppClose" class="js-modal-close close">×</a>
+          <h3>Create new Dialogue</h3><!-- 신규 다이얼로그 등록 -->
+        </header>
+    
+        <!-- form start -->
+        <form name="appInsertForm" id="appInsertForm" method="post">
+    
+        <div class="modal-body">
+          <p class="texcon01">Intent<!--  -->  <span>(required) </span></p>
+          <p><select  name="intentList" class="inbox02" id="intentList" style="width:100%" onchange="selectInent(this);">
+                <option selected="selected" disabled="disabled">Select Intent<!-- 서비스 선택 --></option>
+                <option value="1">intent1<!-- service1 --></option>
+                <option value="2">intent2<!-- service2 --></option>
+             </select>
+          </p>
+          <p class="texcon01">Entity<!--  -->  <span>(required) </span></p>
+          <p><select  name="entityList" class="inbox02" id="entityList"  disabled="disabled" style="width:100%" onchange="selectEntity(this);">
+                <option selected="selected" disabled="disabled">Select Entity<!-- 서비스 선택 --></option>
+                <option value="1">entity1<!-- service1 --></option>
+                <option value="2">entity2<!-- service2 --></option>
+             </select>
+          </p>
+          <p class="texcon01">Dialogue Language</p>
+          <p><select name="dlgLang" class="inbox02" id="dlgLang" style="width:100%" ><!-- onchange 참고 함수형식 -->
+                <option value="en-us">English</option>
+                <option value="ko-kr">Korean</option>
+             </select></p>
+          <p class="texcon01">Dialogue Text  <span>(optional) </span></p>
+          <p><textarea name="appInsertDes" id="appInsertDes" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.."></textarea></p>
+    
+        </div>
+    
+        </form>
+        <!-- form end -->
+    
+        <footer>
+          <button class="btn disable" id="btnAddDlg" onclick="" disabled="disabled">Save</button>
+          <a href="#" class="btn b02  btn-small js-modal-close">Cancel</a>
+        </footer>
+    
+    </div>
+    <!--//신규 다이얼로그 등록 -->
+
+    <div id="layoutBackground" ></div>
+    <div class="mask"></div>  
+
+
 </body>
 
     

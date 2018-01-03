@@ -7,7 +7,7 @@ $(document).ready(function(){
     $("#learningTest").css("top", obj.top);
     $("#batchTestPanel").css("top", obj.top);
 
-    $(".btn").click(function() {
+    $("#toggleTest").click(function() {
         $("#toggleDiv").toggle('slow');
     });
 
@@ -41,23 +41,89 @@ $(document).ready(function(){
                 </li>
 
                 <li class="headerLi_for_Luis_right">
-                    <button class="btn" onclick="">Train</button>
+                    <button class="btn" id="toggleTest" onclick="">Train</button>
                 </li>
                 <li class="headerLi_for_Luis_right">
                     <button calss="" onclick="">Test</button>
                 </li>
-                <li class="headerLi_for_Luis_right">
-                    <a class="gnbm gnbm2" href="/learning/entities" id="selMenus">ENTITIES</a>
-                </li>
-                <li class="headerLi_for_Luis_right">
-                    <a class="gnbm gnbm2" href="#" id="selMenus">DIALOG</a>
-                </li>
-                <li class="headerLi_for_Luis_right">
-                    <a class="gnbm gnbm2" href="/learning/utterances" id="selMenus">UTTERANCES</a>
-                </li>
-                <li class="headerLi_for_Luis_right">
-                    <a class="gnbm gnbm2" href="/learning/recommend" id="selMenus">RECOMMEND</a>
-                </li>
+                <%
+                    if(selMenus == 'ms1'){
+                %>
+                        <li class="headerLi_for_Luis_right">
+                            <a class="gnbm gnbm2" href="/learning/entities" id="selMenus">ENTITIES</a>
+                        </li>
+                        <li class="headerLi_for_Luis_right">
+                            <a class="gnbm gnbm2" href="/learning/dialog" id="selMenus">DIALOG</a>
+                        </li>
+                        <li class="headerLi_for_Luis_right">
+                            <a class="gnbm gnbm2" href="/learning/utterances" id="selMenus">UTTERANCES</a>
+                        </li>
+                        <li class="headerLi_for_Luis_right currentSelMenus">
+                            <a class="gnbm gnbm2" href="/learning/recommend" id="selMenus">RECOMMEND</a>
+                        </li>
+                <%  
+                    } else if(selMenus == 'ms2') {
+                %>
+                        <li class="headerLi_for_Luis_right">
+                            <a class="gnbm gnbm2" href="/learning/entities" id="selMenus">ENTITIES</a>
+                        </li>
+                        <li class="headerLi_for_Luis_right">
+                            <a class="gnbm gnbm2" href="/learning/dialog" id="selMenus">DIALOG</a>
+                        </li>
+                        <li class="headerLi_for_Luis_right currentSelMenus">
+                            <a class="gnbm gnbm2" href="/learning/utterances" id="selMenus">UTTERANCES</a>
+                        </li>
+                        <li class="headerLi_for_Luis_right">
+                            <a class="gnbm gnbm2" href="/learning/recommend" id="selMenus">RECOMMEND</a>
+                        </li>
+                <%  
+                    } else if(selMenus == 'ms3') {
+                %>
+                        <li class="headerLi_for_Luis_right">
+                            <a class="gnbm gnbm2" href="/learning/entities" id="selMenus">ENTITIES</a>
+                        </li>
+                        <li class="headerLi_for_Luis_right currentSelMenus">
+                            <a class="gnbm gnbm2" href="/learning/dialog" id="selMenus">DIALOG</a>
+                        </li>
+                        <li class="headerLi_for_Luis_right">
+                            <a class="gnbm gnbm2" href="/learning/utterances" id="selMenus">UTTERANCES</a>
+                        </li>
+                        <li class="headerLi_for_Luis_right">
+                            <a class="gnbm gnbm2" href="/learning/recommend" id="selMenus">RECOMMEND</a>
+                        </li>
+                <%  
+                    } else if(selMenus == 'ms4') {
+                %>
+                        <li class="headerLi_for_Luis_right currentSelMenus">
+                            <a class="gnbm gnbm2" href="/learning/entities" id="selMenus">ENTITIES</a>
+                        </li>
+                        <li class="headerLi_for_Luis_right">
+                            <a class="gnbm gnbm2" href="/learning/dialog" id="selMenus">DIALOG</a>
+                        </li>
+                        <li class="headerLi_for_Luis_right">
+                            <a class="gnbm gnbm2" href="/learning/utterances" id="selMenus">UTTERANCES</a>
+                        </li>
+                        <li class="headerLi_for_Luis_right ">
+                            <a class="gnbm gnbm2" href="/learning/recommend" id="selMenus">RECOMMEND</a>
+                        </li>
+                <%  
+                    } else {
+                %>
+                    <li class="headerLi_for_Luis_right">
+                        <a class="gnbm gnbm2" href="/learning/entities" id="selMenus">ENTITIES</a>
+                    </li>
+                    <li class="headerLi_for_Luis_right">
+                        <a class="gnbm gnbm2" href="/learning/dialog" id="selMenus">DIALOG</a>
+                    </li>
+                    <li class="headerLi_for_Luis_right">
+                        <a class="gnbm gnbm2" href="/learning/utterances" id="selMenus">UTTERANCES</a>
+                    </li>
+                    <li class="headerLi_for_Luis_right">
+                        <a class="gnbm gnbm2" href="/learning/recommend" id="selMenus">RECOMMEND</a>
+                    </li>
+                <%
+                    }
+                %>
             </ul>
         </div>
     </div>
