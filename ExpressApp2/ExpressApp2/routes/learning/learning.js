@@ -1,5 +1,7 @@
 ﻿'use strict';
 var express = require('express');
+var sql = require('mssql');
+var dbConfig = require('../../config/dbConfig');
 var router = express.Router();
 
 /* GET users listing. */
@@ -42,9 +44,23 @@ router.post('/utterInputAjax', function(req, res, next) {
     //view에 있는 data 에서 던진 값을 받아서
     var iptUtterance = req.body.iptUtterance;
 
-    //json 형식으로 보내 준다.
-    res.send({result:true, iptUtterance:iptUtterance});
+    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query("SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD('" + iptUtterance + "')")
+        }).then(result => {
+            let rows = result.recordset;
+            
+            if(rows.length > 0) {
+                var entities = rows[0]['RESULT'];
+                res.send({result:true, iptUtterance:iptUtterance, entities:entities});
+            } else {
+                res.send({result:true, iptUtterance:iptUtterance});
+            }
 
+          sql.close();
+        }).catch(err => {
+          console.log(err);
+          sql.close();
+        });
 });
 
 
