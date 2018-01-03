@@ -10,14 +10,10 @@
         <!--<%= title %>title-->
         TIIS Manager
     </title>
-
-	<!-- 
-        <link rel="stylesheet" href="./common/css/css_common.html" />
-        -->
     
-
     <%include  ./common/commonUse.html%>
-    
+    <script type="text/javascript" src="/js/common/utterances.js"></script>
+
     <!--    
     <style type="text/css">
         .appLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:120px; padding:10px; } 
@@ -25,25 +21,79 @@
     </style>
     -->
 
-    
-	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> test-->
 </head>
 
 <body class="main">
 	
-    <!--<link rel="import" href="./header.html">    -->
     <%include  ./header.html%>
-
-    <div id="wrap">
+    <%include  ./header4Luis.html%>
+    <div id="wrap4Luis">
         <div id="container" class="main">
-            utterances Page 입니다.            
+
+
+            <div class="subt_wrap">
+                <div id="subtitDiv"><h2><%= title %></h2></div>
+            </div>
+
+            <div id="utterDiv">
+                <div class="utterLeft">
+
+                    
+
+                    <div>
+                        <div>
+                            <!--<h3 style="float:left;">입력문장</h3> -->
+                            <p class="conL" id="menuItem" style="float: right;">
+                            <button class="btn" id="utterDelete" disabled="disabled">delete</button>
+                            <button class="btn disable" id="utterSave"  disabled="disabled">learn</button>
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <p class="mb10">
+                    <input name="iptUtterance" id="iptUtterance" type="text" class="inbox02" style="width:100%; margin: 3px;" placeholder="입력문장">
+                    <!--<a href="#" class="close01 dle"><span class="hc">내용일괄삭제</span></a></p> -->
+                    <a href="#" class="btn disable"><span class="hc">delete</span></a></p>
+                    <a href="#" class="btn disable"><span class="hc">learn</span></a></p>
+                    
+                    <div id="utterListDiv" style="border: 1px solid #858483 !important; height : 500px; margin:15px 0 0 0;">
+
+                        <!--
+                        <span class="token" > <a href="#">코</a><a href="#">나</a></span>
+                        <a href="#">야</a>
+                        <span class="token" > <a href="#">안</a><a href="#">녕</a></span>
+                        -->
+                    </div>
+
+                    <div id="recommendationDiv" >
+                        <div style=" margin:30px 0 0 0;  ">
+                            <h3 >추천문장</h3>
+                        </div>
+                        <div style="border: 1px solid #858483 !important; height : 400px; padding:10px; margin:10px 0 0 0;">
+
+                        </div>
+
+
+                    </div>
+                    
+
+                    
+                </div>
+
+                <div class="utterRight" >
+                    
+
+                </div>
+            </div>
+
         </div>
     </div>
-        <hr>
-        <footer>
-            <p>&copy; Company 2014</p>
-        </footer>
-	<!-- /container -->
+
+    <hr>
+    <footer>
+        <p>&copy; Company 2014</p>
+    </footer>
     
 </body>
 

@@ -305,6 +305,23 @@ ul.tabs li.active { height: 38px;line-height: 38px;background: #002c5f;color:#ff
 .tab_container .tab_content ul {width:100%; margin:0px;padding:0px;height: expression( this.scrollHeight > 240 ? "240px" : "auto" ); max-height:240px;}
 .tab_container .tab_content ul li {padding:5px;list-style:none}
 
+/* utterances page divide 2018-01-02 dyyoo  */
+#utterDiv .utterLeft {
+  width : 60%;
+  height : 100%;
+  padding : 10px;
+  float: left;
+}
+
+#utterDiv .utterRight {
+  width : 35%;
+  height : 500px;
+  padding : 10px;
+  margin: 100px 20px 2px 2px;
+  float: right;
+  border: 1px solid #858483 !important; 
+  
+}
 
 /* form*/
 
