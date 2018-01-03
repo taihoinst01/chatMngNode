@@ -16,12 +16,14 @@ $(document).ready(function(){
         if ($("#learningTest").css('display') != 'none') {
             $("#learningTest").hide();
             $("#batchTestPanel").show();
-            $("#toggleDiv").toggleClass('open', 5000);
+            $("#toggleDiv").toggleClass('open' );
+            
             //$("#toggleDiv").css('right', '0px');
         } else {
+            
             $("#batchTestPanel").hide();
             $("#learningTest").show();
-            $("#toggleDiv").toggleClass('open', 5000);
+            $("#toggleDiv").toggleClass('open');
             //$("#toggleDiv").css('right', '-900px');
         }
     });
@@ -45,16 +47,16 @@ $(document).ready(function(){
                     <button calss="" onclick="">Test</button>
                 </li>
                 <li class="headerLi_for_Luis_right">
-                    <a class="gnbm" href="#" id="selMenus">MAPPINGS </a>
+                    <a class="gnbm gnbm2" href="/learning/entities" id="selMenus">ENTITIES</a>
                 </li>
                 <li class="headerLi_for_Luis_right">
-                    <a class="gnbm" href="#" id="selMenus">DIALOG</a>
+                    <a class="gnbm gnbm2" href="#" id="selMenus">DIALOG</a>
                 </li>
                 <li class="headerLi_for_Luis_right">
-                    <a class="gnbm" href="#" id="selMenus">UTTERANCES</a>
+                    <a class="gnbm gnbm2" href="/learning/utterances" id="selMenus">UTTERANCES</a>
                 </li>
                 <li class="headerLi_for_Luis_right">
-                    <a class="gnbm" href="#" id="selMenus">RECOMMEND</a>
+                    <a class="gnbm gnbm2" href="#" id="selMenus">RECOMMEND</a>
                 </li>
             </ul>
         </div>

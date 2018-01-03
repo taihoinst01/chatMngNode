@@ -43,6 +43,7 @@ $(document).ready(function(){
                 {
                     //alert( 'popup out click' );
                     $(this).hide();
+                    $('#deleteAppId').val('');
                 }
             }
         });
@@ -117,7 +118,7 @@ function GetAbsPosition(object) {
     return position;
 }
   
-function itemClick(e, object){
+function itemClick(e, object, deleteAppId){
     //var ex_obj = $('.appLayout');
     var ex_obj = document.getElementById('lay');
     if(!e) e = window.Event;
@@ -128,6 +129,7 @@ function itemClick(e, object){
 
     if ($('.appLayout').css('display') == 'none') {
         $('.appLayout').show();
+        $('#deleteAppId').val(deleteAppId);
     }
     //ex_obj.style.display = ex_obj.style.display=='none'?'block':'none';
 }
