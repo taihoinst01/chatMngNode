@@ -315,14 +315,17 @@ ul.tabs li.active { height: 38px;line-height: 38px;background: #002c5f;color:#ff
 
 #utterDiv .utterRight {
   width : 35%;
-  height : 500px;
+  height : 600px;
   padding : 10px;
-  margin: 100px 20px 2px 2px;
+  margin: 20px 20px 2px 2px;
   float: right;
-  border: 1px solid #858483 !important; 
-  
 }
-
+#utterDiv .utterRight .utterList {
+  border: 1px solid #858483 !important; 
+  width : 100%;
+  height : 100%;
+  margin: 35px 0 0 0;
+}
 /* form*/
 
 .check-radio-tweak-wrapper {-webkit-user-select: none;-moz-user-select: none; -ms-user-select: none;user-select: none;}
