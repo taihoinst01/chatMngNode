@@ -7,26 +7,11 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>
-        <!--<%= title %>title-->
         TIIS Manager
-    </title>
-
-	<!-- 
-        <link rel="stylesheet" href="./common/css/css_common.html" />
-        -->
-    
-           
+    </title>  
     <%include  ./common/commonUse.html%>
     <link rel="stylesheet" type="text/css" href="/css/recommend.css" />
-    <!--    
-    <style type="text/css">
-        .appLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:120px; padding:10px; } 
-
-    </style>
-    -->
-
-    
-	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> test-->
+    <script type="text/javascript" src="/js/common/recommend.js"></script>
 </head>
 
 <body class="main">
@@ -45,20 +30,43 @@
                     <option value="">저번주</option>
                     <option value="">저번달</option>
                 </select>          
-                <button class="btn_delete">
-                    <span class="span_delete">
-                        delete
-                    </span>
+                <button class="btn_delete" onclick="deleteRecommend()" disabled>
+                    <span class="span_delete">Delete</span>
                 </button>
             </div>
-            <table>
-                <tr>
-                    <td class=""></td>
-                    <td class=""></td>
-                    <td class=""></td>
-                    <td class=""></td>
-                </tr>
-            </table>         
+            <br/>
+            <table class="Tbl" id="sampleTable">
+                <thead>
+                    <tr>
+                        <th class="txt_left" style="width: 3%;"><input type="checkbox" class="tweak-input" id="recommendAll" name="recommendAll"/></th>
+                        <th class="txt_left" colspan="3">학습 추천 문장<span></span></th>
+                        <th class="txt_center">추천 다이얼로그<span></span> </th>
+                        <th class="txt_right02"></th>
+                    </tr>
+                </thead>
+                <% 
+                if(list.length > 0){
+                    for(var i=0;i<list.length;i++){
+                %>
+                        <tr>
+                            <td class="txt_left" style="width: 3%;"><input type="checkbox" class="tweak-input" id="" name=""/></td>
+                            <td class="txt_left" colspan="3"><a href="" class="dashLink" ><%= list[i].QUERY %></a></td>
+                            <td class="txt_center">
+                                <select name="" class="">
+                                    <option value="" selected>ShareNews-1</option>
+                                </select>
+                            </td>
+                            <td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick();"></a></td>
+                        </tr>
+                <%  
+                    }
+                }else{
+                %>
+                    <tr>
+                        <td class="txt_center" colspan="6">결과가 존재하지 않습니다.</td>
+                    </tr>
+                <% }%>
+            </table>          
         </div>
     </div>
         <hr>
@@ -69,6 +77,4 @@
     
 </body>
 
-    
-    
 </html>
