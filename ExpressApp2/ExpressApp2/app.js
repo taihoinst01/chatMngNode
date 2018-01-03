@@ -45,14 +45,21 @@ app.use(function(req, res, next) {
         res.locals.sid = req.session.sid;
     } 
     else {
-        res.locals.sid = undefined;
+        res.locals.sid = null;
     }
 
     if(req.session.menu) {
         res.locals.selMenu = req.session.selMenu;
     }
     else {
-        res.locals.selMenu = undefined;
+        res.locals.selMenu = null;
+    }
+
+    if(req.session.selMenus) {
+        res.locals.selMenus = req.session.selMenus;
+    }
+    else {
+        res.locals.selMenus = null;
     }
     next();
 });

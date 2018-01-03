@@ -28,33 +28,12 @@ router.get('/utterances', function (req, res) {
     } );
 });
 
-/* sent utterances ajax */
-router.post('/utterInputAjax', function(req, res, next) {
+router.get('/recommend', function (req, res) {
 
-    //view에 있는 data 에서 던진 값을 받아서
-    var iptUtterance = req.body.iptUtterance;
-
-    //json 형식으로 보내 준다.
-    res.send({
-        result:true, 
-        iptUtterance:iptUtterance,
-        entities: [
-            {
-                'startIndex': '0',
-                'endIndex': '2',
-                'entityName': 'hi',
-            },
-            {
-                'startIndex': '4',
-                'endIndex': '6',
-                'entityName': '인사',
-            }
-        ]
-    });
-
+    res.render('recommend', {
+        selMenu: req.session.menu,
+        title: 'learning recommend page'
+    } );
 });
-
-
-
 
 module.exports = router;
