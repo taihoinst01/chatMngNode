@@ -7,7 +7,7 @@ $(document).ready(function(){
     $("#learningTest").css("top", obj.top);
     $("#batchTestPanel").css("top", obj.top);
 
-    $(".btn").click(function() {
+    $("#toggleTest").click(function() {
         $("#toggleDiv").toggle('slow');
     });
 
@@ -41,7 +41,7 @@ $(document).ready(function(){
                 </li>
 
                 <li class="headerLi_for_Luis_right">
-                    <button class="btn" onclick="">Train</button>
+                    <button class="btn" id="toggleTest" onclick="">Train</button>
                 </li>
                 <li class="headerLi_for_Luis_right">
                     <button calss="" onclick="">Test</button>
