@@ -48,7 +48,7 @@ app.use(function(req, res, next) {
         res.locals.sid = null;
     }
 
-    if(req.session.menu) {
+    if(req.session.selMenu) {
         res.locals.selMenu = req.session.selMenu;
     }
     else {

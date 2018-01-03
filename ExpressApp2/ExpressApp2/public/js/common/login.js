@@ -1,5 +1,8 @@
 
 $(document).ready(function () {
+
+    $('#mLoginId').focus();
+
     $('#sendLoginBtn').click(function () {
         $('#loginfrm').submit();
     });
