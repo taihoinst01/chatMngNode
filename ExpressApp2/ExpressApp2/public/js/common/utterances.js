@@ -23,6 +23,11 @@ $(document).keydown(function(e) {
 
 $(document).ready(function(){
 
+    // recommend에서 넘어온 문장 insert
+    var recommendParam = $('#utterence').val();
+    if(recommendParam){
+        utterInput(recommendParam);
+    }
     // Utterance 입력
     $("#iptUtterance").keypress(function(e) {
 
@@ -77,6 +82,37 @@ $(document).ready(function(){
     });
     
 });
+
+//intent selbox 선택
+$(document).on('change','#intentNameList',function(event){
+    selectDlgListAjax($("#intentNameList option:selected").val());
+});
+
+function selectDlgListAjax(intentName) {
+    $.ajax({
+        url: '/learning/selectDlgListAjax',                //주소
+        dataType: 'json',                  //데이터 형식
+        type: 'POST',                      //전송 타입
+        data: {'intentName':intentName},      //데이터를 json 형식, 객체형식으로 전송
+
+        success: function(result) {          //성공했을 때 함수 인자 값으로 결과 값 나옴
+            
+            for (var i=0; i<result['list'].length; i++) {
+                var tmp = result['list'][i];
+                var inputUttrHtml = '';
+                inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
+                inputUttrHtml += '<input name="dlgChk" class="tweak-input" type="checkbox"  onclick="" /> </div> </td>';
+                inputUttrHtml += '<td class="txt_left" >' + tmp.CARD_TEXT + '</td></tr>';
+
+            }
+            
+            $('#dlgListTable').find('tbody').prepend(inputUttrHtml);
+        } //function끝
+        //,error  : function(err) {console.log(err);}
+
+    }); // ------      ajax 끝-----------------
+}
+
 
 //checkbox 선택시 이벤트 $(this).attr("checked")
 $(document).on('click','div[type=checkbox]',function(event){
@@ -137,7 +173,7 @@ function utterInput(queryText) {
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox"  onclick="" /> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
                 inputUttrHtml += '<td class="txt_right02" >'; 
-                inputUttrHtml += '<select id="" name="" class="select_box">'
+                inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
 
                 if(selBox != null) {
                     for( var i = 0 ; i < selBox.length; i++) {
