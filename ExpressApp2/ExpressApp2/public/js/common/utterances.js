@@ -51,23 +51,24 @@ $(document).ready(function(){
         initMordal('intentList', 'Select Intent');
         initMordal('entityList', 'Select Entity');
         $('#dlgLang').find('option:first').attr('selected', 'selected');
+        $('#dlgOrder').find('option:first').attr('selected', 'selected');
         $('#layoutBackground').hide();
     });
 
     //체크박스 전체선택
-    $('div[type=checkbox]').click(function() {
+    $('div[type=checkbox]').eq(0).click(function() {
         var checkedVal = false;
         if (typeof $('div[type=checkbox]').attr('checked') != 'undefined') {
             $("input[name=ch1]").each(function() {
-                if ( !$(this).prop("checked") ) {
-                    $(this).prop("checked", true);
+                if ( typeof $(this).parent().attr("checked") == 'undefined' ) {
+                    $(this).parent().attr("checked", '');
                 } 
                 checkedVal = true;
             });
         } else {
             $("input[name=ch1]").each(function() {
-                if ( $(this).prop("checked") ) {
-                    $(this).prop("checked", false);
+                if ( typeof $(this).parent().attr("checked") != 'undefined' ) {
+                    $(this).parent().removeAttr('checked');
                 }
                 checkedVal = false;
             });
@@ -78,13 +79,19 @@ $(document).ready(function(){
 });
 
 //checkbox 선택시 이벤트 $(this).attr("checked")
-$(document).on('click','input[name=ch1]',function(event){
+$(document).on('click','div[type=checkbox]',function(event){
     var checkedVal = false;
-    var checkLen = $("input[name=ch1]").length;
+    if (typeof $(this).attr("checked") == 'undefined') {
+        $(this).attr("checked", "");
+    } else {
+        $(this).removeAttr('checked');
+    }
+    
+
     $("input[name=ch1]").each(function() {
-        if ( $(this).prop("checked") ) {
+        if (typeof $(this).parent().attr("checked") != 'undefined') {
             checkedVal = true;
-        }
+        } 
     });
     changeBtnAble(checkedVal);
 });
@@ -124,7 +131,8 @@ function utterInput(queryText) {
 
                 $('#iptUtterance').val('');
                 var inputUttrHtml = '';
-                inputUttrHtml += '<tr><td><input name="ch1" class="tweak-input" type="checkbox"  onclick="" /></td>';
+                inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
+                inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox"  onclick="" /> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" >' + utter + '</td>';
                 inputUttrHtml += '<td class="txt_right02" >' + 'inputIntent' + '</td></tr>';
                 
