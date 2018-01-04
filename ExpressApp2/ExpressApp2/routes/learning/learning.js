@@ -11,7 +11,78 @@ router.get('/', function (req, res) {
 });
 
 router.get('/recommend', function (req, res) {
+/*
+SELECT SEQ,QUERY,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES
+FROM TBL_QUERY_ANALYSIS_RESULT 
+WHERE RESULT='D'
+*/
+    (async () => {
+        try {
+            let pool = await sql.connect(dbConfig)
+            let result1 = await pool.request()
+                .query('SELECT SEQ,QUERY,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES '
+                + 'FROM TBL_QUERY_ANALYSIS_RESULT '
+                + 'WHERE RESULT=\'D\''
+                )
+            let rows = result1.recordset;
+            var result = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+                var query = rows[i].QUERY;
+                var entities = rows[i].ENTITIES;
+                var entityArr = entities.split(',');
+                var queryString = "";
+                
+                item.QUERY = query;
+                if(entityArr[0] == ""){
+                    item.intentList = [];
+                }else{
+                    for(var i = 0; i < entityArr.length; i++) {
+                        if(i == 0){
+                            queryString += "SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'"
+                        }else{
+                            queryString += "OR LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'";
+                        }
+                    }
+                    let luisIntentList = await pool.request()
+                    .query(queryString)
+                    item.intentList = luisIntentList.recordset
+                }
+                result.push(item);
+            }
+            sql.close();
+            res.render('recommend', {list : result});
+            /*
+            if(rows.length > 0) {
+                var entities = rows[0]['ENTITIES'];
+                var entityArr = entities.split(',');
 
+                let queryArr = new Array(entityArr.length);
+
+                for(var i = 0; i < entityArr.length; i++) {
+                    queryArr[i] = await pool.request()
+                    .input('iptUtterance', sql.NVarChar, iptUtterance)
+                    .query("SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'")
+
+                    console.dir(queryArr[i])
+                }
+
+                res.send({result:true, iptUtterance:iptUtterance, entities:entities});
+            } else {
+                res.send({result:true, iptUtterance:iptUtterance});
+            }
+            */
+        
+        } catch (err) {
+            console.log(err);
+            // ... error checks
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+    /*
     new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query("SELECT SEQ,QUERY FROM TBL_QUERY_ANALYSIS_RESULT WHERE RESULT='D'")
         }).then(result => {
@@ -28,6 +99,7 @@ router.get('/recommend', function (req, res) {
           console.log(err);
           sql.close();
         });
+        */
 });
 
 router.get('/utterances', function (req, res) {
