@@ -25,11 +25,12 @@
         <div id="container" class="main">
             <h1>추가학습 추천 문장</h1>
             <div id="headerDiv1">
-                <select name="" class="timeSelect">
-                    <option value="">어제</option>
-                    <option value="">저번주</option>
-                    <option value="">저번달</option>
-                </select>          
+                <select id="recommendPeriod" class="timeSelect">
+                    <option value="all" selected>전체</option>
+                    <option value="yesterday">어제</option>
+                    <option value="lastWeek">저번주</option>
+                    <option value="lastMonth">저번달</option>
+                </select>
                 <button class="btn_delete" onclick="deleteRecommend()" disabled>
                     <span class="span_delete">Delete</span>
                 </button>
@@ -44,6 +45,7 @@
                         <th class="txt_right02"></th>
                     </tr>
                 </thead>
+                <tbody id="recommendContents">
                 <% 
                 if(list.length > 0){
                     for(var i=0;i<list.length;i++){
@@ -73,6 +75,7 @@
                         <td class="txt_center" colspan="6">결과가 존재하지 않습니다.</td>
                     </tr>
                 <% }%>
+                </tbody>
             </table>          
         </div>
     </div>
