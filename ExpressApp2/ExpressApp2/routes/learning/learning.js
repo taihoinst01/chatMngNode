@@ -11,43 +11,63 @@ router.get('/', function (req, res) {
 });
 
 router.get('/recommend', function (req, res) {
+    res.render('recommend');
+});
+
+router.post('/recommend', function (req, res) {
+    var selectType = req.body.selectType;
 
     (async () => {
         try {
+            var entitiesQueryString = "SELECT SEQ,QUERY,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
+            "FROM TBL_QUERY_ANALYSIS_RESULT " + 
+            "WHERE RESULT='D'";
+            
+            if(selectType == 'yesterday'){
+                entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) like '%'+(select CONVERT(CHAR(10), (select dateadd(day,-1,getdate())), 23)) + '%'";
+            }else if(selectType == 'lastWeek'){
+                entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) >= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, -1)), 23))";
+                entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) <= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, 5)), 23))";
+            }else if(selectType == 'lastMonth'){
+                entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(10), (select dateadd(month,-1,getdate())), 23)) + '%'";
+            }else{
+            }
+
             let pool = await sql.connect(dbConfig)
             let result1 = await pool.request()
-                .query('SELECT SEQ,QUERY,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES '
-                + 'FROM TBL_QUERY_ANALYSIS_RESULT '
-                + 'WHERE RESULT=\'D\''
-                )
+                .query(entitiesQueryString)
             let rows = result1.recordset;
+
             var result = [];
             for(var i = 0; i < rows.length; i++){
                 var item = {};
                 var query = rows[i].QUERY;
+                var entities = rows[i].ENTITIES;
                 var entityArr = rows[i].ENTITIES.split(',');
-                var queryString = "";
-                
+                var luisQueryString = "";
+
                 item.QUERY = query;
+                item.ENTITIES = entities;
                 if(entityArr[0] == ""){
                     item.intentList = [];
                 }else{
                     for(var i = 0; i < entityArr.length; i++) {
                         if(i == 0){
-                            queryString += "SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'"
+                            luisQueryString += "SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'"
                         }else{
-                            queryString += "OR LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'";
+                            luisQueryString += "OR LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'";
                         }
                     }
                     let luisIntentList = await pool.request()
-                    .query(queryString)
+                    .query(luisQueryString)
                     item.intentList = luisIntentList.recordset
                 }
                 result.push(item);
             }
-            res.render('recommend', {list : result});
-        
+            
+            res.send({list : result});
         } catch (err) {
+            console.log(err)
             // ... error checks
         } finally {
             sql.close();
