@@ -40,6 +40,17 @@ $(document).ready(function(){
 
     });
 
+    // Utterance 삭제
+    $('#utterDelete').click(function(){
+
+        $('.checkUtter').each(function(){
+
+            if($(this).attr('checked') == 'checked') {
+                $(this).parent().parent().remove();
+            }
+        });
+    });
+
     //다이얼로그 생성 모달 닫는 이벤트(초기화)
     $(".js-modal-close").click(function() {
         $('html').css({'overflow': 'auto', 'height': '100%'}); //scroll hidden 해제
@@ -133,7 +144,7 @@ function utterInput(queryText) {
 
                 $('#iptUtterance').val('');
                 var inputUttrHtml = '';
-                inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
+                inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox"  onclick="" /> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" >' + utter + '</td>';
                 inputUttrHtml += '<td class="txt_right02" >'; 
@@ -226,5 +237,9 @@ function initMordal(objId, objName) {
 
     $('#'+ objId + ' option:eq(0)').remove();
     $('#'+ objId ).prepend('<option selected="selected" disabled="disabled">' + objName + '</option>');
+
+}
+
+function deleteUtter() {
 
 }
