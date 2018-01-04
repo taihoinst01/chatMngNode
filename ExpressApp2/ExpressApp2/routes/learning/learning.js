@@ -52,26 +52,6 @@ WHERE RESULT='D'
             }
             sql.close();
             res.render('recommend', {list : result});
-            /*
-            if(rows.length > 0) {
-                var entities = rows[0]['ENTITIES'];
-                var entityArr = entities.split(',');
-
-                let queryArr = new Array(entityArr.length);
-
-                for(var i = 0; i < entityArr.length; i++) {
-                    queryArr[i] = await pool.request()
-                    .input('iptUtterance', sql.NVarChar, iptUtterance)
-                    .query("SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'")
-
-                    console.dir(queryArr[i])
-                }
-
-                res.send({result:true, iptUtterance:iptUtterance, entities:entities});
-            } else {
-                res.send({result:true, iptUtterance:iptUtterance});
-            }
-            */
         
         } catch (err) {
             console.log(err);
@@ -82,24 +62,6 @@ WHERE RESULT='D'
     sql.on('error', err => {
         // ... error handler
     })
-    /*
-    new sql.ConnectionPool(dbConfig).connect().then(pool => {
-        return pool.request().query("SELECT SEQ,QUERY FROM TBL_QUERY_ANALYSIS_RESULT WHERE RESULT='D'")
-        }).then(result => {
-            let rows = result.recordset;
-                      
-            req.session.selMenus = 'ms1';
-            res.render('recommend', {
-                selMenus: req.session.selMenus,
-                title: 'learning recommend page',
-                list: rows
-            } );
-          sql.close();
-        }).catch(err => {
-          console.log(err);
-          sql.close();
-        });
-        */
 });
 
 router.get('/utterances', function (req, res) {
