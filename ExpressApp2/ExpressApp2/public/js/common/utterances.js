@@ -135,13 +135,13 @@ function utterInput(queryText) {
                 var inputUttrHtml = '';
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox"  onclick="" /> </div> </td>';
-                inputUttrHtml += '<td class="txt_left" >' + utter + '</td>';
+                inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
                 inputUttrHtml += '<td class="txt_right02" >'; 
                 inputUttrHtml += '<select id="" name="" class="select_box">'
 
                 if(selBox != null) {
                     for( var i = 0 ; i < selBox.length; i++) {
-                        inputUttrHtml += '<option value="" selected>' + selBox[i]['LUIS_INTENT'] + '</option>'
+                        inputUttrHtml += '<option value="' + selBox[i]['LUIS_INTENT'] + '">' + selBox[i]['LUIS_INTENT'] + '</option>'
                     }
                 } else {
                     inputUttrHtml += '<option value="" selected>no intent</option>'

@@ -127,20 +127,13 @@
         <form name="appInsertForm" id="appInsertForm" method="post">
     
         <div class="modal-body">
-          <p class="texcon01">Intent<!--  -->  <span>(required) </span></p>
-          <p><select  name="intentList" class="inbox02" id="intentList" style="width:100%" onchange="selectInent(this);">
-                <option selected="selected" disabled="disabled">Select Intent<!-- 서비스 선택 --></option>
-                <option value="1">intent1<!-- intent1 --></option>
-                <option value="2">intent2<!-- intent2 --></option>
-             </select>
-          </p>
-          <p class="texcon01">Entity<!--  -->  <span>(required) </span></p>
-          <p><select  name="entityList" class="inbox02" id="entityList"  disabled="disabled" style="width:100%" onchange="selectEntity(this);">
-                <option selected="selected" disabled="disabled">Select Entity<!-- 서비스 선택 --></option>
-                <option value="1">entity1<!-- entity1 --></option>
-                <option value="2">entity2<!-- entity2 --></option>
-             </select>
-          </p>
+          <p class="texcon01">Dialogue Type</p>
+          <p><select name="dlgType" class="inbox02" id="dlgType" style="width:100%" ><!-- onchange 참고 함수형식 -->
+                <option value="text">TEXT</option>
+                <option value="card">CARD</option>
+                <option value="media">MEDIA</option>
+             </select></p>
+
           <p class="texcon01">Dialogue Order<!--  -->  <span>(required) </span></p>
           <p><select  name="dlgOrder" class="inbox02" id="dlgOrder"  style="width:100%" >
                 <option value="1">1<!-- order1 --></option>
@@ -152,11 +145,7 @@
                 <option value="7">7<!-- order7 --></option>
              </select>
           </p>
-          <p class="texcon01">Dialogue Language</p>
-          <p><select name="dlgLang" class="inbox02" id="dlgLang" style="width:100%" ><!-- onchange 참고 함수형식 -->
-                <option value="en-us">English</option>
-                <option value="ko-kr">Korean</option>
-             </select></p>
+
           <p class="texcon01">Dialogue Text  <span>(optional) </span></p>
           <p><textarea name="appInsertDes" id="appInsertDes" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.."></textarea></p>
     
@@ -166,7 +155,7 @@
         <!-- form end -->
     
         <footer>
-          <button class="btn disable" id="btnAddDlg" onclick="" disabled="disabled">Save</button>
+          <button class="btn disable" id="btnAddDlg" onclick="">Save</button>
           <a href="#" class="btn b02  btn-small js-modal-close">Cancel</a>
         </footer>
     
