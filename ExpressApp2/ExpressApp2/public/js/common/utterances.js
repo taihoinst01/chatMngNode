@@ -23,6 +23,11 @@ $(document).keydown(function(e) {
 
 $(document).ready(function(){
 
+    // recommend에서 넘어온 문장 insert
+    var recommendParam = $('#utterence').val();
+    if(recommendParam){
+        utterInput(recommendParam);
+    }
     // Utterance 입력
     $("#iptUtterance").keypress(function(e) {
 
