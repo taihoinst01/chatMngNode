@@ -46,35 +46,6 @@
                     </tr>
                 </thead>
                 <tbody id="recommendContents">
-                <% 
-                if(list.length > 0){
-                    for(var i=0;i<list.length;i++){
-                %>
-                        <tr>
-                            <td class="txt_left" style="width: 3%;"><input type="checkbox" class="tweak-input" id="" name=""/></td>
-                            <td class="txt_left" colspan="3"><a href="/learning/utterances" class="dashLink" ><%= list[i].QUERY %></a></td>
-                            <td class="txt_center">
-                                <select id="" name="" class="select_box">
-                                    <option value="" selected>intent select..</option>
-                                    <%
-                                    for(var j=0;j<list[i].intentList.length;j++){
-                                    %>
-                                        <option value=""><%=list[i].intentList[j].LUIS_INTENT%></option>
-                                    <%
-                                    }
-                                    %>
-                                </select>
-                            </td>
-                            <td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick();"></a></td>
-                        </tr>
-                <%  
-                    }
-                }else{
-                %>
-                    <tr>
-                        <td class="txt_center" colspan="6">결과가 존재하지 않습니다.</td>
-                    </tr>
-                <% }%>
                 </tbody>
             </table>          
         </div>

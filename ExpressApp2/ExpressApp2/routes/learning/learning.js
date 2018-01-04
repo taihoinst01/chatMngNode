@@ -11,8 +11,11 @@ router.get('/', function (req, res) {
 });
 
 router.get('/recommend', function (req, res) {
-    var selectType = req.query.selectType;
-    var requestType = req.query.requestType;
+    res.render('recommend');
+});
+
+router.post('/recommend', function (req, res) {
+    var selectType = req.body.selectType;
 
     (async () => {
         try {
@@ -34,14 +37,17 @@ router.get('/recommend', function (req, res) {
             let result1 = await pool.request()
                 .query(entitiesQueryString)
             let rows = result1.recordset;
+
             var result = [];
             for(var i = 0; i < rows.length; i++){
                 var item = {};
                 var query = rows[i].QUERY;
+                var entities = rows[i].ENTITIES;
                 var entityArr = rows[i].ENTITIES.split(',');
                 var luisQueryString = "";
 
                 item.QUERY = query;
+                item.ENTITIES = entities;
                 if(entityArr[0] == ""){
                     item.intentList = [];
                 }else{
@@ -59,11 +65,7 @@ router.get('/recommend', function (req, res) {
                 result.push(item);
             }
             
-            if(requestType == 'ajax'){
-                res.send({list : result});
-            }else{
-                res.render('recommend', {list : result});
-            }
+            res.send({list : result});
         } catch (err) {
             console.log(err)
             // ... error checks
