@@ -139,4 +139,51 @@ router.get('/entities', function (req, res) {
     } );
 });
 
+router.post('/selectDlgListAjax', function (req, res) {
+
+    var intentName = req.body.intentName;
+    var queryText =   'SELECT A.TEXT_DLG_ID, A.DLG_ID, A.CARD_TITLE, A.CARD_TEXT '
+                    + 'FROM TBL_DLG_TEXT A, ( select B.DLG_ID, B.DLG_TYPE '
+                                            + 'from TBL_DLG_RELATION_LUIS A, TBL_DLG B '
+                                            + 'WHERE 1=1 '
+                                            + 'AND A.LUIS_INTENT =\''+ intentName +'\' '
+                                            + 'AND A.DLG_ID = B.DLG_ID '
+                                            + 'AND B.DLG_TYPE = \'2\') B '
+                    + 'WHERE 1=1 '
+                    + 'AND A.DLG_ID = B.DLG_ID '
+                    + 'AND A.USE_YN = \'Y\' ';
+
+    (async () => {
+        try {
+            let pool = await sql.connect(dbConfig)
+            let result1 = await pool.request()
+                .query(queryText)
+            let rows = result1.recordset;
+            var result = [];
+            for(var i = 0; i < rows.length; i++){
+                //var item = {};
+                //var query = rows[i].QUERY;
+                //var entityArr = rows[i].ENTITIES.split(',');
+                
+                //item.QUERY = query;
+                result.push(rows[i]);
+            }
+            res.send({list : result});
+        
+        } catch (err) {
+            //res.render('utterances', {'err': err})
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        //console.log(err);
+    })
+});
+
+
+
+
+
 module.exports = router;
