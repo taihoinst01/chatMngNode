@@ -49,11 +49,12 @@ $(document).ready(function(){
     $('#utterDelete').click(function(){
 
         $('.checkUtter').each(function(){
-
             if($(this).attr('checked') == 'checked') {
                 $(this).parent().parent().remove();
             }
         });
+        $('input[name=ch1All]').parent().attr('checked', false);
+        changeBtnAble(false);
     });
 
     //다이얼로그 생성 모달 닫는 이벤트(초기화)
