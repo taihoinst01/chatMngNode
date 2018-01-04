@@ -100,10 +100,8 @@ function selectDlgListAjax(intentName) {
                 inputUttrHtml += '<td class="txt_left" >' + tmp.CARD_TEXT + '</td></tr>';
 
             }
-            
             $('#dlgListTable').find('tbody').prepend(inputUttrHtml);
-        } //function끝
-        //,error  : function(err) {console.log(err);}
+        } 
 
     }); // ------      ajax 끝-----------------
 }
