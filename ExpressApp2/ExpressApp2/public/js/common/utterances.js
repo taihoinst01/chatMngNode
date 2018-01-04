@@ -51,6 +51,7 @@ $(document).ready(function(){
         initMordal('intentList', 'Select Intent');
         initMordal('entityList', 'Select Entity');
         $('#dlgLang').find('option:first').attr('selected', 'selected');
+        $('#dlgOrder').find('option:first').attr('selected', 'selected');
         $('#layoutBackground').hide();
     });
 
