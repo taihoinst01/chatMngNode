@@ -93,27 +93,33 @@ router.post('/utterInputAjax', function(req, res, next) {
             
             let rows = result1.recordset;
 
-            if(rows.length > 0) {
+            if(rows[0]['RESULT'] != '') {
                 var entities = rows[0]['RESULT'];
                 var entityArr = entities.split(',');
-
-                let queryArr = new Array(entityArr.length);
-
+                var queryString = "";
                 for(var i = 0; i < entityArr.length; i++) {
-                    queryArr[i] = await pool.request()
-                    .input('iptUtterance', sql.NVarChar, iptUtterance)
-                    .query("SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'")
-
-                    console.dir(queryArr[i])
+                    if(i == 0){
+                        queryString += "SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'"
+                    }else{
+                        queryString += "OR LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'";
+                    }
                 }
 
-                res.send({result:true, iptUtterance:iptUtterance, entities:entities});
+                let result2 = await pool.request()
+                .query(queryString)
+                
+                let rows2 = result2.recordset
+
+                res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2});
             } else {
                 res.send({result:true, iptUtterance:iptUtterance});
             }
         
         } catch (err) {
             // ... error checks
+            console.log(err);
+        } finally {
+            sql.close();
         }
     })()
     
