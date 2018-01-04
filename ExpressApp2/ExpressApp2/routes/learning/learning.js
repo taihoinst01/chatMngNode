@@ -11,11 +11,7 @@ router.get('/', function (req, res) {
 });
 
 router.get('/recommend', function (req, res) {
-/*
-SELECT SEQ,QUERY,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES
-FROM TBL_QUERY_ANALYSIS_RESULT 
-WHERE RESULT='D'
-*/
+
     (async () => {
         try {
             let pool = await sql.connect(dbConfig)
@@ -29,8 +25,7 @@ WHERE RESULT='D'
             for(var i = 0; i < rows.length; i++){
                 var item = {};
                 var query = rows[i].QUERY;
-                var entities = rows[i].ENTITIES;
-                var entityArr = entities.split(',');
+                var entityArr = rows[i].ENTITIES.split(',');
                 var queryString = "";
                 
                 item.QUERY = query;
@@ -54,7 +49,6 @@ WHERE RESULT='D'
             res.render('recommend', {list : result});
         
         } catch (err) {
-            console.log(err);
             // ... error checks
         }
     })()
