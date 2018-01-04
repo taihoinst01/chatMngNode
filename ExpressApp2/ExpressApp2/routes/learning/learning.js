@@ -45,11 +45,12 @@ router.get('/recommend', function (req, res) {
                 }
                 result.push(item);
             }
-            sql.close();
             res.render('recommend', {list : result});
         
         } catch (err) {
             // ... error checks
+        } finally {
+            sql.close();
         }
     })()
 
