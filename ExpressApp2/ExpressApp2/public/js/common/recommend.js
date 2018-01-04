@@ -31,7 +31,7 @@ function recommendAjax(selectType){
                     '<td class="txt_left" style="width: 3%;">' +
                     '<div class="check-radio-tweak-wrapper" type="checkbox">' +
                     '<input type="checkbox" class="tweak-input" id="" name=""/></div></td>' +
-                    '<td class="txt_left" colspan="3"><a href="/learning/utterances" class="dashLink" >';
+                    '<td class="txt_left" colspan="3"><a href="/learning/utterances?utterance='+data.list[i].QUERY+'" class="dashLink" >';
                     var query = data.list[i].QUERY;
                     var entities = data.list[i].ENTITIES.split(',');
                     if(entities.length > 0){
