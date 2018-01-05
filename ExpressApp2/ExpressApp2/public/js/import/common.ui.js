@@ -228,7 +228,9 @@ $(document).ready(function() {
                 if ($('input', e).prop('checked')) {
                     e.setAttribute('checked', '');
                 } else {
-                    $(e).removeAttr('checked');
+                    if ($(e).parents('.Tbl').find('th div[type=checkbox]').attr('checked') == 'checked' && $(e).parent().parent().find('th').length > 0 ) {
+                        $(e).removeAttr('checked');
+                    }
                 }
             });
         }

@@ -164,7 +164,7 @@ router.get('/entities', function (req, res) {
 router.post('/selectDlgListAjax', function (req, res) {
 
     var intentName = req.body.intentName;
-    var queryText =   'SELECT A.TEXT_DLG_ID, A.DLG_ID, A.CARD_TITLE, A.CARD_TEXT '
+    var queryText =   'SELECT TOP 10 A.TEXT_DLG_ID, A.DLG_ID, A.CARD_TITLE, A.CARD_TEXT '
                     + 'FROM TBL_DLG_TEXT A, ( select B.DLG_ID, B.DLG_TYPE '
                                             + 'from TBL_DLG_RELATION_LUIS A, TBL_DLG B '
                                             + 'WHERE 1=1 '
@@ -204,7 +204,9 @@ router.post('/selectDlgListAjax', function (req, res) {
     })
 });
 
-
+router.post('/learnUtterAjax', function (req, res) {
+    
+});
 
 
 
