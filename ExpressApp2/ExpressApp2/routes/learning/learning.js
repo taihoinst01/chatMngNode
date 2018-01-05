@@ -29,7 +29,7 @@ router.post('/recommend', function (req, res) {
                 entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) >= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, -1)), 23))";
                 entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) <= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, 5)), 23))";
             }else if(selectType == 'lastMonth'){
-                entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(10), (select dateadd(month,-1,getdate())), 23)) + '%'";
+                entitiesQueryString += " AND (CONVERT(CHAR(7), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(7), (select dateadd(month,-1,getdate())), 23)) + '%'";
             }else{
             }
 
@@ -51,11 +51,11 @@ router.post('/recommend', function (req, res) {
                 if(entityArr[0] == ""){
                     item.intentList = [];
                 }else{
-                    for(var i = 0; i < entityArr.length; i++) {
-                        if(i == 0){
-                            luisQueryString += "SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'"
+                    for(var j = 0; j < entityArr.length; j++) {
+                        if(j == 0){
+                            luisQueryString += "SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[j] + "%'"
                         }else{
-                            luisQueryString += "OR LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'";
+                            luisQueryString += "OR LUIS_ENTITIES LIKE '%" + entityArr[j] + "%'";
                         }
                     }
                     let luisIntentList = await pool.request()
@@ -64,7 +64,7 @@ router.post('/recommend', function (req, res) {
                 }
                 result.push(item);
             }
-            
+
             res.send({list : result});
         } catch (err) {
             console.log(err)
@@ -201,6 +201,82 @@ router.post('/selectDlgListAjax', function (req, res) {
 
     sql.on('error', err => {
         //console.log(err);
+    })
+});
+
+router.post('/insertDialog', function (req, res) {
+    var dlgType = req.body.dlgType;
+    var dlgOrder = req.body.dlgOrder;
+    var dialogText = req.body.dialogText;
+    var dlgTypeNum = ((dlgType == 'text')? '2' : (dlgType == 'card')? '3' : (digType == 'media')? '4' : null);
+
+    if(dlgTypeNum == null){
+        res.send({status:400 , message:'dialog type not found'});
+    }
+    (async () => {
+        try {
+
+            var selectQueryString1 = 'SELECT ISNULL(MAX(DLG_ID)+1,1) AS DLG_ID FROM TBL_DLG';
+            let pool = await sql.connect(dbConfig)
+            let result1 = await pool.request()
+                .query(selectQueryString1)
+            let rows1 = result1.recordset;
+            
+            var insertQueryString1 = 'INSERT INTO TBL_DLG(DLG_ID,DLG_NAME,DLG_DESCRIPTION,DLG_LANG,DLG_TYPE,DLG_ORDER_NO,USE_YN) VALUES ' +
+            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dlgOrder,\'Y\')';
+
+            let result2 = await pool.request()
+                .input('dlgId', sql.Int, rows1[0].DLG_ID)
+                .input('dialogText', sql.NVarChar, dialogText)
+                .input('dlgType', sql.NVarChar, dlgTypeNum)
+                .input('dlgOrder', sql.Int, dlgOrder)
+                .query(insertQueryString1)  
+            //let rows2 = result2.recordset;
+            
+            var selectQueryString2 = '';
+            if(dlgType == 'text'){
+                selectQueryString2 = 'SELECT ISNULL(MAX(TEXT_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_TEXT';
+            }else if(dlgType == 'card'){
+                selectQueryString2 = 'SELECT ISNULL(MAX(CARD_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_CARD';
+            }else if(dlgType == 'media'){
+                selectQueryString2 = 'SELECT ISNULL(MAX(MEDIA_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_MEDIA';
+            }else{
+            }
+            
+            let result3 = await pool.request()
+                .query(selectQueryString2)
+            let rows3 = result3.recordset; //row3[0].TYPE_DLG_ID
+
+            var insertQueryString2 = '';
+            if(dlgType == 'text'){
+                insertQueryString2 = 'INSERT INTO TBL_DLG_TEXT(TEXT_DLG_ID,DLG_ID,CARD_TEXT,USE_YN) VALUES ' +
+                '(@typeDlgId,@dlgId,@dialogText,\'Y\')';
+            }else if(dlgType == 'card'){
+                insertQueryString2 = 'INSERT INTO TBL_DLG_CARD(CARD_DLG_ID,DLG_ID,CARD_TEXT,USE_YN) VALUES ' +
+                '(@typeDlgId,@dlgId,@dialogText,\'Y\')';
+            }else if(dlgType == 'media'){
+                insertQueryString2 = 'INSERT INTO TBL_DLG_MEDIA(MEDIA_DLG_ID,DLG_ID,CARD_TEXT,USE_YN) VALUES ' +
+                '(@typeDlgId,@dlgId,@dialogText,\'Y\')';
+            }else{
+            }
+
+            let result4 = await pool.request()
+                .input('typeDlgId', sql.Int, rows3[0].TYPE_DLG_ID)
+                .input('dlgId', sql.Int, rows1[0].DLG_ID)
+                .input('dialogText', sql.NVarChar, dialogText)
+                .query(insertQueryString2)
+
+            res.send({status:200 , message:'insert Success'});
+        
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'insert Dialog Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
     })
 });
 
