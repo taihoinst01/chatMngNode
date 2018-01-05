@@ -193,7 +193,14 @@ function insertDialog(){
         type: 'POST',
         data: $('#appInsertForm').serializeObject(),
         success: function(data) {
+            console.log(data);
             if(data.status == 200){
+                var inputUttrHtml = '';
+                inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
+                inputUttrHtml += '<input name="dlgChk" class="tweak-input"  onclick="" type="checkbox"/> </div> </td>';
+                inputUttrHtml += '<td class="txt_left" ><input type="hidden" name="' + data.DLG_ID + '" value="' + data.DLG_ID + '" />' + data.CARD_TEXT + '</td></tr>';
+                $('#dlgListTable').find('tbody').prepend(inputUttrHtml);
+
                 $('#addDialogClose').click();
             }
         }

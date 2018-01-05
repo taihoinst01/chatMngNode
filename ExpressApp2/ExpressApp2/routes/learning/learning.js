@@ -293,7 +293,7 @@ router.post('/insertDialog', function (req, res) {
                 .input('dialogText', sql.NVarChar, dialogText)
                 .query(insertQueryString2)
 
-            res.send({status:200 , message:'insert Success'});
+            res.send({status:200 , message:'insert Success', DLG_ID: rows1[0].DLG_ID, CARD_TEXT: dialogText});
         
         } catch (err) {
             console.log(err);
