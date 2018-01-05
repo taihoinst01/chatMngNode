@@ -29,7 +29,7 @@ router.post('/recommend', function (req, res) {
                 entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) >= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, -1)), 23))";
                 entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) <= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, 5)), 23))";
             }else if(selectType == 'lastMonth'){
-                entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(10), (select dateadd(month,-1,getdate())), 23)) + '%'";
+                entitiesQueryString += " AND (CONVERT(CHAR(7), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(7), (select dateadd(month,-1,getdate())), 23)) + '%'";
             }else{
             }
 
@@ -51,11 +51,11 @@ router.post('/recommend', function (req, res) {
                 if(entityArr[0] == ""){
                     item.intentList = [];
                 }else{
-                    for(var i = 0; i < entityArr.length; i++) {
-                        if(i == 0){
-                            luisQueryString += "SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'"
+                    for(var j = 0; j < entityArr.length; j++) {
+                        if(j == 0){
+                            luisQueryString += "SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[j] + "%'"
                         }else{
-                            luisQueryString += "OR LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'";
+                            luisQueryString += "OR LUIS_ENTITIES LIKE '%" + entityArr[j] + "%'";
                         }
                     }
                     let luisIntentList = await pool.request()
@@ -64,7 +64,7 @@ router.post('/recommend', function (req, res) {
                 }
                 result.push(item);
             }
-            
+
             res.send({list : result});
         } catch (err) {
             console.log(err)
