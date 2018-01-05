@@ -55,10 +55,10 @@ $(document).ready(function(){
         $('#layoutBackground').hide();
     });
 
-    //체크박스 전체선택
-    $('div[type=checkbox]').eq(0).click(function() {
+    //utter 체크박스 전체선택 
+    $('#allCheck').parent().click(function() {
         var checkedVal = false;
-        if (typeof $('div[type=checkbox]').attr('checked') != 'undefined') {
+        if (typeof $('#allCheck').parent().attr('checked') != 'undefined') {
             $("input[name=ch1]").each(function() {
                 if ( typeof $(this).parent().attr("checked") == 'undefined' ) {
                     $(this).parent().attr("checked", '');
@@ -73,7 +73,28 @@ $(document).ready(function(){
                 checkedVal = false;
             });
         }
-        changeBtnAble(checkedVal);
+        changeBtnAble('delete', checkedVal);
+    });
+
+    //dlg 체크박스 전체선택 
+    $('#checkAllDlg').parent().click(function() {
+        var checkedVal = false;
+        if (typeof $('#checkAllDlg').parent().attr('checked') != 'undefined') {
+            $("input[name=dlgChk]").each(function() {
+                if ( typeof $(this).parent().attr("checked") == 'undefined' ) {
+                    $(this).parent().attr("checked", '');
+                } 
+                checkedVal = true;
+            });
+        } else {
+            $("input[name=dlgChk]").each(function() {
+                if ( typeof $(this).parent().attr("checked") != 'undefined' ) {
+                    $(this).parent().removeAttr('checked');
+                }
+                checkedVal = false;
+            });
+        }
+        changeBtnAble('learn', checkedVal);
     });
     
 });
@@ -91,15 +112,16 @@ function selectDlgListAjax(intentName) {
         data: {'intentName':intentName},      //데이터를 json 형식, 객체형식으로 전송
 
         success: function(result) {          //성공했을 때 함수 인자 값으로 결과 값 나옴
-            
+            var inputUttrHtml = '';
             for (var i=0; i<result['list'].length; i++) {
                 var tmp = result['list'][i];
-                var inputUttrHtml = '';
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
-                inputUttrHtml += '<input name="dlgChk" class="tweak-input" type="checkbox"  onclick="" /> </div> </td>';
+                inputUttrHtml += '<input name="dlgChk" class="tweak-input"  onclick="" type="checkbox"/> </div> </td>';
+                inputUttrHtml += '<input type="hidden" name="' + tmp.CARD_TEXT + '" value="' + tmp.TEXT_DLG_ID + '" />';
+                inputUttrHtml += '<input type="hidden" name="' + tmp.CARD_TEXT + '" value="' + tmp.DLG_ID + '" /></td>';
                 inputUttrHtml += '<td class="txt_left" >' + tmp.CARD_TEXT + '</td></tr>';
-
-            }
+                //inputUttrHtml += '<td class="txt_center" > <a href="#" class="btn btn-small">Add</a> </td></tr>';
+            }//<a href="#" class="btn b02  btn-small js-modal-close">Cancel</a>
             $('#dlgListTable').find('tbody').prepend(inputUttrHtml);
         } 
 
@@ -116,26 +138,40 @@ $(document).on('click','div[type=checkbox]',function(event){
         $(this).removeAttr('checked');
     }
     
-
-    $("input[name=ch1]").each(function() {
-        if (typeof $(this).parent().attr("checked") != 'undefined') {
-            checkedVal = true;
-        } 
-    });
-    changeBtnAble(checkedVal);
+    if ( $(this).parents('.Tbl_wrap').find('input[type=checkbox]').attr('id') == 'allCheck' ) {
+        $("input[name=ch1]").each(function() {
+            if (typeof $(this).parent().attr("checked") != 'undefined') {
+                checkedVal = true;
+            } 
+        });
+        changeBtnAble('delete', checkedVal);
+    } else {
+        $("input[name=dlgChk]").each(function() {
+            if (typeof $(this).parent().attr("checked") != 'undefined') {
+                checkedVal = true;
+            } 
+        });
+        changeBtnAble('learn', checkedVal);
+    }
 });
 
-function changeBtnAble(boolVal){
-    if (!boolVal) {
-        $('#utterDelete').attr("disabled", "disabled");
-        $('#utterDelete').addClass("disable");   
-        $('#utterLearn').attr("disabled", "disabled");
-        $('#utterLearn').addClass("disable");  
+function changeBtnAble(btnName, boolVal){
+    if (btnName=='learn') {
+        if (!boolVal) {
+            $('#utterLearn').attr("disabled", "disabled");
+            $('#utterLearn').addClass("disable");  
+        } else {
+            $('#utterLearn').removeAttr('disabled');
+            $('#utterLearn').removeClass("disable");
+        }
     } else {
-        $('#utterDelete').removeAttr('disabled');
-        $('#utterDelete').removeClass("disable");
-        $('#utterLearn').removeAttr('disabled');
-        $('#utterLearn').removeClass("disable");
+        if (!boolVal) {
+            $('#utterDelete').attr("disabled", "disabled");
+            $('#utterDelete').addClass("disable");   
+        } else {
+            $('#utterDelete').removeAttr('disabled');
+            $('#utterDelete').removeClass("disable");
+        }
     }
 }
 
@@ -257,6 +293,3 @@ function initMordal(objId, objName) {
     $('#'+ objId ).prepend('<option selected="selected" disabled="disabled">' + objName + '</option>');
 
 }
-
-
-//dafsfdsfadsfdasfadsf
