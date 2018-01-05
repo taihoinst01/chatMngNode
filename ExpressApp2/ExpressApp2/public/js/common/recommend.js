@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    recommendAjax('all');
+    recommendAjax();
     $('.btn_delete').attr("disabled","disabled").css('background','url(../images/btn_delete_dis.png)')
     $('.span_delete').css('color','#465361c4');
 
@@ -8,14 +8,16 @@ $(document).ready(function () {
     });
 
     $('#recommendPeriod').change(function(e){
-        recommendAjax($(e.target).find('option:selected').val());
+        $('#currentPage').val('1');
+        recommendAjax();
     });
 })
 
-function recommendAjax(selectType){
+function recommendAjax(){
 
     params = {
-        'selectType' : selectType
+        'selectType' : $('#recommendPeriod').find('option:selected').val(),
+        'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val()
     };
     $.tiAjax({
         type: 'POST',
@@ -54,6 +56,8 @@ function recommendAjax(selectType){
                 }
             }
             $('#recommendContents').append(item);
+            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+
         }
     });
 }
@@ -67,6 +71,13 @@ $(document).on('click','div[type=checkbox]',function(e){
         $(this).removeAttr('checked');
     }
     checkBoxHandler(e);
+});
+
+$(document).on('click','.li_paging',function(e){
+    if($(e.target).val() != $('#currentPage').val()){
+        $('#currentPage').val($(e.target).val())
+        recommendAjax();
+    }
 });
 
 //체크박스 click 이벤트 핸들러

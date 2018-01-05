@@ -2,6 +2,7 @@
 var express = require('express');
 var sql = require('mssql');
 var dbConfig = require('../../config/dbConfig');
+var paging = require('../../config/paging');
 var router = express.Router();
 
 /* GET users listing. */
@@ -16,10 +17,18 @@ router.get('/recommend', function (req, res) {
 
 router.post('/recommend', function (req, res) {
     var selectType = req.body.selectType;
+    var currentPage = req.body.currentPage;
 
     (async () => {
         try {
-            var entitiesQueryString = "SELECT SEQ,QUERY,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
+            var entitiesQueryString = "SELECT TBZ.* "+
+            "FROM (SELECT TBY.* "+
+            "FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) AS NUM, "+
+            "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "+
+            "CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX, "+
+            "TBX.* "+
+            "FROM ( "+
+            "SELECT SEQ,QUERY,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
             "FROM TBL_QUERY_ANALYSIS_RESULT " + 
             "WHERE RESULT='D'";
             
@@ -33,8 +42,13 @@ router.post('/recommend', function (req, res) {
             }else{
             }
 
+            entitiesQueryString += " ) TBX) TBY) TBZ";
+            entitiesQueryString += " WHERE PAGEIDX = @currentPage";
+            entitiesQueryString += " ORDER BY NUM";
+
             let pool = await sql.connect(dbConfig)
             let result1 = await pool.request()
+                .input('currentPage', sql.Int, currentPage)
                 .query(entitiesQueryString)
             let rows = result1.recordset;
 
@@ -65,7 +79,12 @@ router.post('/recommend', function (req, res) {
                 result.push(item);
             }
 
-            res.send({list : result});
+            if(rows.length > 0){
+                res.send({list : result, pageList : paging.pagination(currentPage,rows[0].TOTCNT)});
+            }else{
+                res.send({list : result});
+            }
+
         } catch (err) {
             console.log(err)
             // ... error checks
