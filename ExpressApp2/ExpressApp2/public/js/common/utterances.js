@@ -93,6 +93,10 @@ $(document).ready(function(){
         changeBtnAble('delete', checkedVal);
     });
 
+	$('#addDialogClose , #addDialogCancel').click(function(){
+        $('#dialogText').val('');
+    });
+
     //dlg 체크박스 전체선택 
     $('#checkAllDlg').parent().click(function() {
         var checkedVal = false;
@@ -120,6 +124,37 @@ $(document).ready(function(){
 $(document).on('change','#intentNameList',function(event){
     selectDlgListAjax($("#intentNameList option:selected").val());
 });
+
+//다이얼로그 생성 유효성 검사
+function dialogValidation(type){
+    if(type == 'dialogInsert'){
+        var dialogText = $('#dialogText').val();
+        
+        if(dialogText != "") {
+            $('#btnAddDlg').removeClass("disable");
+            $('#btnAddDlg').attr("disabled", false);
+        } else {
+            $('#btnAddDlg').attr("disabled", "disabled");
+            $('#btnAddDlg').addClass("disable");
+        }
+    }
+}
+
+//다이얼로그 생성
+function insertDialog(){
+
+    $.ajax({
+        url: '/learning/insertDialog',
+        dataType: 'json',
+        type: 'POST',
+        data: $('#appInsertForm').serializeObject(),
+        success: function(data) {
+            if(data.status == 200){
+                $('#addDialogClose').click();
+            }
+        }
+    });
+}
 
 function selectDlgListAjax(intentName) {
     $.ajax({
@@ -310,7 +345,6 @@ function initMordal(objId, objName) {
     $('#'+ objId ).prepend('<option selected="selected" disabled="disabled">' + objName + '</option>');
 
 }
-
 
 function deleteUtter() {
 
