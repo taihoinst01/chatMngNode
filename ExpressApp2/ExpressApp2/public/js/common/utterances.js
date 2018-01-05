@@ -206,7 +206,6 @@ function insertDialog(){
         type: 'POST',
         data: $('#appInsertForm').serializeObject(),
         success: function(data) {
-            console.log(data);
             if(data.status == 200){
                 var inputUttrHtml = '';
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
