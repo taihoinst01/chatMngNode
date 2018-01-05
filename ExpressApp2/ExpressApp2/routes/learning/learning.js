@@ -80,11 +80,13 @@ router.post('/recommend', function (req, res) {
 });
 
 router.get('/utterances', function (req, res) {
+	var utterance = req.query.utterance;
 
     req.session.selMenus = 'ms2';
     res.render('utterances', {
         selMenus: req.session.selMenus,
-        title: 'learning utterances page'
+        title: 'learning utterances page',
+		utterance: utterance
     } );
 });
 

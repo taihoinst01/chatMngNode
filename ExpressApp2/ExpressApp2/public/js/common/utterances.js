@@ -23,6 +23,11 @@ $(document).keydown(function(e) {
 
 $(document).ready(function(){
 
+    // recommend에서 넘어온 문장 insert
+    var recommendParam = $('#utterence').val();
+    if(recommendParam){
+        utterInput(recommendParam);
+    }
     // Utterance 입력
     $("#iptUtterance").keypress(function(e) {
 
@@ -38,6 +43,18 @@ $(document).ready(function(){
             $("#iptUtterance").attr("readonly",false);
         }
 
+    });
+
+    // Utterance 삭제
+    $('#utterDelete').click(function(){
+
+        $('.checkUtter').each(function(){
+            if($(this).attr('checked') == 'checked') {
+                $(this).parent().parent().remove();
+            }
+        });
+        $('input[name=ch1All]').parent().attr('checked', false);
+        changeBtnAble(false);
     });
 
     //다이얼로그 생성 모달 닫는 이벤트(초기화)
@@ -198,15 +215,15 @@ function utterInput(queryText) {
 
                 $('#iptUtterance').val('');
                 var inputUttrHtml = '';
-                inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
+                inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox"  onclick="" /> </div> </td>';
-                inputUttrHtml += '<td class="txt_left" >' + utter + '</td>';
+                inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
                 inputUttrHtml += '<td class="txt_right02" >'; 
                 inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
 
                 if(selBox != null) {
                     for( var i = 0 ; i < selBox.length; i++) {
-                        inputUttrHtml += '<option value="' + selBox[i]['LUIS_INTENT'] + '" selected>' + selBox[i]['LUIS_INTENT'] + '</option>'
+                        inputUttrHtml += '<option value="' + selBox[i]['LUIS_INTENT'] + '">' + selBox[i]['LUIS_INTENT'] + '</option>'
                     }
                 } else {
                     inputUttrHtml += '<option value="" selected>no intent</option>'
@@ -291,5 +308,10 @@ function initMordal(objId, objName) {
 
     $('#'+ objId + ' option:eq(0)').remove();
     $('#'+ objId ).prepend('<option selected="selected" disabled="disabled">' + objName + '</option>');
+
+}
+
+
+function deleteUtter() {
 
 }
