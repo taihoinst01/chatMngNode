@@ -174,6 +174,7 @@ function selectDlgListAjax(intentName) {
                 inputUttrHtml += '<td class="txt_left" >' + tmp.CARD_TEXT + '</td></tr>';
                 //inputUttrHtml += '<td class="txt_center" > <a href="#" class="btn btn-small">Add</a> </td></tr>';
             }//<a href="#" class="btn b02  btn-small js-modal-close">Cancel</a>
+            $('#dlgListTable').find('tbody').empty();
             $('#dlgListTable').find('tbody').prepend(inputUttrHtml);
         } 
 
