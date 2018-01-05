@@ -46,6 +46,50 @@ $(document).ready(function(){
     });
 
     // Utterance 삭제
+    $('#utterLearn').click(function(){
+        
+        var utterBox = $("#entityUtteranceTextTable div[type=checkbox]");
+        var intent = "";
+        var entity = "";
+        var dlgId = "";
+        utterBox.each(function(n){
+    
+            if ($(utterBox[n]).attr("checked") == "checked") {
+                var tr = $(utterBox[n]).parent().parent();
+                var td = tr.children();
+                intent = $(td.eq(2).children()).val();
+                entity = $(td.eq(1).children()).val();        
+            }
+        });
+
+        var dlgBox = $("#dlgListTable div[type=checkbox]");
+
+        dlgBox.each(function(n){
+    
+            if ($(dlgBox[n]).attr("checked") == "checked") {
+                var tr = $(dlgBox[n]).parent().parent();
+                var td = tr.children();
+                dlgId = $(td.eq(1).children()).val();
+            }
+        });
+
+        $.ajax({
+            url: '/learning/learnUtterAjax',
+            dataType: 'json',
+            type: 'POST',
+            data: {'intent':intent, 'entity':entity, 'dlgId':dlgId},
+            success: function(result) {
+                if(result['result'] == true) {
+                    alert("추가 하였습니다.");
+                }else{
+                    alert("실패하였습니다.");
+                }
+            }
+        });
+
+    });
+
+    // Utterance 삭제
     $('#utterDelete').click(function(){
 
         $('.checkUtter').each(function(){
@@ -169,9 +213,7 @@ function selectDlgListAjax(intentName) {
                 var tmp = result['list'][i];
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
                 inputUttrHtml += '<input name="dlgChk" class="tweak-input"  onclick="" type="checkbox"/> </div> </td>';
-                inputUttrHtml += '<input type="hidden" name="' + tmp.CARD_TEXT + '" value="' + tmp.TEXT_DLG_ID + '" />';
-                inputUttrHtml += '<input type="hidden" name="' + tmp.CARD_TEXT + '" value="' + tmp.DLG_ID + '" /></td>';
-                inputUttrHtml += '<td class="txt_left" >' + tmp.CARD_TEXT + '</td></tr>';
+                inputUttrHtml += '<td class="txt_left" ><input type="hidden" name="' + tmp.DLG_ID + '" value="' + tmp.DLG_ID + '" />' + tmp.CARD_TEXT + '</td></tr>';
                 //inputUttrHtml += '<td class="txt_center" > <a href="#" class="btn btn-small">Add</a> </td></tr>';
             }//<a href="#" class="btn b02  btn-small js-modal-close">Cancel</a>
             $('#dlgListTable').find('tbody').empty();

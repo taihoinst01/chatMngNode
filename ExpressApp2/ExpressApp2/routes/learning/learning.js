@@ -164,16 +164,24 @@ router.get('/entities', function (req, res) {
 router.post('/selectDlgListAjax', function (req, res) {
 
     var intentName = req.body.intentName;
-    var queryText =   'SELECT TOP 10 A.TEXT_DLG_ID, A.DLG_ID, A.CARD_TITLE, A.CARD_TEXT '
-                    + 'FROM TBL_DLG_TEXT A, ( select B.DLG_ID, B.DLG_TYPE '
-                                            + 'from TBL_DLG_RELATION_LUIS A, TBL_DLG B '
-                                            + 'WHERE 1=1 '
-                                            + 'AND A.LUIS_INTENT =\''+ intentName +'\' '
-                                            + 'AND A.DLG_ID = B.DLG_ID '
-                                            + 'AND B.DLG_TYPE = \'2\') B '
-                    + 'WHERE 1=1 '
-                    + 'AND A.DLG_ID = B.DLG_ID '
-                    + 'AND A.USE_YN = \'Y\' ';
+    var queryText = "SELECT DL.DLG_ID, DL.DLG_TYPE, "
+                  + "CASE WHEN DLG_TYPE = 2 THEN ( SELECT CARD_TEXT FROM TBL_DLG_TEXT TE WHERE TE.DLG_ID = DL.DLG_ID)"
+                  + " WHEN DLG_TYPE = 3 THEN ( SELECT CASE WHEN CARD_TITLE IS NULL THEN CARD_TEXT"
+                                                        + " WHEN CARD_TEXT IS NULL THEN CARD_TITLE ELSE CARD_TEXT END CARD_TEXT"
+                                            + " FROM TBL_DLG_CARD CA"
+                                            + " WHERE CARD_ORDER_NO = 1"
+                                            + " AND CA.DLG_ID = DL.DLG_ID )"
+                  + " WHEN DLG_TYPE = 4 THEN ( SELECT CASE WHEN CARD_TITLE IS NULL THEN CARD_TEXT"
+                                                        + " WHEN CARD_TEXT IS NULL THEN CARD_TITLE END CARD_TEXT"
+                                            + " FROM TBL_DLG_MEDIA ME"
+                                            + " WHERE ME.DLG_ID = DL.DLG_ID )"
+                  + " END CARD_TEXT"
+                  + " FROM TBL_DLG DL"
+                  + " WHERE DLG_ID IN ("
+                        + " SELECT DISTINCT DLG_ID "
+                        + " FROM TBL_DLG_RELATION_LUIS"
+                        + " WHERE LUIS_INTENT = '" + intentName + "'"
+                        + " AND USE_YN = 'Y' )";
 
     (async () => {
         try {
@@ -193,14 +201,14 @@ router.post('/selectDlgListAjax', function (req, res) {
             res.send({list : result});
         
         } catch (err) {
-            //res.render('utterances', {'err': err})
+            console.log(err);
         } finally {
             sql.close();
         }
     })()
 
     sql.on('error', err => {
-        //console.log(err);
+        console.log(err);
     })
 });
 
@@ -281,7 +289,40 @@ router.post('/insertDialog', function (req, res) {
 });
 
 router.post('/learnUtterAjax', function (req, res) {
+    var intent = req.body.intent;
+    var entity = req.body.entity;
+    var dlgId = req.body.dlgId;
+
+    var queryText = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) "
+                  + "VALUES( 'kona_luis_06', '" + intent + "','" + entity + "'," + dlgId + ", 'D', 'Y' )";
+
+    (async () => {
+        try {
+            let pool = await sql.connect(dbConfig)
+            let result1 = await pool.request()
+                .query(queryText)
+            
+            console.log(result1);
+
+            let rows = result1.rowsAffected;
+
+            if(rows[0] == 1) {
+                res.send({result:true});
+            } else {
+                res.send({result:false});
+            }
+        
+        } catch (err) {
+            // ... error checks
+            console.log(err);
+        } finally {
+            sql.close();
+        }
+    })()
     
+    sql.on('error', err => {
+        // ... error handler
+    })
 });
 
 
