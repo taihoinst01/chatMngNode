@@ -216,7 +216,7 @@ function utterInput(queryText) {
                 $('#iptUtterance').val('');
                 var inputUttrHtml = '';
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
-                inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox"  onclick="" /> </div> </td>';
+                inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
                 inputUttrHtml += '<td class="txt_right02" >'; 
                 inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
@@ -225,6 +225,7 @@ function utterInput(queryText) {
                     for( var i = 0 ; i < selBox.length; i++) {
                         inputUttrHtml += '<option value="' + selBox[i]['LUIS_INTENT'] + '">' + selBox[i]['LUIS_INTENT'] + '</option>'
                     }
+                    selectDlgListAjax(selBox[0]['LUIS_INTENT']);
                 } else {
                     inputUttrHtml += '<option value="" selected>no intent</option>'
                 }
@@ -232,6 +233,7 @@ function utterInput(queryText) {
                 inputUttrHtml += '</select></td></tr>';
                 
                 $('#entityUtteranceTextTable').find('tbody').prepend(inputUttrHtml);
+                
             }
         } //function끝
 
