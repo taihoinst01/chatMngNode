@@ -81,6 +81,19 @@ $(document).ready(function(){
             success: function(result) {
                 if(result['result'] == true) {
                     alert("추가 하였습니다.");
+
+                    $('.checkUtter').each(function(){
+                        if($(this).attr('checked') == 'checked') {
+                            $(this).parent().parent().remove();
+                        }
+                    });
+                    $('input[name=ch1All]').parent().attr('checked', false);
+                    changeBtnAble(false);
+
+                    $('#dlgListTable tbody').remove();
+
+                    $('#utterLearn').attr("disabled", "disabled");
+                    $('#utterLearn').addClass("disable"); 
                 }else{
                     alert("실패하였습니다.");
                 }
