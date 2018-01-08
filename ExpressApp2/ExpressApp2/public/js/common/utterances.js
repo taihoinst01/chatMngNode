@@ -306,6 +306,7 @@ function utterInput(queryText) {
         data: {'iptUtterance':queryText},      //데이터를 json 형식, 객체형식으로 전송
 
         success: function(result) {          //성공했을 때 함수 인자 값으로 결과 값 나옴
+
             var entities = result['entities'];
             if(entities != null) {
                 entities = entities.split(",");
@@ -322,6 +323,13 @@ function utterInput(queryText) {
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
+				if(result.commonEntities){
+                    for(var i = 0; i < result.commonEntities.length ; i++){
+                        inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
+                        inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
+                        inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result.commonEntities[i].ENTITY_VALUE + '"/>' + result.commonEntities[i].ENTITY_VALUE + '::' + result.commonEntities[i].ENTITY + '</td>';
+                    }
+                }
                 //inputUttrHtml += '<td class="txt_right02" >'; 
                 //inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
                 /*

@@ -156,7 +156,29 @@ router.post('/utterInputAjax', function(req, res, next) {
                 
                 let rows2 = result2.recordset
 
-                res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2});
+                var queryString2 = "SELECT ENTITY_VALUE,ENTITY FROM TBL_COMMON_ENTITY_DEFINE WHERE ENTITY IN (";
+                for(var i = 0; i < entityArr.length; i++) {
+                    queryString2 += "'";
+                    queryString2 += entityArr[i];
+                    queryString2 += "'";
+                    queryString2 += (i != entityArr.length-1)? "," : "";
+                }
+                queryString2 += ")";
+                let result3 = await pool.request()
+                .query(queryString2)
+                
+                let rows3 = result3.recordset
+                var commonEntities = [];
+                for(var i = 0; i < rows3.length; i++) {
+                    if(iptUtterance.indexOf(rows3[i].ENTITY_VALUE) != -1){
+                        var item = {};
+                        item.ENTITY_VALUE = rows3[i].ENTITY_VALUE;
+                        item.ENTITY = rows3[i].ENTITY;
+                        commonEntities.push(item);
+                    }
+                }
+
+                res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2, commonEntities: commonEntities});
             } else {
                 res.send({result:true, iptUtterance:iptUtterance});
             }
