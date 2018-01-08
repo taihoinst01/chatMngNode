@@ -44,15 +44,10 @@ function recommendAjax(){
                     item += query;
                     item += '</a></td>' +
                     '<td class="txt_center">' +
-                    '<select id="" name="" class="select_box">' +
-                    '<option value="" selected>intent select..</option>';
-                    for(var j = 0; j < data.list[i].intentList.length; j++){
-                        item += '<option value="">'+data.list[i].intentList[j].LUIS_INTENT+'</option>';
-                    }
-                    item += '</select>';
-                    item += '</td>';
-                    item += '<td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick();"></a></td>';
-                    item += '</tr>';
+                    data.list[i].UPD_DT.split('T')[0] + ' ' + (data.list[i].UPD_DT.split('T')[1]).split('.')[0] +
+                    '</td>' +
+                    '<td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick();"></a></td>' +
+                    '</tr>';
                 }
             }
             $('#recommendContents').append(item);

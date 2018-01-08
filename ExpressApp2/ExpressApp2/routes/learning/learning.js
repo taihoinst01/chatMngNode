@@ -28,7 +28,7 @@ router.post('/recommend', function (req, res) {
             "CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX, "+
             "TBX.* "+
             "FROM ( "+
-            "SELECT SEQ,QUERY,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
+            "SELECT SEQ,QUERY,UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
             "FROM TBL_QUERY_ANALYSIS_RESULT " + 
             "WHERE RESULT='D'";
             
@@ -52,15 +52,18 @@ router.post('/recommend', function (req, res) {
                 .query(entitiesQueryString)
             let rows = result1.recordset;
 
+            
             var result = [];
             for(var i = 0; i < rows.length; i++){
                 var item = {};
                 var query = rows[i].QUERY;
                 var entities = rows[i].ENTITIES;
+                var updDt = rows[i].UPD_DT;
                 var entityArr = rows[i].ENTITIES.split(',');
                 var luisQueryString = "";
 
                 item.QUERY = query;
+                item.UPD_DT = updDt;
                 item.ENTITIES = entities;
                 if(entityArr[0] == ""){
                     item.intentList = [];
