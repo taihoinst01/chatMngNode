@@ -32,6 +32,7 @@ $(document).ready(function(){
     $("#iptUtterance").keypress(function(e) {
 
         if (e.keyCode == 13){	//	Enter Key
+
             $("#iptUtterance").attr("readonly",true);
             var queryText = $(this).val();
             if(queryText.trim() == "" || queryText.trim() == null) {
@@ -81,6 +82,19 @@ $(document).ready(function(){
             success: function(result) {
                 if(result['result'] == true) {
                     alert("추가 하였습니다.");
+
+                    $('.checkUtter').each(function(){
+                        if($(this).attr('checked') == 'checked') {
+                            $(this).parent().parent().remove();
+                        }
+                    });
+                    $('input[name=ch1All]').parent().attr('checked', false);
+                    changeBtnAble(false);
+
+                    $('#dlgListTable tbody').remove();
+
+                    $('#utterLearn').attr("disabled", "disabled");
+                    $('#utterLearn').addClass("disable"); 
                 }else{
                     alert("실패하였습니다.");
                 }
@@ -194,6 +208,12 @@ function insertDialog(){
         data: $('#appInsertForm').serializeObject(),
         success: function(data) {
             if(data.status == 200){
+                var inputUttrHtml = '';
+                inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
+                inputUttrHtml += '<input name="dlgChk" class="tweak-input"  onclick="" type="checkbox"/> </div> </td>';
+                inputUttrHtml += '<td class="txt_left" ><input type="hidden" name="' + data.DLG_ID + '" value="' + data.DLG_ID + '" />' + data.CARD_TEXT + '</td></tr>';
+                $('#dlgListTable').find('tbody').prepend(inputUttrHtml);
+
                 $('#addDialogClose').click();
             }
         }
@@ -282,6 +302,12 @@ function changeBtnAble(btnName, boolVal){
 
 function utterInput(queryText) {
 
+    if($('#entityUtteranceTextTable tbody > tr').length > 0){
+        alert('더 이상 등록 할 수 없습니다.');
+        $('#iptUtterance').val('');
+        return ;
+    }
+
     $.ajax({
         url: '/learning/utterInputAjax',                //주소
         dataType: 'json',                  //데이터 형식
@@ -289,6 +315,7 @@ function utterInput(queryText) {
         data: {'iptUtterance':queryText},      //데이터를 json 형식, 객체형식으로 전송
 
         success: function(result) {          //성공했을 때 함수 인자 값으로 결과 값 나옴
+
             var entities = result['entities'];
             if(entities != null) {
                 entities = entities.split(",");
@@ -297,7 +324,8 @@ function utterInput(queryText) {
             }
 
             if ( result['result'] == true ) {
-                var utter = utterHighlight(entities,result['iptUtterance']);
+                //var utter = utterHighlight(entities,result['iptUtterance']);
+                var utter = utterHighlight(result.commonEntities,result['iptUtterance']);
                 var selBox = result['selBox'];
 
                 $('#iptUtterance').val('');
@@ -305,9 +333,16 @@ function utterInput(queryText) {
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
-                inputUttrHtml += '<td class="txt_right02" >'; 
-                inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
-
+				if(result.commonEntities){
+                    for(var i = 0; i < result.commonEntities.length ; i++){
+                        inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
+                        inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
+                        inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result.commonEntities[i].ENTITY_VALUE + '"/>' + result.commonEntities[i].ENTITY_VALUE + '::' + result.commonEntities[i].ENTITY + '</td>';
+                    }
+                }
+                //inputUttrHtml += '<td class="txt_right02" >'; 
+                //inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
+                /*
                 if(selBox != null) {
                     for( var i = 0 ; i < selBox.length; i++) {
                         inputUttrHtml += '<option value="' + selBox[i]['LUIS_INTENT'] + '">' + selBox[i]['LUIS_INTENT'] + '</option>'
@@ -318,7 +353,7 @@ function utterInput(queryText) {
                 }
 
                 inputUttrHtml += '</select></td></tr>';
-                
+                */
                 $('#entityUtteranceTextTable').find('tbody').prepend(inputUttrHtml);
                 
             }
@@ -330,7 +365,7 @@ function utterInput(queryText) {
 function utterHighlight(entities, utter) {
     var result = utter;
     for(var i = 0; i < entities.length; i++) {
-        result = result.replace(entities[i], '<span class="highlight">' + entities[i] + '</span>');
+        result = result.replace(entities[i].ENTITY_VALUE, '<span class="highlight">' + entities[i].ENTITY_VALUE + '</span>');
     }
     return result;
 }

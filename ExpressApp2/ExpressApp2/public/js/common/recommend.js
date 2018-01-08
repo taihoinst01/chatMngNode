@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    recommendAjax('all');
+    recommendAjax();
     $('.btn_delete').attr("disabled","disabled").css('background','url(../images/btn_delete_dis.png)')
     $('.span_delete').css('color','#465361c4');
 
@@ -8,14 +8,16 @@ $(document).ready(function () {
     });
 
     $('#recommendPeriod').change(function(e){
-        recommendAjax($(e.target).find('option:selected').val());
+        $('#currentPage').val('1');
+        recommendAjax();
     });
 })
 
-function recommendAjax(selectType){
+function recommendAjax(){
 
     params = {
-        'selectType' : selectType
+        'selectType' : $('#recommendPeriod').find('option:selected').val(),
+        'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val()
     };
     $.tiAjax({
         type: 'POST',
@@ -30,6 +32,7 @@ function recommendAjax(selectType){
                     item += '<tr>' +
                     '<td class="txt_left" style="width: 3%;">' +
                     '<div class="check-radio-tweak-wrapper" type="checkbox">' +
+                    '<input type="hidden" class="seq" value="'+data.list[i].SEQ+'">'+
                     '<input type="checkbox" class="tweak-input" id="" name=""/></div></td>' +
                     '<td class="txt_left" colspan="3"><a href="/learning/utterances?utterance='+data.list[i].QUERY+'" class="dashLink" >';
                     var query = data.list[i].QUERY;
@@ -42,18 +45,15 @@ function recommendAjax(selectType){
                     item += query;
                     item += '</a></td>' +
                     '<td class="txt_center">' +
-                    '<select id="" name="" class="select_box">' +
-                    '<option value="" selected>intent select..</option>';
-                    for(var j = 0; j < data.list[i].intentList.length; j++){
-                        item += '<option value="">'+data.list[i].intentList[j].LUIS_INTENT+'</option>';
-                    }
-                    item += '</select>';
-                    item += '</td>';
-                    item += '<td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick();"></a></td>';
-                    item += '</tr>';
+                    data.list[i].UPD_DT +
+                    '</td>' +
+                    //'<td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick();"></a></td>' +
+                    '</tr>';
                 }
             }
             $('#recommendContents').append(item);
+            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+
         }
     });
 }
@@ -67,6 +67,13 @@ $(document).on('click','div[type=checkbox]',function(e){
         $(this).removeAttr('checked');
     }
     checkBoxHandler(e);
+});
+
+$(document).on('click','.li_paging',function(e){
+    if($(e.target).val() != $('#currentPage').val()){
+        $('#currentPage').val($(e.target).val())
+        recommendAjax();
+    }
 });
 
 //체크박스 click 이벤트 핸들러
@@ -103,5 +110,19 @@ function checkBoxHandler(e){
 
 //delete 버튼 클릭 이벤트
 function deleteRecommend(){
-    alert('미구현입니다');
+    
+    var arry = [];
+    for(var i = 0; i < $('#recommendContents div[type=checkbox][checked]').size(); i++)
+    {
+        arry.push($('#recommendContents div[type=checkbox][checked] .seq')[i].value);
+    }
+     $.ajax({
+            type: 'POST',
+            data : {'seq' : arry+''},
+            url : '/learning/deleteRecommend',
+            isloading : true,
+            success: function(data){
+                recommendAjax('all');
+            }
+         });
 }

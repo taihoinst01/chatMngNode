@@ -307,15 +307,15 @@ ul.tabs li.active { height: 38px;line-height: 38px;background: #002c5f;color:#ff
 
 /* utterances page divide 2018-01-02 dyyoo  */
 #utterDiv .utterLeft {
-  width : 60%;
+  width : 50%;
   height : 100%;
   padding : 10px;
   float: left;
 }
 
 #utterDiv .utterRight {
-  width : 35%;
-  height : 600px;
+  width : 45%;
+  height : 620px;
   padding : 10px;
   margin: 20px 20px 2px 2px;
   float: right;

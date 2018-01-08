@@ -15,7 +15,8 @@
 </head>
 
 <body class="main">
-	
+	<input type="hidden" name='currentPage' id="currentPage" value="1" />
+
     <!--<link rel="import" href="./header.html">    -->
     <%include  ./header.html%>
     <%include  ./header4Luis.html%>
@@ -41,13 +42,15 @@
                     <tr>
                         <th class="txt_left" style="width: 3%;"><input type="checkbox" class="tweak-input" id="recommendAll" name="recommendAll"/></th>
                         <th class="txt_left" colspan="3">학습 추천 문장<span></span></th>
-                        <th class="txt_center">추천 다이얼로그<span></span> </th>
-                        <th class="txt_right02"></th>
+                        <th class="txt_center">등록 날짜<span></span> </th>
+                       <!-- <th class="txt_right02"></th> -->
                     </tr>
                 </thead>
                 <tbody id="recommendContents">
                 </tbody>
-            </table>          
+            </table> 
+            <div id="pagination">
+            </div>
         </div>
     </div>
         <hr>

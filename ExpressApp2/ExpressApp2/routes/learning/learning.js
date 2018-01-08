@@ -2,6 +2,7 @@
 var express = require('express');
 var sql = require('mssql');
 var dbConfig = require('../../config/dbConfig');
+var paging = require('../../config/paging');
 var router = express.Router();
 
 /* GET users listing. */
@@ -17,10 +18,18 @@ router.get('/recommend', function (req, res) {
 
 router.post('/recommend', function (req, res) {
     var selectType = req.body.selectType;
+    var currentPage = req.body.currentPage;
 
     (async () => {
         try {
-            var entitiesQueryString = "SELECT SEQ,QUERY,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
+            var entitiesQueryString = "SELECT TBZ.* "+
+            "FROM (SELECT TBY.* "+
+            "FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) AS NUM, "+
+            "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "+
+            "CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX, "+
+            "TBX.* "+
+            "FROM ( "+
+            "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
             "FROM TBL_QUERY_ANALYSIS_RESULT " + 
             "WHERE RESULT='D'";
             
@@ -34,20 +43,30 @@ router.post('/recommend', function (req, res) {
             }else{
             }
 
+            entitiesQueryString += " ) TBX) TBY) TBZ";
+            entitiesQueryString += " WHERE PAGEIDX = @currentPage";
+            entitiesQueryString += " ORDER BY NUM";
+
             let pool = await sql.connect(dbConfig)
             let result1 = await pool.request()
+                .input('currentPage', sql.Int, currentPage)
                 .query(entitiesQueryString)
             let rows = result1.recordset;
 
+            
             var result = [];
             for(var i = 0; i < rows.length; i++){
                 var item = {};
                 var query = rows[i].QUERY;
+                var seq = rows[i].SEQ;
                 var entities = rows[i].ENTITIES;
+                var updDt = rows[i].UPD_DT;
                 var entityArr = rows[i].ENTITIES.split(',');
                 var luisQueryString = "";
 
                 item.QUERY = query;
+                item.UPD_DT = updDt;
+                item.SEQ = seq;
                 item.ENTITIES = entities;
                 if(entityArr[0] == ""){
                     item.intentList = [];
@@ -66,7 +85,12 @@ router.post('/recommend', function (req, res) {
                 result.push(item);
             }
 
-            res.send({list : result});
+            if(rows.length > 0){
+                res.send({list : result, pageList : paging.pagination(currentPage,rows[0].TOTCNT)});
+            }else{
+                res.send({list : result});
+            }
+
         } catch (err) {
             console.log(err)
             // ... error checks
@@ -133,7 +157,29 @@ router.post('/utterInputAjax', function(req, res, next) {
                 
                 let rows2 = result2.recordset
 
-                res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2});
+                var queryString2 = "SELECT ENTITY_VALUE,ENTITY FROM TBL_COMMON_ENTITY_DEFINE WHERE ENTITY IN (";
+                for(var i = 0; i < entityArr.length; i++) {
+                    queryString2 += "'";
+                    queryString2 += entityArr[i];
+                    queryString2 += "'";
+                    queryString2 += (i != entityArr.length-1)? "," : "";
+                }
+                queryString2 += ")";
+                let result3 = await pool.request()
+                .query(queryString2)
+                
+                let rows3 = result3.recordset
+                var commonEntities = [];
+                for(var i = 0; i < rows3.length; i++) {
+                    if(iptUtterance.indexOf(rows3[i].ENTITY_VALUE) != -1){
+                        var item = {};
+                        item.ENTITY_VALUE = rows3[i].ENTITY_VALUE;
+                        item.ENTITY = rows3[i].ENTITY;
+                        commonEntities.push(item);
+                    }
+                }
+
+                res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2, commonEntities: commonEntities});
             } else {
                 res.send({result:true, iptUtterance:iptUtterance});
             }
@@ -275,7 +321,7 @@ router.post('/insertDialog', function (req, res) {
                 .input('dialogText', sql.NVarChar, dialogText)
                 .query(insertQueryString2)
 
-            res.send({status:200 , message:'insert Success'});
+            res.send({status:200 , message:'insert Success', DLG_ID: rows1[0].DLG_ID, CARD_TEXT: dialogText});
         
         } catch (err) {
             console.log(err);
@@ -326,6 +372,30 @@ router.post('/learnUtterAjax', function (req, res) {
     })
 });
 
+
+router.post('/deleteRecommend',function(req,res){
+    var seqs = req.body.seq;
+    var arryseq = seqs.split(',');
+        (async () => {
+        try{
+                let pool = await sql.connect(dbConfig)
+                for(var i = 0 ; i < arryseq.length; i ++)
+                {
+                   var deleteQueryString1 = "UPDATE TBL_QUERY_ANALYSIS_RESULT SET RESULT='T' WHERE seq='"+arryseq[i]+"'";
+                   let result5 = await pool.request().query(deleteQueryString1); 
+                }
+                res.send();
+            }catch(err){
+            
+            }finally {
+                sql.close();
+            } 
+        })()
+        
+        sql.on('error', err => {
+            console.log(err);
+        })
+});
 
 
 module.exports = router;
