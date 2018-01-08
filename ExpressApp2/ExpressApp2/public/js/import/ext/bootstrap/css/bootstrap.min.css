@@ -2657,7 +2657,7 @@ select[multiple].form-group-lg .form-control, textarea.form-group-lg .form-contr
 }
 .btn-primary {
     color: #fff;
-    background-color: #002c5f;
+    background-color: #0078D7;
 }
 .btn-primary.active, .btn-primary.focus, .btn-primary:active, .btn-primary:focus, .btn-primary:hover, .open>.dropdown-toggle.btn-primary {color: #fff;background-color: #011022;}
 .btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary {
