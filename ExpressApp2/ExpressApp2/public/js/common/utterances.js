@@ -153,6 +153,8 @@ $(document).ready(function(){
     });
 
 	$('#addDialogClose , #addDialogCancel').click(function(){
+        $('#mediaCarouselLayout').css('display','none');
+        $('#cardLayout').css('display','none');
         $('#appInsertForm')[0].reset();
     });
 
