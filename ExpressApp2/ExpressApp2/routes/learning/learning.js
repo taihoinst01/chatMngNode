@@ -171,11 +171,45 @@ router.post('/utterInputAjax', function(req, res, next) {
                 let rows3 = result3.recordset
                 var commonEntities = [];
                 for(var i = 0; i < rows3.length; i++) {
+                    // 중복되는 엔티티가 있는 경우 길이가 긴 것이 우선순위를 갖음
                     if(iptUtterance.indexOf(rows3[i].ENTITY_VALUE) != -1){
-                        var item = {};
-                        item.ENTITY_VALUE = rows3[i].ENTITY_VALUE;
-                        item.ENTITY = rows3[i].ENTITY;
-                        commonEntities.push(item);
+                        // 첫번째 엔티티는 등록
+                        var isCommonAdd = false;
+                        if(commonEntities.length == 0){
+                            isCommonAdd = true;
+                        }else{
+                            for(var j = 0 ; j < commonEntities.length ; j ++){
+                                var longEntity = '';
+                                var shortEntity = '';
+                                var isAdd = false;
+                                if(rows3[i].ENTITY_VALUE.length >= commonEntities[j].ENTITY_VALUE.length){
+                                    longEntity = rows3[i].ENTITY_VALUE;
+                                    shortEntity = commonEntities[j].ENTITY_VALUE;
+                                    isAdd = true;
+                                }else{
+                                    longEntity = commonEntities[j].ENTITY_VALUE;
+                                    shortEntity = rows3[i].ENTITY_VALUE;
+                                }
+                                if(longEntity.indexOf(shortEntity) != -1){
+                                    if(isAdd){
+                                        commonEntities.splice(j,1);
+                                        isCommonAdd = true;
+                                        break;
+                                    }
+                                }else{
+                                    isAdd = true;
+                                }
+                                if(isAdd && j == commonEntities.length-1){
+                                    isCommonAdd = true;
+                                }
+                            }
+                        }
+                        if(isCommonAdd){
+                            var item = {};
+                            item.ENTITY_VALUE = rows3[i].ENTITY_VALUE;
+                            item.ENTITY = rows3[i].ENTITY;
+                            commonEntities.push(item);
+                        }
                     }
                 }
 
