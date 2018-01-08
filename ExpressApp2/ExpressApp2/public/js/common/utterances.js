@@ -32,6 +32,7 @@ $(document).ready(function(){
     $("#iptUtterance").keypress(function(e) {
 
         if (e.keyCode == 13){	//	Enter Key
+
             $("#iptUtterance").attr("readonly",true);
             var queryText = $(this).val();
             if(queryText.trim() == "" || queryText.trim() == null) {
@@ -292,6 +293,12 @@ function changeBtnAble(btnName, boolVal){
 
 function utterInput(queryText) {
 
+    if($('#entityUtteranceTextTable tbody > tr').length > 0){
+        alert('더 이상 등록 할 수 없습니다.');
+        $('#iptUtterance').val('');
+        return ;
+    }
+
     $.ajax({
         url: '/learning/utterInputAjax',                //주소
         dataType: 'json',                  //데이터 형식
@@ -315,9 +322,9 @@ function utterInput(queryText) {
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
-                inputUttrHtml += '<td class="txt_right02" >'; 
-                inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
-
+                //inputUttrHtml += '<td class="txt_right02" >'; 
+                //inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
+                /*
                 if(selBox != null) {
                     for( var i = 0 ; i < selBox.length; i++) {
                         inputUttrHtml += '<option value="' + selBox[i]['LUIS_INTENT'] + '">' + selBox[i]['LUIS_INTENT'] + '</option>'
@@ -328,7 +335,7 @@ function utterInput(queryText) {
                 }
 
                 inputUttrHtml += '</select></td></tr>';
-                
+                */
                 $('#entityUtteranceTextTable').find('tbody').prepend(inputUttrHtml);
                 
             }
