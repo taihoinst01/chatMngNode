@@ -177,6 +177,16 @@ $(document).ready(function(){
         }
     });
     
+    // 타입 변경시 버튼, 이미지 관련 input 생성 및 삭제
+    $('#dlgType').change(function(e){
+        if($(e.target).val() != "text"){
+            $('#mediaCarouselLayout').css('display','block');
+        }else{
+            $('#mediaCarouselLayout').css('display','none');
+        }
+        openModalBox('#create_dlg');
+    });
+    
 });
 
 //intent selbox 선택

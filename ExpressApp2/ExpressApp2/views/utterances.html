@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<link rel='stylesheet' href='/stylesheets/style.css' />
+	<link rel='stylesheet' href='/css/utterances.css' />
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,13 +14,6 @@
     <%include  ./common/commonUse.html%>
     <script type="text/javascript" src="/js/common/utterances.js"></script>
 
-    <style type="text/css">
-        .highlight{
-            background-color: aqua;
-        }
-        .in-line{width:100%; height:40px; }
-        #layoutBackground { position:absolute; z-index:900; background-color:#000; display:none; left:0; top:0; } 
-    </style>
 </head>
 
 <body class="main">
@@ -97,6 +90,7 @@
                     </div>
                     <!-- 추천 다이얼로그 list 출력 div -->
                     <div class="utterList">
+
                         <div class="Tbl_wrap">
                             <table class="Tbl" id="dlgListTable" summary="다이얼로그">
                                 <colgroup><col width="10%" ><col width="85%" ></colgroup>
@@ -146,29 +140,83 @@
         <!-- form start -->
         <form name="appInsertForm" id="appInsertForm" method="post">
     
-        <div class="modal-body">
-          <p class="texcon01">Dialogue Type</p>
-          <p><select name="dlgType" class="inbox02" id="dlgType" style="width:100%" ><!-- onchange 참고 함수형식 -->
-                <option value="text">TEXT</option>
-                <option value="card">CARD</option>
-                <option value="media">MEDIA</option>
-             </select></p>
+<div class="modal-body">
+            <p class="texcon03">Source Type <span>(required) </span></p>
+            <p><select name="sourceType" class="inbox02" id="sourceType" style="width:100%" >
+                    <option value="Common" selected>Common</option>
+                    <option value="Api Quot">Api Quot</option>
+                    <option value="Api Testdrive">Api Testdrive</option>
+            </select></p>
 
-          <p class="texcon01">Dialogue Order<!--  -->  <span>(required) </span></p>
-          <p><select  name="dlgOrder" class="inbox02" id="dlgOrder"  style="width:100%" >
-                <option value="1">1<!-- order1 --></option>
-                <option value="2">2<!-- order2 --></option>
-                <option value="3">3<!-- order3 --></option>
-                <option value="4">4<!-- order4 --></option>
-                <option value="5">5<!-- order5 --></option>
-                <option value="6">6<!-- order6 --></option>
-                <option value="7">7<!-- order7 --></option>
-             </select>
-          </p>
+            <p class="texcon03">Group <span>(required) </span></p>
+            <div class="group-float-left">
+                <p class="texcon03">대그룹</p>
+                <p><select name="maxGroup" class="inbox02" id="maxGroup" style="width: 100%;" >
+                        <option value="" selected>maxGroup1</option>
+                        <option value="">maxGroup2</option>
+                        <option value="">maxGroup3</option>
+                </select></p>
+            </div>
+            <div class="group-float-left">
+                <p class="texcon03">중그룹</p>
+                <p><select name="middleGroup" class="inbox02" id="middleGroup" style="width: 100%;" >
+                        <option value="" selected>middleGroup1</option>
+                        <option value="">middleGroup2</option>
+                        <option value="">middleGroup3</option>
+                </select></p>
+            </div>
+            <div class="group-float-left-last">
+                <p class="texcon03">소그룹</p>
+                <p><select name="minGroup" class="inbox02" id="minGroup" style="width: 100%;" >
+                        <option value="" selected>minGroup1</option>
+                        <option value="">minGroup2</option>
+                        <option value="">minGroup3</option>
+                </select></p>
+            </div>
+            <div class="clear-both"></div>
 
-          <p class="texcon01">Dialogue Text  <span>(required) </span></p>
-          <p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup="dialogValidation('dialogInsert');"></textarea></p>
-    
+            <p class="texcon03">explication  <span>(optional) </span></p>
+            <p><textarea name="explication" id="explication" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup=""></textarea></p>
+
+            <p class="texcon03">Dialogue Type <span>(required) </span></p>
+            <p><select name="dlgType" class="inbox02" id="dlgType" style="width:100%" >
+                <option value="text">Text</option>
+                <option value="media">Media</option>
+                <option value="carousel">Carousel</option>
+            </select></p>
+
+            <p class="texcon03">Dialogue Text  <span>(required) </span></p>
+            <p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup="dialogValidation('dialogInsert');"></textarea></p>
+            
+            <!-- media , carousal 일 경우 input box 추가 layout -->
+            <div id="mediaCarouselLayout" style="display:none;">
+                <div class="mediaCarouselLayout-float-left">
+                    <p class="texcon03">Button Name <span>(optional) </span></p>
+                    <p>
+                        <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
+                        <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
+                        <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
+                    </p>
+                </div>
+                <div class="mediaCarouselLayout-float-left-last">
+                    <p class="texcon03">Button Content <span>(optional) </span></p>
+                    <p>
+                        <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
+                        <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." />
+                        <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." />
+                    </p>
+                </div>
+                <div class="clear-both"></div>
+
+                <p class="texcon03">Image Url <span>(optional) </span></p>
+                <p><input name="imgUrl1" type="text" class="inbox02" id="imgUrl1" style="width:100%" placeholder="Input image url.." /></p>
+            </div>
+            <!--// media , carousal 일 경우 input box 추가 layout -->
+            <p class="texcon03">Dialogue Add</p>
+            <p><button class="btn w82" id="addDialogBtn">Add</button></p>
+
+            <p class="texcon03">Preview</p>
+            <p><button class="btn w82" id="previewBtn">미리보기</button></p>
         </div>
     
         </form>
