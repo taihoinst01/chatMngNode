@@ -108,7 +108,8 @@ $(document).ready(function(){
 
         $('.checkUtter').each(function(){
             if($(this).attr('checked') == 'checked') {
-                $(this).parent().parent().remove();
+                $('#entityUtteranceTextTable tbody').html('');
+                //$(this).parent().parent().remove();
             }
         });
         $('input[name=ch1All]').parent().attr('checked', false);
@@ -136,14 +137,14 @@ $(document).ready(function(){
         if (typeof $('#allCheck').parent().attr('checked') != 'undefined') {
             $("input[name=ch1]").each(function() {
                 if ( typeof $(this).parent().attr("checked") == 'undefined' ) {
-                    $(this).parent().attr("checked", '');
+                    $(this).parent().click();
                 } 
                 checkedVal = true;
             });
         } else {
             $("input[name=ch1]").each(function() {
                 if ( typeof $(this).parent().attr("checked") != 'undefined' ) {
-                    $(this).parent().removeAttr('checked');
+                    $(this).parent().click();
                 }
                 checkedVal = false;
             });
@@ -157,23 +158,23 @@ $(document).ready(function(){
 
     //dlg 체크박스 전체선택 
     $('#checkAllDlg').parent().click(function() {
-        var checkedVal = false;
+        //var checkedVal = false;
+        
         if (typeof $('#checkAllDlg').parent().attr('checked') != 'undefined') {
             $("input[name=dlgChk]").each(function() {
                 if ( typeof $(this).parent().attr("checked") == 'undefined' ) {
-                    $(this).parent().attr("checked", '');
+                    $(this).parent().click();
                 } 
-                checkedVal = true;
+                //checkedVal = true;
             });
         } else {
             $("input[name=dlgChk]").each(function() {
                 if ( typeof $(this).parent().attr("checked") != 'undefined' ) {
-                    $(this).parent().removeAttr('checked');
+                    $(this).parent().click();
                 }
-                checkedVal = false;
+               //checkedVal = false;
             });
         }
-        changeBtnAble('learn', checkedVal);
     });
     
 });
@@ -243,31 +244,38 @@ function selectDlgListAjax(intentName) {
     }); // ------      ajax 끝-----------------
 }
 
-
 //checkbox 선택시 이벤트 $(this).attr("checked")
 $(document).on('click','div[type=checkbox]',function(event){
+    
     var checkedVal = false;
+    var checkedVal2 = false;
+
     if (typeof $(this).attr("checked") == 'undefined') {
         $(this).attr("checked", "");
     } else {
         $(this).removeAttr('checked');
     }
     
-    if ( $(this).parents('.Tbl_wrap').find('input[type=checkbox]').attr('id') == 'allCheck' ) {
-        $("input[name=ch1]").each(function() {
-            if (typeof $(this).parent().attr("checked") != 'undefined') {
-                checkedVal = true;
-            } 
-        });
-        changeBtnAble('delete', checkedVal);
+
+    $("input[name=ch1]").each(function() {
+        if (typeof $(this).parent().attr("checked") != 'undefined') {
+            checkedVal = true;
+        } 
+    });
+    changeBtnAble('delete', checkedVal);
+
+    $("input[name=dlgChk]").each(function() {
+        if (typeof $(this).parent().attr("checked") != 'undefined') {
+            checkedVal2 = true;
+        } 
+    });
+
+    if(checkedVal == true && checkedVal2 == true) {
+        changeBtnAble('learn', true);
     } else {
-        $("input[name=dlgChk]").each(function() {
-            if (typeof $(this).parent().attr("checked") != 'undefined') {
-                checkedVal = true;
-            } 
-        });
-        changeBtnAble('learn', checkedVal);
+        changeBtnAble('learn', false);
     }
+
 });
 
 function changeBtnAble(btnName, boolVal){
@@ -306,6 +314,7 @@ function utterInput(queryText) {
         data: {'iptUtterance':queryText},      //데이터를 json 형식, 객체형식으로 전송
 
         success: function(result) {          //성공했을 때 함수 인자 값으로 결과 값 나옴
+
             var entities = result['entities'];
             if(entities != null) {
                 entities = entities.split(",");
@@ -314,7 +323,8 @@ function utterInput(queryText) {
             }
 
             if ( result['result'] == true ) {
-                var utter = utterHighlight(entities,result['iptUtterance']);
+                //var utter = utterHighlight(entities,result['iptUtterance']);
+                var utter = utterHighlight(result.commonEntities,result['iptUtterance']);
                 var selBox = result['selBox'];
 
                 $('#iptUtterance').val('');
@@ -322,6 +332,12 @@ function utterInput(queryText) {
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
+				if(result.commonEntities){
+                    for(var i = 0; i < result.commonEntities.length ; i++){
+                        inputUttrHtml += '<tr> <td> </td>';
+                        inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result.commonEntities[i].ENTITY_VALUE + '"/>' + result.commonEntities[i].ENTITY_VALUE + '::' + result.commonEntities[i].ENTITY + '</td>';
+                    }
+                }
                 //inputUttrHtml += '<td class="txt_right02" >'; 
                 //inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
                 /*
@@ -346,8 +362,10 @@ function utterInput(queryText) {
 
 function utterHighlight(entities, utter) {
     var result = utter;
-    for(var i = 0; i < entities.length; i++) {
-        result = result.replace(entities[i], '<span class="highlight">' + entities[i] + '</span>');
+    if(entities){
+        for(var i = 0; i < entities.length; i++) {
+            result = result.replace(entities[i].ENTITY_VALUE, '<span class="highlight">' + entities[i].ENTITY_VALUE + '</span>');
+        }
     }
     return result;
 }

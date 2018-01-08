@@ -12,7 +12,8 @@ router.get('/', function (req, res) {
 });
 
 router.get('/recommend', function (req, res) {
-    res.render('recommend');
+    req.session.selMenus = 'ms1';
+    res.render('recommend', {selMenus: req.session.selmenus});
 });
 
 router.post('/recommend', function (req, res) {
@@ -28,7 +29,7 @@ router.post('/recommend', function (req, res) {
             "CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX, "+
             "TBX.* "+
             "FROM ( "+
-            "SELECT SEQ,QUERY,UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
+            "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
             "FROM TBL_QUERY_ANALYSIS_RESULT " + 
             "WHERE RESULT='D'";
             
@@ -156,7 +157,63 @@ router.post('/utterInputAjax', function(req, res, next) {
                 
                 let rows2 = result2.recordset
 
-                res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2});
+                var queryString2 = "SELECT ENTITY_VALUE,ENTITY FROM TBL_COMMON_ENTITY_DEFINE WHERE ENTITY IN (";
+                for(var i = 0; i < entityArr.length; i++) {
+                    queryString2 += "'";
+                    queryString2 += entityArr[i];
+                    queryString2 += "'";
+                    queryString2 += (i != entityArr.length-1)? "," : "";
+                }
+                queryString2 += ")";
+                let result3 = await pool.request()
+                .query(queryString2)
+                
+                let rows3 = result3.recordset
+                var commonEntities = [];
+                for(var i = 0; i < rows3.length; i++) {
+                    // 중복되는 엔티티가 있는 경우 길이가 긴 것이 우선순위를 갖음
+                    if(iptUtterance.indexOf(rows3[i].ENTITY_VALUE) != -1){
+                        // 첫번째 엔티티는 등록
+                        var isCommonAdd = false;
+                        if(commonEntities.length == 0){
+                            isCommonAdd = true;
+                        }else{
+                            for(var j = 0 ; j < commonEntities.length ; j ++){
+                                var longEntity = '';
+                                var shortEntity = '';
+                                var isAdd = false;
+                                if(rows3[i].ENTITY_VALUE.length >= commonEntities[j].ENTITY_VALUE.length){
+                                    longEntity = rows3[i].ENTITY_VALUE;
+                                    shortEntity = commonEntities[j].ENTITY_VALUE;
+                                    isAdd = true;
+                                }else{
+                                    longEntity = commonEntities[j].ENTITY_VALUE;
+                                    shortEntity = rows3[i].ENTITY_VALUE;
+                                }
+                                if(longEntity.indexOf(shortEntity) != -1){
+                                    if(isAdd){
+                                        commonEntities.splice(j,1);
+                                        isCommonAdd = true;
+                                        break;
+                                    }
+                                }else{
+                                    isAdd = true;
+                                }
+                                if(isAdd && j == commonEntities.length-1){
+                                    isCommonAdd = true;
+                                }
+                            }
+                        }
+                        if(isCommonAdd){
+                            var item = {};
+                            item.ENTITY_VALUE = rows3[i].ENTITY_VALUE;
+                            item.ENTITY = rows3[i].ENTITY;
+                            commonEntities.push(item);
+                        }
+                    }
+                }
+
+                res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2, commonEntities: commonEntities});
             } else {
                 res.send({result:true, iptUtterance:iptUtterance});
             }
