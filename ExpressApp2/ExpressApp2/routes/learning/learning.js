@@ -13,7 +13,8 @@ router.get('/', function (req, res) {
 
 router.get('/recommend', function (req, res) {
     req.session.selMenus = 'ms1';
-    res.render('recommend', {selMenus: req.session.selmenus});
+    console.log("req.session.selMenus: " + req.session.selMenus);
+    res.render('recommend', {selMenus: 'ms1'});
 });
 
 router.post('/recommend', function (req, res) {

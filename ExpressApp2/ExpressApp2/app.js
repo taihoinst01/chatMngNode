@@ -41,6 +41,7 @@ app.use(session({
 
 //페이지 요청시마다 세션값이 있는지 확인
 app.use(function(req, res, next) {
+
     if(req.session.sid) {
         res.locals.sid = req.session.sid;
     } 
@@ -57,8 +58,10 @@ app.use(function(req, res, next) {
 
     if(req.session.selMenus) {
         res.locals.selMenus = req.session.selMenus;
+
     }
     else {
+
         res.locals.selMenus = null;
     }
     next();
