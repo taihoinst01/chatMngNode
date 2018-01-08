@@ -49,27 +49,33 @@
                 <table class="Tbl" id="dialogTbl">
                     <thead>
                         <tr>
-                            <th class="txt_center">소스타입<span></span></th>
-                            <th class="txt_center">그룹<span></span></th>
+                            <th class="txt_center">
+                                <select name="sourceType">
+                                    <option>card</option>
+                                    <option>text</option>
+                                    <option>media</option>
+                                </select>
+                            </th>
+                            <th class="txt_center">
+                                <select name="groupType">
+                                    <option>그룹1</option>
+                                    <option>그룹2</option>
+                                    <option>그룹3</option>
+                                </select>
+                            </th>
                             <th class="txt_left" colspan="3">설명</th>
                             <th class="txt_left" colspan="3">연결 어터런스</th>
                         </tr>
                     </thead>
                     <tbody id="dialogTbltbody">
                         <tr>
-                            <td>
-                                <select name="outPutType">
-                                    <option>card</option>
-                                    <option>text</option>
-                                    <option>media</option>
-                                </select>
+                            <!-- 소스타입-->
+                            <td class="txt_center">
+                                소스타입란입니다.                                     
                             </td>
-                            <td>
-                                    <select name="outPutType">
-                                        <option>그룹1</option>
-                                        <option>그룹2</option>
-                                        <option>그룹3</option>
-                                    </select>
+                                <!-- 그룹-->
+                            <td class="txt_center">
+                                그룹란입니다.                                     
                             </td>
                             <!-- 설명-->
                             <td class="txt_left" colspan="3">
