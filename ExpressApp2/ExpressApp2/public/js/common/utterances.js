@@ -221,12 +221,12 @@ function insertDialog(){
     });
 }
 
-function selectDlgListAjax(intentName) {
+function selectDlgListAjax(entity) {
     $.ajax({
         url: '/learning/selectDlgListAjax',                //주소
         dataType: 'json',                  //데이터 형식
         type: 'POST',                      //전송 타입
-        data: {'intentName':intentName},      //데이터를 json 형식, 객체형식으로 전송
+        data: {'entity':entity},      //데이터를 json 형식, 객체형식으로 전송
 
         success: function(result) {          //성공했을 때 함수 인자 값으로 결과 값 나옴
             var inputUttrHtml = '';
@@ -353,6 +353,8 @@ function utterInput(queryText) {
                 inputUttrHtml += '</select></td></tr>';
                 */
                 $('#entityUtteranceTextTable').find('tbody').prepend(inputUttrHtml);
+
+                selectDlgListAjax(entities);
                 
             }
         } //function끝
