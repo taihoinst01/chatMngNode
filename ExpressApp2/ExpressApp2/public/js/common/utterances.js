@@ -122,14 +122,14 @@ $(document).ready(function(){
         if (typeof $('#allCheck').parent().attr('checked') != 'undefined') {
             $("input[name=ch1]").each(function() {
                 if ( typeof $(this).parent().attr("checked") == 'undefined' ) {
-                    $(this).parent().attr("checked", '');
+                    $(this).parent().click();
                 } 
                 checkedVal = true;
             });
         } else {
             $("input[name=ch1]").each(function() {
                 if ( typeof $(this).parent().attr("checked") != 'undefined' ) {
-                    $(this).parent().removeAttr('checked');
+                    $(this).parent().click();
                 }
                 checkedVal = false;
             });
@@ -143,23 +143,23 @@ $(document).ready(function(){
 
     //dlg 체크박스 전체선택 
     $('#checkAllDlg').parent().click(function() {
-        var checkedVal = false;
+        //var checkedVal = false;
+        
         if (typeof $('#checkAllDlg').parent().attr('checked') != 'undefined') {
             $("input[name=dlgChk]").each(function() {
                 if ( typeof $(this).parent().attr("checked") == 'undefined' ) {
-                    $(this).parent().attr("checked", '');
+                    $(this).parent().click();
                 } 
-                checkedVal = true;
+                //checkedVal = true;
             });
         } else {
             $("input[name=dlgChk]").each(function() {
                 if ( typeof $(this).parent().attr("checked") != 'undefined' ) {
-                    $(this).parent().removeAttr('checked');
+                    $(this).parent().click();
                 }
-                checkedVal = false;
+               //checkedVal = false;
             });
         }
-        changeBtnAble('learn', checkedVal);
     });
     
 });
@@ -224,30 +224,39 @@ function selectDlgListAjax(intentName) {
 }
 
 
+
 //checkbox 선택시 이벤트 $(this).attr("checked")
 $(document).on('click','div[type=checkbox]',function(event){
+    
     var checkedVal = false;
+    var checkedVal2 = false;
+
     if (typeof $(this).attr("checked") == 'undefined') {
         $(this).attr("checked", "");
     } else {
         $(this).removeAttr('checked');
     }
     
-    if ( $(this).parents('.Tbl_wrap').find('input[type=checkbox]').attr('id') == 'allCheck' ) {
-        $("input[name=ch1]").each(function() {
-            if (typeof $(this).parent().attr("checked") != 'undefined') {
-                checkedVal = true;
-            } 
-        });
-        changeBtnAble('delete', checkedVal);
+
+    $("input[name=ch1]").each(function() {
+        if (typeof $(this).parent().attr("checked") != 'undefined') {
+            checkedVal = true;
+        } 
+    });
+    changeBtnAble('delete', checkedVal);
+
+    $("input[name=dlgChk]").each(function() {
+        if (typeof $(this).parent().attr("checked") != 'undefined') {
+            checkedVal2 = true;
+        } 
+    });
+
+    if(checkedVal == true && checkedVal2 == true) {
+        changeBtnAble('learn', true);
     } else {
-        $("input[name=dlgChk]").each(function() {
-            if (typeof $(this).parent().attr("checked") != 'undefined') {
-                checkedVal = true;
-            } 
-        });
-        changeBtnAble('learn', checkedVal);
+        changeBtnAble('learn', false);
     }
+
 });
 
 function changeBtnAble(btnName, boolVal){

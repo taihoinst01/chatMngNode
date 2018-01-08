@@ -17,8 +17,6 @@
     
 
         <%include  ./common/commonUse.html%>
-        <link rel="stylesheet" type="text/css" href="/css/learning.css" />
-        <script type="text/javascript" src="/js/common/learning.js"></script>
 
 	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> test-->
 </head>
@@ -26,60 +24,44 @@
 <body>
 <%include  ./header.html%>
 <%include  ./header4Luis.html%>
+
 <div id="wrap4Luis">
-    <div id="lnb">
-            <ul class="btn-list">
-                <li>
-                    <a href="#" class="aLinkColor">
-                        <span class="sideMainMenu">
-                            <span class="sortarr_down"></span>
-                            App Assets
-                        </span>
-                    </a>
-                </li>
-                <div class="subMenu">
-                    <li>
-                        <span>
-                            서브메뉴1-1
-                        </span>
-                    </li>
-                    <li>
-                        <span>
-                            서브메뉴1-2
-                        </span>
-                    </li>
-                </div>
-                <li>
-                    <a href="#" class="aLinkColor">
-                        <span class="sortarr_down"></span>
-                        <span class="sideMainMenu">
-                            Improve app performance
-                        </span>
-                    </a>
-                </li>
-                <div class="subMenu">
-                    <li>
-                        <span>
-                            서브메뉴2-1
-                        </span>
-                    </li>
-                    <li>
-                        <span>
-                            서브메뉴2-1
-                        </span>
-                    </li>
-                    <li>
-                        <span>
-                            서브메뉴2-1
-                        </span>
-                    </li>
-                </div>
-            </ul>
+    <div id="container" class="main">
+        <div class="subt_wrap">
+            <div id="subtitDiv"><h2><%= title %></h2></div>
         </div>
-        <div id="container">
-            Entities 페이지입니다.
-        </div>
+
+        <div id="entitesrDiv">
+            <div class="entitesLeft">     
+                <div class="in-line">
+                    <input name="iptentites" id="iptentites" type="text" class="inbox02" style="width:82.5%; margin: 3px;" placeholder="입력문장" >
+                    <button class="btn" id="entites">new</button>
+                </div>                                         
+            </div>
+            <table class="Tbl" id="entitesTbl">
+                <thead>
+                    <tr>
+                        <th class="txt_center" colspan="3">엔티티 디파인<span></span></th>
+                        <th class="txt_center" colspan="3">엔티티 벨류<span></span></th>
+                    </tr>
+                </thead>
+                <tbody id="entitesTbltbody">
+                    <tr>
+                        <!-- 엔티티 디파인-->
+                        <td class="txt_center" colspan="3">
+                            엔티티 디파인란입니다.                                     
+                        </td>
+                        <!-- 엔티티 벨류-->
+                        <td class="txt_center" colspan="3">
+                            엔티티 벨류란입니다.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>                            
     </div>
+</div>
+
         <hr>
         <footer>
             <p>&copy; Company 2014</p>
