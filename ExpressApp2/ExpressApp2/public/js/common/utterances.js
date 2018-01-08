@@ -315,7 +315,8 @@ function utterInput(queryText) {
             }
 
             if ( result['result'] == true ) {
-                var utter = utterHighlight(entities,result['iptUtterance']);
+                //var utter = utterHighlight(entities,result['iptUtterance']);
+                var utter = utterHighlight(result.commonEntities,result['iptUtterance']);
                 var selBox = result['selBox'];
 
                 $('#iptUtterance').val('');
@@ -355,7 +356,7 @@ function utterInput(queryText) {
 function utterHighlight(entities, utter) {
     var result = utter;
     for(var i = 0; i < entities.length; i++) {
-        result = result.replace(entities[i], '<span class="highlight">' + entities[i] + '</span>');
+        result = result.replace(entities[i].ENTITY_VALUE, '<span class="highlight">' + entities[i].ENTITY_VALUE + '</span>');
     }
     return result;
 }
