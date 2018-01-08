@@ -45,7 +45,7 @@ function recommendAjax(){
                     item += query;
                     item += '</a></td>' +
                     '<td class="txt_center">' +
-                    data.list[i].UPD_DT.split('T')[0] + ' ' + (data.list[i].UPD_DT.split('T')[1]).split('.')[0] +
+                    data.list[i].UPD_DT +
                     '</td>' +
                     //'<td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick();"></a></td>' +
                     '</tr>';

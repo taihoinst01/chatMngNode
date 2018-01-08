@@ -28,7 +28,7 @@ router.post('/recommend', function (req, res) {
             "CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX, "+
             "TBX.* "+
             "FROM ( "+
-            "SELECT SEQ,QUERY,UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
+            "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
             "FROM TBL_QUERY_ANALYSIS_RESULT " + 
             "WHERE RESULT='D'";
             
