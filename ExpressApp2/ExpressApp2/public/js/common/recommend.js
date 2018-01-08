@@ -32,6 +32,7 @@ function recommendAjax(){
                     item += '<tr>' +
                     '<td class="txt_left" style="width: 3%;">' +
                     '<div class="check-radio-tweak-wrapper" type="checkbox">' +
+                    '<input type="hidden" class="seq" value="'+data.list[i].SEQ+'">'+
                     '<input type="checkbox" class="tweak-input" id="" name=""/></div></td>' +
                     '<td class="txt_left" colspan="3"><a href="/learning/utterances?utterance='+data.list[i].QUERY+'" class="dashLink" >';
                     var query = data.list[i].QUERY;
@@ -46,7 +47,7 @@ function recommendAjax(){
                     '<td class="txt_center">' +
                     data.list[i].UPD_DT.split('T')[0] + ' ' + (data.list[i].UPD_DT.split('T')[1]).split('.')[0] +
                     '</td>' +
-                    '<td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick();"></a></td>' +
+                    //'<td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick();"></a></td>' +
                     '</tr>';
                 }
             }
@@ -109,5 +110,19 @@ function checkBoxHandler(e){
 
 //delete 버튼 클릭 이벤트
 function deleteRecommend(){
-    alert('미구현입니다');
+    
+    var arry = [];
+    for(var i = 0; i < $('#recommendContents div[type=checkbox][checked]').size(); i++)
+    {
+        arry.push($('#recommendContents div[type=checkbox][checked] .seq')[i].value);
+    }
+     $.ajax({
+            type: 'POST',
+            data : {'seq' : arry+''},
+            url : '/learning/deleteRecommend',
+            isloading : true,
+            success: function(data){
+                recommendAjax('all');
+            }
+         });
 }

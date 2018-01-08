@@ -57,6 +57,7 @@ router.post('/recommend', function (req, res) {
             for(var i = 0; i < rows.length; i++){
                 var item = {};
                 var query = rows[i].QUERY;
+                var seq = rows[i].SEQ;
                 var entities = rows[i].ENTITIES;
                 var updDt = rows[i].UPD_DT;
                 var entityArr = rows[i].ENTITIES.split(',');
@@ -64,6 +65,7 @@ router.post('/recommend', function (req, res) {
 
                 item.QUERY = query;
                 item.UPD_DT = updDt;
+                item.SEQ = seq;
                 item.ENTITIES = entities;
                 if(entityArr[0] == ""){
                     item.intentList = [];
@@ -347,6 +349,30 @@ router.post('/learnUtterAjax', function (req, res) {
     })
 });
 
+
+router.post('/deleteRecommend',function(req,res){
+    var seqs = req.body.seq;
+    var arryseq = seqs.split(',');
+        (async () => {
+        try{
+                let pool = await sql.connect(dbConfig)
+                for(var i = 0 ; i < arryseq.length; i ++)
+                {
+                   var deleteQueryString1 = "UPDATE TBL_QUERY_ANALYSIS_RESULT SET RESULT='T' WHERE seq='"+arryseq[i]+"'";
+                   let result5 = await pool.request().query(deleteQueryString1); 
+                }
+                res.send();
+            }catch(err){
+            
+            }finally {
+                sql.close();
+            } 
+        })()
+        
+        sql.on('error', err => {
+            console.log(err);
+        })
+});
 
 
 module.exports = router;
