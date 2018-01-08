@@ -178,19 +178,48 @@
             <p class="texcon03">explication  <span>(optional) </span></p>
             <p><textarea name="explication" id="explication" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup=""></textarea></p>
 
-            <p class="texcon03">Dialogue Type <span>(required) </span></p>
-            <p><select name="dlgType" class="inbox02" id="dlgType" style="width:100%" >
-                <option value="text">Text</option>
-                <option value="media">Media</option>
-                <option value="carousel">Carousel</option>
-            </select></p>
+            <div class="layout-float-left">
+                <p class="texcon03">Dialogue Type <span>(required) </span></p>
+                <p><select name="dlgType" class="inbox02" id="dlgType" style="width:100%" >
+                    <option value="text">Text</option>
+                    <option value="media">Media</option>
+                    <option value="carousel">Carousel</option>
+                </select></p>
+            </div>
+            <div class="layout-float-left-last">
+                <p class="texcon03">Dialogue Order <span>(required) </span></p>
+                <p><select name="dialogOrderNo" class="inbox02" id="dialogOrderNo" style="width:100%" >
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select></p>
+            </div>
+            <div class="clear-both"></div>
 
             <p class="texcon03">Dialogue Text  <span>(required) </span></p>
             <p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup="dialogValidation('dialogInsert');"></textarea></p>
             
+            <!-- carousal 일 경우 card 순서 input box 추가 layout -->
+            <div id="cardLayout" style="display:none;">
+                <p class="texcon03">Card Order <span>(required) </span></p>
+                <p><select name="cardOrderNo" class="inbox02" id="cardOrderNo" style="width:100%" >
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select></p>
+            </div>
+
             <!-- media , carousal 일 경우 input box 추가 layout -->
             <div id="mediaCarouselLayout" style="display:none;">
-                <div class="mediaCarouselLayout-float-left">
+                <div class="layout-float-left">
                     <p class="texcon03">Button Name <span>(optional) </span></p>
                     <p>
                         <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
@@ -198,7 +227,7 @@
                         <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
                     </p>
                 </div>
-                <div class="mediaCarouselLayout-float-left-last">
+                <div class="layout-float-left-last">
                     <p class="texcon03">Button Content <span>(optional) </span></p>
                     <p>
                         <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
@@ -212,11 +241,17 @@
                 <p><input name="imgUrl1" type="text" class="inbox02" id="imgUrl1" style="width:100%" placeholder="Input image url.." /></p>
             </div>
             <!--// media , carousal 일 경우 input box 추가 layout -->
-            <p class="texcon03">Dialogue Add</p>
-            <p><button class="btn w82" id="addDialogBtn">Add</button></p>
 
-            <p class="texcon03">Preview</p>
-            <p><button class="btn w82" id="previewBtn">미리보기</button></p>
+            <div class="layout-float-left">
+                <p class="texcon03">Dialogue Add</p>
+                <p><button class="btn w82" id="addDialogBtn">Add</button></p>
+            </div>
+            <div class="layout-float-left-last">
+                <p class="texcon03">Preview</p>
+                <p><button class="btn w82" id="previewBtn">미리보기</button></p>
+            </div>
+            <div class="clear-both"></div>
+            
         </div>
     
         </form>

@@ -5,8 +5,8 @@
 /*create Dialogue Modal CSS*/
 .group-float-left{ float:left;width: 30%;margin-right: 5%; }
 .group-float-left-last {float:left;width: 30%; }
-.mediaCarouselLayout-float-left{ float:left; width: 46%; margin-right:8%; }
-.mediaCarouselLayout-float-left-last{ float:left; width: 46%; }
+.layout-float-left{ float:left; width: 46%; margin-right:8%; }
+.layout-float-left-last{ float:left; width: 46%; }
 .btnBox{ width:100%; margin-bottom:3px; }
 .clear-both{ clear:both; }
 .w82{ width: 82px; }
