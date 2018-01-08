@@ -108,7 +108,8 @@ $(document).ready(function(){
 
         $('.checkUtter').each(function(){
             if($(this).attr('checked') == 'checked') {
-                $(this).parent().parent().remove();
+                $('#entityUtteranceTextTable tbody').html('');
+                //$(this).parent().parent().remove();
             }
         });
         $('input[name=ch1All]').parent().attr('checked', false);
@@ -243,8 +244,6 @@ function selectDlgListAjax(intentName) {
     }); // ------      ajax 끝-----------------
 }
 
-
-
 //checkbox 선택시 이벤트 $(this).attr("checked")
 $(document).on('click','div[type=checkbox]',function(event){
     
@@ -335,8 +334,7 @@ function utterInput(queryText) {
                 inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
 				if(result.commonEntities){
                     for(var i = 0; i < result.commonEntities.length ; i++){
-                        inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
-                        inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
+                        inputUttrHtml += '<tr> <td> </td>';
                         inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result.commonEntities[i].ENTITY_VALUE + '"/>' + result.commonEntities[i].ENTITY_VALUE + '::' + result.commonEntities[i].ENTITY + '</td>';
                     }
                 }
@@ -364,8 +362,10 @@ function utterInput(queryText) {
 
 function utterHighlight(entities, utter) {
     var result = utter;
-    for(var i = 0; i < entities.length; i++) {
-        result = result.replace(entities[i].ENTITY_VALUE, '<span class="highlight">' + entities[i].ENTITY_VALUE + '</span>');
+    if(entities){
+        for(var i = 0; i < entities.length; i++) {
+            result = result.replace(entities[i].ENTITY_VALUE, '<span class="highlight">' + entities[i].ENTITY_VALUE + '</span>');
+        }
     }
     return result;
 }
