@@ -286,7 +286,9 @@ router.post('/entities', function (req, res) {
 
 router.post('/selectDlgListAjax', function (req, res) {
 
-    var intentName = req.body.intentName;
+    var entity = [];
+    entity = req.body['entity[]'];
+    /*
     var queryText = "SELECT DL.DLG_ID, DL.DLG_TYPE, "
                   + "CASE WHEN DLG_TYPE = 2 THEN ( SELECT CARD_TEXT FROM TBL_DLG_TEXT TE WHERE TE.DLG_ID = DL.DLG_ID)"
                   + " WHEN DLG_TYPE = 3 THEN ( SELECT CASE WHEN CARD_TITLE IS NULL THEN CARD_TEXT"
@@ -305,22 +307,141 @@ router.post('/selectDlgListAjax', function (req, res) {
                         + " FROM TBL_DLG_RELATION_LUIS"
                         + " WHERE LUIS_INTENT = '" + intentName + "'"
                         + " AND USE_YN = 'Y' )";
+    */
+    var relationText = "SELECT RNUM, LUIS_ENTITIES, A.DLG_ID DLG_ID, B.DLG_TYPE, DLG_ORDER_NO \n"
+                     + "FROM (\n"
+                     + "SELECT RANK() OVER(ORDER BY LUIS_ENTITIES) AS RNUM, LUIS_ENTITIES, DLG_ID \n"
+                     + "FROM TBL_DLG_RELATION_LUIS \n"
+                     + "WHERE 1=1\n";
+    for(var i = 0; i < entity.length; i++) {
+        if(i == 0) {
+            relationText += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+        } else {
+            relationText += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+        }      
+    }
+
+    relationText += "GROUP BY LUIS_ENTITIES, DLG_ID \n"
+                 + ") A LEFT OUTER JOIN TBL_DLG B\n"
+                 + "ON A.DLG_ID = B.DLG_ID \n"
+                 + "ORDER BY LUIS_ENTITIES";
+
+    var dlgText = "SELECT DLG_ID, CARD_TITLE, CARD_TEXT, USE_YN, '2' AS DLG_TYPE \n"
+                  + "FROM TBL_DLG_TEXT\n"
+                  + "WHERE USE_YN = 'Y'\n"
+                  + "AND DLG_ID IN (\n"
+                  + "SELECT DISTINCT DLG_ID\n"
+                  + "FROM TBL_DLG_RELATION_LUIS\n"
+                  + "WHERE 1=1\n";
+
+    for(var i = 0; i < entity.length; i++) {
+        if(i == 0) {
+            dlgText += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+        } else {
+            dlgText += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+        }
+    }
+    dlgText += ") \n ORDER BY DLG_ID";
+
+    var dlgCard = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, IMG_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n"
+                  + "BTN_2_TYPE, BTN_2_TITLE, BTN_2_CONTEXT,\n"
+                  + "BTN_3_TYPE, BTN_3_TITLE, BTN_3_CONTEXT,\n"
+                  + "BTN_4_TYPE, BTN_4_TITLE, BTN_4_CONTEXT,\n"
+                  + "CARD_ORDER_NO, CARD_VALUE,\n"
+                  + "USE_YN, '3' AS DLG_TYPE \n"
+                  + "FROM TBL_DLG_CARD\n"
+                  + "WHERE USE_YN = 'Y'\n"
+                  + "AND DLG_ID IN (\n"
+                  + "SELECT DISTINCT DLG_ID\n"
+                  + "FROM TBL_DLG_RELATION_LUIS\n"
+                  + "WHERE 1=1\n";
+
+    for(var i = 0; i < entity.length; i++) {
+        if(i == 0) {
+            dlgCard += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+        } else {
+            dlgCard += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+        }
+    }
+    dlgCard += ") \n ORDER BY DLG_ID";
+    
+    var dlgMedia = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, MEDIA_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n"
+                  + "BTN_2_TYPE, BTN_2_TITLE, BTN_2_CONTEXT,\n"
+                  + "BTN_3_TYPE, BTN_3_TITLE, BTN_3_CONTEXT,\n"
+                  + "BTN_4_TYPE, BTN_4_TITLE, BTN_4_CONTEXT,\n"
+                  + "CARD_VALUE,\n"
+                  + "USE_YN, '4' AS DLG_TYPE \n"
+                  + "FROM TBL_DLG_MEDIA\n"
+                  + "WHERE USE_YN = 'Y'\n"
+                  + "AND DLG_ID IN (\n"
+                  + "SELECT DISTINCT DLG_ID\n"
+                  + "FROM TBL_DLG_RELATION_LUIS\n"
+                  + "WHERE 1=1\n";
+
+    for(var i = 0; i < entity.length; i++) {
+        if(i == 0) {
+            dlgMedia += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+        } else {
+            dlgMedia += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+        }
+    }
+    dlgMedia += ") \n ORDER BY DLG_ID";
 
     (async () => {
         try {
             let pool = await sql.connect(dbConfig)
+
+            let dlgTextResult = await pool.request()
+                .query(dlgText);
+            let rowsText = dlgTextResult.recordset;
+
+            let dlgCardResult = await pool.request()
+                .query(dlgCard);
+            let rowsCard = dlgCardResult.recordset;
+
+            let dlgMediaResult = await pool.request()
+                .query(dlgMedia);
+            let rowsMedia = dlgMediaResult.recordset;
+            
             let result1 = await pool.request()
-                .query(queryText)
+                .query(relationText)
             let rows = result1.recordset;
             var result = [];
             for(var i = 0; i < rows.length; i++){
-                //var item = {};
-                //var query = rows[i].QUERY;
-                //var entityArr = rows[i].ENTITIES.split(',');
-                
-                //item.QUERY = query;
-                result.push(rows[i]);
+                var row = {};
+                row.RNUM = rows[i].RNUM;
+                row.LUIS_ENTITIES = rows[i].LUIS_ENTITIES;
+                row.DLG_ID = rows[i].DLG_ID;
+                row.DLG_TYPE = rows[i].DLG_TYPE;
+                row.DLG_ORDER_NO = rows[i].DLG_ORDER_NO;
+                row.dlg = [];
+
+                let dlg_type = rows[i].DLG_TYPE;
+                if(dlg_type == 2){
+                    for(var j = 0; j < rowsText.length; j++){
+                        let textDlgId = rowsText[j].DLG_ID;
+                        if(row.DLG_ID == textDlgId){
+                            row.dlg.push(rowsText[j]);
+                        }
+                    }
+                }else if(dlg_type == 3){
+                    for(var j = 0; j < rowsCard.length; j++){
+                        var cardDlgId = rowsCard[j].DLG_ID;
+                        if(row.DLG_ID == cardDlgId){
+                            row.dlg.push(rowsCard[j]);
+                        }
+                    }
+                }else if(dlg_type == 4){
+                    for(var j = 0; j < rowsMedia.length; j++){
+                        var mediaDlgId = rowsMedia[j].DLG_ID;
+                        if(row.DLG_ID == mediaDlgId){
+                            row.dlg.push(rowsMedia[j]);
+                        }
+                    }
+                }
+                result.push(row);
             }
+
             res.send({list : result});
         
         } catch (err) {

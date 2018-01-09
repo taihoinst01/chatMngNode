@@ -153,7 +153,9 @@ $(document).ready(function(){
     });
 
 	$('#addDialogClose , #addDialogCancel').click(function(){
-        $('#dialogText').val('');
+        $('#mediaCarouselLayout').css('display','none');
+        $('#cardLayout').css('display','none');
+        $('#appInsertForm')[0].reset();
     });
 
     //dlg 체크박스 전체선택 
@@ -177,6 +179,34 @@ $(document).ready(function(){
         }
     });
     
+    // 타입 변경시 버튼, 이미지 관련 input 생성 및 삭제
+    $('#dlgType').change(function(e){
+        if($(e.target).val() == "text"){
+            $('#mediaCarouselLayout').css('display','none');
+            $('#cardLayout').css('display','none');
+        }else if($(e.target).val() == "media"){
+            $('#mediaCarouselLayout').css('display','block');
+            $('#cardLayout').css('display','none');
+        }else{
+            $('#mediaCarouselLayout').css('display','block');
+            $('#cardLayout').css('display','block');
+        }
+        openModalBox('#create_dlg');
+    });
+
+    //다이얼로그 Add
+    $('#addDialogBtn').click(function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        alert('준비중..');
+    });
+
+    //다이얼로그 미리보기
+    $('#previewBtn').click(function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        alert('준비중..');
+    });
 });
 
 //intent selbox 선택
@@ -221,12 +251,12 @@ function insertDialog(){
     });
 }
 
-function selectDlgListAjax(intentName) {
+function selectDlgListAjax(entity) {
     $.ajax({
         url: '/learning/selectDlgListAjax',                //주소
         dataType: 'json',                  //데이터 형식
         type: 'POST',                      //전송 타입
-        data: {'intentName':intentName},      //데이터를 json 형식, 객체형식으로 전송
+        data: {'entity':entity},      //데이터를 json 형식, 객체형식으로 전송
 
         success: function(result) {          //성공했을 때 함수 인자 값으로 결과 값 나옴
             var inputUttrHtml = '';
@@ -353,6 +383,8 @@ function utterInput(queryText) {
                 inputUttrHtml += '</select></td></tr>';
                 */
                 $('#entityUtteranceTextTable').find('tbody').prepend(inputUttrHtml);
+
+                selectDlgListAjax(entities);
                 
             }
         } //function끝
