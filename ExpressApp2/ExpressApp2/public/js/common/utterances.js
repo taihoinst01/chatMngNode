@@ -159,6 +159,7 @@ $(document).ready(function(){
         $('#mediaCarouselLayout').css('display','none');
         $('#cardLayout').css('display','none');
         $('#appInsertForm')[0].reset();
+        $('#dialogPreview').html('');
     });
 
     //dlg 체크박스 전체선택 
