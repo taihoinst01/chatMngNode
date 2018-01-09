@@ -124,6 +124,7 @@ router.get('/dialog', function (req, res) {
     } );
 });
 
+/*
 //한기훈
 router.post('/dialogs', function (req, res) {
 
@@ -162,7 +163,7 @@ router.post('/dialogs', function (req, res) {
         // ... error handler
     })
 });
-
+*/
 router.post('/utterInputAjax', function(req, res, next) {
  
     //view에 있는 data 에서 던진 값을 받아서

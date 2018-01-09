@@ -362,12 +362,24 @@ function utterInput(queryText) {
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
-				if(result.commonEntities){
+                if(result.commonEntities){
+                    inputUttrHtml += '<tr><td> </td><td class="txt_left" >';
+                    for(var i = 0; i < result.commonEntities.length ; i++){
+                        inputUttrHtml += '<input type=hidden value="' + result.commonEntities[i].ENTITY_VALUE + '"/>' + result.commonEntities[i].ENTITY_VALUE + '::' + result.commonEntities[i].ENTITY;
+                        if(i != result.commonEntities.length - 1 ) {
+                            inputUttrHtml += "&nbsp&nbsp";
+                        }
+                    }
+                    inputUttrHtml += '</td></tr>';
+                }         
+                /*
+                if(result.commonEntities){
                     for(var i = 0; i < result.commonEntities.length ; i++){
                         inputUttrHtml += '<tr> <td> </td>';
                         inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result.commonEntities[i].ENTITY_VALUE + '"/>' + result.commonEntities[i].ENTITY_VALUE + '::' + result.commonEntities[i].ENTITY + '</td>';
                     }
                 }
+                */
                 //inputUttrHtml += '<td class="txt_right02" >'; 
                 //inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
                 /*
