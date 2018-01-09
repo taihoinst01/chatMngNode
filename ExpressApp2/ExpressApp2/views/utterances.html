@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<link rel='stylesheet' href='/css/utterances.css' />
+    <link rel='stylesheet' href='/css/utterances.css' />
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -67,7 +67,7 @@
                         <button class="btn disable" id="utterDelete" disabled="disabled">delete</button>
                         <button class="btn disable" id="utterLearn"  disabled="disabled">learn</button>
                         
-                    </div>                      
+                    </div>                                            
 
                     <!-- 어터런스 list 출력 div -->
                     <div id="utterListDiv" style="border: 1px solid #858483 !important; height : 240px; margin:15px 0 0 0;">
@@ -130,54 +130,27 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr><!-- 글자 -->
-                                        <td class='tbl_td_chatting'>
-                                            이미지
-                                        </td>
-                                        <td class='tbl_td_chatting'>
-                                            <div class="tbl_div_chatting">d</div>
-                                        </td>
-                                    </tr>
-                                    <tr><!-- 이미지 슬라이드 -->
-                                        <td class='tbl_td_chatting'>
-                                            이미지
-                                        </td>
-                                            <td class='tbl_td_chatting'>
-                                            <div class="tbl_div_chatting">
-                                                <table id="image_tbl">
-                                                    <tr>
-                                                        <td>
-                                                            <div id="prevbtn" onclick="prev()"><img src="../images/" ></div>
-                                                            <div id="nextbtn" onclick="next()"><img src="../images/"></div>
-                                                            <div id="warp">
-                                                                    <div id="mask">
-                                                                        <div id="content">
-                                                                         <dl>
-                                                                            <dt>                                                                                    
-                                                                                <dd>
-                                                                                    <table>
-                                                                                        <tr>
-                                                                                            <td><img class="catting_image" src="../images/d_img01.jpg"></td>
-                                                                                            <td><img class="catting_image" src="../images/d_img02.jpg"></td>
-                                                                                        </tr>
-                                                                                        <tr><td>1번사진내용</td><td>2번사진내용</td></tr>
-                                                                                        <tr><td><a href="#">1번사진링크</a></td><td><a href="#">2번사진내용</a></td></tr>
-                                                                                    </table>
-                                                                                <dd><img class="catting_image" src="../images/d_img03.jpg"></dd>
-                                                                            </dt>
-                                                                            <dt>
-                                                                            </dt>
-                                                                        </dl>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <div class="bot-wrap" style="display: block;">
+                                                <div data-reactroot class="wc-app">
+                                                    <div class="wc-chatview-panel" style="height: 550px; width: 520px">
+                                                        <div class="wc-message-pane">
+                                                            <div class="wc-message-groups">
+                                                
+                                                                <div class="wc-message wc-message-from-bot"><div class="wc-message-content" style="width:400px"><svg class="wc-message-callout"></svg><div><div class="format-markdown" ><div class="textMent"><p>Kona의 주요 특징을 보여드릴게요, 아래의 항목에서 궁금하신 분야를 선택해보세요</p>
+                                                                </div></div><!-- react-empty: 124 --></div></div></div>
+                                                
+                                                                <div class="wc-message wc-message-from-bot"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><!-- react-empty: 134 --><div class="wc-carousel" style="width: 312px;"><div><button class="scroll previous"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png"></button><div class="wc-hscroll-outer"><div class="wc-hscroll" style="margin-bottom: 0px;"><ul><li class="wc-carousel-item"><div class="wc-card hero"><div class="wc-container imgContainer"><img src="https://bot.hyundai.com/assets/images/mainfeatureImg/01_Kona.jpg"></div><h1>Kona 핵심기능</h1><p class="carousel">Kona의 핵심기능 영상</p><ul class="wc-card-buttons"><li><button>자세히 보기</button></li></ul></div></li><li class="wc-carousel-item"><div class="wc-card hero"><div class="wc-container imgContainer"><img src="https://bot.hyundai.com/assets/images/style/USP_style_03.jpg"></div><h1>스타일</h1><p class="carousel">독보적이고 유니크한 스타일</p><ul class="wc-card-buttons"><li><button>자세히 보기</button></li></ul></div></li><li class="wc-carousel-item"><div class="wc-card hero"><div class="wc-container imgContainer"><img src="https://bot.hyundai.com/assets/images/performance/USP_performance_03.jpg"></div><h1>주행 성능</h1><p class="carousel">힘차고 다이나믹한 주행 성능</p><ul class="wc-card-buttons"><li><button>자세히 보기</button></li></ul></div></li><li class="wc-carousel-item"><div class="wc-card hero"><div class="wc-container imgContainer"><img src="https://bot.hyundai.com/assets/images/safety/USP_safety_03.jpg"></div><h1>안전 기술</h1><p class="carousel">배려를 넘어선 능동적인 안전 기술</p><ul class="wc-card-buttons"><li><button>자세히 보기</button></li></ul></div></li><li class="wc-carousel-item"><div class="wc-card hero"><div class="wc-container imgContainer"><img src="https://bot.hyundai.com/assets/images/convenience/USP_convenience_01.jpg"></div><h1>편의 사양</h1><p class="carousel">최첨단 기술을 녹여낸 편의 사양</p><ul class="wc-card-buttons"><li><button>자세히 보기</button></li></ul></div></li><li class="wc-carousel-item"><div class="wc-card hero"><div class="wc-container imgContainer"><img src="https://bot.hyundai.com/assets/images/movieImg/celebrity/thumb_longboard.jpg"></div><h1>Hot한 영상</h1><p class="carousel">Kona 관련 인기 영상</p><ul class="wc-card-buttons"><li><button>자세히 보기</button></li></ul></div></li></ul></div></div><button class="scroll next"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button></div></div></div></div></div>
+
+                                                            </div>    
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> 
                                         </td>
                                     </tr>
-                                    <!-- 이미지 슬라이드 종료 -->
                                 </tbody>
                             </table>
                         </div>
