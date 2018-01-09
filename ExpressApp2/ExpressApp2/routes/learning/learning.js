@@ -496,6 +496,8 @@ router.post('/selectDlgListAjax', function (req, res) {
 
 //다이얼로그 추가
 router.post('/insertDialog', function (req, res) {
+    res.send({status:600 , message:'ing...'});
+    /*
     var sourceType = req.body.sourceType;
     var largeGroup = req.body.largeGroup;
     var mediumGroup = req.body.mediumGroup;
@@ -601,6 +603,7 @@ router.post('/insertDialog', function (req, res) {
     
     sql.on('error', err => {
     })
+    */
 });
 
 router.post('/learnUtterAjax', function (req, res) {
