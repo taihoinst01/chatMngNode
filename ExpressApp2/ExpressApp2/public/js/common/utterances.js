@@ -33,6 +33,9 @@ $(document).ready(function(){
 
         if (e.keyCode == 13){	//	Enter Key
 
+            $("#entityUtteranceTextTable tbody").html("");
+            $("#dlgListTable tbody").html("");
+
             $("#iptUtterance").attr("readonly",true);
             var queryText = $(this).val();
             if(queryText.trim() == "" || queryText.trim() == null) {
@@ -181,10 +184,10 @@ $(document).ready(function(){
     
     // 타입 변경시 버튼, 이미지 관련 input 생성 및 삭제
     $('#dlgType').change(function(e){
-        if($(e.target).val() == "text"){
+        if($(e.target).val() == "2"){
             $('#mediaCarouselLayout').css('display','none');
             $('#cardLayout').css('display','none');
-        }else if($(e.target).val() == "media"){
+        }else if($(e.target).val() == "4"){
             $('#mediaCarouselLayout').css('display','block');
             $('#cardLayout').css('display','none');
         }else{
@@ -193,7 +196,20 @@ $(document).ready(function(){
         }
         openModalBox('#create_dlg');
     });
-    
+
+    //다이얼로그 Add
+    $('#addDialogBtn').click(function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        alert('준비중..');
+    });
+
+    //다이얼로그 미리보기
+    $('#previewBtn').click(function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        alert('준비중..');
+    });
 });
 
 //intent selbox 선택
@@ -317,13 +333,7 @@ function changeBtnAble(btnName, boolVal){
 
 
 function utterInput(queryText) {
-
-    if($('#entityUtteranceTextTable tbody > tr').length > 0){
-        alert('더 이상 등록 할 수 없습니다.');
-        $('#iptUtterance').val('');
-        return ;
-    }
-
+    
     $.ajax({
         url: '/learning/utterInputAjax',                //주소
         dataType: 'json',                  //데이터 형식
@@ -349,12 +359,24 @@ function utterInput(queryText) {
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
-				if(result.commonEntities){
+                if(result.commonEntities){
+                    inputUttrHtml += '<tr><td> </td><td class="txt_left" >';
+                    for(var i = 0; i < result.commonEntities.length ; i++){
+                        inputUttrHtml += '<input type=hidden value="' + result.commonEntities[i].ENTITY_VALUE + '"/>' + result.commonEntities[i].ENTITY_VALUE + '::' + result.commonEntities[i].ENTITY;
+                        if(i != result.commonEntities.length - 1 ) {
+                            inputUttrHtml += "&nbsp&nbsp";
+                        }
+                    }
+                    inputUttrHtml += '</td></tr>';
+                }         
+                /*
+                if(result.commonEntities){
                     for(var i = 0; i < result.commonEntities.length ; i++){
                         inputUttrHtml += '<tr> <td> </td>';
                         inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result.commonEntities[i].ENTITY_VALUE + '"/>' + result.commonEntities[i].ENTITY_VALUE + '::' + result.commonEntities[i].ENTITY + '</td>';
                     }
                 }
+                */
                 //inputUttrHtml += '<td class="txt_right02" >'; 
                 //inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
                 /*
