@@ -13,7 +13,6 @@ router.get('/', function (req, res) {
 
 router.get('/recommend', function (req, res) {
     req.session.selMenus = 'ms1';
-    console.log("req.session.selMenus: " + req.session.selMenus);
     res.render('recommend', {selMenus: 'ms1'});
 });
 
@@ -241,6 +240,48 @@ router.get('/entities', function (req, res) {
         selMenus: req.session.selMenus,
         title: 'learning Entities page'
     } );
+});
+
+//한기훈
+router.post('/entities', function (req, res) {
+    var currentPage = req.body.currentPage;
+
+    (async () => {
+        try {
+         
+            var entitiesQueryString = "select TOP 2 * from TBL_COMMON_ENTITY_DEFINE";
+            
+            let pool = await sql.connect(dbConfig)
+            let result1 = await pool.request().query(entitiesQueryString);
+            let rows = result1.recordset;
+          
+            var result = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+
+                var entitiyValue = rows[i].ENTITY_VALUE;
+                var entity = rows[i].ENTITY;
+
+                item.ENTITY_VALUE = entitiyValue;
+                item.ENTITY = entity;
+                result.push(item);
+            }
+            if(rows.length > 0){
+                res.send({list : result});
+            }else{
+                res.send({list : result});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
 });
 
 router.post('/selectDlgListAjax', function (req, res) {
