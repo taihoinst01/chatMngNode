@@ -13,7 +13,36 @@
     
     <%include  ./common/commonUse.html%>
     <script type="text/javascript" src="/js/common/utterances.js"></script>
-
+    <!--진수 지워야할거 -->
+    <script type="text/javascript">
+        var divWidth  = "400"; //배너 1개 가로크기
+        function prev()
+        {
+         $("#content").stop(true,true);
+      
+         var moveX   = parseInt($("#content").css("margin-left"));
+      
+         if( moveX < 0 )
+         {
+          $("#content").animate({"margin-left":"+=" + divWidth + "px"},500);
+          $("#prevbtn").show();
+         }
+        }
+        function next()
+        {
+         $("#content").stop(true,true);
+      
+         var hiddenWidth  = ($("#content dd").length-1)*(-divWidth);
+         var moveX   = parseInt($("#content").css("margin-left")) ;
+         var lastWidth  = ( moveX - divWidth );
+      
+         if( hiddenWidth < moveX )
+         {
+          $("#content").animate({"margin-left":"-=" + divWidth + "px"},500);
+         }
+        }
+       </script>
+<!--진수 지워야할거 -->
 </head>
 
 <body class="main">
@@ -101,7 +130,54 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    <tr><!-- 글자 -->
+                                        <td class='tbl_td_chatting'>
+                                            이미지
+                                        </td>
+                                        <td class='tbl_td_chatting'>
+                                            <div class="tbl_div_chatting">d</div>
+                                        </td>
+                                    </tr>
+                                    <tr><!-- 이미지 슬라이드 -->
+                                        <td class='tbl_td_chatting'>
+                                            이미지
+                                        </td>
+                                            <td class='tbl_td_chatting'>
+                                            <div class="tbl_div_chatting">
+                                                <table id="image_tbl">
+                                                    <tr>
+                                                        <td>
+                                                            <div id="prevbtn" onclick="prev()"><img src="../images/" ></div>
+                                                            <div id="nextbtn" onclick="next()"><img src="../images/"></div>
+                                                            <div id="warp">
+                                                                    <div id="mask">
+                                                                        <div id="content">
+                                                                         <dl>
+                                                                            <dt>                                                                                    
+                                                                                <dd>
+                                                                                    <table>
+                                                                                        <tr>
+                                                                                            <td><img class="catting_image" src="../images/d_img01.jpg"></td>
+                                                                                            <td><img class="catting_image" src="../images/d_img02.jpg"></td>
+                                                                                        </tr>
+                                                                                        <tr><td>1번사진내용</td><td>2번사진내용</td></tr>
+                                                                                        <tr><td><a href="#">1번사진링크</a></td><td><a href="#">2번사진내용</a></td></tr>
+                                                                                    </table>
+                                                                                <dd><img class="catting_image" src="../images/d_img03.jpg"></dd>
+                                                                            </dt>
+                                                                            <dt>
+                                                                            </dt>
+                                                                        </dl>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- 이미지 슬라이드 종료 -->
                                 </tbody>
                             </table>
                         </div>

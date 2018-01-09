@@ -375,7 +375,9 @@ ul.tabs li.active { height: 38px;line-height: 38px;background: #002c5f;color:#ff
   width : 100%;
   height : 100%;
   margin: 35px 0 0 0;
+  background-color:#dbdbdb;
 }
+
 /* form*/
 
 .check-radio-tweak-wrapper {-webkit-user-select: none;-moz-user-select: none; -ms-user-select: none;user-select: none;}
