@@ -13,7 +13,6 @@ router.get('/', function (req, res) {
 
 router.get('/recommend', function (req, res) {
     req.session.selMenus = 'ms1';
-    console.log("req.session.selMenus: " + req.session.selMenus);
     res.render('recommend', {selMenus: 'ms1'});
 });
 
@@ -243,6 +242,48 @@ router.get('/entities', function (req, res) {
     } );
 });
 
+//한기훈
+router.post('/entities', function (req, res) {
+    var currentPage = req.body.currentPage;
+
+    (async () => {
+        try {
+         
+            var entitiesQueryString = "select TOP 2 * from TBL_COMMON_ENTITY_DEFINE";
+            
+            let pool = await sql.connect(dbConfig)
+            let result1 = await pool.request().query(entitiesQueryString);
+            let rows = result1.recordset;
+          
+            var result = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+
+                var entitiyValue = rows[i].ENTITY_VALUE;
+                var entity = rows[i].ENTITY;
+
+                item.ENTITY_VALUE = entitiyValue;
+                item.ENTITY = entity;
+                result.push(item);
+            }
+            if(rows.length > 0){
+                res.send({list : result});
+            }else{
+                res.send({list : result});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+});
+
 router.post('/selectDlgListAjax', function (req, res) {
 
     var entity = [];
@@ -267,7 +308,7 @@ router.post('/selectDlgListAjax', function (req, res) {
                         + " WHERE LUIS_INTENT = '" + intentName + "'"
                         + " AND USE_YN = 'Y' )";
     */
-    var relationText = "SELECT RNUM, LUIS_ENTITIES, A.DLG_ID DLG_ID, B.DLG_TYPE \n"
+    var relationText = "SELECT RNUM, LUIS_ENTITIES, A.DLG_ID DLG_ID, B.DLG_TYPE, DLG_ORDER_NO \n"
                      + "FROM (\n"
                      + "SELECT RANK() OVER(ORDER BY LUIS_ENTITIES) AS RNUM, LUIS_ENTITIES, DLG_ID \n"
                      + "FROM TBL_DLG_RELATION_LUIS \n"
@@ -291,32 +332,116 @@ router.post('/selectDlgListAjax', function (req, res) {
                   + "AND DLG_ID IN (\n"
                   + "SELECT DISTINCT DLG_ID\n"
                   + "FROM TBL_DLG_RELATION_LUIS\n"
-                  + "WHERE 1=1";
+                  + "WHERE 1=1\n";
 
     for(var i = 0; i < entity.length; i++) {
         if(i == 0) {
-            dlgText += "AND LUIS_ENTITIES LIKE '" + entity[i] +"'\n";
+            dlgText += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
         } else {
-            dlgText += "OR LUIS_ENTITIES LIKE '" + entity[i] +"'\n";
+            dlgText += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
         }
     }
     dlgText += ") \n ORDER BY DLG_ID";
 
+    var dlgCard = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, IMG_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n"
+                  + "BTN_2_TYPE, BTN_2_TITLE, BTN_2_CONTEXT,\n"
+                  + "BTN_3_TYPE, BTN_3_TITLE, BTN_3_CONTEXT,\n"
+                  + "BTN_4_TYPE, BTN_4_TITLE, BTN_4_CONTEXT,\n"
+                  + "CARD_ORDER_NO, CARD_VALUE,\n"
+                  + "USE_YN, '3' AS DLG_TYPE \n"
+                  + "FROM TBL_DLG_CARD\n"
+                  + "WHERE USE_YN = 'Y'\n"
+                  + "AND DLG_ID IN (\n"
+                  + "SELECT DISTINCT DLG_ID\n"
+                  + "FROM TBL_DLG_RELATION_LUIS\n"
+                  + "WHERE 1=1\n";
+
+    for(var i = 0; i < entity.length; i++) {
+        if(i == 0) {
+            dlgCard += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+        } else {
+            dlgCard += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+        }
+    }
+    dlgCard += ") \n ORDER BY DLG_ID";
+    
+    var dlgMedia = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, MEDIA_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n"
+                  + "BTN_2_TYPE, BTN_2_TITLE, BTN_2_CONTEXT,\n"
+                  + "BTN_3_TYPE, BTN_3_TITLE, BTN_3_CONTEXT,\n"
+                  + "BTN_4_TYPE, BTN_4_TITLE, BTN_4_CONTEXT,\n"
+                  + "CARD_VALUE,\n"
+                  + "USE_YN, '4' AS DLG_TYPE \n"
+                  + "FROM TBL_DLG_MEDIA\n"
+                  + "WHERE USE_YN = 'Y'\n"
+                  + "AND DLG_ID IN (\n"
+                  + "SELECT DISTINCT DLG_ID\n"
+                  + "FROM TBL_DLG_RELATION_LUIS\n"
+                  + "WHERE 1=1\n";
+
+    for(var i = 0; i < entity.length; i++) {
+        if(i == 0) {
+            dlgMedia += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+        } else {
+            dlgMedia += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+        }
+    }
+    dlgMedia += ") \n ORDER BY DLG_ID";
+
     (async () => {
         try {
             let pool = await sql.connect(dbConfig)
+
+            let dlgTextResult = await pool.request()
+                .query(dlgText);
+            let rowsText = dlgTextResult.recordset;
+
+            let dlgCardResult = await pool.request()
+                .query(dlgCard);
+            let rowsCard = dlgCardResult.recordset;
+
+            let dlgMediaResult = await pool.request()
+                .query(dlgMedia);
+            let rowsMedia = dlgMediaResult.recordset;
+            
             let result1 = await pool.request()
                 .query(relationText)
             let rows = result1.recordset;
             var result = [];
             for(var i = 0; i < rows.length; i++){
-                //var item = {};
-                //var query = rows[i].QUERY;
-                //var entityArr = rows[i].ENTITIES.split(',');
-                
-                //item.QUERY = query;
-                result.push(rows[i]);
+                var row = {};
+                row.RNUM = rows[i].RNUM;
+                row.LUIS_ENTITIES = rows[i].LUIS_ENTITIES;
+                row.DLG_ID = rows[i].DLG_ID;
+                row.DLG_TYPE = rows[i].DLG_TYPE;
+                row.DLG_ORDER_NO = rows[i].DLG_ORDER_NO;
+                row.dlg = [];
+
+                let dlg_type = rows[i].DLG_TYPE;
+                if(dlg_type == 2){
+                    for(var j = 0; j < rowsText.length; j++){
+                        let textDlgId = rowsText[j].DLG_ID;
+                        if(row.DLG_ID == textDlgId){
+                            row.dlg.push(rowsText[j]);
+                        }
+                    }
+                }else if(dlg_type == 3){
+                    for(var j = 0; j < rowsCard.length; j++){
+                        var cardDlgId = rowsCard[j].DLG_ID;
+                        if(row.DLG_ID == cardDlgId){
+                            row.dlg.push(rowsCard[j]);
+                        }
+                    }
+                }else if(dlg_type == 4){
+                    for(var j = 0; j < rowsMedia.length; j++){
+                        var mediaDlgId = rowsMedia[j].DLG_ID;
+                        if(row.DLG_ID == mediaDlgId){
+                            row.dlg.push(rowsMedia[j]);
+                        }
+                    }
+                }
+                result.push(row);
             }
+
             res.send({list : result});
         
         } catch (err) {
