@@ -33,6 +33,9 @@ $(document).ready(function(){
 
         if (e.keyCode == 13){	//	Enter Key
 
+            $("#entityUtteranceTextTable tbody").html("");
+            $("#dlgListTable tbody").html("");
+
             $("#iptUtterance").attr("readonly",true);
             var queryText = $(this).val();
             if(queryText.trim() == "" || queryText.trim() == null) {
@@ -181,10 +184,10 @@ $(document).ready(function(){
     
     // 타입 변경시 버튼, 이미지 관련 input 생성 및 삭제
     $('#dlgType').change(function(e){
-        if($(e.target).val() == "text"){
+        if($(e.target).val() == "2"){
             $('#mediaCarouselLayout').css('display','none');
             $('#cardLayout').css('display','none');
-        }else if($(e.target).val() == "media"){
+        }else if($(e.target).val() == "4"){
             $('#mediaCarouselLayout').css('display','block');
             $('#cardLayout').css('display','none');
         }else{
@@ -330,13 +333,7 @@ function changeBtnAble(btnName, boolVal){
 
 
 function utterInput(queryText) {
-
-    if($('#entityUtteranceTextTable tbody > tr').length > 0){
-        alert('더 이상 등록 할 수 없습니다.');
-        $('#iptUtterance').val('');
-        return ;
-    }
-
+    
     $.ajax({
         url: '/learning/utterInputAjax',                //주소
         dataType: 'json',                  //데이터 형식

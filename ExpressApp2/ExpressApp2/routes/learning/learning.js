@@ -3,6 +3,7 @@ var express = require('express');
 var sql = require('mssql');
 var dbConfig = require('../../config/dbConfig');
 var paging = require('../../config/paging');
+var util = require('../../config/util');
 var router = express.Router();
 
 /* GET users listing. */
@@ -493,15 +494,34 @@ router.post('/selectDlgListAjax', function (req, res) {
     })
 });
 
+//다이얼로그 추가
 router.post('/insertDialog', function (req, res) {
-    var dlgType = req.body.dlgType;
-    var dlgOrder = req.body.dlgOrder;
-    var dialogText = req.body.dialogText;
-    var dlgTypeNum = ((dlgType == 'text')? '2' : (dlgType == 'card')? '3' : (digType == 'media')? '4' : null);
+    var sourceType = req.body.sourceType;
+    var largeGroup = req.body.largeGroup;
+    var mediumGroup = req.body.mediumGroup;
+    var smallGroup = req.body.smallGroup;
+    var description = util.nullCheck(req.body.description, null);
 
-    if(dlgTypeNum == null){
-        res.send({status:400 , message:'dialog type not found'});
-    }
+    var dlgType = req.body.dlgType; // 2 : text , 3 : carousel , 4 : media
+    var dialogOrderNo = req.body.dialogOrderNo;
+    var dialogText = util.nullCheck(req.body.dialogText, null);
+
+    var cardOrderNo = req.body.cardOrderNo;
+
+    var buttonName1 = util.nullCheck(req.body.buttonName1, null);
+    var buttonName2 = util.nullCheck(req.body.buttonName2, null);
+    var buttonName3 = util.nullCheck(req.body.buttonName3, null);
+    var buttonName4 = util.nullCheck(req.body.buttonName4, null);
+    var buttonContent1 = util.nullCheck(req.body.buttonContent1, null);
+    var buttonContent2 = util.nullCheck(req.body.buttonContent2, null);
+    var buttonContent3 = util.nullCheck(req.body.buttonContent3, null);
+    var buttonContent4 = util.nullCheck(req.body.buttonContent4, null);
+    var btn1Type = (buttonName1 != null)? 'imBack' : null;
+    var btn2Type = (buttonName2 != null)? 'imBack' : null;
+    var btn3Type = (buttonName3 != null)? 'imBack' : null;
+    var btn4Type = (buttonName4 != null)? 'imBack' : null;
+    var imgUrl = util.nullCheck(req.body.imgUrl, null);
+
     (async () => {
         try {
 
@@ -512,40 +532,40 @@ router.post('/insertDialog', function (req, res) {
             let rows1 = result1.recordset;
             
             var insertQueryString1 = 'INSERT INTO TBL_DLG(DLG_ID,DLG_NAME,DLG_DESCRIPTION,DLG_LANG,DLG_TYPE,DLG_ORDER_NO,USE_YN) VALUES ' +
-            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dlgOrder,\'Y\')';
+            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dialogOrderNo,\'Y\')';
 
             let result2 = await pool.request()
                 .input('dlgId', sql.Int, rows1[0].DLG_ID)
                 .input('dialogText', sql.NVarChar, dialogText)
-                .input('dlgType', sql.NVarChar, dlgTypeNum)
-                .input('dlgOrder', sql.Int, dlgOrder)
+                .input('dlgType', sql.NVarChar, dlgType)
+                .input('dialogOrderNo', sql.Int, dialogOrderNo)
                 .query(insertQueryString1)  
             //let rows2 = result2.recordset;
             
             var selectQueryString2 = '';
-            if(dlgType == 'text'){
+            if(dlgType == '2'){
                 selectQueryString2 = 'SELECT ISNULL(MAX(TEXT_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_TEXT';
-            }else if(dlgType == 'card'){
+            }else if(dlgType == '3'){
                 selectQueryString2 = 'SELECT ISNULL(MAX(CARD_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_CARD';
-            }else if(dlgType == 'media'){
+            }else if(dlgType == '4'){
                 selectQueryString2 = 'SELECT ISNULL(MAX(MEDIA_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_MEDIA';
             }else{
             }
             
             let result3 = await pool.request()
                 .query(selectQueryString2)
-            let rows3 = result3.recordset; //row3[0].TYPE_DLG_ID
+            let rows3 = result3.recordset; //rows3[0].TYPE_DLG_ID
 
             var insertQueryString2 = '';
-            if(dlgType == 'text'){
+            if(dlgType == '2'){
                 insertQueryString2 = 'INSERT INTO TBL_DLG_TEXT(TEXT_DLG_ID,DLG_ID,CARD_TEXT,USE_YN) VALUES ' +
                 '(@typeDlgId,@dlgId,@dialogText,\'Y\')';
-            }else if(dlgType == 'card'){
-                insertQueryString2 = 'INSERT INTO TBL_DLG_CARD(CARD_DLG_ID,DLG_ID,CARD_TEXT,USE_YN) VALUES ' +
-                '(@typeDlgId,@dlgId,@dialogText,\'Y\')';
-            }else if(dlgType == 'media'){
-                insertQueryString2 = 'INSERT INTO TBL_DLG_MEDIA(MEDIA_DLG_ID,DLG_ID,CARD_TEXT,USE_YN) VALUES ' +
-                '(@typeDlgId,@dlgId,@dialogText,\'Y\')';
+            }else if(dlgType == '3'){
+                insertQueryString2 = 'INSERT INTO TBL_DLG_CARD(CARD_DLG_ID,DLG_ID,CARD_TEXT,IMG_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_ORDER_NO,USE_YN) VALUES ' +
+                '(@typeDlgId,@dlgId,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardOrderNo,\'Y\')';
+            }else if(dlgType == '4'){
+                insertQueryString2 = 'INSERT INTO TBL_DLG_MEDIA(MEDIA_DLG_ID,DLG_ID,CARD_TEXT,MEDIA_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,USE_YN) VALUES ' +
+                '(@typeDlgId,@dlgId,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,\'Y\')';
             }else{
             }
 
@@ -553,6 +573,20 @@ router.post('/insertDialog', function (req, res) {
                 .input('typeDlgId', sql.Int, rows3[0].TYPE_DLG_ID)
                 .input('dlgId', sql.Int, rows1[0].DLG_ID)
                 .input('dialogText', sql.NVarChar, dialogText)
+                .input('imgUrl', sql.NVarChar, imgUrl)
+                .input('btn1Type', sql.NVarChar, btn1Type)
+                .input('buttonName1', sql.NVarChar, buttonName1)
+                .input('buttonContent1', sql.NVarChar, buttonContent1)
+                .input('btn2Type', sql.NVarChar, btn2Type)
+                .input('buttonName2', sql.NVarChar, buttonName2)
+                .input('buttonContent2', sql.NVarChar, buttonContent2)
+                .input('btn3Type', sql.NVarChar, btn3Type)
+                .input('buttonName3', sql.NVarChar, buttonName3)
+                .input('buttonContent3', sql.NVarChar, buttonContent3)
+                .input('btn4Type', sql.NVarChar, btn4Type)
+                .input('buttonName4', sql.NVarChar, buttonName4)
+                .input('buttonContent4', sql.NVarChar, buttonContent4)
+                .input('cardOrderNo', sql.NVarChar, cardOrderNo)
                 .query(insertQueryString2)
 
             res.send({status:200 , message:'insert Success', DLG_ID: rows1[0].DLG_ID, CARD_TEXT: dialogText});
