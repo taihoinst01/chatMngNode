@@ -10,6 +10,8 @@
 .btnBox{ width:100%; margin-bottom:3px; }
 .clear-both{ clear:both; }
 .w82{ width: 82px; }
+.modal_box.w900{ width: 900px; }
+
 .tbl_td_chatting{text-align: left !important; border-bottom:none !important;}
 .tbl_div_chatting{background : #fff; border-radius: 12px; padding:10px; font-size:12px; width: 360px;}
 .catting_image{width: 180px; height: 80px; margin-bottom: 10px}

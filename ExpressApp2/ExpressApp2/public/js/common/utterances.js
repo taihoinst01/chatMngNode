@@ -199,17 +199,25 @@ $(document).ready(function(){
 
     //다이얼로그 Add
     $('#addDialogBtn').click(function(e){
+        var dlgType = $('#dlgType').val();
+        var dlgHtml = '';
+        if(dlgType == '2'){
+            dlgHtml += '<div class="wc-message wc-message-from-bot" style="width:90%;">';
+            dlgHtml += '<div class="wc-message-content">';
+            dlgHtml += '<svg class="wc-message-callout"></svg>';
+            dlgHtml += '<div><div class="format-markdown"><div class="textMent">';
+            dlgHtml += '<p>';
+            dlgHtml += $('#dialogText').val();
+            dlgHtml += '</p>';
+            dlgHtml += '</div></div></div></div></div>';
+        }
+        $('#dialogPreview').append(dlgHtml);
+        $('#appInsertForm')[0].reset();
+        
         e.stopPropagation();
-        e.preventDefault();
-        alert('준비중..');
+        e.preventDefault();;
     });
 
-    //다이얼로그 미리보기
-    $('#previewBtn').click(function(e){
-        e.stopPropagation();
-        e.preventDefault();
-        alert('준비중..');
-    });
 });
 
 //intent selbox 선택
@@ -414,10 +422,7 @@ function utterHighlight(entities, utter) {
 //---------------두연 추가
 
 function openModalBox(target){
-    if(target === '#rename_chatbot'){
-        $('#lay').css('display','none');
-        $('#reName').val($('#currentAppName').val());
-    }
+
     // 화면의 높이와 너비를 변수로 만듭니다.
     var maskHeight = $(document).height();
     var maskWidth = $(window).width();
@@ -427,14 +432,15 @@ function openModalBox(target){
 
 
     // 레이어 팝업을 가운데로 띄우기 위해 화면의 높이와 너비의 가운데 값과 스크롤 값을 더하여 변수로 만듭니다.
-    var left = ( $(window).scrollLeft() + ( $(window).width() - $('#create_dlg').width()) / 2 );
-    var top = ( $(window).scrollTop() + ( $(window).height() - $('#create_dlg').height()) / 2 );
+    var left = ( $(window).scrollLeft() + ( $(window).width() - $(target).width()) / 2 );
+    //var top = ( $(window).scrollTop() + ( $(window).height() - $(target).height()) / 2 );
 
     // css 스타일을 변경합니다.
-    $(target).css({'left':left,'top':top, 'position':'absolute'});
+    $(target).css({'left':left,'top':'25px', 'position':'absolute'});
 
     // 레이어 팝업을 띄웁니다.
     $(target).show();
+    $('#dialogPreview').css({'height':$('#dialogSet').height()});
 
     $('html').css({'overflow': 'hidden', 'height': '100%'});
         $('#element').on('scroll touchmove mousewheel', function(event) { // 터치무브와 마우스휠 스크롤 방지

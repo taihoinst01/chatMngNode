@@ -3,6 +3,8 @@
 
 <head>
 	<link rel='stylesheet' href='/css/utterances.css' />
+	<link rel='stylesheet' href='/css/botchat.css' />
+
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,6 +15,7 @@
     
     <%include  ./common/commonUse.html%>
     <script type="text/javascript" src="/js/common/utterances.js"></script>
+	 <!--<script type="text/javascript" src="/js/common/botchat.js"></script> -->
     <!--진수 지워야할거 -->
     <script type="text/javascript">
         var divWidth  = "400"; //배너 1개 가로크기
@@ -208,7 +211,7 @@
 
 
     <!--신규 다이얼로그 등록 -->
-    <div id="create_dlg" class="modal_box w600" style="height: auto !important">
+    <div id="create_dlg" class="modal_box w900" style="height: auto !important">
         <header> <a href="#" id="addDialogClose" class="js-modal-close close">×</a>
           <h3>Create new Dialogue Set</h3><!-- 신규 다이얼로그 등록 -->
         </header>
@@ -216,7 +219,7 @@
         <!-- form start -->
         <form name="appInsertForm" id="appInsertForm" method="post">
     
-        <div class="modal-body">
+        <div id="dialogSet" class="modal-body" style="float:left; width: 50%;">
             <p class="texcon03">Source Type <span>(required) </span></p>
             <p><select name="sourceType" class="inbox02" id="sourceType" style="width:100%" >
                 <option value="Common" selected>Common</option>
@@ -324,14 +327,12 @@
                 <p class="texcon03">Dialogue Add</p>
                 <p><button class="btn margin0 w82" id="addDialogBtn">Add</button></p>
             </div>
-            <div class="layout-float-left-last">
-                <p class="texcon03">Preview</p>
-                <p><button class="btn margin0 w82" id="previewBtn">미리보기</button></p>
-            </div>
             <div class="clear-both"></div>
             
         </div>
-    
+    	<div id="dialogPreview" style="float:left; width: 47%; overflow: auto; margin:0 0 0 10px; border: 1px solid #ccc; background: #f1f3f6; padding: 5px;">
+        </div>
+        <div class="clear-both"></div>
         </form>
         <!-- form end -->
     
