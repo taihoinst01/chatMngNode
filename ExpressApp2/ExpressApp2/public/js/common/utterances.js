@@ -184,10 +184,10 @@ $(document).ready(function(){
     
     // 타입 변경시 버튼, 이미지 관련 input 생성 및 삭제
     $('#dlgType').change(function(e){
-        if($(e.target).val() == "text"){
+        if($(e.target).val() == "2"){
             $('#mediaCarouselLayout').css('display','none');
             $('#cardLayout').css('display','none');
-        }else if($(e.target).val() == "media"){
+        }else if($(e.target).val() == "4"){
             $('#mediaCarouselLayout').css('display','block');
             $('#cardLayout').css('display','none');
         }else{
