@@ -151,26 +151,26 @@
             <p class="texcon03">Group <span>(required) </span></p>
             <div class="group-float-left">
                 <p class="texcon03">대그룹</p>
-                <p><select name="maxGroup" class="inbox02" id="maxGroup" style="width: 100%;" >
-                    <option value="" selected>maxGroup1</option>
-                    <option value="">maxGroup2</option>
-                    <option value="">maxGroup3</option>
+                <p><select name="largeGroup" class="inbox02" id="largeGroup" style="width: 100%;" >
+                    <option value="" selected>largeGroup1</option>
+                    <option value="">largeGroup2</option>
+                    <option value="">largeGroup3</option>
                 </select></p>
             </div>
             <div class="group-float-left">
                 <p class="texcon03">중그룹</p>
-                <p><select name="middleGroup" class="inbox02" id="middleGroup" style="width: 100%;" >
-                    <option value="" selected>middleGroup1</option>
-                    <option value="">middleGroup2</option>
-                    <option value="">middleGroup3</option>
+                <p><select name="mediumGroup" class="inbox02" id="mediumGroup" style="width: 100%;" >
+                    <option value="" selected>mediumGroup1</option>
+                    <option value="">mediumGroup2</option>
+                    <option value="">mediumGroup3</option>
                 </select></p>
             </div>
             <div class="group-float-left-last">
                 <p class="texcon03">소그룹</p>
-                <p><select name="minGroup" class="inbox02" id="minGroup" style="width: 100%;" >
-                    <option value="" selected>minGroup1</option>
-                    <option value="">minGroup2</option>
-                    <option value="">minGroup3</option>
+                <p><select name="smallGroup" class="inbox02" id="smallGroup" style="width: 100%;" >
+                    <option value="" selected>smallGroup1</option>
+                    <option value="">smallGroup2</option>
+                    <option value="">smallGroup3</option>
                 </select></p>
             </div>
             <div class="clear-both"></div>
@@ -181,9 +181,9 @@
             <div class="layout-float-left">
                 <p class="texcon03">Dialogue Type <span>(required) </span></p>
                 <p><select name="dlgType" class="inbox02" id="dlgType" style="width:100%" >
-                    <option value="text">Text</option>
-                    <option value="media">Media</option>
-                    <option value="carousel">Carousel</option>
+                    <option value="2" selected>Text</option>
+                    <option value="3">Carousel</option>
+                    <option value="4">Media</option>
                 </select></p>
             </div>
             <div class="layout-float-left-last">
@@ -223,8 +223,9 @@
                     <p class="texcon03">Button Name <span>(optional) </span></p>
                     <p>
                         <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
-                        <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
-                        <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
+                        <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" placeholder="Input name.." />
+                        <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" placeholder="Input name.." />
+                        <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" placeholder="Input name.." />
                     </p>
                 </div>
                 <div class="layout-float-left-last">
@@ -233,12 +234,13 @@
                         <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
                         <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." />
                         <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." />
+                        <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" placeholder="Input contents.." />
                     </p>
                 </div>
                 <div class="clear-both"></div>
 
                 <p class="texcon03">Image Url <span>(optional) </span></p>
-                <p><input name="imgUrl1" type="text" class="inbox02" id="imgUrl1" style="width:100%" placeholder="Input image url.." /></p>
+                <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:100%" placeholder="Input image url.." /></p>
             </div>
             <!--// media , carousal 일 경우 input box 추가 layout -->
 
