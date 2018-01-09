@@ -125,7 +125,44 @@ router.get('/dialog', function (req, res) {
     } );
 });
 
+//한기훈
+router.post('/dialogs', function (req, res) {
 
+    (async () => {
+        try {
+         
+            var dlg_desQueryString = "SELECT TOP 3 DLG_DESCRIPTION FROM TBL_DLG GROUP BY DLG_DESCRIPTION";
+            var luis_entitiesQueryString = "SELECT TOP 3 LUIS_ENTITIES from TBL_DLG_RELATION_LUIS GROUP BY LUIS_ENTITIES";
+            let pool = await sql.connect(dbConfig)
+            let result1 = await pool.request().query(entitiesQueryString);
+            let rows = result1.recordset;
+          
+            var result = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+
+                var description = rows[i].DLG_DESCRIPTION;
+
+                item.DLG_DESCRIPTION = description;
+                result.push(item);
+            }
+            if(rows.length > 0){
+                res.send({list : result});
+            }else{
+                res.send({list : result});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+});
 
 router.post('/utterInputAjax', function(req, res, next) {
  
@@ -245,7 +282,6 @@ router.get('/entities', function (req, res) {
 
 //한기훈
 router.post('/entities', function (req, res) {
-    var currentPage = req.body.currentPage;
 
     (async () => {
         try {
