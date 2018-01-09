@@ -33,6 +33,9 @@ $(document).ready(function(){
 
         if (e.keyCode == 13){	//	Enter Key
 
+            $("#entityUtteranceTextTable tbody").html("");
+            $("#dlgListTable tbody").html("");
+
             $("#iptUtterance").attr("readonly",true);
             var queryText = $(this).val();
             if(queryText.trim() == "" || queryText.trim() == null) {
@@ -330,13 +333,7 @@ function changeBtnAble(btnName, boolVal){
 
 
 function utterInput(queryText) {
-
-    if($('#entityUtteranceTextTable tbody > tr').length > 0){
-        alert('더 이상 등록 할 수 없습니다.');
-        $('#iptUtterance').val('');
-        return ;
-    }
-
+    
     $.ajax({
         url: '/learning/utterInputAjax',                //주소
         dataType: 'json',                  //데이터 형식
