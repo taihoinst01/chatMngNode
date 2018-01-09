@@ -202,19 +202,24 @@ $(document).ready(function(){
     $('#addDialogBtn').click(function(e){
         var dlgType = $('#dlgType').val();
         var dlgHtml = '';
-        if(dlgType == '2'){
-            dlgHtml += '<div class="wc-message wc-message-from-bot" style="width:90%;">';
-            dlgHtml += '<div class="wc-message-content">';
-            dlgHtml += '<svg class="wc-message-callout"></svg>';
-            dlgHtml += '<div><div class="format-markdown"><div class="textMent">';
-            dlgHtml += '<p>';
-            dlgHtml += $('#dialogText').val();
-            dlgHtml += '</p>';
-            dlgHtml += '</div></div></div></div></div>';
+        if(dlgType == '2'){ //text
+            if($('#dialogText').val() == ''){
+                alert('다이얼로그 텍스트를 입력하세요');
+            }else{
+                dlgHtml += '<div class="wc-message wc-message-from-bot" style="width:90%;">';
+                dlgHtml += '<div class="wc-message-content">';
+                dlgHtml += '<svg class="wc-message-callout"></svg>';
+                dlgHtml += '<div><div class="format-markdown"><div class="textMent">';
+                dlgHtml += '<p>';
+                dlgHtml += $('#dialogText').val();
+                dlgHtml += '</p>';
+                dlgHtml += '</div></div></div></div></div>';
+            }
         }
         $('#dialogPreview').append(dlgHtml);
         $('#appInsertForm')[0].reset();
-        
+        $('#dlgType').change();
+
         e.stopPropagation();
         e.preventDefault();;
     });
