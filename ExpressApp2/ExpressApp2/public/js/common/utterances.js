@@ -193,7 +193,20 @@ $(document).ready(function(){
         }
         openModalBox('#create_dlg');
     });
-    
+
+    //다이얼로그 Add
+    $('#addDialogBtn').click(function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        alert('준비중..');
+    });
+
+    //다이얼로그 미리보기
+    $('#previewBtn').click(function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        alert('준비중..');
+    });
 });
 
 //intent selbox 선택
