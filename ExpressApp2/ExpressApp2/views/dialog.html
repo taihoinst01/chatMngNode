@@ -17,6 +17,7 @@
 
     <%include  ./common/commonUse.html%>
     <script type="text/javascript" src="/js/common/dialog.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/paging.css" />
     <!--    
     <style type="text/css">
         .appLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:120px; padding:10px; } 
@@ -33,6 +34,7 @@
     <!--<link rel="import" href="./header.html">    -->
     <%include  ./header.html%>
     <%include  ./header4Luis.html%>
+    <input type="hidden" name='currentPage' id="currentPage" value="1" />
     <div id="wrap4Luis">
         <div id="container" class="main">
             <div class="subt_wrap">
@@ -50,27 +52,29 @@
                     <thead>
                         <tr>
                             <th class="txt_center">
-                                <select name="sourceType" id="luisentities">
+                                <select name="sourceType" id="sourceType">
                                     <option value="D" selected="selected">Common</option>
                                     <option value="api quot">Api Quot</option>
                                     <option value="api testdrive">Api Testdrive</option>
                                 </select>
                             </th>
                             <th class="txt_center">
-                                <select name="groupType" id="luisintent">
+                                <select name="groupType" id="groupType">
                                     <option value="Advantage" selected="selected">Advantage</option>
                                     <option value="airbag" >airbag</option>
                                     <option value="audio" >audio</option>
                                 </select>
                             </th>
-                            <th class="txt_left" colspan="3">설명</th>
-                            <th class="txt_left" colspan="3">연결 어터런스</th>
+                            <th class="txt_left" colspan="5">설명</th>
+                            <th class="txt_center" colspan="2">연결 어터런스</th>
                         </tr>
                     </thead>
                     <tbody id="dialogTbltbody">
                       
                     </tbody>
                 </table>
+                <div id="pagination">
+                </div>
             </div>                            
         </div>
     </div>

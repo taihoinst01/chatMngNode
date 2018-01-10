@@ -129,13 +129,23 @@ router.get('/dialog', function (req, res) {
 router.post('/dialogs', function (req, res) {
     
     
+    var currentPage = req.body.currentPage;
+
     (async () => {
         try {
-            var luisentities = req.body.luisentities;
-            var luisintent = req.body.luisintent;
-            var dlg_desQueryString = "select DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, LUIS_INTENT  from TBL_DLG a, TBL_DLG_RELATION_LUIS b where a.DLG_ID = b.DLG_ID and LUIS_INTENT like '%D%' and DLG_API_DEFINE like '%"+luisentities+"%'";
-            let pool = await sql.connect(dbConfig)
-            let result1 = await pool.request().query(dlg_desQueryString);
+            var sourceType = req.body.sourceType;
+            var groupType = req.body.groupType;
+            var dlg_desQueryString = "select tbp.* from " +
+                                     "(select ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC) AS NUM, " +
+                                     "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
+                                     "CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
+                                     "DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, LUIS_INTENT " +
+                                     "from TBL_DLG a, TBL_DLG_RELATION_LUIS b " + 
+                                     "where a.DLG_ID = b.DLG_ID and LUIS_INTENT like '%" + groupType + "%' " +
+                                     "and DLG_API_DEFINE like '%" + sourceType + "%') tbp " +
+                                     "WHERE PAGEIDX = @currentPage";
+            let pool = await sql.connect(dbConfig);
+            let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(dlg_desQueryString);
             let rows = result1.recordset;
             
             var result = [];
@@ -155,7 +165,7 @@ router.post('/dialogs', function (req, res) {
                 result.push(item);
             }
             if(rows.length > 0){
-                res.send({list : result});
+                res.send({list : result, pageList : paging.pagination(currentPage,rows[0].TOTCNT)});
             }else{
                 res.send({list : result});
             }
