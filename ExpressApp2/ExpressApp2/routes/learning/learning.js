@@ -370,7 +370,7 @@ router.post('/selectDlgListAjax', function (req, res) {
     relationText += "GROUP BY LUIS_ENTITIES, DLG_ID \n"
                  + ") A LEFT OUTER JOIN TBL_DLG B\n"
                  + "ON A.DLG_ID = B.DLG_ID \n"
-                 + "ORDER BY LUIS_ENTITIES";
+                 + "ORDER BY LUIS_ENTITIES, DLG_ORDER_NO";
 
     var dlgText = "SELECT DLG_ID, CARD_TITLE, CARD_TEXT, USE_YN, '2' AS DLG_TYPE \n"
                   + "FROM TBL_DLG_TEXT\n"
@@ -504,6 +504,8 @@ router.post('/selectDlgListAjax', function (req, res) {
 
 //다이얼로그 추가
 router.post('/insertDialog', function (req, res) {
+    res.send({status:600 , message:'ing...'});
+    /*
     var sourceType = req.body.sourceType;
     var largeGroup = req.body.largeGroup;
     var mediumGroup = req.body.mediumGroup;
@@ -609,6 +611,7 @@ router.post('/insertDialog', function (req, res) {
     
     sql.on('error', err => {
     })
+    */
 });
 
 router.post('/learnUtterAjax', function (req, res) {
