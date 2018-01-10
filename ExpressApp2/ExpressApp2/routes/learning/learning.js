@@ -281,31 +281,39 @@ router.get('/entities', function (req, res) {
     } );
 });
 
-//한기훈
+
 router.post('/entities', function (req, res) {
+
+    var currentPage = req.body.currentPage;
 
     (async () => {
         try {
          
-            var entitiesQueryString = "select TOP 2 * from TBL_COMMON_ENTITY_DEFINE";
+            var entitiesQueryString = "select tbp.* from " +
+                                      "(select ROW_NUMBER() OVER(ORDER BY api_group DESC) AS NUM, " +
+                                      "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
+                                      "CEILING((ROW_NUMBER() OVER(ORDER BY api_group DESC))/ convert(numeric ,10)) PAGEIDX, " +
+                                      "entity_value, entity from tbl_common_entity_define) tbp " +
+                                      "WHERE PAGEIDX = @currentPage";
             
             let pool = await sql.connect(dbConfig)
-            let result1 = await pool.request().query(entitiesQueryString);
+            let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(entitiesQueryString);
+
             let rows = result1.recordset;
-          
+
             var result = [];
             for(var i = 0; i < rows.length; i++){
                 var item = {};
 
-                var entitiyValue = rows[i].ENTITY_VALUE;
-                var entity = rows[i].ENTITY;
+                var entitiyValue = rows[i].entity_value;
+                var entity = rows[i].entity;
 
                 item.ENTITY_VALUE = entitiyValue;
                 item.ENTITY = entity;
                 result.push(item);
             }
             if(rows.length > 0){
-                res.send({list : result});
+                res.send({list : result, pageList : paging.pagination(currentPage,rows[0].TOTCNT)});
             }else{
                 res.send({list : result});
             }
