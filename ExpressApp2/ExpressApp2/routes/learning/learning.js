@@ -125,26 +125,33 @@ router.get('/dialog', function (req, res) {
     } );
 });
 
-/*
-//한기훈
-router.post('/dialogs', function (req, res) {
 
+router.post('/dialogs', function (req, res) {
+    
+    
     (async () => {
         try {
-         
-            var dlg_desQueryString = "SELECT TOP 3 DLG_DESCRIPTION FROM TBL_DLG GROUP BY DLG_DESCRIPTION";
-            var luis_entitiesQueryString = "SELECT TOP 3 LUIS_ENTITIES from TBL_DLG_RELATION_LUIS GROUP BY LUIS_ENTITIES";
+            var luisentities = req.body.luisentities;
+            var luisintent = req.body.luisintent;
+            var dlg_desQueryString = "select DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, LUIS_INTENT  from TBL_DLG a, TBL_DLG_RELATION_LUIS b where a.DLG_ID = b.DLG_ID and LUIS_INTENT like '%D%' and DLG_API_DEFINE like '%"+luisentities+"%'";
             let pool = await sql.connect(dbConfig)
-            let result1 = await pool.request().query(entitiesQueryString);
+            let result1 = await pool.request().query(dlg_desQueryString);
             let rows = result1.recordset;
-          
+            
             var result = [];
             for(var i = 0; i < rows.length; i++){
                 var item = {};
 
                 var description = rows[i].DLG_DESCRIPTION;
+                var apidefine = rows[i].DLG_API_DEFINE;
+                var luisentties = rows[i].LUIS_ENTITIES;
+                var luisentent = rows[i].LUIS_INTENT;
 
                 item.DLG_DESCRIPTION = description;
+                item.DLG_API_DEFINE = apidefine;
+                item.LUIS_ENTITIES = luisentties;
+                item.LUIS_INTENT = luisentent;
+
                 result.push(item);
             }
             if(rows.length > 0){
@@ -164,7 +171,7 @@ router.post('/dialogs', function (req, res) {
         // ... error handler
     })
 });
-*/
+
 router.post('/utterInputAjax', function(req, res, next) {
  
     //view에 있는 data 에서 던진 값을 받아서
