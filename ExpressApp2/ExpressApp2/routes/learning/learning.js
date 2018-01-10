@@ -351,39 +351,25 @@ router.post('/selectDlgListAjax', function (req, res) {
 
     var entity = [];
     entity = req.body['entity[]'];
-    /*
-    var queryText = "SELECT DL.DLG_ID, DL.DLG_TYPE, "
-                  + "CASE WHEN DLG_TYPE = 2 THEN ( SELECT CARD_TEXT FROM TBL_DLG_TEXT TE WHERE TE.DLG_ID = DL.DLG_ID)"
-                  + " WHEN DLG_TYPE = 3 THEN ( SELECT CASE WHEN CARD_TITLE IS NULL THEN CARD_TEXT"
-                                                        + " WHEN CARD_TEXT IS NULL THEN CARD_TITLE ELSE CARD_TEXT END CARD_TEXT"
-                                            + " FROM TBL_DLG_CARD CA"
-                                            + " WHERE CARD_ORDER_NO = 1"
-                                            + " AND CA.DLG_ID = DL.DLG_ID )"
-                  + " WHEN DLG_TYPE = 4 THEN ( SELECT CASE WHEN CARD_TITLE IS NULL THEN CARD_TEXT"
-                                                        + " WHEN CARD_TEXT IS NULL THEN CARD_TITLE END CARD_TEXT"
-                                            + " FROM TBL_DLG_MEDIA ME"
-                                            + " WHERE ME.DLG_ID = DL.DLG_ID )"
-                  + " END CARD_TEXT"
-                  + " FROM TBL_DLG DL"
-                  + " WHERE DLG_ID IN ("
-                        + " SELECT DISTINCT DLG_ID "
-                        + " FROM TBL_DLG_RELATION_LUIS"
-                        + " WHERE LUIS_INTENT = '" + intentName + "'"
-                        + " AND USE_YN = 'Y' )";
-    */
+    
+
     var relationText = "SELECT RNUM, LUIS_ENTITIES, A.DLG_ID DLG_ID, B.DLG_TYPE, DLG_ORDER_NO \n"
                      + "FROM (\n"
                      + "SELECT RANK() OVER(ORDER BY LUIS_ENTITIES) AS RNUM, LUIS_ENTITIES, DLG_ID \n"
                      + "FROM TBL_DLG_RELATION_LUIS \n"
                      + "WHERE 1=1\n";
-    for(var i = 0; i < entity.length; i++) {
-        if(i == 0) {
-            relationText += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
-        } else {
-            relationText += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
-        }      
+    if(Array.isArray(entity)){
+        for(var i = 0; i < entity.length; i++) {
+            if(i == 0) {
+                relationText += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+            } else {
+                relationText += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+            }      
+        }
+    } else {
+        relationText += "AND LUIS_ENTITIES LIKE '%" + entity +"%'\n";
     }
-
+    
     relationText += "GROUP BY LUIS_ENTITIES, DLG_ID \n"
                  + ") A LEFT OUTER JOIN TBL_DLG B\n"
                  + "ON A.DLG_ID = B.DLG_ID \n"
@@ -396,14 +382,18 @@ router.post('/selectDlgListAjax', function (req, res) {
                   + "SELECT DISTINCT DLG_ID\n"
                   + "FROM TBL_DLG_RELATION_LUIS\n"
                   + "WHERE 1=1\n";
-
-    for(var i = 0; i < entity.length; i++) {
-        if(i == 0) {
-            dlgText += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
-        } else {
-            dlgText += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+    if(Array.isArray(entity)){
+        for(var i = 0; i < entity.length; i++) {
+            if(i == 0) {
+                dlgText += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+            } else {
+                dlgText += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+            }
         }
+    } else {
+        dlgText += "AND LUIS_ENTITIES LIKE '%" + entity +"%'\n";
     }
+
     dlgText += ") \n ORDER BY DLG_ID";
 
     var dlgCard = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, IMG_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n"
@@ -418,14 +408,18 @@ router.post('/selectDlgListAjax', function (req, res) {
                   + "SELECT DISTINCT DLG_ID\n"
                   + "FROM TBL_DLG_RELATION_LUIS\n"
                   + "WHERE 1=1\n";
-
-    for(var i = 0; i < entity.length; i++) {
-        if(i == 0) {
-            dlgCard += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
-        } else {
-            dlgCard += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+    if(Array.isArray(entity)){
+        for(var i = 0; i < entity.length; i++) {
+            if(i == 0) {
+                dlgCard += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+            } else {
+                dlgCard += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+            }
         }
+    } else{
+        dlgCard += "AND LUIS_ENTITIES LIKE '%" + entity +"%'\n";
     }
+
     dlgCard += ") \n ORDER BY DLG_ID";
     
     var dlgMedia = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, MEDIA_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n"
@@ -440,14 +434,19 @@ router.post('/selectDlgListAjax', function (req, res) {
                   + "SELECT DISTINCT DLG_ID\n"
                   + "FROM TBL_DLG_RELATION_LUIS\n"
                   + "WHERE 1=1\n";
-
-    for(var i = 0; i < entity.length; i++) {
-        if(i == 0) {
-            dlgMedia += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
-        } else {
-            dlgMedia += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+    
+    if(Array.isArray(entity)){
+        for(var i = 0; i < entity.length; i++) {
+            if(i == 0) {
+                dlgMedia += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+            } else {
+                dlgMedia += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+            }
         }
+    } else {
+        dlgMedia += "AND LUIS_ENTITIES LIKE '%" + entity +"%'\n";
     }
+
     dlgMedia += ") \n ORDER BY DLG_ID";
 
     (async () => {
