@@ -50,17 +50,17 @@
                     <thead>
                         <tr>
                             <th class="txt_center">
-                                <select name="sourceType">
-                                    <option>Common</option>
-                                    <option>Api Quot</option>
-                                    <option>Api Testdrive</option>
+                                <select name="sourceType" id="luisentities">
+                                    <option value="D" selected="selected">Common</option>
+                                    <option value="api quot">Api Quot</option>
+                                    <option value="api testdrive">Api Testdrive</option>
                                 </select>
                             </th>
                             <th class="txt_center">
-                                <select name="groupType">
-                                    <option>기능</option>
-                                    <option>사양</option>
-                                    <option>장단점</option>
+                                <select name="groupType" id="luisintent">
+                                    <option value="Advantage" selected="selected">Advantage</option>
+                                    <option value="airbag" >airbag</option>
+                                    <option value="audio" >audio</option>
                                 </select>
                             </th>
                             <th class="txt_left" colspan="3">설명</th>
@@ -68,60 +68,7 @@
                         </tr>
                     </thead>
                     <tbody id="dialogTbltbody">
-                        <tr>
-                            <!-- 소스타입-->
-                            <td class="txt_center">
-                                Common                                     
-                            </td>
-                                <!-- 그룹-->
-                            <td class="txt_center">
-                                기능                                     
-                            </td>
-                            <!-- 설명-->
-                            <td class="txt_left" colspan="3">
-                                주요특징에는 어떤 것들이 있어? /kona 특별함/너의 장단점은?/너의 특별함은 뭐야?/ 코나의 특별함 / 사양 / 어떤 기능 있어? / 전면 특징 문의 / 코나의 주요특징 / 코나 특장점                                            
-                            </td>
-                            <!-- 연결어터런스-->
-                            <td class="txt_left" colspan="3">
-                                10WAY,시트,통풍,파워
-                            </td>
-                        </tr>
-                        <tr>
-                            <!-- 소스타입-->
-                            <td class="txt_center">
-                                Api Quot                                     
-                            </td>
-                                <!-- 그룹-->
-                            <td class="txt_center">
-                                사양                                     
-                            </td>
-                            <!-- 설명-->
-                            <td class="txt_left" colspan="3">
-                                1.6 터보 엔진
-                            </td>
-                            <!-- 연결어터런스-->
-                            <td class="txt_left" colspan="3">
-                                3점식,뒷좌석,센터,시트벨트
-                            </td>
-                        </tr>
-                        <tr>
-                            <!-- 소스타입-->
-                            <td class="txt_center">
-                                Api Testdrive                                     
-                            </td>
-                                <!-- 그룹-->
-                            <td class="txt_center">
-                                장단점                                     
-                            </td>
-                            <!-- 설명-->
-                            <td class="txt_left" colspan="3">
-                                1.6 터보 엔진, 동급 최대 퍼포먼스 / 엔진 성능에 대해서 설명좀 / 괜찮은 엔진 추천해줘
-                            </td>
-                            <!-- 연결어터런스-->
-                            <td class="txt_left" colspan="3">
-                                4WD,멀티링크,서스펜션,후륜
-                            </td>
-                        </tr>
+                      
                     </tbody>
                 </table>
             </div>                            

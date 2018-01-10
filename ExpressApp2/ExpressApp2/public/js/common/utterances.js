@@ -202,21 +202,121 @@ $(document).ready(function(){
     $('#addDialogBtn').click(function(e){
         var dlgType = $('#dlgType').val();
         var dlgHtml = '';
-        if(dlgType == '2'){
-            dlgHtml += '<div class="wc-message wc-message-from-bot" style="width:90%;">';
-            dlgHtml += '<div class="wc-message-content">';
-            dlgHtml += '<svg class="wc-message-callout"></svg>';
-            dlgHtml += '<div><div class="format-markdown"><div class="textMent">';
-            dlgHtml += '<p>';
-            dlgHtml += $('#dialogText').val();
-            dlgHtml += '</p>';
-            dlgHtml += '</div></div></div></div></div>';
+        if(dlgType == '2'){ //text
+            if($('#dialogText').val() == ''){
+                alert('다이얼로그 텍스트를 입력하세요');
+            }else{
+                dlgHtml += '<div class="wc-message wc-message-from-bot" style="width:90%;">';
+                dlgHtml += '<div class="wc-message-content">';
+                dlgHtml += '<svg class="wc-message-callout"></svg>';
+                dlgHtml += '<div><div class="format-markdown"><div class="textMent">';
+                dlgHtml += '<p>';
+                dlgHtml += $('#dialogText').val();
+                dlgHtml += '</p>';
+                dlgHtml += '</div></div></div></div></div>';
+            }
+
+            $('#dialogPreview').append(dlgHtml);
+        }else if(dlgType == '3'){ //carousel
+            if($('#add-carousel').length == 0){ //초기 append
+                dlgHtml += '<div id="add-carousel">';
+                dlgHtml += '<div class="wc-message wc-message-from-bot">';
+                dlgHtml += '<div class="wc-message-content"><!-- react-empty: 124 -->';
+                dlgHtml += '<svg class="wc-message-callout"></svg>';
+                dlgHtml += '<div>';
+                dlgHtml += '<div class="wc-carousel" style="width: 312px;">';
+                dlgHtml += '<div>';
+                dlgHtml += '<div class="wc-hscroll-outer">';
+                dlgHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
+                dlgHtml += '<ul>';
+                dlgHtml += '<li class="wc-carousel-item">';
+                dlgHtml += '<div class="wc-card hero">';
+                dlgHtml += '<div class="wc-container imgContainer">';
+                dlgHtml += '<img src="https://bot.hyundai.com/assets/images/mainfeatureImg/01_Kona.jpg">';
+                dlgHtml += '</div>';
+                //dlgHtml += '<h1>Kona 핵심기능</h1>';
+                dlgHtml += '<p class="carousel">'+$('#dialogText').val()+'</p>';
+                dlgHtml += '<ul class="wc-card-buttons">';
+                for(var i = 0 ; i < $('input[id^="buttonName"]').length ; i ++){
+                    if($('#buttonName' + (i+1)).val() != ''){
+                        dlgHtml += '<li>';
+                        dlgHtml += '<button>'+$('#buttonName' + (i+1)).val()+'</button>';
+                        dlgHtml += '</li>';
+                    }
+                }
+                dlgHtml += '</ul>';
+                dlgHtml += '</div>';
+                dlgHtml += '</li>';
+                dlgHtml += '</ul>';
+                dlgHtml += '</div>';
+                dlgHtml += '</div>';
+                dlgHtml += '</div>';
+                dlgHtml += '</div>';
+                dlgHtml += '</div>';
+                dlgHtml += '</div>';
+                dlgHtml += '</div>';
+                dlgHtml += '</div>';
+
+                $('#dialogPreview').append(dlgHtml);
+            }else{
+                if($('#add-carousel').length == 1){
+                    var prevBtnHtml = '';
+                    var afterBtnHtml = '';
+    
+                    prevBtnHtml += '<button class="scroll previous">';
+                    prevBtnHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
+                    prevBtnHtml += '</button>';
+                    afterBtnHtml += '<button class="scroll next">';
+                    afterBtnHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png">';
+                    afterBtnHtml += '</button>';
+    
+                    $('.wc-carousel > div').prepend(prevBtnHtml);
+                    $('.wc-carousel > div').append(afterBtnHtml);
+
+                    $('.scroll.previous').click(function(e){
+                        scrollPrevoius();
+                        e.stopPropagation();
+                        e.preventDefault();
+                    })
+                    $('.scroll.next').click(function(e){
+                        scrollNext();
+                        e.stopPropagation();
+                        e.preventDefault();
+                    })
+                }
+                
+                var dlgHtml = '';
+                dlgHtml += '<li class="wc-carousel-item">';
+                dlgHtml += '<div class="wc-card hero">';
+                dlgHtml += '<div class="wc-container imgContainer">';
+                dlgHtml += '<img src="https://bot.hyundai.com/assets/images/style/USP_style_03.jpg">';
+                dlgHtml += '</div>';
+                //dlgHtml += '<h1>스타일</h1>';
+                dlgHtml += '<p class="carousel">'+$('#dialogText').val()+'</p>';
+                dlgHtml += '<ul class="wc-card-buttons">';
+                for(var i = 0 ; i < $('input[id^="buttonName"]').length ; i ++){
+                    if($('#buttonName' + (i+1)).val() != ''){
+                        dlgHtml += '<li>';
+                        dlgHtml += '<button>'+$('#buttonName' + (i+1)).val()+'</button>';
+                        dlgHtml += '</li>';
+                    }
+                }
+                dlgHtml += '</ul>';
+                dlgHtml += '</div>';
+                dlgHtml += '</li>';
+
+                $('.wc-hscroll > ul').append(dlgHtml);
+            }
+        }else if(dlgType == '4'){ //media
+
+        }else{
         }
-        $('#dialogPreview').append(dlgHtml);
+
         $('#appInsertForm')[0].reset();
-        
+        $('#dlgType').change();
+
         e.stopPropagation();
-        e.preventDefault();;
+        e.preventDefault();
     });
 
 });
@@ -226,6 +326,12 @@ $(document).on('change','#intentNameList',function(event){
     selectDlgListAjax($("#intentNameList option:selected").val());
 });
 
+
+//슬라이드
+function scrollPrevoius(){
+}
+function scrollNext(){
+}
 //다이얼로그 생성 유효성 검사
 function dialogValidation(type){
     if(type == 'dialogInsert'){
