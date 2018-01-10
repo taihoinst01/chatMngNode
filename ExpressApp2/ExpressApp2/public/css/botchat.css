@@ -13,7 +13,7 @@
 .wc-header > span:first-child{display:none;}
 .wc-time {color: #999;margin-bottom: 10px;}
 /*.wc-message-groups {overflow-x: hidden;overflow-y: scroll;padding: 0px;position: absolute;top: 32px;transition: transform 0.2s cubic-bezier(0, 0, 0.5, 1);background: #f1f3f6;width: 310px;height: 285px;}*/
-.wc-message-groups {overflow-x: hidden;overflow-y: scroll;padding: 0px;position: absolute;top: 32px;transition: transform 0.2s cubic-bezier(0, 0, 0.5, 1);background: #f1f3f6;width: 380px;height:100%}
+.wc-message-groups {overflow-x: hidden;overflow-y: scroll;padding: 0px;position: absolute;top: 32px;transition: transform 0.2s cubic-bezier(0, 0, 0.5, 1);background: #f1f3f6;width: 500px;height:100%}
 .wc-message-group-content {overflow: hidden;padding-bottom: 75px;}
 .wc-suggested-actions {  background-color: #f9f9f9;  bottom: 50px;  height: 0;  left: 0;  overflow: hidden;  position: absolute;  right: 0;  transition: height 0.2s cubic-bezier(0, 0, 0.5, 1);}
 
@@ -78,7 +78,7 @@
 
 /* views */
 .wc-chatview-panel {overflow: hidden;background: #f1f3f6;box-shadow: 0 10px 20px 0 rgba(0,0,0,0.30);border-radius: 5px 5px 0 0; 
-  width: 380px;height: 352px;position: absolute;left: 500px;/*bottom: 0;*/border: 0px;z-index: 99;}
+  width: 380px;height: 352px;position: absolute;/*bottom: 0;*/border: 0px;z-index: 99;}
 
 /* messages */
 .wc-message-wrapper {
