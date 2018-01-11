@@ -373,7 +373,8 @@ router.post('/selectDlgListAjax', function (req, res) {
     relationText += "GROUP BY LUIS_ENTITIES, DLG_ID \n"
                  + ") A LEFT OUTER JOIN TBL_DLG B\n"
                  + "ON A.DLG_ID = B.DLG_ID \n"
-                 + "ORDER BY LUIS_ENTITIES, DLG_ORDER_NO";
+                 + "WHERE RNUM = 12\n"
+                 + "ORDER BY LUIS_ENTITIES desc, DLG_ORDER_NO";
 
     var dlgText = "SELECT DLG_ID, CARD_TITLE, CARD_TEXT, USE_YN, '2' AS DLG_TYPE \n"
                   + "FROM TBL_DLG_TEXT\n"
