@@ -78,6 +78,7 @@ $(document).on('click','.li_paging',function(e){
 
 //체크박스 click 이벤트 핸들러
 function checkBoxHandler(e){
+
     var isAll = $(e.target).children('#recommendAll').length;
     var isChecked = $(e.target).attr('checked');
 
