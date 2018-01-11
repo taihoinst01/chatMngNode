@@ -1,0 +1,26 @@
+.highlight{background-color: aqua;}
+.in-line{width:100%; height:40px; }
+#layoutBackground { position:absolute; z-index:900; background-color:#000; display:none; left:0; top:0; } 
+
+/*create Dialogue Modal CSS*/
+.group-float-left{ float:left;width: 30%;margin-right: 5%; }
+.group-float-left-last {float:left;width: 30%; }
+.layout-float-left{ float:left; width: 46%; margin-right:8%; }
+.layout-float-left-last{ float:left; width: 46%; }
+.btnBox{ width:100%; margin-bottom:3px; }
+.clear-both{ clear:both; }
+.w82{ width: 82px; }
+.modal_box.w900{ width: 900px; }
+
+.tbl_td_chatting{text-align: left !important; border-bottom:none !important;}
+.tbl_div_chatting{background : #fff; border-radius: 12px; padding:10px; font-size:12px; width: 360px;}
+.catting_image{width: 180px; height: 80px; margin-bottom: 10px}
+
+#content dd { float:left; width:360px; height:200px; }
+#mask { float:left; overflow:hidden; width:360px; height:200px; }
+#prevbtn { float:left; cursor:pointer; position:relative; top:120px; width:14px; height:28px; padding-right:20px; }
+#nextbtn { float:right; cursor:pointer; position:relative; top:120px; width:14px; height:28px; padding-left:20px; }
+
+
+#image_tbl{border:non !important; margin-top: -40px !important;}
+.margin0{ margin: 0 !important; }

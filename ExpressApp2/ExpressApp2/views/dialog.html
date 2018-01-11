@@ -18,6 +18,8 @@
     <%include  ./common/commonUse.html%>
     <script type="text/javascript" src="/js/common/dialog.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/paging.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dialog.css" />
+    <link rel='stylesheet' href='/css/botchat.css' />
     <!--    
     <style type="text/css">
         .appLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:120px; padding:10px; } 
@@ -45,7 +47,7 @@
                 <div class="dialogLeft">     
                     <div class="in-line">
                         <input name="iptDialog" id="iptDialog" type="text" class="inbox02" style="width:82.5%; margin: 3px;" placeholder="입력문장" >
-                        <button class="btn" id="dialog">new</button>
+                        <button class="btn" id="dialog" onclick="openModalBox('#create_dlg')">new</button>
                     </div>                                         
                 </div>
                 <table class="Tbl" id="dialogTbl">
@@ -77,8 +79,148 @@
                 </div>
             </div>                            
         </div>
+        
+        
     </div>
         <hr>
+
+        <!--신규 다이얼로그 등록 -->
+    <div id="create_dlg" class="modal_box w900" style="height: auto !important">
+        <header> <a href="#" id="addDialogClose" class="js-modal-close close">×</a>
+          <h3>Create new Dialogue Set</h3><!-- 신규 다이얼로그 등록 -->
+        </header>
+    
+        <!-- form start -->
+        <form name="appInsertForm" id="appInsertForm" method="post">
+    
+        <div id="dialogSet" class="modal-body" style="float:left; width: 50%;">
+            <p class="texcon03">Source Type <span>(required) </span></p>
+            <p><select name="sourceType" class="inbox02" id="sourceType" style="width:100%" >
+                <option value="Common" selected>Common</option>
+                <option value="Api Quot">Api Quot</option>
+                <option value="Api Testdrive">Api Testdrive</option>
+            </select></p>
+
+            <p class="texcon03">Group <span>(required) </span></p>
+            <div class="group-float-left">
+                <p class="texcon03">대그룹</p>
+                <p><select name="largeGroup" class="inbox02" id="largeGroup" style="width: 100%;" >
+                    <option value="" selected>largeGroup1</option>
+                    <option value="">largeGroup2</option>
+                    <option value="">largeGroup3</option>
+                </select></p>
+            </div>
+            <div class="group-float-left">
+                <p class="texcon03">중그룹</p>
+                <p><select name="mediumGroup" class="inbox02" id="mediumGroup" style="width: 100%;" >
+                    <option value="" selected>mediumGroup1</option>
+                    <option value="">mediumGroup2</option>
+                    <option value="">mediumGroup3</option>
+                </select></p>
+            </div>
+            <div class="group-float-left-last">
+                <p class="texcon03">소그룹</p>
+                <p><select name="smallGroup" class="inbox02" id="smallGroup" style="width: 100%;" >
+                    <option value="" selected>smallGroup1</option>
+                    <option value="">smallGroup2</option>
+                    <option value="">smallGroup3</option>
+                </select></p>
+            </div>
+            <div class="clear-both"></div>
+
+            <p class="texcon03">Description  <span>(optional) </span></p>
+            <p><textarea name="description" id="description" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup=""></textarea></p>
+
+            <div class="layout-float-left">
+                <p class="texcon03">Dialogue Type <span>(required) </span></p>
+                <p><select name="dlgType" class="inbox02" id="dlgType" style="width:100%" >
+                    <option value="2" selected>Text</option>
+                    <option value="3">Carousel</option>
+                    <option value="4">Media</option>
+                </select></p>
+            </div>
+            <div class="layout-float-left-last">
+                <p class="texcon03">Dialogue Order <span>(required) </span></p>
+                <p><select name="dialogOrderNo" class="inbox02" id="dialogOrderNo" style="width:100%" >
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select></p>
+            </div>
+            <div class="clear-both"></div>
+
+            <p class="texcon03">Dialogue Text  <span>(required) </span></p>
+            <p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup="dialogValidation('dialogInsert');"></textarea></p>
+            
+            <!-- carousal 일 경우 card 순서 input box 추가 layout -->
+            <div id="cardLayout" style="display:none;">
+                <p class="texcon03">Card Order <span>(required) </span></p>
+                <p><select name="cardOrderNo" class="inbox02" id="cardOrderNo" style="width:100%" >
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select></p>
+            </div>
+
+            <!-- media , carousal 일 경우 input box 추가 layout -->
+            <div id="mediaCarouselLayout" style="display:none;">
+                <div class="layout-float-left">
+                    <p class="texcon03">Button Name <span>(optional) </span></p>
+                    <p>
+                        <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
+                        <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" placeholder="Input name.." />
+                        <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" placeholder="Input name.." />
+                        <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" placeholder="Input name.." />
+                    </p>
+                </div>
+                <div class="layout-float-left-last">
+                    <p class="texcon03">Button Content <span>(optional) </span></p>
+                    <p>
+                        <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
+                        <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." />
+                        <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." />
+                        <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" placeholder="Input contents.." />
+                    </p>
+                </div>
+                <div class="clear-both"></div>
+
+                <p class="texcon03">Image Url <span>(optional) </span></p>
+                <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:100%" placeholder="Input image url.." /></p>
+            </div>
+            <!--// media , carousal 일 경우 input box 추가 layout -->
+
+            <div class="layout-float-left">
+                <p class="texcon03">Dialogue Add</p>
+                <p><button class="btn margin0 w82" id="addDialogBtn">Add</button></p>
+            </div>
+            <div class="clear-both"></div>
+            
+        </div>
+    	<div id="dialogPreview" style="float:left; width: 47%; overflow: auto; margin:0 0 0 10px; border: 1px solid #ccc; background: #f1f3f6; padding: 5px;">
+        </div>
+        <div class="clear-both"></div>
+        </form>
+        <!-- form end -->
+    
+        <footer>
+          <button class="btn disable" id="btnAddDlg" onclick="insertDialog()">Save</button>
+          <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel">Cancel</a>
+        </footer>
+    
+    </div>
+    <!--//신규 다이얼로그 등록 -->
+
+    <div id="layoutBackground" ></div>
+    <div class="mask"></div>  
+
         <footer>
             <p>&copy; Company 2014</p>
         </footer>
