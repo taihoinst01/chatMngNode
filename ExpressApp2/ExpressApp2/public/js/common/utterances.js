@@ -429,7 +429,31 @@ function selectDlgListAjax(entity) {
                             inputUttrHtml += '</div></div></div></div></div>';
                         }
                     } else if(tmp.dlg[j].DLG_TYPE == 4) {
-
+                        inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
+                        inputUttrHtml += '<div class="wc-message-content">';
+                        inputUttrHtml += '<svg class="wc-message-callout"></svg>';
+                        inputUttrHtml += '<div>';
+                        inputUttrHtml += '<div class="wc-carousel">';
+                        inputUttrHtml += '<div>';
+                        inputUttrHtml += '<button class="scroll previous" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png"></button>';
+                        inputUttrHtml += '<div class="wc-hscroll-outer">';
+                        inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
+                        inputUttrHtml += '<ul>';
+                        inputUttrHtml += '<li class="wc-carousel-item wc-carousel-play">';
+                        inputUttrHtml += '<div class="wc-card hero">';
+                        inputUttrHtml += '<div class="wc-card-div imgContainer">';
+                        inputUttrHtml += '<img src="' + /* 이미지 url */ tmp.dlg[j].MEDIA_URL + '">';
+                        inputUttrHtml += '<div class="playImg"></div>';
+                        inputUttrHtml += '<div class="hidden" alt="' + tmp.dlg[j].CARD_TITLE + '"></div>';
+                        inputUttrHtml += '<div class="hidden" alt="' + /* media url */ tmp.dlg[j].CARD_VALUE + '"></div>';
+                        inputUttrHtml += '</div>';
+                        inputUttrHtml += '<h1>' + /* title */ tmp.dlg[j].CARD_TITLE + '</h1>';
+                        inputUttrHtml += '<ul class="wc-card-buttons">';
+                        inputUttrHtml += '</ul>';
+                        inputUttrHtml += '</div>';
+                        inputUttrHtml += '</li></ul></div></div>';
+                        inputUttrHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                        inputUttrHtml += '</div></div></div></div></div>';
                     }
                 }
 
