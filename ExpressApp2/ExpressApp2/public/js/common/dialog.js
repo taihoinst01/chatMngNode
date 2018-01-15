@@ -161,6 +161,21 @@ $(document).ready(function(){
         $('#appInsertForm')[0].reset();
         $('#dialogPreview').html('');
     });
+
+    //다이얼로그 생성 모달 닫는 이벤트(초기화)
+    $(".js-modal-close").click(function() {
+    $('html').css({'overflow': 'auto', 'height': '100%'}); //scroll hidden 해제
+    //$('#element').off('scroll touchmove mousewheel'); // 터치무브 및 마우스휠 스크롤 가능
+
+    $('#appInsertDes').val('');
+    $("#intentList option:eq(0)").attr("selected", "selected");
+    //$('#intentList').find('option:first').attr('selected', 'selected');
+    initMordal('intentList', 'Select Intent');
+    initMordal('entityList', 'Select Entity');
+    $('#dlgLang').find('option:first').attr('selected', 'selected');
+    $('#dlgOrder').find('option:first').attr('selected', 'selected');
+    $('#layoutBackground').hide();
+});
     /** 모달 끝 */
 });
 

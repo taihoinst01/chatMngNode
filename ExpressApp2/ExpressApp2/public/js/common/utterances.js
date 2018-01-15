@@ -385,6 +385,8 @@ function insertDialog(){
     });
 }
 
+var botChatNum = 1; 
+
 function selectDlgListAjax(entity) {
     $.ajax({
         url: '/learning/selectDlgListAjax',                //주소
@@ -409,24 +411,24 @@ function selectDlgListAjax(entity) {
                         inputUttrHtml += '</p>';
                         inputUttrHtml += '</div></div></div></div></div>';
                     } else if(tmp.dlg[j].DLG_TYPE == 3) {
+                        
                         if(j == 0) {
                             inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="width:90%">';
                             inputUttrHtml += '<div class="wc-message-content" style="width:90%;">';
                             inputUttrHtml += '<svg class="wc-message-callout"></svg>';
-                            inputUttrHtml += '<div class="wc-carousel" style="width: 312px;">';
+                            inputUttrHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
                             inputUttrHtml += '<div>';
-                            inputUttrHtml += '<button class="scroll previous">';
+                            inputUttrHtml += '<button class="scroll previous" id="prevBtn' + (botChatNum) + '" style="display: none;" onclick="prevBtn(' + botChatNum + ')">';
                             inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
                             inputUttrHtml += '</button>';
-                            inputUttrHtml += '<div class="wc-hscroll-outer">';
-                            inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
+                            inputUttrHtml += '<div class="wc-hscroll-outer" >';
+                            inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum) + '">';
                             inputUttrHtml += '<ul>';
                             inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
                         }
-
                         inputUttrHtml += '<li class="wc-carousel-item">';
                         inputUttrHtml += '<div class="wc-card hero">';
-                        inputUttrHtml += '<div class="wc-container imgContainer">';
+                        inputUttrHtml += '<div class="wc-container imgContainer" >';
                         inputUttrHtml += '<img src="' + tmp.dlg[j].IMG_URL +'">';
                         inputUttrHtml += '</div>';
                         if(tmp.dlg[j].CARD_TITLE != null) {
@@ -439,13 +441,20 @@ function selectDlgListAjax(entity) {
                         inputUttrHtml += '</div>';
                         inputUttrHtml += '</li>';
                         
-                        if((tmp.dlg.length-1) == j) {
+                        //다이얼로그가 한개일때에는 오른쪽 버튼 x
+                        if(tmp.dlg.length == 1) {
                             inputUttrHtml += '</ul>';
                             inputUttrHtml += '</div>';
                             inputUttrHtml += '</div>';
-                            inputUttrHtml += '<button class="scroll next"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                            inputUttrHtml += '</div></div></div></div></div>';
+                        } else if((tmp.dlg.length-1) == j) {
+                            inputUttrHtml += '</ul>';
+                            inputUttrHtml += '</div>';
+                            inputUttrHtml += '</div>';
+                            inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
                             inputUttrHtml += '</div></div></div></div></div>';
                         }
+                   
                     } else if(tmp.dlg[j].DLG_TYPE == 4) {
                         inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
                         inputUttrHtml += '<div class="wc-message-content">';
@@ -482,10 +491,41 @@ function selectDlgListAjax(entity) {
                 //inputUttrHtml += '<td class="txt_center" > <a href="#" class="btn btn-small">Add</a> </td></tr>';
             }//<a href="#" class="btn b02  btn-small js-modal-close">Cancel</a>
             //$('#dlgListTable').find('tbody').empty();
+
             $('#dialogRecommand').prepend(inputUttrHtml);
+
+            botChatNum++;
         } 
 
     }); // ------      ajax 끝-----------------
+}
+
+//오른쪽 버튼 클릭시 슬라이드
+function nextBtn(botChatNum) {
+    
+    $("#slideDiv" + botChatNum).animate({scrollLeft : ($("#slideDiv" + botChatNum).scrollLeft() + 312)}, 500, function(){
+       
+        if($("#slideDiv" + botChatNum).scrollLeft() == 
+                ((Math.ceil($("#slideDiv" + botChatNum).find(".wc-carousel-item").length / 2)) - 1) * 312) {
+            $("#nextBtn" + botChatNum).hide();
+        }
+        
+    });
+
+    $("#prevBtn" + botChatNum).show();
+}
+
+//왼쪽 버튼 클릭시 슬라이드
+function prevBtn(botChatNum) {
+
+    $("#slideDiv" + botChatNum).animate({scrollLeft : ($("#slideDiv" + botChatNum).scrollLeft() - 312)}, 500, function() {
+        
+        if($("#slideDiv" + botChatNum).scrollLeft() == 0) {
+            $("#prevBtn" + botChatNum).hide();
+        }
+    });
+    
+    $("#nextBtn" + botChatNum).show();
 }
 
 //checkbox 선택시 이벤트 $(this).attr("checked")

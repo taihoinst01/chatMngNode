@@ -16,41 +16,11 @@
     <%include  ./common/commonUse.html%>
     <script type="text/javascript" src="/js/common/utterances.js"></script>
 	<script type="text/javascript" src="/js/common/botchat.js"></script>
-    <!--진수 지워야할거 -->
-    <script type="text/javascript">
-        var divWidth  = "400"; //배너 1개 가로크기
-        function prev()
-        {
-         $("#content").stop(true,true);
-      
-         var moveX   = parseInt($("#content").css("margin-left"));
-      
-         if( moveX < 0 )
-         {
-          $("#content").animate({"margin-left":"+=" + divWidth + "px"},500);
-          $("#prevbtn").show();
-         }
-        }
-        function next()
-        {
-         $("#content").stop(true,true);
-      
-         var hiddenWidth  = ($("#content dd").length-1)*(-divWidth);
-         var moveX   = parseInt($("#content").css("margin-left")) ;
-         var lastWidth  = ( moveX - divWidth );
-      
-         if( hiddenWidth < moveX )
-         {
-          $("#content").animate({"margin-left":"-=" + divWidth + "px"},500);
-         }
-        }
-       </script>
-<!--진수 지워야할거 -->
 </head>
 
 <body class="main">
 	<input type="hidden" name="utterence" id="utterence" value='<%=utterance%>'/>
-	
+
     <%include  ./header.html%>
     <%include  ./header4Luis.html%>
     <div id="wrap4Luis">
