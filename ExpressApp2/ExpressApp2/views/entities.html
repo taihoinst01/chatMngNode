@@ -11,6 +11,7 @@
     </title>
     <%include  ./common/commonUse.html%>
     <link rel="stylesheet" type="text/css" href="/css/paging.css" />
+    <link rel="stylesheet" type="text/css" href="/css/entities.css" />
     <script type="text/javascript" src="/js/common/entities.js"></script>
 </head>
 
@@ -30,7 +31,7 @@
             <div class="entitesLeft">     
                 <div class="in-line">
                     <input name="iptentites" id="iptentites" type="text" class="inbox02" style="width:82.5%; margin: 3px;" placeholder="입력문장" >
-                    <button class="btn" id="entites">new</button>
+                    <button class="btn" id="entites" onclick="openModalBox('#create_dlg')">new</button>
                 </div>                                         
             </div>
             <table class="Tbl" id="entitesTbl">
@@ -50,11 +51,56 @@
     </div>
 </div>
 
-        <hr>
+    <hr>
+    <!--신규 다이얼로그 등록 -->
+    <div id="create_dlg" class="modal_box w900" style="height: auto !important; width: 30%;">
+        <header> <a href="#" id="addDialogClose" class="js-modal-close close">×</a>
+          <h3>Create new Entity Set</h3><!-- 신규 다이얼로그 등록 -->
+        </header>
+    
+        <!-- form start -->
+        <form name="appInsertForm" id="appInsertForm" method="post">
+    
+        <div id="dialogSet" class="modal-body" style="margin: 10%;">
+            <p class="texcon03">엔티티 디파인<span>(required) </span></p>
+            <p style="margin-bottom: 5%;">
+                <input type="text" name="entityDefine" style="width:100%;" onkeyup="dialogValidation();"/>
+            </p>
+
+            <p class="texcon03">엔티티 밸류<span>(required) </span></p>
+            <p style="margin-bottom: 5%;">
+                <input type="text" name="entityValue" style="width:100%;" onkeyup="dialogValidation();"/>
+            </p>
+
+            <p class="texcon03">API_Group <span>(required) </span></p>
+            <p><select name="apiGroup" class="inbox02" id="apiGroup" style="width: 100%;" >
+                <option value="api testdrive" selected>api testdrive</option>
+                <option value="COMMON">COMMON</option>
+                <option value="OCR TEST">OCR TEST</option>
+            </select></p>
+
+        </div>
+
+        </form>
+        <!-- form end -->
+    
         <footer>
-            <p>&copy; Company 2014</p>
+            <button class="btn disable" id="btnAddDlg" onclick="insertEntity()">Save</button>
+            <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel">Cancel</a>
         </footer>
-	<!-- /container -->
+    
+    </div>
+    <!--//신규 다이얼로그 등록 -->
+
+    <div id="layoutBackground"></div>
+    <div class="mask"></div>
+
+    <footer>
+        <p>&copy; Company 2014</p>
+    </footer>
+    <!-- /container -->
+    
+    
 
 </body>
 

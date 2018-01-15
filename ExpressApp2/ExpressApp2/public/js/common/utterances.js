@@ -326,12 +326,6 @@ $(document).on('change','#intentNameList',function(event){
     selectDlgListAjax($("#intentNameList option:selected").val());
 });
 
-
-//슬라이드
-function scrollPrevoius(){
-}
-function scrollNext(){
-}
 //다이얼로그 생성 유효성 검사
 function dialogValidation(type){
     if(type == 'dialogInsert'){
