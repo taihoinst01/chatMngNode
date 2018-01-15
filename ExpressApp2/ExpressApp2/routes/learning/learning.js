@@ -347,6 +347,42 @@ router.post('/entities', function (req, res) {
     })
 });
 
+//엔티티 추가
+router.post('/insertEntity', function (req, res) {
+    
+    var entityDefine = req.body.entityDefine;
+    var entityValue = req.body.entityValue;
+    var apiGroup = req.body.apiGroup;
+
+    (async () => {
+        try {
+
+            var insertQueryString1 = 'INSERT INTO tbl_common_entity_define(ENTITY, ENTITY_VALUE, API_GROUP) VALUES ' +
+            '(@entityDefine, @entityValue, @apiGroup)';
+            
+            let pool = await sql.connect(dbConfig);
+
+            let result1 = await pool.request()
+                .input('entityDefine', sql.NVarChar, entityDefine)
+                .input('entityValue', sql.NVarChar, entityValue)
+                .input('apiGroup', sql.NVarChar, apiGroup)
+                .query(insertQueryString1);  
+            
+            res.send({status:200 , message:'insert Success'});
+        
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'insert Entity Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
+    })
+    
+});
+
 router.post('/selectDlgListAjax', function (req, res) {
 
     var entity = [];
