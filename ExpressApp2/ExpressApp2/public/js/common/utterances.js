@@ -91,26 +91,29 @@ $(document).ready(function(){
         });
         */
 
-        var dlgId = $('input[name=dlgId]');
+        var entity = $('input[name=entity').val();
+        
+        var inputDlgId = $('input[name=dlgId]');
+        var dlgId = [];
+        inputDlgId.each(function(n) { 
+            dlgId[n] = inputDlgId[n].value;
+            return dlgId;
+        });
 
         $.ajax({
             url: '/learning/learnUtterAjax',
             dataType: 'json',
             type: 'POST',
-            data: {'intent':intent, 'entity':entity, 'dlgId':dlgId},
+            data: {'entity':entity, 'dlgId':dlgId},
             success: function(result) {
                 if(result['result'] == true) {
                     alert("추가 하였습니다.");
-
-                    $('.checkUtter').each(function(){
-                        if($(this).attr('checked') == 'checked') {
-                            $(this).parent().parent().remove();
-                        }
-                    });
+                    
                     $('input[name=ch1All]').parent().attr('checked', false);
                     changeBtnAble(false);
 
-                    $('#dlgListTable tbody').remove();
+                    $("#entityUtteranceTextTable tbody").html("");
+                    $("#dialogRecommand").html("");
 
                     $('#utterLearn').attr("disabled", "disabled");
                     $('#utterLearn').addClass("disable"); 
@@ -609,7 +612,7 @@ function utterInput(queryText) {
                 var inputUttrHtml = '';
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
-                inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
+                inputUttrHtml += '<td class="txt_left" ><input type=hidden name="entity" value="' + result['entities'] + '"/>' + utter + '</td>';
                 if(result.commonEntities){
                     inputUttrHtml += '<tr><td> </td><td class="txt_left" >';
                     for(var i = 0; i < result.commonEntities.length ; i++){

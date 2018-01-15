@@ -634,16 +634,21 @@ router.post('/insertDialog', function (req, res) {
 router.post('/learnUtterAjax', function (req, res) {
     var intent = req.body.intent;
     var entity = req.body.entity;
-    var dlgId = req.body.dlgId;
+    var dlgId = req.body['dlgId[]'];
 
     var queryText = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) "
-                  + "VALUES( 'kona_luis_06', '" + intent + "','" + entity + "'," + dlgId + ", 'D', 'Y' )";
-
+                  + "VALUES( 'kona_luis_06', 'luis_test', @entity, @dlgId, 'D', 'Y' )";
+    
     (async () => {
         try {
-            let pool = await sql.connect(dbConfig)
-            let result1 = await pool.request()
-                .query(queryText)
+            let pool = await sql.connect(dbConfig);
+            let result1;
+            for(var i = 0 ; i < dlgId.length; i++) {
+                result1 = await pool.request()
+                    .input('entity', sql.NVarChar, entity)
+                    .input('dlgId', sql.NVarChar, dlgId[i])
+                    .query(queryText);
+            }
             
             console.log(result1);
 
