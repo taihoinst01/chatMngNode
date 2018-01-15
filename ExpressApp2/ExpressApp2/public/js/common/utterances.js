@@ -23,6 +23,19 @@ $(document).keydown(function(e) {
 
 $(document).ready(function(){
 
+    $("input[name=dlgChk]").bind('click',function(){
+        $(this).each(function(){
+            //
+            if($(this).parent().attr('checked') == "checked") {
+                $(this).parent().removeAttr('checked');
+                changeBtnAble('learn', false);
+            } else {
+                $(this).parent().attr("checked", "checked");
+                changeBtnAble('learn', true);
+            }
+        });
+    })
+
     // recommend에서 넘어온 문장 insert
     var recommendParam = $('#utterence').val();
     if(recommendParam){
@@ -51,7 +64,7 @@ $(document).ready(function(){
 
     // Utterance 삭제
     $('#utterLearn').click(function(){
-        
+        /*
         var utterBox = $("#entityUtteranceTextTable div[type=checkbox]");
         var intent = "";
         var entity = "";
@@ -76,6 +89,9 @@ $(document).ready(function(){
                 dlgId = $(td.eq(1).children()).val();
             }
         });
+        */
+
+        var dlgId = $('input[name=dlgId]');
 
         $.ajax({
             url: '/learning/learnUtterAjax',
@@ -388,6 +404,7 @@ function selectDlgListAjax(entity) {
                         inputUttrHtml += '<svg class="wc-message-callout"></svg>';
                         inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
                         inputUttrHtml += '<p>';
+                        inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
                         inputUttrHtml += tmp.dlg[j].CARD_TEXT;
                         inputUttrHtml += '</p>';
                         inputUttrHtml += '</div></div></div></div></div>';
@@ -404,6 +421,7 @@ function selectDlgListAjax(entity) {
                             inputUttrHtml += '<div class="wc-hscroll-outer">';
                             inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
                             inputUttrHtml += '<ul>';
+                            inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
                         }
 
                         inputUttrHtml += '<li class="wc-carousel-item">';
@@ -442,6 +460,7 @@ function selectDlgListAjax(entity) {
                         inputUttrHtml += '<li class="wc-carousel-item wc-carousel-play">';
                         inputUttrHtml += '<div class="wc-card hero">';
                         inputUttrHtml += '<div class="wc-card-div imgContainer">';
+                        inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
                         inputUttrHtml += '<img src="' + /* 이미지 url */ tmp.dlg[j].MEDIA_URL + '">';
                         inputUttrHtml += '<div class="playImg"></div>';
                         inputUttrHtml += '<div class="hidden" alt="' + tmp.dlg[j].CARD_TITLE + '"></div>';
