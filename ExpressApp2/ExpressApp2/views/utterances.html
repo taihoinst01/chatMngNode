@@ -43,7 +43,7 @@
                     </div>                                            
 
                     <!-- 어터런스 list 출력 div -->
-                    <div id="utterListDiv" style="border: 1px solid #858483 !important; height : 240px; margin:15px 0 0 0;">
+                    <div id="utterListDiv" style="border: 1px solid #858483 !important; height : 440px; margin:15px 0 0 0;">
                         <div class="Tbl_wrap">
                             <table class="Tbl" id="entityUtteranceTextTable" summary="의도설정">
                                 <colgroup><col width="7%" ><col width="93%" ></colgroup>
@@ -86,29 +86,23 @@
 
                 <div class="utterRight" >
                     <div style="width:100%">
-                        <h3 style="float:left;">추천 다이얼로그</h3>
+                        <h3 style="float:left;">다이얼로그</h3>
                         <button class="btn" style="float:right;" id="recommandDlgBtn" onclick="openModalBox('#create_dlg')">create</button>  <!-- disabled="disabled" -->
-                        <button class="btn" style="float:right;" id="" onclick="">Search</button>  <!-- disabled="disabled" -->
+                        <button class="btn" style="float:right;" id="searchDlgBtn" onclick="openModalBox('#search_dlg')">Search</button>  <!-- disabled="disabled" -->
                     </div>
                     <!-- 추천 다이얼로그 list 출력 div -->
                     <div class="utterList">
 
                         <div class="Tbl_wrap">
                             <table class="Tbl" id="dlgListTable" summary="다이얼로그">
-                                <colgroup><col width="10%" ><col width="85%" ></colgroup>
-                                <thead>
-                                    <tr>
-                                        <th><input name="dlgChkAll" class="tweak-input" id="checkAllDlg" type="checkbox"/></th>
-                                        <th class="txt_left">Text</th>
-                                    </tr>
-                                </thead>
+                                <colgroup><col width="7%" ><col width="85%" ></colgroup>
                                 <tbody>
                                     <tr>
-                                        <td style="padding-bottom: 540px">
+                                        <td style="padding-bottom: 580px">
                                             <input name="dlgChk" class="tweak-input" type="checkbox" onclick="" />
                                         </td>
                                         <td>
-                                            <div id="dialogRecommand" style="float: left; width: 95%; overflow: auto; margin: 0px 0px 0px 10px; border: 1px solid rgb(204, 204, 204); background: rgb(241, 243, 246); padding: 5px; height: 553px;">                                            
+                                            <div id="dialogRecommand" style="float: left; width: 95%; overflow: auto; margin: 0px 0px 0px 10px; border: 1px solid rgb(204, 204, 204); background: rgb(241, 243, 246); padding: 5px; height: 593px;">                                            
                                             </div>
                                         </td>
                                     </tr>
@@ -280,6 +274,65 @@
 
     <!--추천 다이얼로그 조회중인 어터런스 id -->
     <input type="hidden" id="selectedUtterId" value="" />
+
+    <!-- Search 다이얼로그 -->
+    <div id="search_dlg" class="modal_box w900" style="height: auto !important">
+        <header> <a href="#" id="addDialogClose" class="js-modal-close close">×</a>
+          <h3>Search Dialogue</h3><!-- 신규 다이얼로그 등록 -->
+        </header>
+        <div class="modal-body" style="float:left; width:100%;">
+            <form name="searchForm" id="searchForm">
+                <div class="searchGroup-float-left" style="width:25%">
+                    <p class="texcon03">검색어</p>
+                    <input type="text" name="serachDlg" style="width:100%;"/>
+                </div>
+                <div class="searchGroup-float-left">
+                    <p class="texcon03">대그룹</p>
+                    <p><select name="searchRargeGroup" class="inbox02" id="searchRargeGroup" style="width: 100%;" >
+                        <option value="" selected>largeGroup1</option>
+                    </select></p>
+                </div>
+                <div class="searchGroup-float-left">
+                    <p class="texcon03">중그룹</p>
+                    <p><select name="searchMediumGroup" class="inbox02" id="searchMediumGroup" style="width: 100%;" >
+                        <option value="" selected>mediumGroup</option>
+                    </select></p>
+                </div>
+                <div class="searchGroup-float-left">
+                    <p class="texcon03">소그룹</p>
+                    <p><select name="searchSmallGroup" class="inbox02" id="searchSmallGroup" style="width: 100%;" >
+                        <option value="" selected>smallGroup</option>
+                    </select></p>
+                </div>
+                <div class="searchGroup-float-left">
+                    <p class="texcon03">&nbsp;</p>
+                    <p><button class="btn margin0 w82" id="searchDialogBtn">search</button></p>
+                </div>
+            </form>
+        </div>
+        <div class="clear-both"></div>
+        <div style="border: 1px solid #858483 !important; height : 440px; margin:15px 0 0 0;">
+            <div class="Tbl_wrap">
+                <table class="Tbl">
+                    <colgroup><col width="7%" ><col width="93%" ></colgroup>
+                    <thead>
+                        <tr>
+                            <th><input name="ch1All" class="tweak-input" id="allCheck" type="checkbox"/></th>
+                            <th class="txt_left">Dialog</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer>
+            <button class="btn disable" id="btnAddDlg" onclick="learnDialog()">Save</button>
+            <a href="#" class="btn b02  btn-small js-modal-close" id="searchDialogCancel">Cancel</a>
+        </footer>
+    </div>
 </body>
 
     

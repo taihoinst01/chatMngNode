@@ -8,8 +8,8 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function (req, res) {
-    req.session.selMenu = 'm3';
-    res.redirect('/learning/entities');
+    req.session.selMenu = 'ms1';
+    res.redirect('/learning/recommend');
 });
 
 router.get('/recommend', function (req, res) {
@@ -734,5 +734,90 @@ router.post('/deleteRecommend',function(req,res){
         })
 });
 
+router.post('/selectGroup',function(req,res){
+    var selectId = req.body.selectId;
+    var selectValue1 = req.body.selectValue1;
+    var selectValue2 = req.body.selectValue2;
+    (async () => {
+    try{
+            let pool = await sql.connect(dbConfig)
+            var queryText = "";
+            if(selectId == "searchRargeGroup") {
+                queryText = "SELECT DISTINCT LARGE_GROUP AS 'GROUP' FROM TBL_DLG WHERE LARGE_GROUP IS NOT NULL";
+            } else if(selectId == "searchMediumGroup") {
+                selectValue1 = selectValue1.trim();
+                queryText = "SELECT DISTINCT MEDIUM_GROUP AS 'GROUP'\n";
+                queryText += "FROM TBL_DLG\n";
+                queryText += "WHERE LARGE_GROUP IS NOT NULL\n";
+                queryText += "AND LARGE_GROUP LIKE '%" + selectValue1 + "%'";
+            } else if(selectId == "searchSmallGroup") {
+                selectValue1 = selectValue1.trim();
+                selectValue2 = selectValue2.trim();
+                queryText = "SELECT DISTINCT SMALL_GROUP AS 'GROUP'\n";
+                queryText += "FROM TBL_DLG\n";
+                queryText += "WHERE LARGE_GROUP IS NOT NULL\n";
+                queryText += "AND LARGE_GROUP LIKE '%" + selectValue1 + "%'\n";
+                queryText += "AND MEDIUM_GROUP LIKE '%" + selectValue2 + "%'";
+            }
+
+            let result = await pool.request().query(queryText);
+            var rows = result.recordset;
+
+            res.send({rows:rows});
+        }catch(err){
+            console.log(err);
+        }finally {
+            sql.close();
+        } 
+    })()
+    
+    sql.on('error', err => {
+        console.log(err);
+    })
+});
+
+router.post('/searchDialog',function(req,res){
+    var searchRargeGroup = req.body.searchRargeGroup;
+    var searchMediumGroup = req.body.searchMediumGroup;
+    var searchSmallGroup = req.body.searchSmallGroup;
+    var serachDlg = req.body.serachDlg;
+    
+    (async () => {
+    try{
+            let pool = await sql.connect(dbConfig)
+            var queryText = "";
+            if(selectId == "searchRargeGroup") {
+                queryText = "SELECT DISTINCT LARGE_GROUP AS 'GROUP' FROM TBL_DLG WHERE LARGE_GROUP IS NOT NULL";
+            } else if(selectId == "searchMediumGroup") {
+                selectValue1 = selectValue1.trim();
+                queryText = "SELECT DISTINCT MEDIUM_GROUP AS 'GROUP'\n";
+                queryText += "FROM TBL_DLG\n";
+                queryText += "WHERE LARGE_GROUP IS NOT NULL\n";
+                queryText += "AND LARGE_GROUP LIKE '%" + selectValue1 + "%'";
+            } else if(selectId == "searchSmallGroup") {
+                selectValue1 = selectValue1.trim();
+                selectValue2 = selectValue2.trim();
+                queryText = "SELECT DISTINCT SMALL_GROUP AS 'GROUP'\n";
+                queryText += "FROM TBL_DLG\n";
+                queryText += "WHERE LARGE_GROUP IS NOT NULL\n";
+                queryText += "AND LARGE_GROUP LIKE '%" + selectValue1 + "%'\n";
+                queryText += "AND MEDIUM_GROUP LIKE '%" + selectValue2 + "%'";
+            }
+
+            let result = await pool.request().query(queryText);
+            var rows = result.recordset;
+
+            res.send({rows:rows});
+        }catch(err){
+            console.log(err);
+        }finally {
+            sql.close();
+        } 
+    })()
+    
+    sql.on('error', err => {
+        console.log(err);
+    })
+});
 
 module.exports = router;
