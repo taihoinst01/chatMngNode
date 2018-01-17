@@ -36,9 +36,9 @@ function entitiesAjax(){
             if(data.list.length > 0){
                 for(var i = 0; i < data.list.length; i++){
                     item += '<tr>' +
-                        '<td class="txt_center" colspan="1">' + data.list[i].ENTITY + "</td>" ;
+                        '<td class="txt_center" colspan="2">' + data.list[i].ENTITY + "</td>" ;
                     item += '<td class="txt_center" colspan="4">' + data.list[i].ENTITY_VALUE + '</td>';
-                    item += '<td class="txt_center" colspan="1">' + data.list[i].API_GROUP + '</td>' +    
+                    item += '<td class="txt_center" colspan="2">' + data.list[i].API_GROUP + '</td>' +    
                         '</tr>';
                 }
                 
@@ -78,9 +78,9 @@ function searchEntities() {
                 if(data.list.length > 0){
                     for(var i = 0; i < data.list.length; i++){
                         item += '<tr>' +
-                            '<td class="txt_center" colspan="1">' + data.list[i].ENTITY + "</td>" ;
+                            '<td class="txt_center" colspan="2">' + data.list[i].ENTITY + "</td>" ;
                         item += '<td class="txt_center" colspan="4">' + data.list[i].ENTITY_VALUE + '</td>';
-                        item += '<td class="txt_center" colspan="1">' + data.list[i].API_GROUP + '</td>' +    
+                        item += '<td class="txt_center" colspan="2">' + data.list[i].API_GROUP + '</td>' +    
                             '</tr>';
                     }
                     
