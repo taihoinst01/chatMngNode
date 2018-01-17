@@ -310,7 +310,12 @@ router.post('/entities', function (req, res) {
                                       "(select ROW_NUMBER() OVER(ORDER BY api_group DESC) AS NUM, " +
                                       "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
                                       "CEILING((ROW_NUMBER() OVER(ORDER BY api_group DESC))/ convert(numeric ,10)) PAGEIDX, " +
-                                      "entity_value, entity from tbl_common_entity_define) tbp " +
+                                      "entity_value, entity, api_group from ( SELECT DISTINCT entity, API_GROUP , STUFF(( " +
+                                      "SELECT ',' + b.entity_value FROM TBL_COMMON_ENTITY_DEFINE b " +
+                                      "WHERE b.entity = a.entity FOR XML PATH('') ),1,1,'') AS entity_value " +
+                                      "FROM TBL_COMMON_ENTITY_DEFINE a where API_GROUP != 'OCR TEST' " +
+                                      "group by entity, API_GROUP) " +
+                                      "tbl_common_entity_define where api_group != 'OCR TEST') tbp " +
                                       "WHERE PAGEIDX = @currentPage";
             
             let pool = await sql.connect(dbConfig)
@@ -324,9 +329,12 @@ router.post('/entities', function (req, res) {
 
                 var entitiyValue = rows[i].entity_value;
                 var entity = rows[i].entity;
+                var apiGroup = rows[i].api_group;
 
                 item.ENTITY_VALUE = entitiyValue;
                 item.ENTITY = entity;
+                item.API_GROUP = apiGroup;
+
                 result.push(item);
             }
             if(rows.length > 0){
@@ -381,6 +389,65 @@ router.post('/insertEntity', function (req, res) {
     sql.on('error', err => {
     })
     
+});
+
+//엔티티 검색
+router.post('/searchEntities', function (req, res) {
+
+    var currentPage = req.body.currentPage;
+    var searchEntities = req.body.searchEntities;
+    
+    (async () => {
+        try {
+         
+            var entitiesQueryString = "select tbp.* from " +
+                                      "(select ROW_NUMBER() OVER(ORDER BY api_group DESC) AS NUM, " +
+                                      "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
+                                      "CEILING((ROW_NUMBER() OVER(ORDER BY api_group DESC))/ convert(numeric ,10)) PAGEIDX, " +
+                                      "entity_value, entity, api_group from (SELECT DISTINCT entity, API_GROUP , STUFF(( " +
+                                      "SELECT ',' + b.entity_value FROM TBL_COMMON_ENTITY_DEFINE b " +
+                                      " WHERE b.entity = a.entity FOR XML PATH('') ),1,1,'') AS entity_value " +
+                                      "FROM TBL_COMMON_ENTITY_DEFINE a where API_GROUP != 'OCR TEST' " +
+                                      "and (entity = @searchEntities or entity_value = @searchEntities) " +
+                                      "group by entity, API_GROUP) a" +
+                                      " ) tbp " +
+                                      "WHERE PAGEIDX = @currentPage";
+            
+            let pool = await sql.connect(dbConfig)
+            let result1 = await pool.request().input('currentPage', sql.Int, currentPage).input('searchEntities', sql.NVarChar, searchEntities).query(entitiesQueryString);
+
+            let rows = result1.recordset;
+
+            var result = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+
+                var entitiyValue = rows[i].entity_value;
+                var entity = rows[i].entity;
+                var apiGroup = rows[i].api_group;
+
+                item.ENTITY_VALUE = entitiyValue;
+                item.ENTITY = entity;
+                item.API_GROUP = apiGroup;
+
+                result.push(item);
+            }
+            if(rows.length > 0){
+                res.send({list : result, pageList : paging.pagination(currentPage,rows[0].TOTCNT)});
+            }else{
+                res.send({list : result});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
 });
 
 router.post('/selectDlgListAjax', function (req, res) {

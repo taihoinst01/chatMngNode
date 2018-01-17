@@ -36,12 +36,10 @@ function entitiesAjax(){
             if(data.list.length > 0){
                 for(var i = 0; i < data.list.length; i++){
                     item += '<tr>' +
-                    '<td class="txt_center" colspan="3">' + data.list[i].ENTITY + "</td>" ;
-                    item += '</a>' +
-                    '<td class="txt_center" colspan="3">' +
-                    data.list[i].ENTITY_VALUE +
-                    '</td>' +
-                    '</tr>';
+                        '<td class="txt_center" colspan="1">' + data.list[i].ENTITY + "</td>" ;
+                    item += '<td class="txt_center" colspan="4">' + data.list[i].ENTITY_VALUE + '</td>';
+                    item += '<td class="txt_center" colspan="1">' + data.list[i].API_GROUP + '</td>' +    
+                        '</tr>';
                 }
                 
             }
@@ -58,6 +56,42 @@ $(document).on('click','.li_paging',function(e){
     }
 });
 
+//엔티티 검색
+function searchEntities() {
+
+    if($("#iptentites").val() == '' || $("#iptentites").val() == null) {
+        $('#currentPage').val(1);
+        entitiesAjax();
+    } else {
+        params = {
+            'currentPage' : 1,
+            'searchEntities' : $('#iptentites').val()
+        };
+        $.tiAjax({
+            type: 'POST',
+            data: params,
+            url: '/learning/searchEntities',
+            isloading: true,
+            success: function(data) {
+                $('#entitesTbltbody').html('');
+                var item = '';
+                if(data.list.length > 0){
+                    for(var i = 0; i < data.list.length; i++){
+                        item += '<tr>' +
+                            '<td class="txt_center" colspan="1">' + data.list[i].ENTITY + "</td>" ;
+                        item += '<td class="txt_center" colspan="4">' + data.list[i].ENTITY_VALUE + '</td>';
+                        item += '<td class="txt_center" colspan="1">' + data.list[i].API_GROUP + '</td>' +    
+                            '</tr>';
+                    }
+                    
+                }
+                $('#entitesTbltbody').append(item);
+                $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+            }
+        });
+    }
+}
+
 //** 모달창 */
 function openModalBox(target){
 
@@ -71,20 +105,21 @@ function openModalBox(target){
 
     // 레이어 팝업을 가운데로 띄우기 위해 화면의 높이와 너비의 가운데 값과 스크롤 값을 더하여 변수로 만듭니다.
     var left = ( $(window).scrollLeft() + ( $(window).width() - $(target).width()) / 2 );
-    //var top = ( $(window).scrollTop() + ( $(window).height() - $(target).height()) / 2 );
+    var top = ( $(window).scrollTop() + ( $(window).height() - $(target).height()) / 2 );
 
     // css 스타일을 변경합니다.
-    $(target).css({'left':left,'top':'25px', 'position':'absolute'});
+    $(target).css({'left':left,'top':top, 'position':'absolute'});
 
     // 레이어 팝업을 띄웁니다.
     $(target).show();
+
     $('#dialogPreview').css({'height':$('#dialogSet').height()});
 
     $('html').css({'overflow': 'hidden', 'height': '100%'});
-        $('#element').on('scroll touchmove mousewheel', function(event) { // 터치무브와 마우스휠 스크롤 방지
-            event.preventDefault();
-            event.stopPropagation();
-            return false;
+    $('#element').on('scroll touchmove mousewheel', function(event) { // 터치무브와 마우스휠 스크롤 방지
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
     });
     wrapWindowByMask();
 }
