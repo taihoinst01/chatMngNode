@@ -781,6 +781,8 @@ router.post('/searchDialog',function(req,res){
     var searchMediumGroup = req.body.searchMediumGroup;
     var searchSmallGroup = req.body.searchSmallGroup;
     var serachDlg = req.body.serachDlg;
+
+    var queryText = "";
     
     (async () => {
     try{
