@@ -855,24 +855,6 @@ router.post('/searchDialog',function(req,res){
     try{
             let pool = await sql.connect(dbConfig)
             var queryText = "";
-            if(selectId == "searchRargeGroup") {
-                queryText = "SELECT DISTINCT LARGE_GROUP AS 'GROUP' FROM TBL_DLG WHERE LARGE_GROUP IS NOT NULL";
-            } else if(selectId == "searchMediumGroup") {
-                selectValue1 = selectValue1.trim();
-                queryText = "SELECT DISTINCT MEDIUM_GROUP AS 'GROUP'\n";
-                queryText += "FROM TBL_DLG\n";
-                queryText += "WHERE LARGE_GROUP IS NOT NULL\n";
-                queryText += "AND LARGE_GROUP LIKE '%" + selectValue1 + "%'";
-            } else if(selectId == "searchSmallGroup") {
-                selectValue1 = selectValue1.trim();
-                selectValue2 = selectValue2.trim();
-                queryText = "SELECT DISTINCT SMALL_GROUP AS 'GROUP'\n";
-                queryText += "FROM TBL_DLG\n";
-                queryText += "WHERE LARGE_GROUP IS NOT NULL\n";
-                queryText += "AND LARGE_GROUP LIKE '%" + selectValue1 + "%'\n";
-                queryText += "AND MEDIUM_GROUP LIKE '%" + selectValue2 + "%'";
-            }
-
             let result = await pool.request().query(queryText);
             var rows = result.recordset;
 
