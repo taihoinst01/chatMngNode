@@ -62,58 +62,36 @@ $(document).ready(function(){
 
     });
 
-    // Utterance 삭제
+    // Utterance Learn
     $('#utterLearn').click(function(){
-        /*
-        var utterBox = $("#entityUtteranceTextTable div[type=checkbox]");
-        var intent = "";
-        var entity = "";
-        var dlgId = "";
-        utterBox.each(function(n){
-    
-            if ($(utterBox[n]).attr("checked") == "checked") {
-                var tr = $(utterBox[n]).parent().parent();
-                var td = tr.children();
-                intent = $(td.eq(2).children()).val();
-                entity = $(td.eq(1).children()).val();        
-            }
+
+        var entity = $('input[name=entity').val();
+        
+        var inputDlgId = $('input[name=dlgId]');
+        var dlgId = [];
+        inputDlgId.each(function(n) { 
+            dlgId[n] = inputDlgId[n].value;
+            return dlgId;
         });
-
-        var dlgBox = $("#dlgListTable div[type=checkbox]");
-
-        dlgBox.each(function(n){
-    
-            if ($(dlgBox[n]).attr("checked") == "checked") {
-                var tr = $(dlgBox[n]).parent().parent();
-                var td = tr.children();
-                dlgId = $(td.eq(1).children()).val();
-            }
-        });
-        */
-
-        var dlgId = $('input[name=dlgId]');
 
         $.ajax({
             url: '/learning/learnUtterAjax',
             dataType: 'json',
             type: 'POST',
-            data: {'intent':intent, 'entity':entity, 'dlgId':dlgId},
+            data: {'entity':entity, 'dlgId':dlgId},
             success: function(result) {
                 if(result['result'] == true) {
                     alert("추가 하였습니다.");
-
-                    $('.checkUtter').each(function(){
-                        if($(this).attr('checked') == 'checked') {
-                            $(this).parent().parent().remove();
-                        }
-                    });
+                    
                     $('input[name=ch1All]').parent().attr('checked', false);
                     changeBtnAble(false);
 
-                    $('#dlgListTable tbody').remove();
+                    $("#entityUtteranceTextTable tbody").html("");
+                    $("#dialogRecommand").html("");
 
                     $('#utterLearn').attr("disabled", "disabled");
-                    $('#utterLearn').addClass("disable"); 
+                    $('#utterLearn').addClass("disable");
+
                 }else{
                     alert("실패하였습니다.");
                 }
@@ -131,6 +109,7 @@ $(document).ready(function(){
                 //$(this).parent().parent().remove();
             }
         });
+        $('#dialogRecommand').html("");
         $('input[name=ch1All]').parent().attr('checked', false);
         changeBtnAble(false);
     });
@@ -335,6 +314,41 @@ $(document).ready(function(){
         e.preventDefault();
     });
 
+    $("#searchRargeGroup").change(function(){
+        var str = "";
+        $( "#searchRargeGroup option:selected" ).each(function() {
+          str = $( this ).text() + " ";
+        });
+        selectGroup("searchMediumGroup",str);
+    });
+
+    $("#searchMediumGroup").change(function(){
+        var str1 = "";
+        $( "#searchRargeGroup option:selected" ).each(function() {
+          str1 = $( this ).text() + " ";
+        });
+
+        var str2 = "";
+        $( "#searchMediumGroup option:selected" ).each(function() {
+          str2 = $( this ).text() + " ";
+        });
+
+        selectGroup("searchSmallGroup",str1,str2);
+    });
+
+    $("#searchDialogBtn").click(function(){
+        var formData = $("form[name=searchForm").serialize();
+    
+        $.ajax({
+            url: '/learning/searchDialog',
+            dataType: 'json',
+            type: 'POST',
+            data: formData,
+            success: function(result) {
+                
+            }
+        });
+    });
 });
 
 //intent selbox 선택
@@ -603,7 +617,7 @@ function utterInput(queryText) {
                 var inputUttrHtml = '';
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
-                inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result['entities'] + '"/>' + utter + '</td>';
+                inputUttrHtml += '<td class="txt_left" ><input type=hidden name="entity" value="' + result['entities'] + '"/>' + utter + '</td>';
                 if(result.commonEntities){
                     inputUttrHtml += '<tr><td> </td><td class="txt_left" >';
                     for(var i = 0; i < result.commonEntities.length ; i++){
@@ -656,6 +670,27 @@ function utterHighlight(entities, utter) {
     return result;
 }
 
+function selectGroup(selectId,str1,str2) {
+    $.ajax({
+        url: '/learning/selectGroup',                //주소
+        dataType: 'json',                  //데이터 형식
+        type: 'POST',
+        data: {'selectId':selectId,'selectValue1':str1,'selectValue2':str2},
+        success: function(result) {
+            var group = result.rows;
+            $("#"+selectId).html("");
+            if(selectId == "searchRargeGroup") {
+                $("#"+selectId).append('<option value="LargeGroup">LargeGroup</option>' );
+            } else if(selectId == "searchMediumGroup") {
+                $("#"+selectId).append('<option value="MediumGroup">MediumGroup</option>' );
+            }
+            for(var i = 0; i < group.length; i++){
+                $("#"+selectId).append('<option value="' + group[i]['GROUP'] + '">' + group[i]['GROUP'] + '</option>' );
+            }
+        }
+    });
+}
+
 //---------------두연 추가
 
 function openModalBox(target){
@@ -686,6 +721,7 @@ function openModalBox(target){
             return false;
     });
     wrapWindowByMask();
+    selectGroup('searchRargeGroup');
 }
 
 function wrapWindowByMask(){ //화면의 높이와 너비를 구한다. 
@@ -717,4 +753,18 @@ function initMordal(objId, objName) {
     $('#'+ objId + ' option:eq(0)').remove();
     $('#'+ objId ).prepend('<option selected="selected" disabled="disabled">' + objName + '</option>');
 
+}
+
+function searchDialog() {
+    var formData = $("form[name=searchForm").serialzie();
+    
+    $.ajax({
+        url: '/learning/searchDialog',
+        dataType: 'json',
+        type: 'POST',
+        data: formData,
+        success: function(result) {
+            
+        }
+    });
 }
