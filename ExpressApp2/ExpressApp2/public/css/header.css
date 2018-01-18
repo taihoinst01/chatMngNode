@@ -32,16 +32,14 @@
     display:block;
 }
 
-
 #toggleDiv {
     width : 1300px;
     height: 100%;
     position: fixed;
-    
     display : none;
     top : 102px; 
     right : -900px; 
-    z-index : 10;
+    z-index : 2;
     
     box-shadow: 0px 0px 15px rgba(0,0,0,.3);
 }
@@ -64,14 +62,12 @@
     display : none;
 } 
 .learningTestContents{
-    padding: 1rem;
-    overflow: auto;
     height:85%;
 }
 .learningTest-top-layer{
     position: absolute;
     background-color: white;
-    width: 29%;
+    width: 31%;
     height:40px;
     border-bottom:1px solid lightgray;
 }
