@@ -8,7 +8,8 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function (req, res) {
-    req.session.selMenu = 'ms1';
+    req.session.selMenus = 'ms1';
+    req.session.selMenu = 'm3';
     res.redirect('/learning/recommend');
 });
 
