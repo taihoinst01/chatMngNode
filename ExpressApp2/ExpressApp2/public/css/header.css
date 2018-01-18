@@ -1,5 +1,7 @@
 .userappLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:80px; padding:10px; z-index: 999; } 
 .userlayerMenu:hover{background-color:#a7a4a4 !important;}
+.w100per{width:100%;}
+.h100per{height:100%;}
 
 .userlayoutFont { 
     box-sizing: border-box;
@@ -32,7 +34,7 @@
 
 
 #toggleDiv {
-    width : 1200px;
+    width : 1300px;
     height: 100%;
     position: fixed;
     
@@ -50,7 +52,7 @@
     -o-transition: All 0.2s ease-in-out; 
 }
 #learningTest { 
-    width : 300px; 
+    width : 400px; 
     height : 100%; 
     display : block;
     background-color : white;
@@ -61,7 +63,28 @@
     height : 100%; 
     display : none;
 } 
-
+.learningTestContents{
+    padding: 1rem;
+    overflow: auto;
+    height:85%;
+}
+.learningTest-top-layer{
+    position: absolute;
+    background-color: white;
+    width: 29%;
+    height:40px;
+    border-bottom:1px solid lightgray;
+}
+.learningTest-Title{
+    float: left !important;
+    padding:10px; font-size: 120%;
+    font-weight:bold;
+}
+#startOver{
+    float: right !important;
+    padding:10px;
+    font-weight:bold;
+}
 /*
 #learningTest { 
     width : 300px; 
