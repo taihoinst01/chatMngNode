@@ -31,33 +31,32 @@
 </head>
 
 <body class="main">
-	
+	<input type="hidden" name="subKey" id="subKey" value='<%=subKey%>'/>
     <!--<link rel="import" href="./header.html">    -->
     <%include  ./header.html%>
 
     <div id="wrap">
-        <div id="container">
+        <div id="container" class="main">
 
             <div id="sub_cont03">
-                <!-- 서브 타이틀 -->
+                <!-- 서브 타이틀 App State-->
                 <div class="subt_wrap">
-                         <h2 class="subtit01">App State</h2>
+                         <h2 class="subtit01" id="appNameTag"><%= appName %></h2>
                         <p class="subt_01" style="display: none;">학습 의도 목록을 표시합니다. 학습 의도를 새롭게 생성하거나 편집 할 수 있습니다. <a href="#" class="more" id="helpV">+more</a></p>
                 </div>
                 
 
-
-
                 <div  class="mt20">
 
-                        <!-- 학습 현황 -->
+                        <!-- 학습 현황
                         <div class="dashboard_cont01">
-                            <p class="d_tit01">App State<!-- 학습 현황 --></p>
+                            <p class="d_tit01">App State</p>
                             <p class="d_tit02">
-                                <span><strong>Last Train<!-- 마지막 훈련 : --></strong> <span id="spanLastTrainDateTime"> Loading.. </span></span>
-                                <span><strong>Last publish<!-- 마지막 게시 : --></strong> <span id="spanLastPublishDateTime"> Loading.. </span></span>
+                                <span><strong>Last Train</strong> <span id="spanLastTrainDateTime"> Loading.. </span></span>
+                                <span><strong>Last publish</strong> <span id="spanLastPublishDateTime"> Loading.. </span></span>
                             </p>
                         </div>
+                         -->
                         <!--// 학습 현황 -->
 
                         <!-- 의도수/개체수/개체수리스트/문장수 -->
@@ -68,10 +67,6 @@
                        <div class="dashboard_cont02">
                             <p class="d_tit01">Entities<!-- 개체수 --></p>
                             <p class="d_tit03"><span id="spanEntitiesCount"> Loading..</span></p>
-                       </div>
-                       <div class="dashboard_cont02">
-                            <p class="d_tit01">List Entities<!-- 개체리스트수 --> </p>
-                            <p class="d_tit03"><span id="spanListEntitiesCount"> Loading..</span></p>
                        </div>
                        <div class="dashboard_cont02">
                             <p class="d_tit01">Labeled Utterances<!-- 문장수 --> </p>

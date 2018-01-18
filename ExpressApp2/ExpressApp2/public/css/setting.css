@@ -1,0 +1,31 @@
+#setting-wrap{
+    position: absolute;
+    top: 42px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+}
+.setting-left-menu{
+    float: left;
+    width: 15%;
+    height: 100%;
+    border: 1px solid #ccc;
+}
+.setting-left-menu > ul{
+    margin: 50px 0 0 0;
+}
+.setting-left-menu > ul > li{
+    border-top: 2px solid #ccc ;
+
+    height: 50px;
+}
+.setting-left-menu > ul > li > span{
+    font-size: 15px;
+    font-weight: bolder;
+}
+.setting-contents{
+    float: right;
+    width: 84%;
+    height: 100%;
+}

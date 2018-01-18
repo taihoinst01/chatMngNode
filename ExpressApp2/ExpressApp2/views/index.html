@@ -89,7 +89,7 @@
                     for(var i=list.length-1; i > 0; i--) {
                     %>
                         <tr>
-                            <td class="txt_left"><a href="/luis/dashboard?appName=<%= list[i].name %>" class="dashLink" ><%= list[i].name %></a></td> <!-- dyyo 1228추가 -->
+                            <td class="txt_left"><a href="/board?appName=<%= list[i].name %>&appId=<%= list[i].id %>" class="dashLink" ><%= list[i].name %></a></td> <!-- dyyo 1228추가 -->
                             <td class="txt_left"><%= list[i].culture %></td>
                             <td class="txt_left"><%= list[i].createdDateTime.split('T')[0] %></td>
                             <td class="txt_left"><%= list[i].description %></td>

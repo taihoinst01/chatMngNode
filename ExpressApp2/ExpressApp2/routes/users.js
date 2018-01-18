@@ -66,4 +66,10 @@ router.get('/logout', function (req, res) {
 	});
 });
 
+router.get('/setting', function (req, res) {  
+    req.session.selMenu = 'm1';
+
+    res.render('setting',{selMenu: req.session.selMenu});
+});
+
 module.exports = router;
