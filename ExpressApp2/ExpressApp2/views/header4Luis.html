@@ -33,7 +33,12 @@ $(document).ready(function(){
             //$("#toggleDiv").css('right', '-900px');
         }
     });
-    
+
+    //test 챗봇 새로고침
+    $('#startOver').click(function(){
+        $('#testChatBot').removeAttr('src');
+        $('#testChatBot').attr('src','https://webchat.botframework.com/embed/smartsend?s=dEQAGijPT-s.cwA.0LA.mnfoxhvCCjOo4YE894AS9nJpoKFTn58Lh3DljcOicdU');
+    });
 
 });
 
@@ -142,21 +147,18 @@ $(document).ready(function(){
         </div>
     </div>
 </div>
+
 <div id="toggleDiv">
     <div id="learningTest"> 
-        <div style="padding: 1rem; overflow: auto;">
-            <h2 style="float: left !important;">learning-test toggle</h2><br/>
-            <a class="b" href="#" style="float: right !important;" name="batchTest">Batch testing panel</a>
-            <hr style="display:block !important; margin: 30px 0 0 0; border: 0; height: 2px; background: #ccc;">
-        </div>
-    </div>
-
-
-    <div id="batchTestPanel"> 
-        <div style="padding: 1rem; overflow: auto;">
-            <h2 style="float: left !important;">Batch-test toggle</h2><br/>
-            <a class="b" href="#" style="float: right !important;" name="batchTest">Single testing panel</a>
-            <hr style="display:block !important; margin: 30px 0 0 0; border: 0; height: 2px; background: #ccc;">
+        <div class="learningTestContents">
+            <div class="learningTest-top-layer">
+                <span class="learningTest-Title">Test</span>
+                <a id="startOver" class="b" href="#">Start over</a>
+                <div style="clear:both;"></div>
+            </div>
+            <div class="h100per">
+                <iframe id="testChatBot" class="w100per h100per" src='https://webchat.botframework.com/embed/smartsend?s=dEQAGijPT-s.cwA.0LA.mnfoxhvCCjOo4YE894AS9nJpoKFTn58Lh3DljcOicdU'></iframe>
+            </div>
         </div>
     </div>
 </div>
