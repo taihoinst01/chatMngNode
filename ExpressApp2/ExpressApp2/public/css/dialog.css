@@ -1,4 +1,4 @@
-.highlight{background-color: aqua;}
+.highlight{background-color: rgb(197, 194, 223);}
 .in-line{width:100%; height:40px; }
 #layoutBackground { position:absolute; z-index:900; background-color:#000; display:none; left:0; top:0; } 
 
@@ -24,3 +24,136 @@
 
 #image_tbl{border:non !important; margin-top: -40px !important;}
 .margin0{ margin: 0 !important; }
+body {  font-family: arial;}
+body, ul, li { margin: 0; padding: 0;}
+ul, ol, li, form, fieldset, input, p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+li { list-style: none}
+.fieldouter {width: 100%; margin: 10px auto 10px auto;}
+
+.selectbox { position: relative;}
+.selectarrow { content: ''; position: absolute; top: 13px;   right: 12px; border-width: 8px 5px 0 5px; border-style: solid; border-color: rgb(230, 230, 230) transparent transparent transparent; width: 0; height: 0;}
+
+.selectbox:hover .selectarrow,
+.selectbox:focus .selectarrow { border-width: 0 5px 8px 5px;
+  border-style: solid; border-color: transparent transparent rgb(230, 230, 230) transparent;}
+
+.selectbox .selected { width: 100%; height: 34px; line-height: 24px; border: 1px solid #e6e6e6; border-radius: 2px; -webkit-border-radius: 2px; -moz-border-radius: 2px; padding: 5px 12px; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; color: #444; transition: all 0.3s ease-in-out; -webkit-transition: all 0.3s ease-in-out; -moz-transition: all 0.3s ease-in-out; position: relative; z-index: 5;}
+
+.selectbox .selected:hover,
+.selectbox .selected:focus {
+  border-color: #c6c6c6
+}
+
+.selectbox .selectOptionsbox {
+  background-color: #f9f9f9;
+  border: 1px solid #e6e6e6;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 33px;
+  width: 100%;
+  z-index: 4;
+  display: none;
+}
+
+.selectbox .selectOptionsbox.active {
+  display: block;
+  overflow: auto;
+  height: 230px;
+}
+
+.selectOptionsbox .checkbox {
+  float: left;
+  width: 20px;
+  height: auto;
+}
+
+.selectOptionsbox label {
+  display: block;
+  overflow: hidden;
+  line-height: 1;
+  padding-left: 8px;
+  color: #444;
+  font-size: 13px;
+}
+
+.checkouter:first-child {
+  margin-top: 14px;
+}
+
+.checkouter {
+  margin-top: 7px;
+  padding: 0 12px;
+}
+
+.allcheck {
+  padding: 0 12px;
+}
+
+.checkouter li li {
+  padding: 7px 0;
+  font-size: 12px;
+}
+
+.checklist {
+  padding: 7px 0 5px 25px;
+}
+
+.checkouter .heading {
+  position: relative;
+  padding-top: 7px;
+}
+
+.checktoggle {
+  cursor: pointer;
+  width: 0;
+  height: 0;
+  float:right;
+}
+
+.checktoggle:after {
+  color: #999;
+  content: "+";
+  font-size: 21px;
+  height: 12px;
+  position: absolute;
+  right: 3px;
+  top: 0;
+  width: 12px;
+}
+
+.checktoggle:before {
+  color: #999;
+  content: "-";
+  cursor: pointer;
+  font-size: 31px;
+  height: 12px;
+  position: absolute;
+  right: 4px;
+  top: -9px;
+  width: 12px;
+  display: none;
+}
+
+.heading.active .checktoggle:after {
+  display: none;
+}
+
+.heading.active .checktoggle:before {
+  display: block;
+}
+
+.smallGroup:hover {
+  background-color: rgb(197, 194, 223);
+}
