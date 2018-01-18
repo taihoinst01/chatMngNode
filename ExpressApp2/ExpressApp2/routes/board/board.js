@@ -28,14 +28,14 @@ router.post('/getCounts', function (req, res) {
                             "          FROM        TBL_DLG_RELATION_LUIS " +
                             "          GROUP BY    LUIS_ID "  +
                             "          HAVING      LUIS_ID = '" + appName + "'), 0) AS INTENT_CNT, " +
-                            "       (  SELECT	    count(distinct B.ENTITY_VALUE) " +
+                            "       isnull((  SELECT	    count(distinct B.ENTITY_VALUE) " +
                             "          FROM	    TBL_DLG_RELATION_LUIS A, TBL_COMMON_ENTITY_DEFINE B " + 
                             "          WHERE	    A.LUIS_ID = '" + appName + "'  " +
-                            "          AND		    A.LUIS_ENTITIES like '%'+B.ENTITY_VALUE+'%') AS ENTITY_CNT, " +
-                            "       (  select      count(*)  " +
+                            "          AND		    A.LUIS_ENTITIES like '%'+B.ENTITY_VALUE+'%'), 0) AS ENTITY_CNT, " +
+                            "       isnull((  select      count(*)  " +
                             "          from        TBL_DLG " +
                             "          where       LARGE_GROUP = '" + appName + "' " +
-                            "          and         use_yn ='Y') AS DLG_CNT ";
+                            "          and         use_yn ='Y'), 0) AS DLG_CNT ";
             let pool = await sql.connect(dbConfig);
             let result1 = await pool.request().query(cntValue);
             let rows = result1.recordset;
