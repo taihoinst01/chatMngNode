@@ -5,14 +5,20 @@ var sql = require('mssql');
 var dbConfig = require('../../config/dbConfig');
 var paging = require('../../config/paging');
 var util = require('../../config/util');
+var luisConfig = require('../../config/luisConfig');
 var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function (req, res) {
     req.session.menu = 'm2';
-
-    res.render('board', {   selMenu: req.session.menu, 
-        title: 'board page'
+    var appName = req.query.appName;
+    var appId = req.query.appId;
+    var sKey = luisConfig.subKey;
+    res.render('board', {   
+        selMenu: req.session.menu, 
+        appName: appName,
+        appId: appId,
+        subKey: sKey
     } );
     
 });
