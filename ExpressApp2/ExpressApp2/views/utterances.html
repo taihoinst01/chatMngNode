@@ -271,17 +271,17 @@
     <!-- Search 다이얼로그 -->
     <div id="search_dlg" class="modal_box w900" style="height: auto !important">
         <header> <a href="#" id="addDialogClose" class="js-modal-close close">×</a>
-          <h3>Search Dialogue</h3><!-- 신규 다이얼로그 등록 -->
+          <h3>Search Dialogue</h3>
         </header>
         <div class="modal-body" style="float:left; width:100%;">
-            <form name="searchForm" id="searchForm">
+            <form name="searchForm" id="searchForm" method="post">
                 <div class="searchGroup-float-left" style="width:25%">
                     <p class="texcon03">검색어</p>
                     <input type="text" name="serachDlg" style="width:100%;"/>
                 </div>
                 <div class="searchGroup-float-left">
                     <p class="texcon03">대그룹</p>
-                    <p><select name="searchRargeGroup" class="inbox02" id="searchRargeGroup" style="width: 100%;" >
+                    <p><select name="searchRargeGroup" class="inbox02" id="searchLargeGroup" style="width: 100%;" >
                         <option value="" selected>largeGroup1</option>
                     </select></p>
                 </div>
@@ -297,16 +297,17 @@
                         <option value="" selected>smallGroup</option>
                     </select></p>
                 </div>
+            </form>
                 <div class="searchGroup-float-left">
                     <p class="texcon03">&nbsp;</p>
                     <p><button class="btn margin0 w82" id="searchDialogBtn">search</button></p>
                 </div>
-            </form>
+            
         </div>
         <div class="clear-both"></div>
         <div style="border: 1px solid #858483 !important; height : 440px; margin:15px 0 0 0;">
             <div class="Tbl_wrap">
-                <table class="Tbl">
+                <table class="Tbl" id="searchListTbl">
                     <colgroup><col width="7%" ><col width="93%" ></colgroup>
                     <thead>
                         <tr>

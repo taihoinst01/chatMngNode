@@ -336,18 +336,8 @@ $(document).ready(function(){
         selectGroup("searchSmallGroup",str1,str2);
     });
 
-    $("#searchDialogBtn").click(function(){
-        var formData = $("form[name=searchForm").serialize();
-    
-        $.ajax({
-            url: '/learning/searchDialog',
-            dataType: 'json',
-            type: 'POST',
-            data: formData,
-            success: function(result) {
-                
-            }
-        });
+    $("#searchDialogBtn").on('click',function(){
+        searchDialog();
     });
 });
 
@@ -409,8 +399,8 @@ function selectDlgListAjax(entity) {
 
                 for(var j = 0; j < tmp.dlg.length; j++) {
                     if(tmp.dlg[j].DLG_TYPE == 2) {
-                        inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="width:90%;">';
-                        inputUttrHtml += '<div class="wc-message-content" style="width:90%;">';
+                        inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
+                        inputUttrHtml += '<div class="wc-message-content">';
                         inputUttrHtml += '<svg class="wc-message-callout"></svg>';
                         inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
                         inputUttrHtml += '<p>';
@@ -756,15 +746,142 @@ function initMordal(objId, objName) {
 }
 
 function searchDialog() {
-    var formData = $("form[name=searchForm").serialzie();
-    
+    var formData = $("form[name=searchForm]").serialize();
     $.ajax({
         url: '/learning/searchDialog',
         dataType: 'json',
         type: 'POST',
         data: formData,
         success: function(result) {
+            var row = [];
+            var arrayNum = 0;
+            for (var k = 0; k < result['list'].length; k++) {
+                if(k != 0 && result['list'][k].RNUM == result['list'][k-1].RNUM) {
+                    var num = result['list'][k].DLG_ORDER_NO - 1;
+                    arrayNum--;
+                    row[arrayNum][num] = result['list'][k];
+                    arrayNum++;
+                } else{
+                    row[arrayNum] = [];
+                    row[arrayNum][0] = result['list'][k];
+                    arrayNum++;
+                }
+            }
+
+            var inputUttrHtml = '';
             
-        }
+            for (var i = 0; i < row.length; i++) {
+                var val = row[i];
+                inputUttrHtml += '<tr>';
+                inputUttrHtml += '<td>';
+                inputUttrHtml += '<input name="chsearch" class="tweak-input" type="checkbox"/>';
+                inputUttrHtml += '</td>';
+                inputUttrHtml += '<td>';
+                inputUttrHtml += '<table width="100%" height="20px">';
+                inputUttrHtml += '<tr>';
+
+                for(var l = 0; l < val.length; l++){
+                    var tmp = val[l];
+                    inputUttrHtml += '<td>';
+                    for(var j = 0; j < tmp.dlg.length; j++) {
+                        if(tmp.dlg[j].DLG_TYPE == 2) {
+                            inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
+                            inputUttrHtml += '<div class="wc-message-content">';
+                            inputUttrHtml += '<svg class="wc-message-callout"></svg>';
+                            inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
+                            inputUttrHtml += '<p>';
+                            inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                            inputUttrHtml += tmp.dlg[j].CARD_TEXT;
+                            inputUttrHtml += '</p>';
+                            inputUttrHtml += '</div></div></div></div></div>';
+                        } else if(tmp.dlg[j].DLG_TYPE == 3) {
+                            if(j == 0) {
+                                inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
+                                inputUttrHtml += '<div class="wc-message-content">';
+                                inputUttrHtml += '<svg class="wc-message-callout"></svg>';
+                                inputUttrHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
+                                inputUttrHtml += '<div>';
+                                inputUttrHtml += '<button class="scroll previous" id="prevBtn' + (botChatNum) + '" style="display: none;" onclick="prevBtn(' + botChatNum + ')">';
+                                inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
+                                inputUttrHtml += '</button>';
+                                inputUttrHtml += '<div class="wc-hscroll-outer" >';
+                                inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum) + '">';
+                                inputUttrHtml += '<ul>';
+                                inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                            }
+                            inputUttrHtml += '<li class="wc-carousel-item">';
+                            inputUttrHtml += '<div class="wc-card hero">';
+                            inputUttrHtml += '<div class="wc-container imgContainer" >';
+                            inputUttrHtml += '<img src="' + tmp.dlg[j].IMG_URL +'">';
+                            inputUttrHtml += '</div>';
+                            if(tmp.dlg[j].CARD_TITLE != null) {
+                                inputUttrHtml += '<h1>' + /*cardtitle*/ tmp.dlg[j].CARD_TITLE + '</h1>';
+                            }
+                            if(tmp.dlg[j].CARD_TEXT != null) {
+                                inputUttrHtml += '<p class="carousel">' + /*cardtext*/ tmp.dlg[j].CARD_TEXT + '</p>';
+                            }
+                            inputUttrHtml += '<ul class="wc-card-buttons"><li><button>' + /*btntitle*/ tmp.dlg[j].BTN_1_TITLE + '<button></li></ul>';
+                            inputUttrHtml += '</div>';
+                            inputUttrHtml += '</li>';
+                            
+                            //다이얼로그가 한개일때에는 오른쪽 버튼 x
+                            if(tmp.dlg.length == 1) {
+                                inputUttrHtml += '</ul>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '</div></div></div></div></div>';
+                            } else if((tmp.dlg.length-1) == j) {
+                                inputUttrHtml += '</ul>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                                inputUttrHtml += '</div></div></div></div></div>';
+                            }
+                        } else if(tmp.dlg[j].DLG_TYPE == 4) {
+                            inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
+                            inputUttrHtml += '<div class="wc-message-content">';
+                            inputUttrHtml += '<svg class="wc-message-callout"></svg>';
+                            inputUttrHtml += '<div>';
+                            inputUttrHtml += '<div class="wc-carousel">';
+                            inputUttrHtml += '<div>';
+                            inputUttrHtml += '<button class="scroll previous" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png"></button>';
+                            inputUttrHtml += '<div class="wc-hscroll-outer">';
+                            inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
+                            inputUttrHtml += '<ul>';
+                            inputUttrHtml += '<li class="wc-carousel-item wc-carousel-play">';
+                            inputUttrHtml += '<div class="wc-card hero">';
+                            inputUttrHtml += '<div class="wc-card-div imgContainer">';
+                            inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                            inputUttrHtml += '<img src="' + /* 이미지 url */ tmp.dlg[j].MEDIA_URL + '">';
+                            inputUttrHtml += '<div class="playImg"></div>';
+                            inputUttrHtml += '<div class="hidden" alt="' + tmp.dlg[j].CARD_TITLE + '"></div>';
+                            inputUttrHtml += '<div class="hidden" alt="' + /* media url */ tmp.dlg[j].CARD_VALUE + '"></div>';
+                            inputUttrHtml += '</div>';
+                            inputUttrHtml += '<h1>' + /* title */ tmp.dlg[j].CARD_TITLE + '</h1>';
+                            inputUttrHtml += '<ul class="wc-card-buttons">';
+                            inputUttrHtml += '</ul>';
+                            inputUttrHtml += '</div>';
+                            inputUttrHtml += '</li></ul></div></div>';
+                            inputUttrHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                            inputUttrHtml += '</div></div></div></div></div>';
+                        }
+                    }
+                    inputUttrHtml += '</td>';
+
+                }
+
+
+                inputUttrHtml += '</tr>';
+                inputUttrHtml += '</table>';
+                inputUttrHtml += '</td>';
+                inputUttrHtml += '</tr>';
+            }
+
+            $('#searchListTbl tbody').prepend(inputUttrHtml);
+
+        },
+        error:function(e){  
+            alert(e.responseText);  
+        }  
     });
 }
