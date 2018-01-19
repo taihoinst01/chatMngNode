@@ -1109,11 +1109,12 @@ router.post('/searchDialog',function(req,res){
         relationText += "FROM TBL_DLG_RELATION_LUIS \n";
         relationText += "WHERE 1=1\n";
         relationText += "AND LUIS_ID = 'kona_luis_02'\n";
-        relationText += "AND LUIS_INTENT = 'Advantage'\n";
-        relationText += "AND LUIS_ENTITIES LIKE '%사양%'\n";
+        relationText += "AND LUIS_INTENT = 'video'\n";
+        relationText += "AND LUIS_ENTITIES LIKE '%알로하%'\n";
         relationText += "GROUP BY LUIS_ENTITIES, DLG_ID \n";
         relationText += ") A LEFT OUTER JOIN TBL_DLG B\n";
         relationText += "ON A.DLG_ID = B.DLG_ID \n";
+        relationText += "where rnum < 5";
         relationText += "ORDER BY LUIS_ENTITIES, DLG_ORDER_NO";
 
     var dlgText = "SELECT DLG_ID, CARD_TITLE, CARD_TEXT, USE_YN, '2' AS DLG_TYPE \n"
@@ -1124,8 +1125,8 @@ router.post('/searchDialog',function(req,res){
         dlgText += "FROM TBL_DLG_RELATION_LUIS\n"
         dlgText += "WHERE 1=1\n";
         dlgText += "AND LUIS_ID = 'kona_luis_02'\n";
-        dlgText += "AND LUIS_INTENT = 'Advantage'\n";
-        dlgText += "AND LUIS_ENTITIES LIKE '%사양%'\n";
+        dlgText += "AND LUIS_INTENT = 'video'\n";
+        dlgText += "AND LUIS_ENTITIES LIKE '%알로하%'\n";
         dlgText += ") \n ORDER BY DLG_ID";
 
     var dlgCard = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, IMG_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n";
@@ -1141,8 +1142,8 @@ router.post('/searchDialog',function(req,res){
         dlgCard += "FROM TBL_DLG_RELATION_LUIS\n";
         dlgCard += "WHERE 1=1\n";
         dlgCard += "AND LUIS_ID = 'kona_luis_02'\n";
-        dlgCard += "AND LUIS_INTENT = 'Advantage'\n";
-        dlgCard += "AND LUIS_ENTITIES LIKE '%사양%'\n";
+        dlgCard += "AND LUIS_INTENT = 'video'\n";
+        dlgCard += "AND LUIS_ENTITIES LIKE '%알로하%'\n";
         dlgCard += ") \n ORDER BY DLG_ID";
     
     var dlgMedia = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, MEDIA_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n";
@@ -1158,8 +1159,8 @@ router.post('/searchDialog',function(req,res){
         dlgMedia += "FROM TBL_DLG_RELATION_LUIS\n";
         dlgMedia += "WHERE 1=1\n";
         dlgMedia += "AND LUIS_ID = 'kona_luis_02'\n";
-        dlgMedia += "AND LUIS_INTENT = 'Advantage'\n";
-        dlgMedia += "AND LUIS_ENTITIES LIKE '%사양%'\n";
+        dlgMedia += "AND LUIS_INTENT = 'video'\n";
+        dlgMedia += "AND LUIS_ENTITIES LIKE '%알로하%'\n";
         dlgMedia += ") \n ORDER BY DLG_ID";
 
     (async () => {

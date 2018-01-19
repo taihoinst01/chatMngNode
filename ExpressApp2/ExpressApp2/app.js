@@ -44,26 +44,26 @@ app.use(function(req, res, next) {
 
     if(req.session.sid) {
         res.locals.sid = req.session.sid;
-    } 
-    else {
+    } else {
         res.locals.sid = null;
     }
 
     if(req.session.selMenu) {
         res.locals.selMenu = req.session.selMenu;
-    }
-    else {
+    } else {
         res.locals.selMenu = null;
     }
 
     if(req.session.selMenus) {
         res.locals.selMenus = req.session.selMenus;
-
-    }
-    else {
-
+    } else { 
         res.locals.selMenus = null;
     }
+
+    if (!req.session.selMenus)  {
+        res.locals.selLeftMenu = null;
+    }
+
     next();
 });
 console.log("app.js 들어옴") ;
