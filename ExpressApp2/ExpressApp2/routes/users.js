@@ -65,11 +65,53 @@ router.get('/logout', function (req, res) {
 		res.redirect('/');
 	});
 });
-
-router.get('/setting', function (req, res) {  
+//{selMenu: req.session.selMenu}
+router.get('/codeMng', function (req, res) {  
     req.session.selMenu = 'm1';
+    res.locals.selLeftMenu = '공통코드관리';
+    res.render('codeMng');
+});
 
-    res.render('setting',{selMenu: req.session.selMenu});
+router.get('/screenMng', function (req, res) {  
+    req.session.selMenu = 'm1';
+    res.locals.selLeftMenu = '화면관리';
+    res.render('screenMng');
+});
+
+router.get('/menuMng', function (req, res) {  
+    req.session.selMenu = 'm1';
+    res.locals.selLeftMenu = '메뉴관리';
+    res.render('menuMng');
+});
+
+router.get('/authGrpMng', function (req, res) {  
+    req.session.selMenu = 'm1';
+    res.locals.selLeftMenu = '권한그룹관리';
+    res.render('authGrpMng');
+});
+
+router.get('/authDtlMng', function (req, res) {  
+    req.session.selMenu = 'm1';
+    res.locals.selLeftMenu = '권한상세관리';
+    res.render('authDtlMng');
+});
+
+router.get('/userMng', function (req, res) {  
+    req.session.selMenu = 'm1';
+    res.locals.selLeftMenu = '사용자관리';
+    res.render('userMng');
+});
+
+router.get('/userAuthMng', function (req, res) {  
+    req.session.selMenu = 'm1';
+    res.locals.selLeftMenu = '사용자권한관리';
+    res.render('userAuthMng');
+});
+
+router.get('/userAppMng', function (req, res) {  
+    req.session.selMenu = 'm1';
+    res.locals.selLeftMenu = '사용자앱매핑관리';
+    res.render('userAppMng');
 });
 
 module.exports = router;

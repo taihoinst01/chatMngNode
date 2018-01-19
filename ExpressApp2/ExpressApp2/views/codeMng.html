@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel='stylesheet' href='/css/setting.css' />
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>
+        TIIS Manager
+        </title>
+        <%include  ./common/commonUse.html%>
+        <link rel="stylesheet" type="text/css" href="/css/learning.css" />
+        <script type="text/javascript" src="/js/common/learning.js"></script>
+</head>
+
+<body>
+    <%include  ./header.html%>
+    <div id="setting-wrap">
+        <%include  ./settingLeftMenu.html%>
+        <div class="setting-contents blue">
+            <div class="title">
+                공통코드관리
+            </div>
+            <div class="settingSearch">
+                <form id="frm" name="frm" method="post">
+                    <input type="hidden" name="delCdmId" id="delCdmId" value="" />
+                    <input type="hidden" name="delCd" id="delCd" value="" />
+                    <input type="hidden" name="cdmId" id="cdmId" value="" />
+                    <input type="text" name="dummy" id="dummy" value="" style="display:none;"/>
+
+                    <div class="tbl_area">
+                            <ti:cd type="select" id="searchLang" name="searchLang" cdsetId="LANG" lang="${lang }" style="width:100px;" defaultValue="" styleClass="mb25" first=""/>
+                            <select id="cmbCdSet" name="cmbCdSet" style="margin-bottom:25px">
+                                <option value="cdId" >코드셋ID<!-- 코드셋ID --></option>
+                                <option value="cdNm" >팩스코드셋명<!-- 팩스코드셋명 --></option>
+                            </select>
+                            <div class="search_inbox">
+                            <input type="text" name="edtKeyword" id="edtKeyword" class="inbox_search" style="width:240px;" title="<spring:message code='message.enter.search.terms'/>" alt="<spring:message code='message.enter.search.terms'/>" value=""><a href="javascript://" id="btn_Inq_search1" name="btn_Inq_search1" class="btn_insearch" alt="조회" value="조회" onclick="doSearchParam()"><span class="hc">검색</span></a>
+                            </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tbl_area" id="tbl_div1">
+                <div class="tbl_area_l" >
+                    <p class="grid_tit">공통코드 마스터 목록</p>
+                </div>
+                <div class="tbl_area_r" >
+                    <a href="javascript://" class="btn" id="btn_crte_insert1" name="btn_crte_insert1" alt="추가" onclick="insertAction();">추가</a>
+                    <a href="javascript://" class="btn" id="btn_crte_delete1" name="btn_crte_delete1" alt="삭제" onclick="deleteAction();">삭제</a>
+                    <a href="javascript://" class="btn" id="btn_crte_save1" name="btn_crte_save1" alt="저장" onclick="updateAction();">저장</a>
+                    <a href="javascript://" class="btn" id="btn_crte_init1" name="btn_crte_init1" alt="초기화" onclick="initAction();">초기화</a>
+                </div>
+            </div>
+
+            <div class="grid_wrap" style=" height:200px;">
+                    <!-- 공통코드 마스터 목록 그리드 -->
+                <table id="gridList" class="scroll"></table>
+                <div id="pager" style="text-align:center;"></div>
+            </div>
+            <!-- //공통코드 마스터 목록 -->
+
+            <!-- 공통코드 디테일 목록 -->
+            <div class="tbl_area" id="tbl_div2">
+                <div class="tbl_area_l" >
+                    <p class="grid_tit">공통코드 디테일 목록<!-- 공통코드 디테일 목록 --></p>
+                </div>
+                <div class="tbl_area_r" >
+                    <a href="javascript://" class="btn" id="btn_crte_insert2" name="btn_crte_insert2" alt="추가" onclick="insertDetailAction();">추가</a>
+                    <a href="javascript://" class="btn" id="btn_crte_delete2" name="btn_crte_delete2" alt="삭제" onclick="deleteDetailAction();">삭제</a>
+                    <a href="javascript://" class="btn" id="btn_crte_save2" name="btn_crte_save2" alt="저장" onclick="updateDetailAction();">저장</a>
+                    <a href="javascript://" class="btn" id="btn_crte_init2" name="btn_crte_init2" alt="초기화" onclick="initDetailAction();">초기화</a>
+                </div>
+            </div>
+            <div class="grid_wrap" style=" height:150px;">
+                    <!-- 공통코드 디테일 목록 그리드 -->
+                <table id="gridListDetail" class="scroll" ></table>
+                <div id="pagerDetail" style="text-align:center;"></div>
+            </div>
+
+            <hr>
+            <footer>
+                <p>&copy; Company 2014</p>
+            </footer>
+        </div>
+    </div>
+    
+    
+</body>
+
+    
+    
+</html>
