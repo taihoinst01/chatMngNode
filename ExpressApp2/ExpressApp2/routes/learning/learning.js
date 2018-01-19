@@ -356,7 +356,6 @@ router.post('/searchMidGroup', function (req, res) {
 });
 */
 
-
 router.post('/dialogs', function (req, res) {
     
     
@@ -402,7 +401,7 @@ router.post('/dialogs', function (req, res) {
                 result.push(item);
             }
 
-            var group_query = "select distinct LARGE_GROUP from TBL_DLG";
+            var group_query = "select distinct LARGE_GROUP from TBL_DLG where LARGE_GROUP is not null";
             let result2 = await pool.request().query(group_query);
             let rows2 = result2.recordset;
             
