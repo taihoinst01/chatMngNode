@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel='stylesheet' href='/css/setting.css' />
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>
+        TIIS Manager
+        </title>
+        <%include  ./common/commonUse.html%>
+        <link rel="stylesheet" type="text/css" href="/css/learning.css" />
+        <script type="text/javascript" src="/js/common/learning.js"></script>
+</head>
+
+<body>
+    <%include  ./header.html%>
+    <div id="setting-wrap">
+        <%include  ./settingLeftMenu.html%>
+        <div class="setting-contents blue">
+            <div class="title">
+                메뉴관리
+            </div>
+            <div class="settingSearch">
+                <form id="frm" name="frm" method="post">
+                    <div class="tbl_area_l"  style="width:50%" >
+                        언어 :    <select id="lang" name="lang" style="margin-bottom:25px">
+                                        <option value="ko" >한글</option>
+                                        <option value="en" >영어<!-- 팩스코드셋명 --></option>
+                                  </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tbl_area" id="tbl_div1">
+                <div class="tbl_area_l" >
+                    <p class="grid_tit">메뉴관리</p>
+                </div>
+                <div class="tbl_area_r" >
+                    <a href="javascript://" class="btn" id="btn_crte_insert1" name="btn_crte_insert1" alt="추가" onclick="insertAction();">추가</a>
+                    <a href="javascript://" class="btn" id="btn_crte_delete1" name="btn_crte_delete1" alt="삭제" onclick="deleteAction();">삭제</a>
+                    <a href="javascript://" class="btn" id="btn_crte_save1" name="btn_crte_save1" alt="저장" onclick="updateAction();">저장</a>
+                    <a href="javascript://" class="btn" id="btn_crte_init1" name="btn_crte_init1" alt="초기화" onclick="initAction();">초기화</a>
+                </div>
+            </div>
+
+            <div class="tbl_area_l" style="width:60%" >
+                    <div class="grid_wrap">
+                        <!-- 메뉴관리 -->
+                        <table id="gridList" class="scroll"></table>
+                        <div id="pager" style="text-align:center;"></div>
+                        <!-- //메뉴관리 -->
+                    </div>
+                </div>
+
+                <div class="tbl_area_r" style="width:25%;">
+                    <div class="grid_wrap">
+                    <!-- 메뉴상세 -->
+                    <table id="frmBody" class="AXFormTable" style=" margin:0 0 0 0" border="0">
+                        <input type="hidden" id="scrnId" name="scrnId" value="" />
+                        <input type="hidden" id="lang" name="lang" value="" />
+                        <colgroup>
+                            <col style='width:80px' />
+                            <col style='width:80px' />
+                            <col />
+                            <col style='width:25px' />
+                        </colgroup>
+                        <tr>
+                            <th>상위메뉴 ID</th>
+                            <td style="padding-left:5px;">
+                                <input type="text" id="upMenuId" name="upMenuId" class="AXInput" style="width:90%;" ftitle="상위메뉴 ID" readonly="readonly" />
+                            </td>
+                            <td style="padding-left:1px;" colspan="2">
+                                <input type="text" id="upMenuNm" name="upMenuNm" class="AXInput" style="width:95%;" ftitle="상위메뉴 명" readonly="readonly" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>메뉴 ID</th>
+                            <td style="padding-left:5px;">
+                                <input type="text" id="menuId" name="menuId" class="AXInput" ftitle="메뉴 ID" style="width:90%;" readonly="readonly" />
+                            </td>
+                            <td style="padding-left:1px;">
+                                <input type="text" id="menuName" name="menuName" class="AXInput" style="width:95%; text-align:right; padding-right:5px;" ftitle="메뉴 명" valid='{"required":"true"}' />
+                            </td>
+                            <td style="padding-left:1px;">
+                                <a href="#" id="sendBtn" onclick="scrnSearchPopu()"><img src="/images/btn_search_17px.gif" border="0" /></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>정렬순서</th>
+                            <td style="padding-left:5px;" colspan="3">
+                                <input type="text" id="ord" name="ord" class="AXInput" ftitle="정렬순서" style="width:95%; text-align:right; padding-right:5px;" edittype="zeronumber" valid='{"required":"true"}' />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>URL</th>
+                            <td style="padding-left:5px;" colspan="3">
+                                <input type="text" id="menuUrl" name="menuUrl" class="AXInput" ftitle="URL" style="width:95%; text-align:right; padding-right:5px;" valid='{"required":"true"}' />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>사용여부</th>
+                            <td style="padding-left:5px;" colspan="3">
+                               <select id="useYn" name="useYn" class="AXSelect">
+                                   <option value="Y">Y</option>
+                                   <option value="N">N</option>
+                               </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>메뉴여부</th>
+                            <td style="padding-left:5px;" colspan="3">
+                               <select id="menuYn" name="menuYn" class="AXSelect">
+                                   <option value="Y">Y</option>
+                                   <option value="N">N</option>
+                               </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>팝업여부</th>
+                            <td style="padding-left:5px;" colspan="3">
+                               <select id="popYn" name="popYn" class="AXSelect">
+                                   <option value="Y">Y</option>
+                                   <option value="N">N</option>
+                               </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- //메뉴상세 -->
+                   </div>
+                </div>
+
+
+
+            <hr>
+            <footer>
+                <p>&copy; Company 2014</p>
+            </footer>
+        </div>
+    </div>
+    
+    
+</body>
+
+    
+    
+</html>

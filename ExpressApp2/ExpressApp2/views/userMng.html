@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel='stylesheet' href='/css/setting.css' />
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>
+        TIIS Manager
+        </title>
+        <%include  ./common/commonUse.html%>
+        <link rel="stylesheet" type="text/css" href="/css/learning.css" />
+        <script type="text/javascript" src="/js/common/learning.js"></script>
+</head>
+
+<body>
+    <%include  ./header.html%>
+    <div id="setting-wrap">
+        <%include  ./settingLeftMenu.html%>
+        <div class="setting-contents blue">
+            <div class="title">
+                공통코드관리
+            </div>
+            <div class="settingSearch">
+                <form id="frm" name="frm" method="post">
+                    <input type="text" name="dummy" id="dummy" value="" style="display:none;"/>
+                    <div class="tbl_area_l"  style="width:62%; " >
+                        <span class="optit ml15"> 사용자 명:</span>
+                        <div class="search_inbox" style="width:30%;" >
+                            <input type="text" name="searchEmpNm" id="searchEmpNm" class="inbox_search" style="width:90%;" title="<spring:message code='검색어입력'/>" alt="<spring:message code='검색어입력'/>" value="">
+                        </div>
+                        <span class="optit ml15"> 사용자ID:</span>
+                        <div class="search_inbox" style="width:30%;">
+                            <input type="text" name="searchUserId" id="searchUserId" class="inbox_search" style="width:90%;" title="<spring:message code='검색어입력'/>" alt="<spring:message code='검색어입력'/>" value="">
+                            <a href="#" id="btn_Inq_search" name="btn_Inq_search" alt="검색" value="검색" onclick="doSearchParam()" class="btn_insearch"><span class="hc">검색</span></a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tbl_area" id="tbl_div1">
+                <div class="tbl_area_l" >
+                    <p class="grid_tit">사용자 목록</p>
+                </div>
+                <div class="tbl_area_r" >
+                    <a href="javascript://" class="btn" id="btn_crte_insert1" name="btn_crte_insert1" alt="추가" onclick="insertAction();">추가</a>
+                    <a href="javascript://" class="btn" id="btn_crte_delete1" name="btn_crte_delete1" alt="삭제" onclick="deleteAction();">삭제</a>
+                    <a href="javascript://" class="btn" id="btn_crte_save1" name="btn_crte_save1" alt="저장" onclick="updateAction();">저장</a>
+                    <a href="javascript://" class="btn" id="btn_crte_init1" name="btn_crte_init1" alt="초기화" onclick="initAction();">초기화</a>
+                </div>
+            </div>
+
+            <div class="grid_wrap" style=" height:200px;">
+                    <!-- 공통코드 마스터 목록 그리드 -->
+                <table id="gridList" class="scroll"></table>
+                <div id="pager" style="text-align:center;"></div>
+            </div>
+            <!-- //공통코드 마스터 목록 -->
+
+            
+            <hr>
+            <footer>
+                <p>&copy; Company 2014</p>
+            </footer>
+        </div>
+    </div>
+    
+    
+</body>
+
+    
+    
+</html>

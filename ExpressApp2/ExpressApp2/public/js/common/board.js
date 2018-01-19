@@ -8,6 +8,7 @@ $(document).ready(function () {
 //실행 순서 2
 $(document).ready(function () {
     var appName = getParameters('appName')
+    
     $.ajax({
         url: '/board/getCounts',
         dataType: 'json',
@@ -21,7 +22,7 @@ $(document).ready(function () {
             }
         }
     });
-
+    
     getEndpointHistory();
     getEntityLabel();
 })
@@ -146,7 +147,9 @@ function getEndpointHistory () {
             var options = {
                 //displayZoomButtons: false,   //줌버튼
                 //zoomEndTime: new Date(),
-
+                //vAxis: { gridlines: { count: 4 } },
+                min : 0,
+                max : 5000,
                 //zoomStartTime: newDate.getTime() - (1000*60*60*24*360*2),
                 //zoomStartTime: parseDate(2016, 11, 29),
                 //allValuesSuffix:"asdfasf",   //우측 상단 추가 string 표시

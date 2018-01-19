@@ -8,7 +8,8 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function (req, res) {
-    req.session.selMenu = 'ms1';
+    req.session.selMenus = 'ms1';
+    req.session.selMenu = 'm3';
     res.redirect('/learning/recommend');
 });
 
@@ -125,8 +126,8 @@ router.get('/dialog', function (req, res) {
     } );
 });
 
-
-router.post('/dialogs', function (req, res) {
+/*
+router.post('/', function (req, res) {
     
     
     var currentPage = req.body.currentPage;
@@ -166,6 +167,258 @@ router.post('/dialogs', function (req, res) {
             }
             if(rows.length > 0){
                 res.send({list : result, pageList : paging.pagination(currentPage,rows[0].TOTCNT)});
+            }else{
+                res.send({list : result});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+});
+*/
+//다이얼로그 대그룹 중그룹 소그룹 셀렉트 박스
+router.post('/searchGroup', function (req, res) {
+    
+    var group = req.body.group;
+    var groupName = req.body.groupName;
+
+    (async () => {
+        try {
+
+            let pool = await sql.connect(dbConfig);
+
+            var searchGroupQuery;
+            if(group == 'searchMedium') {
+
+                searchGroupQuery = "select distinct MEDIUM_GROUP from TBL_DLG where LARGE_GROUP = @groupName";
+
+                let result1 = await pool.request().input('groupName', sql.NVarChar, groupName).query(searchGroupQuery);
+                let rows = result1.recordset;
+                
+                var groupList = [];
+                for(var i = 0; i < rows.length; i++){
+                    var item = {};
+
+                    var mediumGroup = rows[i].MEDIUM_GROUP;
+
+                    item.mediumGroup = mediumGroup; 
+
+                    groupList.push(item);
+                }
+
+                res.send({groupList: groupList});
+            } else if(group == 'searchSmall') {
+
+                searchGroupQuery = "select distinct SMALL_GROUP from TBL_DLG where MEDIUM_GROUP = @groupName";
+
+                let result1 = await pool.request().input('groupName', sql.NVarChar, groupName).query(searchGroupQuery);
+                let rows = result1.recordset;
+                
+                var groupList = [];
+                for(var i = 0; i < rows.length; i++){
+                    var item = {};
+
+                    var smallGroup = rows[i].SMALL_GROUP;
+
+                    item.smallGroup = smallGroup; 
+
+                    groupList.push(item);
+                }
+
+                res.send({groupList: groupList});
+            }
+
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+});
+
+//dialog.html 소그룹이 선택 돼었을때 리스트 뿌려주기
+router.post('/selectSmallGroup', function (req, res) {
+    
+    var groupName = req.body.groupName;
+    var currentPage = 1;
+
+    if(req.body.currentPage != null) {
+        currentPage = req.body.currentPage;
+    } 
+    (async () => {
+        try {
+
+            var selectSmallGroup = "select tbp.* from " +
+                                 "(select ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC) AS NUM, " +
+                                 "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
+                                 "CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
+                                 "DLG_DESCRIPTION, SMALL_GROUP, DLG_API_DEFINE ,LUIS_ENTITIES" +
+                                 "from TBL_DLG a, TBL_DLG_RELATION_LUIS b " + 
+                                 "where a.DLG_ID = b.DLG_ID and SMALL_GROUP like '%" + groupName + "%' " +
+                                 "and DLG_API_DEFINE like '%" + sourceType + "%') tbp " +
+                                 "WHERE PAGEIDX = @currentPage";
+
+            //var searchMidGroup = "select * from TBL_DLG where SMALL_GROUP = @groupName";
+            let pool = await sql.connect(dbConfig);
+            let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(selectSmallGroup);
+            let rows = result1.recordset;
+            
+            var result = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+
+                var description = rows[i].DLG_DESCRIPTION;
+                var apidefine = rows[i].DLG_API_DEFINE;
+                var luisentent = rows[i].LUIS_INTENT;
+                var smallGroup = rows[i].SMALL_GROUP;
+                
+                item.DLG_DESCRIPTION = description;
+                item.DLG_API_DEFINE = apidefine;
+                item.LUIS_INTENT = luisentent;
+                item.SMALL_GROUP = smallGroup;
+
+                result.push(item);
+            }
+            if(rows.length > 0){
+                res.send({list : result, pageList : paging.pagination(currentPage,rows[0].TOTCNT)});
+            }else{
+                res.send({list : result});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+});
+
+/*
+//그룹 테스트
+router.post('/searchMidGroup', function (req, res) {
+    
+    
+    var groupName = req.body.groupName;
+
+    (async () => {
+        try {
+            var searchMidGroup = "select distinct MEDIUM_GROUP from TBL_DLG where LARGE_GROUP = @groupName";
+            let pool = await sql.connect(dbConfig);
+            let result1 = await pool.request().input('groupName', sql.NVarChar, groupName).query(searchMidGroup);
+            let rows = result1.recordset;
+            
+            var groupList = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+
+                var mediumGroup = rows[i].MEDIUM_GROUP;
+
+                item.mediumGroup = mediumGroup; 
+                console.log("mediumGroup:" + mediumGroup);
+
+
+                groupList.push(item);
+            }
+
+
+            if(rows.length > 0){
+                res.send({groupList: groupList});
+            }else{
+                res.send({list : groupList});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+});
+*/
+
+
+router.post('/dialogs', function (req, res) {
+    
+    
+    var currentPage = req.body.currentPage;
+
+    (async () => {
+        try {
+            var sourceType = req.body.sourceType;
+            var groupType = req.body.groupType;
+            
+            var dlg_desQueryString = "select tbp.* from " +
+                                     "(select ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC) AS NUM, " +
+                                     "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
+                                     "CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
+                                     "DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, SMALL_GROUP " +
+                                     "from TBL_DLG a, TBL_DLG_RELATION_LUIS b where a.DLG_ID = b.DLG_ID ";
+            if(groupType != '모두보기') {
+
+                dlg_desQueryString += "and SMALL_GROUP = '" + groupType + "' ";
+            }      
+                dlg_desQueryString += "and DLG_API_DEFINE like '%" + sourceType + "%') tbp " +
+                                      "WHERE PAGEIDX = @currentPage";
+            let pool = await sql.connect(dbConfig);
+            let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(dlg_desQueryString);
+            let rows = result1.recordset;
+            
+            var result = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+
+                var description = rows[i].DLG_DESCRIPTION;
+                var apidefine = rows[i].DLG_API_DEFINE;
+                var luisentties = rows[i].LUIS_ENTITIES;
+                var luisentent = rows[i].LUIS_INTENT;
+                var smallGroup = rows[i].SMALL_GROUP;
+
+                item.DLG_DESCRIPTION = description;
+                item.DLG_API_DEFINE = apidefine;
+                item.LUIS_ENTITIES = luisentties;
+                item.LUIS_INTENT = luisentent;
+                item.SMALL_GROUP = smallGroup;
+
+                result.push(item);
+            }
+
+            var group_query = "select distinct LARGE_GROUP from TBL_DLG";
+            let result2 = await pool.request().query(group_query);
+            let rows2 = result2.recordset;
+            
+            var groupList = [];
+            for(var i = 0; i < rows2.length; i++){
+                var item2 = {};
+
+                var largeGroup = rows2[i].LARGE_GROUP;
+
+                item2.largeGroup = largeGroup;
+
+                groupList.push(item2);
+            }
+
+            if(rows.length > 0){
+                res.send({list : result, pageList : paging.pagination(currentPage,rows[0].TOTCNT), groupList: groupList});
             }else{
                 res.send({list : result});
             }
