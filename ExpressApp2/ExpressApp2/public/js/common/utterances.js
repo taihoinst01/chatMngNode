@@ -769,23 +769,24 @@ function searchDialog() {
             }
 
             var inputUttrHtml = '';
-            
             for (var i = 0; i < row.length; i++) {
                 var val = row[i];
                 inputUttrHtml += '<tr>';
                 inputUttrHtml += '<td>';
+                inputUttrHtml += '<div class="check-radio-tweak-wrapper" type="checkbox">';
                 inputUttrHtml += '<input name="chsearch" class="tweak-input" type="checkbox"/>';
+                inputUttrHtml += '</div>';
                 inputUttrHtml += '</td>';
                 inputUttrHtml += '<td>';
-                inputUttrHtml += '<table width="100%" height="20px">';
-                inputUttrHtml += '<tr>';
-
+                inputUttrHtml += '<table class="Tbl" width="100%" height="20px">';
+                inputUttrHtml += '<thead>';
+                inputUttrHtml += '<tr bgcolor="#e7e7e7">';
                 for(var l = 0; l < val.length; l++){
                     var tmp = val[l];
                     inputUttrHtml += '<td>';
                     for(var j = 0; j < tmp.dlg.length; j++) {
                         if(tmp.dlg[j].DLG_TYPE == 2) {
-                            inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
+                            inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="width:200px">';
                             inputUttrHtml += '<div class="wc-message-content">';
                             inputUttrHtml += '<svg class="wc-message-callout"></svg>';
                             inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
@@ -796,7 +797,7 @@ function searchDialog() {
                             inputUttrHtml += '</div></div></div></div></div>';
                         } else if(tmp.dlg[j].DLG_TYPE == 3) {
                             if(j == 0) {
-                                inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
+                                inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="margin-bottom:0px">';
                                 inputUttrHtml += '<div class="wc-message-content">';
                                 inputUttrHtml += '<svg class="wc-message-callout"></svg>';
                                 inputUttrHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
@@ -818,9 +819,11 @@ function searchDialog() {
                                 inputUttrHtml += '<h1>' + /*cardtitle*/ tmp.dlg[j].CARD_TITLE + '</h1>';
                             }
                             if(tmp.dlg[j].CARD_TEXT != null) {
-                                inputUttrHtml += '<p class="carousel">' + /*cardtext*/ tmp.dlg[j].CARD_TEXT + '</p>';
+                                inputUttrHtml += '<p class="carousel" style="height:20px;min-height:20px;">' + /*cardtext*/ tmp.dlg[j].CARD_TEXT + '</p>';
                             }
-                            inputUttrHtml += '<ul class="wc-card-buttons"><li><button>' + /*btntitle*/ tmp.dlg[j].BTN_1_TITLE + '<button></li></ul>';
+                            if(tmp.dlg[j].BTN_1_TITLE != null) {
+                                inputUttrHtml += '<ul class="wc-card-buttons"><li><button>' + /*btntitle*/ tmp.dlg[j].BTN_1_TITLE + '</button></li></ul>';
+                            }
                             inputUttrHtml += '</div>';
                             inputUttrHtml += '</li>';
                             
@@ -847,9 +850,9 @@ function searchDialog() {
                             inputUttrHtml += '<button class="scroll previous" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png"></button>';
                             inputUttrHtml += '<div class="wc-hscroll-outer">';
                             inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
-                            inputUttrHtml += '<ul>';
+                            inputUttrHtml += '<ul style="min-width:0px">';
                             inputUttrHtml += '<li class="wc-carousel-item wc-carousel-play">';
-                            inputUttrHtml += '<div class="wc-card hero">';
+                            inputUttrHtml += '<div class="wc-card hero" style="width:70%">';
                             inputUttrHtml += '<div class="wc-card-div imgContainer">';
                             inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
                             inputUttrHtml += '<img src="' + /* 이미지 url */ tmp.dlg[j].MEDIA_URL + '">';
@@ -869,16 +872,77 @@ function searchDialog() {
                     inputUttrHtml += '</td>';
 
                 }
-
-
                 inputUttrHtml += '</tr>';
+                inputUttrHtml += '</thead>';
                 inputUttrHtml += '</table>';
                 inputUttrHtml += '</td>';
                 inputUttrHtml += '</tr>';
             }
 
             $('#searchListTbl tbody').prepend(inputUttrHtml);
+            var rowPerPage = $('[name="rowPerPage"]').val() * 1;// 1 을  곱하여 문자열을 숫자형로 변환
 
+            //		console.log(typeof rowPerPage);
+            
+                var zeroWarning = 'Sorry, but we cat\'t display "0" rows page. + \nPlease try again.'
+                if (!rowPerPage) {
+                    alert(zeroWarning);
+                    return;
+                }
+                $('#nav').remove();
+                var $products = $('#searchListTbl');
+            
+                $products.after('<div id="nav">');
+            
+            
+                var $tr = $($products).children('tbody').children('tr');
+                var rowTotals = $tr.length;
+            //	console.log(rowTotals);
+            
+                var pageTotal = Math.ceil(rowTotals/ rowPerPage);
+                var i = 0;
+            
+                for (; i < pageTotal; i++) {
+                    $('<a href="#"></a>')
+                            .attr('rel', i)
+                            .html(i + 1)
+                            .appendTo('#nav');
+                }
+            
+                $tr.addClass('off-screen')
+                        .slice(0, rowPerPage)
+                        .removeClass('off-screen');
+            
+                var $pagingLink = $('#nav a');
+                $pagingLink.on('click', function (evt) {
+                    evt.preventDefault();
+                    var $this = $(this);
+                    if ($this.hasClass('active')) {
+                        return;
+                    }
+                    $pagingLink.removeClass('active');
+                    $this.addClass('active');
+            
+                    // 0 => 0(0*4), 4(0*4+4)
+                    // 1 => 4(1*4), 8(1*4+4)
+                    // 2 => 8(2*4), 12(2*4+4)
+                    // 시작 행 = 페이지 번호 * 페이지당 행수
+                    // 끝 행 = 시작 행 + 페이지당 행수
+            
+                    var currPage = $this.attr('rel');
+                    var startItem = currPage * rowPerPage;
+                    var endItem = startItem + rowPerPage;
+            
+                    $tr.css('opacity', '0.0')
+                            .addClass('off-screen')
+                            .slice(startItem, endItem)
+                            .removeClass('off-screen')
+                            .animate({opacity: 1}, 300);
+            
+                });
+            
+                $pagingLink.filter(':first').addClass('active');
+            
         },
         error:function(e){  
             alert(e.responseText);  
