@@ -9,6 +9,12 @@ $(document).ready(function(){
 
     $("#toggleTest").click(function() {
         $("#toggleDiv").toggle('slow');
+        var chatbotItem = '<iframe id="testChatBot" class="w100per h100per" src="https://webchat.botframework.com/embed/smartsend?s=dEQAGijPT-s.cwA.0LA.mnfoxhvCCjOo4YE894AS9nJpoKFTn58Lh3DljcOicdU"></iframe>';
+        
+        if($('#iframChatbot').children().length == 0) {
+
+            $('#iframChatbot').append(chatbotItem);
+        }
         if($("#toggleTest_Text").text() == "← Test"){
             $("#toggleTest_Text").text('→ Test');
         }
@@ -156,8 +162,7 @@ $(document).ready(function(){
                 <a id="startOver" class="b" href="#">Start over</a>
                 <div style="clear:both;"></div>
             </div>
-            <div class="h100per">
-                <iframe id="testChatBot" class="w100per h100per" src='https://webchat.botframework.com/embed/smartsend?s=dEQAGijPT-s.cwA.0LA.mnfoxhvCCjOo4YE894AS9nJpoKFTn58Lh3DljcOicdU'></iframe>
+            <div class="h100per w100per" id="iframChatbot">
             </div>
         </div>
     </div>
