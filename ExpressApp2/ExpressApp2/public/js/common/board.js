@@ -6,9 +6,11 @@ $(document).ready(function () {
     getEntityListAjax ();
 });
 //실행 순서 2
+
 $(document).ready(function () {
-    var appName = getParameters('appName')
-    
+
+    /*
+    var appName = $('#appName').val();//getParameters('appName')
     $.ajax({
         url: '/board/getCounts',
         dataType: 'json',
@@ -22,7 +24,8 @@ $(document).ready(function () {
             }
         }
     });
-    
+    */
+
     getEndpointHistory();
     getEntityLabel();
 })
@@ -36,7 +39,6 @@ function getEntityListAjax () {
         "skip": "0",
         "take": "500",
     };
-  
     $.ajax({
         url: "https://westus.api.cognitive.microsoft.com/luis/api/v2.0/apps/" + appId + "/versions/0.1/models?" + $.param(params),
         beforeSend: function(xhrObj){
