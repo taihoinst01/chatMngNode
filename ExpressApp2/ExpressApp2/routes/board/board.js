@@ -37,10 +37,14 @@ router.get('/', function (req, res) {
             let result2 = await pool.request().query(EntityQry);
             let rows2 = result2.recordset;
             var entityStr = '';
-            for (var i=0; i<rows2.length; i++) {
-                entityStr += rows2[i].concatEntity.split(',');
+            var entityList;
+            if (rows2[0].concatEntity != null) {
+                for (var i=0; i<rows2.length; i++) {
+                    entityStr += rows2[i].concatEntity;
+                }
+                entityList = entityStr.split(',');
             }
-            var entityList = entityStr.split(',');
+            
             var uniqArray = Array.from(new Set(entityList));
 
             var DlgQry = " SELECT   isnull((  select      count(*)  " +
