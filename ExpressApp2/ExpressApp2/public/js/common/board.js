@@ -54,7 +54,7 @@ function getEntityListAjax () {
         mkEntityList (data);
     })
     .fail(function() {
-        alert("error");
+        //alert("error");
     });
 }
 
@@ -170,7 +170,7 @@ function getEndpointHistory () {
 
     })
     .fail(function() {
-        alert("error");
+        //alert("error");
     });
 }
 
@@ -336,6 +336,6 @@ function getEntityLabel() {
 
     })
     .fail(function() {
-        alert("error");
+        //alert("error");
     });
 }
