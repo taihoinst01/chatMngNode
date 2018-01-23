@@ -177,6 +177,17 @@ $(document).ready(function(){
             });
         }
     });
+
+    // 소스 타입 변경
+    $('#sourceType').change(function(e){
+        if($(e.target).val() == "API") {
+            $('#commonLayout').css('display','none');
+            $('#apiLayout').css('display','block');
+        } else {
+            $('#commonLayout').css('display','block');
+            $('#apiLayout').css('display','none');
+        }
+    });
     
     // 타입 변경시 버튼, 이미지 관련 input 생성 및 삭제
     $('#dlgType').change(function(e){
@@ -193,6 +204,22 @@ $(document).ready(function(){
         openModalBox('#create_dlg');
     });
 
+    // create LargeGroup
+    $('#btnCreateLgroup').on('click',function(){
+        if($(this).html() == "new") {
+            $(this).html('cancel');
+            $(this).css('margin','6px 0 0 20px');
+            $('#largeGroupEdit').css('display','block');
+            $('#largeGroup').css('display','none');
+        } else {
+            $(this).html('new');
+            $(this).css('margin','6px 0 0 30px');
+            $('#largeGroupEdit').css('display','none');
+            $('#largeGroup').css('display','block');
+        }
+        return;
+    });
+    
     //다이얼로그 Add
     $('#addDialogBtn').click(function(e){
         var dlgType = $('#dlgType').val();
@@ -370,6 +397,10 @@ function dialogValidation(type){
             $('#btnAddDlg').addClass("disable");
         }
     }
+}
+
+function writeDialog(e) {
+    $('.textMent p').html(e.value);
 }
 
 //다이얼로그 생성
