@@ -66,6 +66,30 @@ app.use(function(req, res, next) {
 
     next();
 });
+app.use(function(req, res, next) {
+
+    if (!req.session.appName)  {
+        res.locals.appName = req.session.appName;
+    } else { 
+        res.locals.appName = null;
+    }
+
+    if (!req.session.appId)  {
+        res.locals.appId = req.session.appId;
+    } else { 
+        res.locals.appId = null;
+    }
+
+    if (!req.session.subKey)  {
+        res.locals.subKey = req.session.subKey;
+    } else { 
+        res.locals.subKey = null;
+    }
+
+    next();
+});
+
+
 console.log("app.js 들어옴") ;
 app.use('/', routes);
 app.use('/users', users);

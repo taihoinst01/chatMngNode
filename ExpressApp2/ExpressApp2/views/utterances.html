@@ -12,85 +12,10 @@
         <!--<%= title %>title-->
         TIIS Manager
     </title>
-    
+
     <%include  ./common/commonUse.html%>
     <script type="text/javascript" src="/js/common/utterances.js"></script>
     <script type="text/javascript" src="/js/common/botchat.js"></script>
-    
-    <script>
-    var $setRows = $('#setRows');
-
-$setRows.submit(function (e) {
-	e.preventDefault();
-	var rowPerPage = $('[name="rowPerPage"]').val() * 1;// 1 을  곱하여 문자열을 숫자형로 변환
-
-//		console.log(typeof rowPerPage);
-
-	var zeroWarning = 'Sorry, but we cat\'t display "0" rows page. + \nPlease try again.'
-	if (!rowPerPage) {
-		alert(zeroWarning);
-		return;
-	}
-	$('#nav').remove();
-	var $products = $('#searchListTbl');
-
-	$products.after('<div id="nav">');
-
-
-	var $tr = $($products).find('tbody tr');
-	var rowTotals = $tr.length;
-//	console.log(rowTotals);
-
-	var pageTotal = Math.ceil(rowTotals/ rowPerPage);
-	var i = 0;
-
-	for (; i < pageTotal; i++) {
-		$('<a href="#"></a>')
-				.attr('rel', i)
-				.html(i + 1)
-				.appendTo('#nav');
-	}
-
-	$tr.addClass('off-screen')
-			.slice(0, rowPerPage)
-			.removeClass('off-screen');
-
-	var $pagingLink = $('#nav a');
-	$pagingLink.on('click', function (evt) {
-		evt.preventDefault();
-		var $this = $(this);
-		if ($this.hasClass('active')) {
-			return;
-		}
-		$pagingLink.removeClass('active');
-		$this.addClass('active');
-
-		// 0 => 0(0*4), 4(0*4+4)
-		// 1 => 4(1*4), 8(1*4+4)
-		// 2 => 8(2*4), 12(2*4+4)
-		// 시작 행 = 페이지 번호 * 페이지당 행수
-		// 끝 행 = 시작 행 + 페이지당 행수
-
-		var currPage = $this.attr('rel');
-		var startItem = currPage * rowPerPage;
-		var endItem = startItem + rowPerPage;
-
-		$tr.css('opacity', '0.0')
-				.addClass('off-screen')
-				.slice(startItem, endItem)
-				.removeClass('off-screen')
-				.animate({opacity: 1}, 300);
-
-	});
-
-	$pagingLink.filter(':first').addClass('active');
-
-});
-
-
-$setRows.submit();
-    
-    </script>
 </head>
 
 <body class="main">
@@ -121,6 +46,11 @@ $setRows.submit();
                     <div id="utterListDiv" style="border: 1px solid #858483 !important; height : 440px; margin:15px 0 0 0;">
                         <div class="Tbl_wrap">
                             <table class="Tbl" id="entityUtteranceTextTable" summary="의도설정">
+                                <caption>product list
+                                    <form action="" id="dlgSetRows">
+                                        <input type="hidden" name="dlgRowPerPage" value="6">
+                                    </form>
+                                </caption>
                                 <colgroup><col width="7%" ><col width="93%" ></colgroup>
                                 <thead>
                                     <tr>
@@ -222,12 +152,20 @@ $setRows.submit();
         <div id="dialogSet" class="modal-body" style="float:left; width: 50%;">
             <p class="texcon03">Group <span>(required) </span></p>
             <div class="group-float-left">
-                <p class="texcon03">대그룹</p>
-                <p><select name="largeGroup" class="inbox02" id="largeGroup" style="width: 100%;" >
-                    <option value="" selected>largeGroup1</option>
-                    <option value="">largeGroup2</option>
-                    <option value="">largeGroup3</option>
-                </select></p>
+                <div class="group-float-left" style="width: 45%">
+                    <p class="texcon03">대그룹</p>
+                </div>
+                <div class="group-float-left-last">
+                    <a href="#" class="btn b02  btn-small" id="btnCreateLgroup" style="padding:0 5px 0 5px; height:20px; line-height:15px; margin:6px 0 0 30px;">new</a>
+                </div>
+                <p>
+                    <select name="largeGroup" class="inbox02" id="largeGroup" style="width:100%;">
+                        <option value="" selected>largeGroup1</option>
+                        <option value="">largeGroup2</option>
+                        <option value="">largeGroup3</option>
+                    </select>
+                    <input type="text" name="largeGroupEdit" id="largeGroupEdit" class="inbox02" style="width:100%; display:none;"/>
+                </p>
             </div>
             <div class="group-float-left">
                 <p class="texcon03">중그룹</p>
@@ -247,83 +185,89 @@ $setRows.submit();
             </div>
             <div class="clear-both"></div>
 
+            <p class="texcon03">Source Type <span>(required) </span></p>
+            <p><select name="sourceType" class="inbox02" id="sourceType" style="width:100%" >
+                    <option value="COMMON" selected>COMMON</option>
+                    <option value="API">API</option>
+                </select></p>
+            
+            <div class="clear-both"></div>
             <p class="texcon03">Description  <span>(optional) </span></p>
             <p><textarea name="description" id="description" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup=""></textarea></p>
-
-            <div class="layout-float-left">
-                <p class="texcon03">Dialogue Type <span>(required) </span></p>
-                <p><select name="dlgType" class="inbox02" id="dlgType" style="width:100%" >
-                    <option value="2" selected>Text</option>
-                    <option value="3">Carousel</option>
-                    <option value="4">Media</option>
-                </select></p>
-            </div>
-            <div class="layout-float-left-last">
-                <p class="texcon03">Dialogue Order <span>(required) </span></p>
-                <p><select name="dialogOrderNo" class="inbox02" id="dialogOrderNo" style="width:100%" >
-                    <option value="1" selected>1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                </select></p>
-            </div>
-            <div class="clear-both"></div>
-
-            <p class="texcon03">Dialogue Text  <span>(required) </span></p>
-            <p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup="dialogValidation('dialogInsert');"></textarea></p>
             
-            <!-- carousal 일 경우 card 순서 input box 추가 layout -->
-            <div id="cardLayout" style="display:none;">
-                <p class="texcon03">Card Order <span>(required) </span></p>
-                <p><select name="cardOrderNo" class="inbox02" id="cardOrderNo" style="width:100%" >
-                    <option value="1" selected>1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                </select></p>
-            </div>
+            <div id="commonLayout">
+                <div style="overflow-y:scroll; overflow-x:hidden; height:300px;">
+                    <p class="texcon03">Dialogue Type <span>(required) </span></p>
+                    <p><select name="dlgType" class="inbox02" id="dlgType" style="width:100%" >
+                        <option value="2" selected>Text</option>
+                        <option value="3">Carousel</option>
+                        <option value="4">Media</option>
+                    </select></p>
+                    <div class="clear-both"></div>
 
-            <!-- media , carousal 일 경우 input box 추가 layout -->
-            <div id="mediaCarouselLayout" style="display:none;">
-                <div class="layout-float-left">
-                    <p class="texcon03">Button Name <span>(optional) </span></p>
-                    <p>
-                        <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
-                        <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" placeholder="Input name.." />
-                        <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" placeholder="Input name.." />
-                        <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" placeholder="Input name.." />
-                    </p>
+                    <p class="texcon03">Dialogue Text  <span>(required) </span></p>
+                    <p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation('dialogInsert');"></textarea></p>
+                    
+                    <!-- carousal 일 경우 card 순서 input box 추가 layout -->
+                    <div id="cardLayout" style="display:none;">
+                        <p class="texcon03">Card Order <span>(required) </span></p>
+                        <p><select name="cardOrderNo" class="inbox02" id="cardOrderNo" style="width:100%" >
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                        </select></p>
+                    </div>
+
+                    <!-- media , carousal 일 경우 input box 추가 layout -->
+                    <div id="mediaCarouselLayout" style="display:none;">
+                        <div class="layout-float-left">
+                            <p class="texcon03">Button Name <span>(optional) </span></p>
+                            <p>
+                                <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
+                                <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" placeholder="Input name.." />
+                                <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" placeholder="Input name.." />
+                                <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" placeholder="Input name.." />
+                            </p>
+                        </div>
+                        <div class="layout-float-left-last">
+                            <p class="texcon03">Button Content <span>(optional) </span></p>
+                            <p>
+                                <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
+                                <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." />
+                                <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." />
+                                <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" placeholder="Input contents.." />
+                            </p>
+                        </div>
+                        <div class="clear-both"></div>
+
+                        <p class="texcon03">Image Url <span>(optional) </span></p>
+                        <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:100%" placeholder="Input image url.." /></p>
+                    </div>
+                    <!--// media , carousal 일 경우 input box 추가 layout -->
+
+                    <div class="layout-float-left">
+                        <p class="texcon03">Dialogue Add</p>
+                        <p><button class="btn margin0 w82" id="addDialogBtn">Add</button></p>
+                    </div>
+                    <div class="clear-both"></div>
                 </div>
-                <div class="layout-float-left-last">
-                    <p class="texcon03">Button Content <span>(optional) </span></p>
-                    <p>
-                        <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
-                        <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." />
-                        <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." />
-                        <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" placeholder="Input contents.." />
-                    </p>
-                </div>
-                <div class="clear-both"></div>
-
-                <p class="texcon03">Image Url <span>(optional) </span></p>
-                <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:100%" placeholder="Input image url.." /></p>
             </div>
-            <!--// media , carousal 일 경우 input box 추가 layout -->
 
-            <div class="layout-float-left">
-                <p class="texcon03">Dialogue Add</p>
-                <p><button class="btn margin0 w82" id="addDialogBtn">Add</button></p>
+
+            <div id="apiLayout" style="display:none;">
+                <p class="texcon03">API Name<span>(optional) </span></p>
+                <p><input type="text" name="apiName" id="apiName" class="inbox02" style="width:100%"/></p>
+                <p class="texcon03">API Url <span>(optional) </span></p>
+                <p><input type="text" name="apiUrl" id="apiUrl" class="inbox02" style="width:100%"/></p>
             </div>
-            <div class="clear-both"></div>
             
         </div>
     	<div id="dialogPreview" style="float:left; width: 47%; overflow: auto; margin:0 0 0 10px; border: 1px solid #ccc; background: #f1f3f6; padding: 5px;">
+
         </div>
         <div class="clear-both"></div>
         </form>
@@ -345,7 +289,7 @@ $setRows.submit();
 
     <!-- Search 다이얼로그 -->
     <div id="search_dlg" class="modal_box w900" style="height: auto !important">
-        <header> <a href="#" id="addDialogClose" class="js-modal-close close">×</a>
+        <header> <a href="#" id="searchDialogClose" class="js-modal-close close">×</a>
           <h3>Search Dialogue</h3>
         </header>
         <div class="modal-body" style="float:left; width:100%;">
@@ -356,8 +300,8 @@ $setRows.submit();
                 </div>
                 <div class="searchGroup-float-left">
                     <p class="texcon03">대그룹</p>
-                    <p><select name="searchRargeGroup" class="inbox02" id="searchLargeGroup" style="width: 100%;" >
-                        <option value="" selected>largeGroup1</option>
+                    <p><select name="searchLargeGroup" class="inbox02" id="searchLargeGroup" style="width: 100%;" >
+                        <option value="" selected>largeGroup</option>
                     </select></p>
                 </div>
                 <div class="searchGroup-float-left">
@@ -403,7 +347,7 @@ $setRows.submit();
         </div>
         <div class="clear-both"></div>
         <footer>
-            <button class="btn disable" id="btnAddDlg" onclick="learnDialog()">Save</button>
+            <button class="btn" id="btnSearchSaveDlg" onclick="searchSaveDialog()">Save</button>
             <a href="#" class="btn b02  btn-small js-modal-close" id="searchDialogCancel">Cancel</a>
         </footer>
     </div>

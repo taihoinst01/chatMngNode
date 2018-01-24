@@ -11,8 +11,10 @@
         TIIS Manager
         </title>
         <%include  ./common/commonUse.html%>
-        <link rel="stylesheet" type="text/css" href="/css/learning.css" />
-        <script type="text/javascript" src="/js/common/learning.js"></script>
+        
+        <script type="text/javascript" src="/js/import/freejqgrid/js/i18n/grid.locale-kr.js" charset="utf-8"></script>
+        <script type="text/javascript" src="/js/import/freejqgrid/js/jquery.jqgrid2016.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="/js/common/userMng.js"></script>
 </head>
 
 <body class="main">
@@ -29,12 +31,12 @@
                     <div class="tbl_area_l"  style="width:62%; " >
                         <span class="optit ml15"> 사용자 명:</span>
                         <div class="search_inbox" style="width:30%;" >
-                            <input type="text" name="searchEmpNm" id="searchEmpNm" class="inbox_search" style="width:90%;" title="<spring:message code='검색어입력'/>" alt="<spring:message code='검색어입력'/>" value="">
+                            <input type="text" name="searchName" id="searchEmpNm" class="inbox_search" style="width:90%;" title="검색어입력" alt="검색어입력" value="">
                         </div>
                         <span class="optit ml15"> 사용자ID:</span>
                         <div class="search_inbox" style="width:30%;">
-                            <input type="text" name="searchUserId" id="searchUserId" class="inbox_search" style="width:90%;" title="<spring:message code='검색어입력'/>" alt="<spring:message code='검색어입력'/>" value="">
-                            <a href="#" id="btn_Inq_search" name="btn_Inq_search" alt="검색" value="검색" onclick="doSearchParam()" class="btn_insearch"><span class="hc">검색</span></a>
+                            <input type="text" name="searchId" id="searchUserId" class="inbox_search" style="width:88%;" title="검색어입력" alt="검색어입력" value="">
+                            <a href="#" id="btn_Inq_search" name="btn_Inq_search" alt="검색" value="검색" style="float:right;" class="btn_insearch"><span class="hc">검색</span></a>
                         </div>
                     </div>
                 </form>
@@ -45,10 +47,10 @@
                     <p class="grid_tit">사용자 목록</p>
                 </div>
                 <div class="tbl_area_r" >
-                    <a href="javascript://" class="btn" id="btn_crte_insert1" name="btn_crte_insert1" alt="추가" onclick="insertAction();">추가</a>
-                    <a href="javascript://" class="btn" id="btn_crte_delete1" name="btn_crte_delete1" alt="삭제" onclick="deleteAction();">삭제</a>
-                    <a href="javascript://" class="btn" id="btn_crte_save1" name="btn_crte_save1" alt="저장" onclick="updateAction();">저장</a>
-                    <a href="javascript://" class="btn" id="btn_crte_init1" name="btn_crte_init1" alt="초기화" onclick="initAction();">초기화</a>
+                    <a href="javascript://" class="btn" id="btn_crte_insert1" name="btn_crte_insert1" style="margin:0 5px 0 0;" alt="추가" onclick="insertAction();">추가</a>
+                    <a href="javascript://" class="btn" id="btn_crte_delete1" name="btn_crte_delete1" style="margin:0 5px 0 0;" alt="삭제" onclick="deleteAction();">삭제</a>
+                    <a href="javascript://" class="btn" id="btn_crte_save1" name="btn_crte_save1" style="margin:0 5px 0 0;" alt="저장" onclick="saveAction();">저장</a>
+                    <a href="javascript://" class="btn" id="btn_crte_init1" name="btn_crte_init1" style="margin:0 5px 0 0;" alt="초기화" onclick="restoreGridAction();">초기화</a>
                 </div>
             </div>
 
