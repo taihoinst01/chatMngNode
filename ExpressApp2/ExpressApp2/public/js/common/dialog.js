@@ -174,20 +174,107 @@ $(document).ready(function(){
 
     //다이얼로그 생성 모달 닫는 이벤트(초기화)
     $(".js-modal-close").click(function() {
-    $('html').css({'overflow': 'auto', 'height': '100%'}); //scroll hidden 해제
-    //$('#element').off('scroll touchmove mousewheel'); // 터치무브 및 마우스휠 스크롤 가능
+        $('html').css({'overflow': 'auto', 'height': '100%'}); //scroll hidden 해제
+        //$('#element').off('scroll touchmove mousewheel'); // 터치무브 및 마우스휠 스크롤 가능
 
-    $('#appInsertDes').val('');
-    $("#intentList option:eq(0)").attr("selected", "selected");
-    //$('#intentList').find('option:first').attr('selected', 'selected');
-    initMordal('intentList', 'Select Intent');
-    initMordal('entityList', 'Select Entity');
-    $('#dlgLang').find('option:first').attr('selected', 'selected');
-    $('#dlgOrder').find('option:first').attr('selected', 'selected');
-    $('#layoutBackground').hide();
-});
+        $('#appInsertDes').val('');
+        $("#intentList option:eq(0)").attr("selected", "selected");
+        //$('#intentList').find('option:first').attr('selected', 'selected');
+        initMordal('intentList', 'Select Intent');
+        initMordal('entityList', 'Select Entity');
+        $('#dlgLang').find('option:first').attr('selected', 'selected');
+        $('#dlgOrder').find('option:first').attr('selected', 'selected');
+        $('#layoutBackground').hide();
+    });
     /** 모달 끝 */
 });
+
+//selectbox 중그룹 및 소그룹 찾기 kh
+$(document).on('change', '.searchGroup', function(){
+
+    if($(this).attr('id') == 'searchGroupL') {
+
+        searchGroup($(this).val(), 'searchMedium', 1);
+    } else if($(this).attr('id') == 'searchGroupM') {
+        alert("확인1");
+        searchGroup($(this).val(), 'searchSmall', 1, $('#searchGroupL').val());
+    }
+    
+});
+
+//search버튼 클릭시 다이얼로그 검색
+$(document).on('click', '#searchDlgBtn', function() {
+
+    var searchText = $('#iptDialog').val();
+    var sourceType2 = $('#sourceType2').val();
+    var group  = {
+        searchGroupL: $('#searchGroupL').val(),
+        searchGroupM: $('#searchGroupM').val(),
+        searchGroupS: $('#searchGroupS').val()
+    }
+
+    if(searchText == '' || searchText == null ) {
+        
+        alert("검색어를 입력해주세요");
+        return;
+    } else {
+
+       if(group.searchGroupL == 'default' || group.searchGroupM == 'default' || group.searchGroupS == 'default') {
+           
+            alert("그룹을 재설정 해주세요");
+       } else {
+
+            $('#currentPage').val(1);
+            dialogsAjax2(group, sourceType2, searchText);
+       }
+    }
+});
+
+function dialogsAjax2(group, sourceType2, searchText){
+
+    params = {
+        'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
+        'searchGroupL': group.searchGroupL,
+        'searchGroupM': group.searchGroupM,
+        'searchGroupS': group.searchGroupS,
+        'sourceType2': sourceType2,
+        'searchText': searchText
+    };
+
+    $.tiAjax({
+        type: 'POST',
+        url: '/learning/dialogs2',
+        data : params,
+        isloading: true,
+        success: function(data) {
+
+            $('#dialogTbltbody').html('');
+            var item = '';
+            if(data.list.length > 0){
+                
+                for(var i = 0; i < data.list.length; i++){
+                    if(data.list[i].DLG_API_DEFINE == 'D'){
+                        data.list[i].DLG_API_DEFINE = 'Common';
+                    }
+                    item += '<tr>' +
+                            '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
+                            '<td class="txt_center" colspan="3">' + data.list[i].SMALL_GROUP +'</td>' +
+                            '<td class="txt_left" colspan="4">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                            '<td class="txt_center" colspan="2">' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '</tr>';
+                }
+
+                
+            }
+
+            
+            $('#dialogTbltbody').append(item);
+
+            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+        }
+    });
+
+}
 
 //그룹메뉴에서 모두보기 눌렀을시 리스트 초기화
 $(document).on('click', '.allGroup', function(){
@@ -202,90 +289,139 @@ $(document).on('click', '.allGroup', function(){
 // 소그룹 클릭시 리스트 출력
 $(document).on('click', '.smallGroup', function(){
     
+    var group  = {
+        searchGroupL: $('.currentGroupL').text(),
+        searchGroupM: $('.currentGroupM').text(),
+        searchGroupS: $(this).children().text()
+    }
+
     $('.selected').text($(this).find('.menuName').text());
     $('.selectOptionsbox').removeClass('active');
 
     var groupType =  $('.selected').text();
     var sourceType = $('#sourceType').val();
     $('#currentPage').val(1);
-    dialogsAjax(groupType, sourceType);
+    dialogsAjax2(group, sourceType, "");
 });
 
-/** 대그룹 혹은 중분류 클릭시 하위 그룹 검색  */
-$(document).on('click', '.checktoggle', function () {
+/** 대그룹 혹은 중그룹 클릭시 하위 그룹 검색  */
+$(document).on('click', '.checktoggle', function (e) {
     
-    // 대분류 클릭시 중분류 검색
-    if($(this).hasClass('largeGroup') &&  $(this).parent().hasClass('active') == false){
+    // 대그룹 클릭시 중그룹 검색
+    if($(this).hasClass('largeGroup')){
 
-        if($(this).parent().next().children().size() == 0) {
-            //searchMidGroup($(this).prev().text());
-            searchGroup($(this).prev().text(), 'searchMedium');           
+        if($(this).parent().hasClass('active')) {
+            $(this).parent().next().slideToggle(200);
+            $(this).parent().toggleClass('active').toggleClass('bgcolor');
+        } else {
+            if($(this).parent().next().children().size() == 0) {
+                searchGroup($(this).prev().text(), 'searchMedium');       
+            }
+
+            $('.largeGroup').parent().removeClass('active').removeClass('bgcolor');
+            $('.largeGroup').parent().next().slideUp(200);
+            $('.currentGroupL').removeClass('currentGroupL');
+
+            $(this).prev().addClass('currentGroupL');
+            $(this).parent().addClass('active').addClass('bgcolor');
+            $(this).parent().next().slideDown(200);
         }
-
-        $(this).parent().next().slideToggle(200);
-        $(this).parent().toggleClass('active').toggleClass('bgcolor');
-        return;
     }
-     
+
     // 중분류 클릭시 소분류 검색
-    else if($(this).hasClass('mediumGroup') &&  $(this).parent().hasClass('active') == false) {
-        if($(this).parent().next().children().size() == 0) {
-            searchGroup($(this).prev().text(), 'searchSmall');
+    if($(this).hasClass('mediumGroup')) {
+
+        if($(this).parent().hasClass('active')) {
+            $(this).parent().next().slideToggle(200);
+            $(this).parent().toggleClass('active').toggleClass('bgcolor');
+        } else {
+            if($(this).parent().next().children().size() == 0) {
+                searchGroup($(this).prev().text(), 'searchSmall', 0, $('.groupL.currentGroupL').text());       
+            }
+
+            $('.mediumGroup').parent().removeClass('active').removeClass('bgcolor');
+            $('.mediumGroup').parent().next().slideUp(200);
+            $('.currentGroupM').removeClass('currentGroupM');
+
+            $(this).prev().addClass('currentGroupM');
+            $(this).parent().addClass('active').addClass('bgcolor');
+            $(this).parent().next().slideDown(200);
         }
-
-        $(this).parent().next().slideToggle(200);
-        $(this).parent().toggleClass('active').toggleClass('bgcolor');
-        return;
-    } else {
-
-        $(this).parent().next().slideToggle(200);
-        $(this).parent().toggleClass('active').toggleClass('bgcolor');
-        return;
     }
 });
 
-function searchGroup(groupName, group) {
+function searchGroup(groupName, group, type, groupL) {
     $.tiAjax({
         type: 'POST',
         url: '/learning/searchGroup',
-        data : {'groupName' : groupName, 'group' : group},
+        data : {'groupName' : groupName, 'group' : group, 'groupL': groupL},
         isloading: true,
         success: function(data) {
-            if(group == 'searchMedium') {
-                
-                if(data.groupList.length > 0) {
-                    var item2 = '';
-    
+            if(type == 1) {
+
+                if(group == 'searchMedium') {
+
+                    var item = '<option value="default">중그룹</option>';
+
                     for(var i = 0; i <data.groupList.length; i++) {
-                        item2 += '<li class="selectArea">' +
-                                 '<div class="heading selectArea">' +
-                                 '<label class="selectArea" for="' + data.groupList[i].mediumGroup + '">' + data.groupList[i].mediumGroup + '</label>' +
-                                 '<span class="checktoggle mediumGroup selectArea"></span></div>' +
-                                 '<ul class="checklist2 selectArea" id="' + data.groupList[i].mediumGroup + '">' +
-                                 '</ul>' +
-                                 '</li>';
-                        
+
+                        item += '<option>' + data.groupList[i].mediumGroup + '</option>';
                     }
+
+                    $('#searchGroupM').html('');
+                    $('#searchGroupS').html('');
+                    $('#searchGroupS').html('<option value="default">소그룹</option>');
+                    $('#searchGroupM').append(item);
+                } else if(group == 'searchSmall') {
+                    alert("확인3");
+                    var item = '<option value="default">소그룹</option>';
+
+                    for(var i = 0; i <data.groupList.length; i++) {
+                        alert("확인4");
+                        item += '<option>' + data.groupList[i].smallGroup + '</option>';
+                    }
+                    alert("확인5");
+                    $('#searchGroupS').html('');
+                    $('#searchGroupS').append(item);
+
                 }
-                $('#' + groupName).empty();
-                $('#' + groupName).append(item2);
-                $('.checklist2').hide();
-                
-            } else if(group == 'searchSmall') {
-                
-                if(data.groupList.length > 0) {
+            } else {
+
+                if(group == 'searchMedium') {
                     
-                    var item2 = '';
-    
-                    for(var i = 0; i <data.groupList.length; i++) {
-                        
-                        item2 += '<li class="smallGroup">' +
-                                 '<label for="check2" class="menuName">' + data.groupList[i].smallGroup + '</label>' + 
-                                 '</li>';
+                    if(data.groupList.length > 0) {
+                        var item2 = '';
+        
+                        for(var i = 0; i <data.groupList.length; i++) {
+                            item2 += '<li class="selectArea">' +
+                                     '<div class="heading selectArea">' +
+                                     '<label class="selectArea groupM" for="' + data.groupList[i].mediumGroup + '">' + data.groupList[i].mediumGroup + '</label>' +
+                                     '<span class="checktoggle mediumGroup selectArea"></span></div>' +
+                                     '<ul class="checklist2 selectArea ' + data.groupList[i].mediumGroup + ' ' + groupName + '">' +
+                                     '</ul>' +
+                                     '</li>';
+                            
+                        }
                     }
+                    $('#' + groupName).empty();
+                    $('#' + groupName).append(item2);
+                    $('.checklist2').hide();
+                    
+                } else if(group == 'searchSmall') {
+                    
+                    if(data.groupList.length > 0) {
+                        var item2 = '';
+        
+                        for(var i = 0; i <data.groupList.length; i++) {
+
+                            item2 += '<li class="smallGroup">' +
+                                     '<label for="check2 groupS" class="menuName">' + data.groupList[i].smallGroup + '</label>' + 
+                                     '</li>';
+                        }
+                    }
+                    $('.' + groupName + '.' + groupL).empty();
+                    $('.' + groupName + '.' + groupL).append(item2);
                 }
-                $('#' + groupName).empty();
-                $('#' + groupName).append(item2);
             }
             
         }
@@ -320,7 +456,7 @@ function searchMidGroup(groupName) {
 }*/
 
 function dialogsAjax(groupType, sourceType){
-    console.log("dd");
+
     params = {
         'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
         'groupType':groupType,
@@ -352,21 +488,24 @@ function dialogsAjax(groupType, sourceType){
 
                 if(data.groupList.length > 0) {
                     var item2 = '';
-                    
+                    var item3 = '';
                     item2 = '<label for="all" class="allGroup selectArea">모두보기</label>';
                     for(var i = 0; i <data.groupList.length; i++) {
                         item2 += '<ul class="checkouter selectArea">' +
                                 '<li class="selectArea">' +
                                 '<div class="heading selectArea">' +
-                                '<label class="selectArea" for="' + data.groupList[i].largeGroup + '">' + data.groupList[i].largeGroup + '</label>' +
+                                '<label class="groupL selectArea" for="' + data.groupList[i].largeGroup + '">' + data.groupList[i].largeGroup + '</label>' +
                                 '<span class="checktoggle largeGroup selectArea"></span></div>' +
                                 '<ul class="checklist selectArea" id="' + data.groupList[i].largeGroup + '">' +
                                 '</ul>' +
                                 '</li>' +
                                 '</ul>';
+                        
+                        item3 += '<option>' + data.groupList[i].largeGroup + '</option>'
                     }
                     $('.selectOptionsbox').html("");
                     $('.selectOptionsbox').append(item2);
+                    $('#searchGroupL').append(item3);
                     $('.checklist').hide();
                 }
             }
