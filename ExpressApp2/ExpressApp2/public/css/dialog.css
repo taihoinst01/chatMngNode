@@ -24,7 +24,7 @@
 
 #image_tbl{border:non !important; margin-top: -40px !important;}
 .margin0{ margin: 0 !important; }
-body {  font-family: arial;}
+
 body, ul, li { margin: 0; padding: 0;}
 ul, ol, li, form, fieldset, input, p {
   margin: 0;
@@ -69,14 +69,8 @@ li { list-style: none}
 
 .selectbox .selectOptionsbox.active {
   display: block;
-  overflow: auto;
-  height: 230px;
-}
-
-.selectOptionsbox .checkbox {
-  float: left;
-  width: 20px;
-  height: auto;
+  overflow: scroll;
+  height: 300px;
 }
 
 .selectOptionsbox label {

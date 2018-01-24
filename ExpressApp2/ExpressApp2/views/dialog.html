@@ -46,7 +46,22 @@
             <div id="dialogDiv">
                 <div class="dialogLeft">     
                     <div class="in-line">
-                        <input name="iptDialog" id="iptDialog" type="text" class="inbox02" style="width:82.5%; margin: 3px;" placeholder="입력문장" >
+                        <input name="iptDialog" id="iptDialog" type="text" class="inbox02" style="width:35%; margin: 3px;" placeholder="연결 어터런스 입력" >
+                        <select id="sourceType2" name="sourceType" style="width:12%;">
+                            <option value="D" selected="selected">Common</option>
+                            <option value="api quot">Api Quot</option>
+                            <option value="api testdrive">Api Testdrive</option>    
+                        </select>
+                        <select id="searchGroupL" class="searchGroup" name="searchGroupL" style="width:12%;">
+                            <option value="default">대그룹</option>     
+                        </select>
+                        <select id="searchGroupM" class="searchGroup" name="searchGroupM" style="width:12%;">
+                            <option value="default">중그룹</option>
+                        </select>
+                        <select id="searchGroupS" class="searchGroup" name="searchGroupS" style="width:12%;">
+                            <option value="default">소그룹</option>
+                        </select>
+                        <button class="btn" id="searchDlgBtn">search</button>
                         <button class="btn" id="dialog" onclick="openModalBox('#create_dlg')">new</button>
                     </div>                                         
                 </div>
