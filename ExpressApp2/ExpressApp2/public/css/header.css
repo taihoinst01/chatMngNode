@@ -1,4 +1,14 @@
-.userappLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:80px; padding:10px; z-index: 999; } 
+.userappLayout { 
+    position:absolute; 
+    display:none; 
+    background-color:#ffffff; 
+    border:solid 2px gray; 
+    width:150px; 
+    height:auto; 
+    padding:10px; 
+    z-index: 999; 
+} 
+
 .userlayerMenu:hover{background-color:#a7a4a4 !important;}
 .w100per{width:100%;}
 .h100per{height:100%;}
