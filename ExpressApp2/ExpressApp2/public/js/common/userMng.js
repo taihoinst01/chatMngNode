@@ -180,11 +180,6 @@ function setGridResize(gridId) {
 }
 
 
-//클리어
-function clearGridAction() {
-    $('#gridList').clearGridData();
-}
-
 //초기화
 function restoreGridAction() {
     if(confirm('초기화 하시곘습니까?')) {

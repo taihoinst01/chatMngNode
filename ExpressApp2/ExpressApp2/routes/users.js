@@ -48,7 +48,7 @@ router.post('/login', function (req, res) {
                 if(decipheredOutput == userPw) {
                     req.session.sid = req.body.mLoginId;
                     req.session.save(function(){
-                        res.redirect("/list");
+                        res.redirect("/");
                      });
                 } else {
                     res.send('<script>alert("비밀번호가 일치하지 않습니다.");location.href="/";</script>');
@@ -319,10 +319,108 @@ router.get('/userAuthMng', function (req, res) {
     res.locals.selLeftMenu = '사용자권한관리';
     res.render('userAuthMng');
 });
+/*
+router.post('/', function (req, res) {
+    let sortIdx = checkNull(req.body.sort, "USER_ID") + " " + checkNull(req.body.order, "ASC");
+    let pageSize = checkNull(req.body.rows, 10);
+    let currentPageNo = checkNull(req.body.page, 1);
+    
+    let searchName = checkNull(req.body.searchName, null);
+    let searchId = checkNull(req.body.searchId, null);
+
+    (async () => {
+        try {
+         
+            var QueryStr =  "SELECT TBZ.* ,(TOT_CNT - SEQ + 1) AS NO " +
+                            "  FROM (SELECT TBY.* " +
+                            "          FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX." + sortIdx + ") AS SEQ, " +
+                            "                       COUNT('1') OVER(PARTITION BY '1') AS TOT_CNT, " +
+                            "                       CEILING(ROW_NUMBER() OVER(ORDER BY TBX." + sortIdx + ") / CONVERT( NUMERIC, " + pageSize + " ) ) PAGEIDX, " +
+                            "                       TBX.*" +
+                            "                  FROM ( " +
+                            "                         SELECT " +
+                            "                              A.EMP_NUM      AS EMP_NUM " +
+                            "                            , A.USER_ID      AS USER_ID_HIDDEN " +
+                            "                            , A.USER_ID      AS USER_ID " +
+                            "                            , A.SCRT_NUM     AS SCRT_NUM " +
+                            "                            , A.EMP_NM       AS EMP_NM " +
+                            "                            , A.EMP_ENGNM    AS EMP_ENGNM " +
+                            "                            , A.EMAIL        AS EMAIL " +
+                            "                            , A.M_P_NUM_1    AS M_P_NUM_1 " +
+                            "                            , A.M_P_NUM_2    AS M_P_NUM_2 " +
+                            "                            , A.M_P_NUM_3    AS M_P_NUM_3 " +
+                            "                            , A.USE_YN       AS USE_YN " +
+                            "                            , CONVERT(NVARCHAR(10), A.REG_DT, 120) AS REG_DT " +
+                            "                            , A.REG_ID       AS REG_ID " +
+                            "                            , CONVERT(NVARCHAR(10), A.MOD_DT, 120) AS MOD_DT " +
+                            "                            , A.MOD_ID       AS MOD_ID " +
+                            "                            , A.LOGIN_FAIL_CNT      AS LOGIN_FAIL_CNT " +
+                            "                            , CONVERT(NVARCHAR, A.LAST_LOGIN_DT, 120)  AS LAST_LOGIN_DT " +
+                            "                            , CONVERT(NVARCHAR, A.LOGIN_FAIL_DT, 120)  AS LOGIN_FAIL_DT " +
+                            "                         FROM TB_USER_M A " +
+                            "                         WHERE 1 = 1 " +
+                            "					      AND A.USE_YN = 'Y' "; 
+
+            if (searchName) {
+                QueryStr += "					      AND A.EMP_NM like '%" + searchName + "%' ";
+            }
+            if (searchId) {
+                QueryStr += "					      AND A.USER_ID like '%" + searchId + "%' ";
+            }
+            QueryStr +=     "                       ) TBX " +
+                            "               ) TBY " +
+                            "       ) TBZ" +
+                            " WHERE PAGEIDX = " + currentPageNo + " " +
+                            "ORDER BY " + sortIdx + " ";
+            
+            
+            let pool = await sql.connect(dbConfig)
+            let result1 = await pool.request().query(QueryStr);
+
+            let rows = result1.recordset;
+
+            var recordList = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+
+                item = rows[i];
+                
+
+                recordList.push(item);
+            }
 
 
+            if(rows.length > 0){
+
+                var totCnt = 0;
+                if (recordList.length > 0)
+                    totCnt = checkNull(recordList[0].TOT_CNT, 0);
+                var getTotalPageCount = Math.floor((totCnt - 1) / checkNull(rows[0].TOT_CNT, 10) + 1);
 
 
+                res.send({
+                    records : recordList.length,
+                    total : getTotalPageCount,
+                    page : checkNull(currentPageNo, 1),
+                    rows : recordList
+                });
+
+            }else{
+                res.send({list : result});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+});
+*/
 
 
 module.exports = router;

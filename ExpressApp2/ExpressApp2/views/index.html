@@ -86,14 +86,14 @@
                         </tr>
                     </thead>
                     <%
-                    for(var i=list.length-1; i > 0; i--) {
+                    for(var i=0; i<list.length; i++) {
                     %>
                         <tr>
-                            <td class="txt_left"><a href="/board?appName=<%= list[i].name %>&appId=<%= list[i].id %>" class="dashLink" ><%= list[i].name %></a></td> <!-- dyyo 1228추가 -->
-                            <td class="txt_left"><%= list[i].culture %></td>
-                            <td class="txt_left"><%= list[i].createdDateTime.split('T')[0] %></td>
-                            <td class="txt_left"><%= list[i].description %></td>
-                            <td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick(event, this, '<%= list[i].id %>', '<%= list[i].name %>');"></a></td>
+                            <td class="txt_left"><a href="/board?appName=<%= list[i].APP_NAME %>&appId=<%= list[i].APP_ID %>" class="dashLink" ><%= list[i].APP_NAME %></a></td> <!-- dyyo 1228추가 -->
+                            <td class="txt_left"><%= list[i].CULTURE %></td>
+                            <td class="txt_left"><%= list[i].REG_DT %></td>
+                            <td class="txt_left"><%= list[i].DESCRIPTION %></td>
+                            <td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick(event, this, '<%= list[i].APP_ID %>', '<%= list[i].APP_NAME %>');"></a></td>
                         </tr>
                         <%
                         }
