@@ -193,11 +193,12 @@
             
             <div class="clear-both"></div>
             <p class="texcon03">Description  <span>(optional) </span></p>
-            <p><textarea name="description" id="description" cols="" rows="2" style="width:100%; resize:none;" placeholder="Input text.." onkeyup=""></textarea></p>
-            
+            <p><textarea name="description" id="description" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup=""></textarea></p>
+        </form>
             <div id="commonLayout">
                 <div style="overflow-y:scroll; overflow-x:hidden; height:400px;">
                     <div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">
+                        <form name="dialogLayout" id="dialogLayout">
                         <p class="texcon03">Dialogue Type <span>(required) </span></p>
                         <p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >
                             <option value="2" selected>Text</option>
@@ -205,7 +206,7 @@
                             <option value="4">Media</option>
                         </select></p>
                         <div class="clear-both"></div>
-                        
+                        </form>
                     </div>
 
                     <div id="textLayout" style="display:none;">
@@ -274,7 +275,7 @@
                         </div>
                         <div class="clear-both"></div>
                     </div>
-
+                    
                     <!-- carousal 일 경우 card 순서 input box 추가 layout -->
                     <div id="cardLayout" style="display:none;">
                         <p class="texcon03">Card Order <span>(required) </span></p>
@@ -333,7 +334,7 @@
             </div>
             
         </div>
-    	<div id="dialogPreview" style="float:left; width: 47%; overflow: auto; margin:0 0 0 10px; border: 1px solid #ccc; background: #f1f3f6; padding: 5px;">            
+    	<div id="dialogPreview" style="float:left; width: 47%; overflow: auto; margin:0 0 0 10px; border: 1px solid #ccc; background: #f1f3f6; padding: 5px;">
             <div class="dialogView">
                 <div class="wc-message wc-message-from-bot" style="width:80%;">
                     <div class="wc-message-content">
@@ -352,11 +353,11 @@
             </div>
         </div>
         <div class="clear-both"></div>
-        </form>
+        
         <!-- form end -->
     
         <footer>
-          <button class="btn disable" id="btnAddDlg" onclick="insertDialog()">Save</button>
+          <button class="btn" id="btnAddDlg" onclick="addDialog()">Save</button>
           <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel">Cancel</a>
         </footer>
     
@@ -407,11 +408,13 @@
         </div>
         <div class="clear-both"></div>
         <div style="border: 1px solid #858483 !important; height : 400px; margin:15px 0 0 0;">
-            <div style="width: 900px; height: 100%; overflow: scroll; overflow-y: hidden; ">
-                <div id="searchDlgResultDiv" class="Tbl_wrap" style="width: max-content; height: 100%;">          
-    
-                </div>
-            </div>           
+            
+            
+                <div style="width: 900px; height: 100%; overflow: scroll; overflow-y: hidden; ">
+                        <div id="searchDlgResultDiv" class="Tbl_wrap" style="width: max-content; height: 100%;">
+                        
+                        </div>
+                </div>     
         </div>
         <div class="clear-both"></div>
         <footer>

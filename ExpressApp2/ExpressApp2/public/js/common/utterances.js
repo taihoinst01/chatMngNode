@@ -171,6 +171,7 @@ $(document).ready(function(){
 
         var insertForm = '';
         insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
+        insertForm += '<form name="dialogLayout" id="dialogLayout">';
         insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
         insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
         insertForm += '<option value="2" selected>Text</option>';
@@ -178,6 +179,7 @@ $(document).ready(function(){
         insertForm += '<option value="4">Media</option>';
         insertForm += '</select></p>';
         insertForm += '<div class="clear-both"></div>';
+        insertForm += '</form>';
         insertForm += '</div>';
 
         $('#commonLayout div:first').prepend(insertForm);
@@ -280,6 +282,7 @@ $(document).ready(function(){
 
         var insertForm = '';
         insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
+        insertForm += '<form name="dialogLayout" id="dialogLayout">';
         insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
         insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
         insertForm += '<option value="2" selected>Text</option>';
@@ -293,6 +296,7 @@ $(document).ready(function(){
         insertForm += '<p class="texcon03">Dialogue Text  <span>(required) </span></p>';
         insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
         insertForm += '</div>';
+        insertForm += '</form>';
         insertForm += '</div>';
 
         $(".insertForm:last").after(insertForm);
@@ -499,11 +503,11 @@ $(document).on('change','select[name=dlgType]',function(e){
 
     } else if($(e.target).val() == "3") {
         var $clone = $('#carouselLayout').clone();
-        $('.insertForm:eq(' + idx + ')').append($clone);
+        $('.insertForm:eq(' + idx + ') form').append($clone);
         $('.insertForm:eq(' + idx + ') #carouselLayout').css('display', 'block');
     } else if($(e.target).val() == "4") {
         var $clone = $('#mediaLayout').clone();
-        $('.insertForm:eq(' + idx + ')').append($clone);
+        $('.insertForm:eq(' + idx + ') form').append($clone);
         $('.insertForm:eq(' + idx + ') #mediaLayout').css('display', 'block');
     }
 
@@ -645,6 +649,20 @@ function insertDialog(){
 
                 $('#addDialogClose').click();
             }
+        }
+    });
+}
+
+function addDialog(){
+    //alert($('form[name=dialogLayout]').html());
+
+    $.ajax({
+        url: '/learning/addDialog',
+        dataType: 'json',
+        type: 'POST',
+        data: $('form[name=dialogLayout]').serialize(),
+        success: function(data) {
+            alet('success');
         }
     });
 }
@@ -1054,7 +1072,7 @@ function openModalBox(target){
     wrapWindowByMask();
 
     if(target == "#create_dlg") {
-        $(".insertForm").append($("#textLayout").clone(true));
+        $(".insertForm form").append($("#textLayout").clone(true));
         $(".insertForm #textLayout").css("display","block");
     }
 
@@ -1142,15 +1160,6 @@ function searchDialog() {
                             inputUttrHtml += '</p>';
                             inputUttrHtml += '</div></div></div></div></div>';
 
-                            inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="width:200px">';
-                            inputUttrHtml += '<div class="wc-message-content">';
-                            inputUttrHtml += '<svg class="wc-message-callout"></svg>';
-                            inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
-                            inputUttrHtml += '<p>';
-                            inputUttrHtml += '<input type="hidden" name="searchDlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
-                            inputUttrHtml += tmp.dlg[j].CARD_TEXT;
-                            inputUttrHtml += '</p>';
-                            inputUttrHtml += '</div></div></div></div></div>';
                         } else if(tmp.dlg[j].DLG_TYPE == 3) {
                             if(j == 0) {
                                 inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="margin-bottom:0px">';
