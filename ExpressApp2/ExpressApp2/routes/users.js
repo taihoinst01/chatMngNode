@@ -48,7 +48,7 @@ router.post('/login', function (req, res) {
                 if(decipheredOutput == userPw) {
                     req.session.sid = req.body.mLoginId;
                     req.session.save(function(){
-                        res.redirect("/list");
+                        res.redirect("/");
                      });
                 } else {
                     res.send('<script>alert("비밀번호가 일치하지 않습니다.");location.href="/";</script>');
@@ -70,44 +70,6 @@ router.get('/logout', function (req, res) {
 		res.redirect('/');
 	});
 });
-//{selMenu: req.session.selMenu}
-/*
-router.get('/codeMng', function (req, res) {  
-    res.locals.selMenu = req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '공통코드관리';
-    res.render('codeMng');
-});
-
-router.get('/screenMng', function (req, res) {  
-    req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '화면관리';
-    res.render('screenMng');
-});
-
-router.get('/menuMng', function (req, res) {  
-    req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '메뉴관리';
-    res.render('menuMng');
-});
-
-router.get('/authGrpMng', function (req, res) {  
-    req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '권한그룹관리';
-    res.render('authGrpMng');
-});
-
-router.get('/authDtlMng', function (req, res) {  
-    req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '권한상세관리';
-    res.render('authDtlMng');
-});
-
-router.get('/userAppMng', function (req, res) {  
-    req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '사용자앱매핑관리';
-    res.render('userAppMng');
-});
-*/
 
 router.get('/userMng', function (req, res) {  
     res.locals.selMenu = req.session.selMenu = 'm1';
@@ -320,9 +282,206 @@ router.get('/userAuthMng', function (req, res) {
     res.render('userAuthMng');
 });
 
+router.post('/selectUserAppList', function (req, res) {
+    
+    let userId = checkNull(req.body.userId, '');
+    var selectAppListStr = "SELECT APP_NAME, APP_ID,  LEFT(OWNER_EMAIL, CHARINDEX('@', OWNER_EMAIL)-1) OWNER_EMAIL " +
+                           "  FROM TBL_LUIS_APP " +
+                           " WHERE 1=1;";
+    var UserAppListStr = "SELECT distinct APP_ID" +
+                        "   FROM TBL_USER_RELATION_APP " +
+                        "  WHERE 1=1 " +
+                        "    AND USER_ID = '" + userId + "'; ";                    
+    (async () => {
+        try {
+            let pool = await sql.connect(dbConfig);
+            let appList = await pool.request().query(selectAppListStr);
+            let rows = appList.recordset;
+
+            var recordList = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+                item = rows[i];
+                recordList.push(item);
+            }
+
+            let userAppList = await pool.request().query(UserAppListStr);
+            let rows2 = userAppList.recordset;
+
+            var checkedApp = [];
+            for(var i = 0; i < rows2.length; i++){
+                var item = {};
+                item = rows2[i];
+                checkedApp.push(item);
+            }
+
+            res.send({
+                records : recordList.length,
+                rows : recordList,
+                checkedApp : checkedApp,
+            });
+            
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'app Load Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+})
+
+router.post('/updateUserAppList', function (req, res) {
+    let userId = req.body.userId;
+    let saveData = JSON.parse(checkNull(req.body.saveData, ''));
+    let removeData = JSON.parse(checkNull(req.body.removeData, ''));
+    var saveDataStr = "";
+    var removeDataStr = "";
+
+    for (var i=0; i<saveData.length; i++) {
+        saveDataStr += "INSERT INTO TBL_USER_RELATION_APP(USER_ID, APP_ID) " +
+                    "     VALUES ('" + userId + "', '" + saveData[i] + "'); ";    
+    }
+    
+    for (var i=0; i<removeData.length; i++) {
+        removeDataStr += "DELETE FROM TBL_USER_RELATION_APP " +
+                    "      WHERE 1=1 " +
+                    "        AND APP_ID = '" + removeData[i].APP_ID + "' " +
+                    "        AND USER_ID = '" + userId + "'; ";     
+    }
+                        
+                   
+    (async () => {
+        try {
+            let pool = await sql.connect(dbConfig);
+            if (saveData.length > 0) {
+                let appList = await pool.request().query(saveDataStr);
+            }
+            
+            if (removeData.length > 0) {
+                let userAppList = await pool.request().query(removeDataStr);
+            }
+
+            res.send({status:200 , message:'Update Success'});
+            
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'Update Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+    
+})
+/*
+router.post('/', function (req, res) {
+    let sortIdx = checkNull(req.body.sort, "USER_ID") + " " + checkNull(req.body.order, "ASC");
+    let pageSize = checkNull(req.body.rows, 10);
+    let currentPageNo = checkNull(req.body.page, 1);
+    
+    let searchName = checkNull(req.body.searchName, null);
+    let searchId = checkNull(req.body.searchId, null);
+
+    (async () => {
+        try {
+         
+            var QueryStr =  "SELECT TBZ.* ,(TOT_CNT - SEQ + 1) AS NO " +
+                            "  FROM (SELECT TBY.* " +
+                            "          FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX." + sortIdx + ") AS SEQ, " +
+                            "                       COUNT('1') OVER(PARTITION BY '1') AS TOT_CNT, " +
+                            "                       CEILING(ROW_NUMBER() OVER(ORDER BY TBX." + sortIdx + ") / CONVERT( NUMERIC, " + pageSize + " ) ) PAGEIDX, " +
+                            "                       TBX.*" +
+                            "                  FROM ( " +
+                            "                         SELECT " +
+                            "                              A.EMP_NUM      AS EMP_NUM " +
+                            "                            , A.USER_ID      AS USER_ID_HIDDEN " +
+                            "                            , A.USER_ID      AS USER_ID " +
+                            "                            , A.SCRT_NUM     AS SCRT_NUM " +
+                            "                            , A.EMP_NM       AS EMP_NM " +
+                            "                            , A.EMP_ENGNM    AS EMP_ENGNM " +
+                            "                            , A.EMAIL        AS EMAIL " +
+                            "                            , A.M_P_NUM_1    AS M_P_NUM_1 " +
+                            "                            , A.M_P_NUM_2    AS M_P_NUM_2 " +
+                            "                            , A.M_P_NUM_3    AS M_P_NUM_3 " +
+                            "                            , A.USE_YN       AS USE_YN " +
+                            "                            , CONVERT(NVARCHAR(10), A.REG_DT, 120) AS REG_DT " +
+                            "                            , A.REG_ID       AS REG_ID " +
+                            "                            , CONVERT(NVARCHAR(10), A.MOD_DT, 120) AS MOD_DT " +
+                            "                            , A.MOD_ID       AS MOD_ID " +
+                            "                            , A.LOGIN_FAIL_CNT      AS LOGIN_FAIL_CNT " +
+                            "                            , CONVERT(NVARCHAR, A.LAST_LOGIN_DT, 120)  AS LAST_LOGIN_DT " +
+                            "                            , CONVERT(NVARCHAR, A.LOGIN_FAIL_DT, 120)  AS LOGIN_FAIL_DT " +
+                            "                         FROM TB_USER_M A " +
+                            "                         WHERE 1 = 1 " +
+                            "					      AND A.USE_YN = 'Y' "; 
+
+            if (searchName) {
+                QueryStr += "					      AND A.EMP_NM like '%" + searchName + "%' ";
+            }
+            if (searchId) {
+                QueryStr += "					      AND A.USER_ID like '%" + searchId + "%' ";
+            }
+            QueryStr +=     "                       ) TBX " +
+                            "               ) TBY " +
+                            "       ) TBZ" +
+                            " WHERE PAGEIDX = " + currentPageNo + " " +
+                            "ORDER BY " + sortIdx + " ";
+            
+            
+            let pool = await sql.connect(dbConfig)
+            let result1 = await pool.request().query(QueryStr);
+
+            let rows = result1.recordset;
+
+            var recordList = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+
+                item = rows[i];
+                
+
+                recordList.push(item);
+            }
 
 
+            if(rows.length > 0){
 
+                var totCnt = 0;
+                if (recordList.length > 0)
+                    totCnt = checkNull(recordList[0].TOT_CNT, 0);
+                var getTotalPageCount = Math.floor((totCnt - 1) / checkNull(rows[0].TOT_CNT, 10) + 1);
+
+
+                res.send({
+                    records : recordList.length,
+                    total : getTotalPageCount,
+                    page : checkNull(currentPageNo, 1),
+                    rows : recordList
+                });
+
+            }else{
+                res.send({list : result});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+});
+*/
 
 
 module.exports = router;

@@ -193,21 +193,76 @@
             
             <div class="clear-both"></div>
             <p class="texcon03">Description  <span>(optional) </span></p>
-            <p><textarea name="description" id="description" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup=""></textarea></p>
+            <p><textarea name="description" id="description" cols="" rows="2" style="width:100%; resize:none;" placeholder="Input text.." onkeyup=""></textarea></p>
             
             <div id="commonLayout">
-                <div style="overflow-y:scroll; overflow-x:hidden; height:300px;">
-                    <p class="texcon03">Dialogue Type <span>(required) </span></p>
-                    <p><select name="dlgType" class="inbox02" id="dlgType" style="width:100%" >
-                        <option value="2" selected>Text</option>
-                        <option value="3">Carousel</option>
-                        <option value="4">Media</option>
-                    </select></p>
-                    <div class="clear-both"></div>
+                <div style="overflow-y:scroll; overflow-x:hidden; height:400px;">
+                    <div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">
+                        <p class="texcon03">Dialogue Type <span>(required) </span></p>
+                        <p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >
+                            <option value="2" selected>Text</option>
+                            <option value="3">Carousel</option>
+                            <option value="4">Media</option>
+                        </select></p>
+                        <div class="clear-both"></div>
 
-                    <p class="texcon03">Dialogue Text  <span>(required) </span></p>
-                    <p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation('dialogInsert');"></textarea></p>
-                    
+                        <p class="texcon03">Dialogue Text  <span>(required) </span></p>
+                        <p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation('dialogInsert');"></textarea></p>
+                    </div>
+
+                    <div id="carouselLayout" style="display:none;">
+                        <p class="texcon03">Image Url <span>(optional) </span></p>
+                        <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:100%" placeholder="Input image url.." /></p>
+
+                        <div class="layout-float-left">
+                            <p class="texcon03">Button Name <span>(optional) </span></p>
+                            <p>
+                                <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
+                                <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" placeholder="Input name.." />
+                                <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" placeholder="Input name.." />
+                                <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" placeholder="Input name.." />
+                            </p>
+                        </div>
+                        <div class="layout-float-left-last">
+                            <p class="texcon03">Button Content <span>(optional) </span></p>
+                            <p>
+                                <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
+                                <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." />
+                                <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." />
+                                <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" placeholder="Input contents.." />
+                            </p>
+                        </div>
+                        <div class="clear-both"></div>
+                    </div>
+
+                    <div id="mediaLayout" style="display:none;">
+                        <p class="texcon03">Image Url <span>(required) </span></p>
+                        <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:100%" placeholder="Input image url.." /></p>
+
+                        <p class="texcon03">Media Url <span>(optional) </span></p>
+                        <p><input name="MediaUrl" type="text" class="inbox02" id="MediaUrl" style="width:100%" placeholder="Input media url.." /></p>
+
+                        <div class="layout-float-left">
+                            <p class="texcon03">Button Name <span>(optional) </span></p>
+                            <p>
+                                <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
+                                <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" placeholder="Input name.." />
+                                <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" placeholder="Input name.." />
+                                <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" placeholder="Input name.." />
+                            </p>
+                        </div>
+                        <div class="layout-float-left-last">
+                            <p class="texcon03">Button Content <span>(optional) </span></p>
+                            <p>
+                                <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
+                                <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." />
+                                <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." />
+                                <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" placeholder="Input contents.." />
+                            </p>
+                        </div>
+                        <div class="clear-both"></div>
+                    </div>
+
                     <!-- carousal 일 경우 card 순서 input box 추가 layout -->
                     <div id="cardLayout" style="display:none;">
                         <p class="texcon03">Card Order <span>(required) </span></p>
@@ -266,8 +321,23 @@
             </div>
             
         </div>
-    	<div id="dialogPreview" style="float:left; width: 47%; overflow: auto; margin:0 0 0 10px; border: 1px solid #ccc; background: #f1f3f6; padding: 5px;">
-
+    	<div id="dialogPreview" style="float:left; width: 47%; overflow: auto; margin:0 0 0 10px; border: 1px solid #ccc; background: #f1f3f6; padding: 5px;">            
+            <div class="dialogView">
+                <div class="wc-message wc-message-from-bot" style="width:80%;">
+                    <div class="wc-message-content">
+                        <svg class="wc-message-callout"></svg>
+                        <div>
+                            <div class="format-markdown">
+                                <div class="textMent">
+                                    <p>
+                                        입력해주세요...
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="clear-both"></div>
         </form>
