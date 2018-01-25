@@ -1269,3 +1269,30 @@ function searchSaveDialog() {
     });
 
 }
+
+
+
+var carouselDivHtml = 
+$(document).on('click', 'a[name=carouseBtn]',function(e){
+    //e.stopPropagation();
+    //e.preventDefault();
+    var index = 0;
+    $(this).parent().find('input').each(function() {
+        if ( $(this).css("display") === 'none') {
+            $(this).show();
+            $(this).parent().parent().next().find('input').eq(index).show();
+            return false;
+        }
+        index++;
+    });
+});
+
+$(document).on('click', 'a[name=addCarouselBtn]', function(e){
+    var $textclone = $('#textLayout').clone();
+    var $clone = $('#carouselLayout').clone();
+
+    $('.insertForm:eq(0)').append($textclone);
+    $('.insertForm:eq(0)').append($clone);
+    $('.insertForm:eq(0) #carouselLayout').eq(($('.insertForm:eq(0) #carouselLayout').length-1)).css('display', 'block');
+    $('.insertForm:eq(0) #carouselLayout').eq(($('.insertForm:eq(0) #carouselLayout').length-2)).find('.layout-float-left').eq(1).remove();
+});
