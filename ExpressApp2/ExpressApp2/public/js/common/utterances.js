@@ -280,6 +280,7 @@ $(document).ready(function(){
 
         var insertForm = '';
         insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
+        insertForm += '<form name="dialogLayout" id="dialogLayout">';
         insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
         insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
         insertForm += '<option value="2" selected>Text</option>';
@@ -293,6 +294,7 @@ $(document).ready(function(){
         insertForm += '<p class="texcon03">Dialogue Text  <span>(required) </span></p>';
         insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
         insertForm += '</div>';
+        insertForm += '</form>';
         insertForm += '</div>';
 
         $(".insertForm:last").after(insertForm);
@@ -632,6 +634,29 @@ function insertDialog(){
 
     $.ajax({
         url: '/learning/insertDialog',
+        dataType: 'json',
+        type: 'POST',
+        data: $('#appInsertForm').serializeObject(),
+        success: function(data) {
+            if(data.status == 200){
+                var inputUttrHtml = '';
+                inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
+                inputUttrHtml += '<input name="dlgChk" class="tweak-input"  onclick="" type="checkbox"/> </div> </td>';
+                inputUttrHtml += '<td class="txt_left" ><input type="hidden" name="' + data.DLG_ID + '" value="' + data.DLG_ID + '" />' + data.CARD_TEXT + '</td></tr>';
+                $('#dlgListTable').find('tbody').prepend(inputUttrHtml);
+
+                $('#addDialogClose').click();
+            }
+        }
+    });
+}
+
+function addDialog(){
+    alert($('form[name=dialogLayout]').html());
+
+
+    $.ajax({
+        url: '/learning/addDialog',
         dataType: 'json',
         type: 'POST',
         data: $('#appInsertForm').serializeObject(),
