@@ -165,8 +165,6 @@ $(document).ready(function(){
         insertForm += '<option value="4">Media</option>';
         insertForm += '</select></p>';
         insertForm += '<div class="clear-both"></div>';
-        insertForm += '<p class="texcon03">Dialogue Text  <span>(required) </span></p>';
-        insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
         insertForm += '</div>';
 
         $('#commonLayout div:first').prepend(insertForm);
@@ -276,8 +274,12 @@ $(document).ready(function(){
         insertForm += '<option value="4">Media</option>';
         insertForm += '</select></p>';
         insertForm += '<div class="clear-both"></div>';
+        insertForm += '<div id="textLayout" style="display:block;">';
+        insertForm += '<p class="texcon03">Dialogue Title <span>(required) </span></p>';
+        insertForm += '<p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." /></p>';
         insertForm += '<p class="texcon03">Dialogue Text  <span>(required) </span></p>';
-        insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
+        insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
+        insertForm += '</div>';
         insertForm += '</div>';
 
         $(".insertForm:last").after(insertForm);
@@ -521,6 +523,7 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<ul class="wc-card-buttons"><li><button>BTN_1_TITLE</button></li></ul>';
         insertHtml += '</div>';
         insertHtml += '</li>';
+        /*
         insertHtml += '<li class="wc-carousel-item">';
         insertHtml += '<div class="wc-card hero">';
         insertHtml += '<div class="wc-container imgContainer">';
@@ -531,10 +534,11 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<ul class="wc-card-buttons"><li><button>BTN_1_TITLE</button></li></ul>';
         insertHtml += '</div>';
         insertHtml += '</li>';
+        */
         insertHtml += '</ul>';
         insertHtml += '</div>';
         insertHtml += '</div>';
-        insertHtml += '<button class="scroll next" id="nextBtn" onclick="nextBtn(botChatNum)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+        //insertHtml += '<button class="scroll next" id="nextBtn" onclick="nextBtn(botChatNum)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
         insertHtml += '</div></div></div></div>';
 
         $(".dialogView").eq(idx).html(insertHtml);
@@ -586,9 +590,22 @@ function dialogValidation(type){
     }
 }
 
+$(document).on('change','.insertForm #mediaLayout input[name=imgUrl]',function(e){
+    var idx = $(".insertForm #mediaLayout input[name=imgUrl]").index(this);
+    $('.dialogView .wc-card-div img:eq(' + idx + ')').attr("src",$(e.target).val());
+});
+
 function writeDialog(e) {
     var idx = $('textarea[name=dialogText]').index(e);
-    $('.textMent p:eq(' + idx + ')').html(e.value);
+    
+    if($('.insertForm select[name=dlgType]').eq(idx).val() == 3) {
+        $('.dialogView:eq(' + idx + ') .carousel').html(e.value);
+    } else if($('.insertForm select[name=dlgType]').eq(idx).val() == 4) {
+        $('.dialogView h1').eq(idx).html(e.value);
+    } else {
+        $('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
+    }
+    
 }
 
 //다이얼로그 생성
@@ -1007,6 +1024,12 @@ function openModalBox(target){
             return false;
     });
     wrapWindowByMask();
+
+    if(target == "#create_dlg") {
+        $(".insertForm").append($("#textLayout").clone(true));
+        $(".insertForm #textLayout").css("display","block");
+    }
+
     selectGroup('searchLargeGroup');
 }
 

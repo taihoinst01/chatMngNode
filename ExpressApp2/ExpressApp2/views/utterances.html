@@ -205,59 +205,71 @@
                             <option value="4">Media</option>
                         </select></p>
                         <div class="clear-both"></div>
+                        
+                    </div>
+
+                    <div id="textLayout" style="display:none;">
+                        <p class="texcon03">Dialogue Title <span>(required) </span></p>
+                        <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." /></p>
 
                         <p class="texcon03">Dialogue Text  <span>(required) </span></p>
-                        <p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation('dialogInsert');"></textarea></p>
+                        <p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation('dialogInsert');"></textarea></p>
                     </div>
 
                     <div id="carouselLayout" style="display:none;">
-                        <p class="texcon03">Image Url <span>(optional) </span></p>
-                        <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:100%" placeholder="Input image url.." /></p>
+                        <p class="texcon03">Image Url <span>(required) </span></p>
+                        <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." /></p>
 
                         <div class="layout-float-left">
                             <p class="texcon03">Button Name <span>(optional) </span></p>
                             <p>
-                                <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
-                                <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" placeholder="Input name.." />
-                                <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" placeholder="Input name.." />
-                                <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" placeholder="Input name.." />
+                                <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" style="width:95%" placeholder="Input name.." />
+                                <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" style="width:95%; display:none;" placeholder="Input name.." />
+                                <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" style="width:95%; display:none;" placeholder="Input name.." />
+                                <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" style="width:95%; display:none;" placeholder="Input name.." />
+                                <button class="btn" style="margin:2px 0 5px 0">AddButton</button>
                             </p>
                         </div>
                         <div class="layout-float-left-last">
                             <p class="texcon03">Button Content <span>(optional) </span></p>
                             <p>
-                                <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
-                                <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." />
-                                <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." />
-                                <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" placeholder="Input contents.." />
+                                <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" style="width:95%" placeholder="Input contents.." />
+                                <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" style="width:95%; display:none;" placeholder="Input contents.." />
+                                <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" style="width:95%; display:none;" placeholder="Input contents.." />
+                                <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" style="width:95%; display:none;" placeholder="Input contents.." />
                             </p>
+                        </div>
+                        <div class="layout-float-left">
+                            <p class="texcon03">Carousel Add</p>
+                            <p><button class="btn" style="margin:2px 0 5px 0" id="addCarouselBtn">Add</button></p>
                         </div>
                         <div class="clear-both"></div>
                     </div>
 
                     <div id="mediaLayout" style="display:none;">
-                        <p class="texcon03">Image Url <span>(required) </span></p>
-                        <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:100%" placeholder="Input image url.." /></p>
+                        <p class="texcon03">Image Url <span>(optional) </span></p>
+                        <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." /></p>
 
                         <p class="texcon03">Media Url <span>(optional) </span></p>
-                        <p><input name="MediaUrl" type="text" class="inbox02" id="MediaUrl" style="width:100%" placeholder="Input media url.." /></p>
+                        <p><input name="MediaUrl" type="text" class="inbox02" id="MediaUrl" style="width:95%" placeholder="Input media url.." /></p>
 
                         <div class="layout-float-left">
                             <p class="texcon03">Button Name <span>(optional) </span></p>
-                            <p>
-                                <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
-                                <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" placeholder="Input name.." />
-                                <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" placeholder="Input name.." />
-                                <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" placeholder="Input name.." />
+                            <p> 
+                                <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" style="width:95%" placeholder="Input name.." />
+                                <button class="btn" style="margin:2px 0 5px 0" >AddButton</button>
+                                <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" style="width:95%; display:none;" placeholder="Input name.." />
+                                <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" style="width:95%; display:none;" placeholder="Input name.." />
+                                <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" style="width:95%; display:none;" placeholder="Input name.." />
                             </p>
                         </div>
                         <div class="layout-float-left-last">
                             <p class="texcon03">Button Content <span>(optional) </span></p>
                             <p>
-                                <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
-                                <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." />
-                                <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." />
-                                <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" placeholder="Input contents.." />
+                                <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" style="width:95%" placeholder="Input contents.." />
+                                <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" style="width:95%; display:none;" placeholder="Input contents.." />
+                                <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" style="width:95%; display:none;" placeholder="Input contents.." />
+                                <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" style="width:95%; display:none;" placeholder="Input contents.." />
                             </p>
                         </div>
                         <div class="clear-both"></div>
