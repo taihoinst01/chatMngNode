@@ -414,6 +414,45 @@ ul.tabs li.active { height: 38px;line-height: 38px;background: #002c5f;color:#ff
 .check-radio-tweak-wrapper[type="radio"][checked] {background: transparent;border: 2px solid #FF6600;}
 .check-radio-tweak-wrapper[type="radio"][checked]::before {content: ""; width: 11px;height: 11px; background: #FF6600;display: block;position: absolute;top: 2px;left: 2px;border-radius: 18px;}
 
+
+
+
+
+.check-radio-tweak-wrapper2 {-webkit-user-select: none;-moz-user-select: none; -ms-user-select: none;user-select: none;}
+.check-radio-tweak-wrapper2 input[type="checkbox"],  .check-radio-tweak-wrapper2 input[type="radio"] { display: none; }
+.check-radio-tweak-wrapper2[type="checkbox"] { display: inline-block;width: 32px;height: 32px;background: #FFFFFF;cursor: pointer;border-radius: 2px;box-sizing: border-box; border: 1px solid #919195;position: relative;}
+.check-radio-tweak-wrapper2[type="checkbox"]:hover { border: 2px solid #FF6600; }
+.check-radio-tweak-wrapper2[type="checkbox"][checked] {background: #FF6600;border: 2px solid #FF6600;}
+.check-radio-tweak-wrapper2[type="checkbox"][checked]::before {
+  content: "";
+  width: 11px;
+  height: 8px;
+  background: transparent;
+  display: block;
+  border-bottom: 2.5px solid #fff;
+  border-left: 2px solid #fff;
+  transform: rotate(-45deg);
+  position: absolute;
+  top: 6px;
+  left: 8px;
+}
+
+.check-radio-tweak-wrapper2[type="radio"] {
+  display: inline-block;
+  width: 19px;
+  height: 19px;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 18px;
+  box-sizing: border-box;
+  border: 2px solid #919195;
+  position: relative;
+}
+
+.check-radio-tweak-wrapper2[type="radio"]:hover { border: 2px solid #FF6600; }
+.check-radio-tweak-wrapper2[type="radio"][checked] {background: transparent;border: 2px solid #FF6600;}
+.check-radio-tweak-wrapper2[type="radio"][checked]::before {content: ""; width: 11px;height: 11px; background: #FF6600;display: block;position: absolute;top: 2px;left: 2px;border-radius: 18px;}
+
 /* 다이얼로그 */
 .gallery_wrap{width:550px; text-align:center; display:inline-block; padding-top:20px;}/* dyyoo 2017-08-31 미리보기창 헤더영역 겹쳐서 padding으로 body 위치 내림 */
 .gallery {width:96%; height: 333px; margin:auto; padding:2%;}/* height고정 dyyoo */

@@ -364,7 +364,8 @@ $(document).ready(function(){
     });
 
     $("#searchDialogBtn").on('click',function(){
-        $("#searchDlgResultDiv").html("");
+        $("#searchListTbl tbody").html("");
+        $("#searchListTbl").next().html("");
         searchDialog();
     });
 
@@ -481,7 +482,7 @@ function selectDlgListAjax(entity) {
                         inputUttrHtml += '</li>';
                         
                         //다이얼로그가 한개일때에는 오른쪽 버튼 x
-                        if(tmp.dlg.length == 1) {
+                        if(tmp.dlg.length == 2 && j == 1) {
                             inputUttrHtml += '</ul>';
                             inputUttrHtml += '</div>';
                             inputUttrHtml += '</div>';
@@ -877,19 +878,20 @@ function searchDialog() {
 
             var inputUttrHtml = '';
             for (var i = 0; i < row.length; i++) {
-                botChatNum++;
                 var val = row[i];
-
-                inputUttrHtml += '<div style="width: 405px; height: 85%; float:left; margin: 15px 20px;">';
-                inputUttrHtml += '<div style="height: 10%; width: 100%; z-index:5; background-color: #6f6c6c;">';
-                inputUttrHtml += '<div class="check-radio-tweak-wrapper2" type="checkbox">';
+                inputUttrHtml += '<tr>';
+                inputUttrHtml += '<td>';
+                inputUttrHtml += '<div class="check-radio-tweak-wrapper" type="checkbox">';
                 inputUttrHtml += '<input name="chksearch" class="tweak-input" type="checkbox"/>';
                 inputUttrHtml += '</div>';
-                inputUttrHtml += '</div>';
-                inputUttrHtml += '<div style="height: 90%; overflow: scroll; overflow-x: hidden; background-color:#e7e7e7; padding:10px;">';
-
+                inputUttrHtml += '</td>';
+                inputUttrHtml += '<td>';
+                inputUttrHtml += '<table class="Tbl" width="100%" height="20px">';
+                inputUttrHtml += '<thead>';
+                inputUttrHtml += '<tr bgcolor="#e7e7e7">';
                 for(var l = 0; l < val.length; l++){
                     var tmp = val[l];
+                    inputUttrHtml += '<td>';
                     for(var j = 0; j < tmp.dlg.length; j++) {
                         if(tmp.dlg[j].DLG_TYPE == 2) {
                             inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="width:200px">';
@@ -901,18 +903,9 @@ function searchDialog() {
                             inputUttrHtml += tmp.dlg[j].CARD_TEXT;
                             inputUttrHtml += '</p>';
                             inputUttrHtml += '</div></div></div></div></div>';
-
-                            inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="width:200px">';
-                            inputUttrHtml += '<div class="wc-message-content">';
-                            inputUttrHtml += '<svg class="wc-message-callout"></svg>';
-                            inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
-                            inputUttrHtml += '<p>';
-                            inputUttrHtml += '<input type="hidden" name="searchDlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
-                            inputUttrHtml += tmp.dlg[j].CARD_TEXT;
-                            inputUttrHtml += '</p>';
-                            inputUttrHtml += '</div></div></div></div></div>';
                         } else if(tmp.dlg[j].DLG_TYPE == 3) {
                             if(j == 0) {
+                                botChatNum++;
                                 inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="margin-bottom:0px">';
                                 inputUttrHtml += '<div class="wc-message-content">';
                                 inputUttrHtml += '<svg class="wc-message-callout"></svg>';
@@ -985,14 +978,80 @@ function searchDialog() {
                             inputUttrHtml += '</div></div></div></div></div>';
                         }
                     }
-                }
+                    inputUttrHtml += '</td>';
 
-                inputUttrHtml += '</div>';
-                inputUttrHtml += '</div>';
+                }
+                inputUttrHtml += '</tr>';
+                inputUttrHtml += '</thead>';
+                inputUttrHtml += '</table>';
+                inputUttrHtml += '</td>';
+                inputUttrHtml += '</tr>';
             }
 
-            $('#searchDlgResultDiv').prepend(inputUttrHtml);
-           
+            $('#searchListTbl tbody').prepend(inputUttrHtml);
+            var rowPerPage = $('[name="rowPerPage"]').val() * 1;// 1 을  곱하여 문자열을 숫자형로 변환
+
+        //		console.log(typeof rowPerPage);
+        
+            var zeroWarning = 'Sorry, but we cat\'t display "0" rows page. + \nPlease try again.'
+            if (!rowPerPage) {
+                alert(zeroWarning);
+                return;
+            }
+            $('#nav').remove();
+            var $products = $('#searchListTbl');
+        
+            $products.after('<div id="nav">');
+        
+        
+            var $tr = $($products).children('tbody').children('tr');
+            var rowTotals = $tr.length;
+        //	console.log(rowTotals);
+        
+            var pageTotal = Math.ceil(rowTotals/ rowPerPage);
+            var i = 0;
+        
+            for (; i < pageTotal; i++) {
+                $('<a href="#"></a>')
+                        .attr('rel', i)
+                        .html(i + 1)
+                        .appendTo('#nav');
+            }
+        
+            $tr.addClass('off-screen')
+                    .slice(0, rowPerPage)
+                    .removeClass('off-screen');
+        
+            var $pagingLink = $('#nav a');
+            $pagingLink.on('click', function (evt) {
+                evt.preventDefault();
+                var $this = $(this);
+                if ($this.hasClass('active')) {
+                    return;
+                }
+                $pagingLink.removeClass('active');
+                $this.addClass('active');
+        
+                // 0 => 0(0*4), 4(0*4+4)
+                // 1 => 4(1*4), 8(1*4+4)
+                // 2 => 8(2*4), 12(2*4+4)
+                // 시작 행 = 페이지 번호 * 페이지당 행수
+                // 끝 행 = 시작 행 + 페이지당 행수
+        
+                var currPage = $this.attr('rel');
+                var startItem = currPage * rowPerPage;
+                var endItem = startItem + rowPerPage;
+        
+                $tr.css('opacity', '0.0')
+                        .addClass('off-screen')
+                        .slice(startItem, endItem)
+                        .removeClass('off-screen')
+                        .animate({opacity: 1}, 300);
+        
+            });
+        
+            $pagingLink.filter(':first').addClass('active');
+            
         },
         error:function(e){  
             alert(e.responseText);  
@@ -1001,7 +1060,7 @@ function searchDialog() {
 }
 
 function searchSaveDialog() {
-    var entity = $('input[name=entity]').val();
+    var entity = $('input[name=entity').val();
 
     var rowNum;
     $("input[name=chksearch]").each(function(n) {

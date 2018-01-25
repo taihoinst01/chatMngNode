@@ -365,6 +365,7 @@ $(document).ready(function(){
 
     $("#searchDialogBtn").on('click',function(){
         $("#searchDlgResultDiv").html("");
+        //$("#searchListTbl").next().html("");
         searchDialog();
     });
 
@@ -989,6 +990,8 @@ function searchDialog() {
 
                 inputUttrHtml += '</div>';
                 inputUttrHtml += '</div>';
+                
+                botChatNum++;
             }
 
             $('#searchDlgResultDiv').prepend(inputUttrHtml);
@@ -1001,7 +1004,7 @@ function searchDialog() {
 }
 
 function searchSaveDialog() {
-    var entity = $('input[name=entity]').val();
+    var entity = $('input[name=entity').val();
 
     var rowNum;
     $("input[name=chksearch]").each(function(n) {
