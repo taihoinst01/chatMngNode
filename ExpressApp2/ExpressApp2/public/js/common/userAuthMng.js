@@ -99,10 +99,10 @@ function makeAppGrid() {
         },
           
         colModel: [
-          {name:'sel', label:'' , width:30, editable:false, align:'center', sortable:false, hidden:false, formatter:selCell},
+          {name:'sel', label:'' , width:20, editable:false, align:'center', sortable:false, hidden:false, formatter:selCell},
           {name:'APP_NAME'    , label:'APP NAME'            , width:70, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'APP_ID'    , label:'APP ID'            , width:80, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'OWNER_EMAIL'    , label:'OWNER'            , width:120, editable:false, align:'left', sortable:true, hidden:false}
+          {name:'APP_ID'    , label:'APP ID'            , width:150, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'OWNER_EMAIL'    , label:'OWNER'            , width:60, editable:false, align:'right', sortable:true, hidden:false}
         ],
         width: $("#gridUserAuthList").width(),
         height: 650,

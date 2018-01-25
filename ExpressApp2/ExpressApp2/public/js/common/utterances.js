@@ -105,8 +105,9 @@ $(document).ready(function(){
 
         $('.checkUtter').each(function(){
             if($(this).attr('checked') == 'checked') {
-                $('#entityUtteranceTextTable tbody').html('');
-                //$(this).parent().parent().remove();
+                //$('#entityUtteranceTextTable tbody').html('');
+                $(this).parent().parent().next().remove();
+                $(this).parent().parent().remove();
             }
         });
         $('#dialogRecommand').html("");
