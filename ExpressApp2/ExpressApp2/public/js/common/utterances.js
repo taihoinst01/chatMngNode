@@ -690,7 +690,7 @@ function selectDlgListAjax(entity) {
                         inputUttrHtml += '</li>';
                         
                         //다이얼로그가 한개일때에는 오른쪽 버튼 x
-                        if(tmp.dlg.length == 1) {
+                        if(tmp.dlg.length == 2 && j == 1) {
                             inputUttrHtml += '</ul>';
                             inputUttrHtml += '</div>';
                             inputUttrHtml += '</div>';
