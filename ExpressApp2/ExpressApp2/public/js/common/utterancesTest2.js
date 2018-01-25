@@ -989,6 +989,7 @@ function searchDialog() {
             }
 
             $('#searchListTbl tbody').prepend(inputUttrHtml);
+            /*
             var rowPerPage = $('[name="rowPerPage"]').val() * 1;// 1 을  곱하여 문자열을 숫자형로 변환
 
         //		console.log(typeof rowPerPage);
@@ -1051,7 +1052,7 @@ function searchDialog() {
             });
         
             $pagingLink.filter(':first').addClass('active');
-            
+            */
         },
         error:function(e){  
             alert(e.responseText);  

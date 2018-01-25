@@ -1119,15 +1119,6 @@ function searchDialog() {
                             inputUttrHtml += '</p>';
                             inputUttrHtml += '</div></div></div></div></div>';
 
-                            inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="width:200px">';
-                            inputUttrHtml += '<div class="wc-message-content">';
-                            inputUttrHtml += '<svg class="wc-message-callout"></svg>';
-                            inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
-                            inputUttrHtml += '<p>';
-                            inputUttrHtml += '<input type="hidden" name="searchDlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
-                            inputUttrHtml += tmp.dlg[j].CARD_TEXT;
-                            inputUttrHtml += '</p>';
-                            inputUttrHtml += '</div></div></div></div></div>';
                         } else if(tmp.dlg[j].DLG_TYPE == 3) {
                             if(j == 0) {
                                 inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="margin-bottom:0px">';
