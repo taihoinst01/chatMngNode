@@ -106,6 +106,18 @@ $(document).ready(function(){
         $('.checkUtter').each(function(){
             if($(this).attr('checked') == 'checked') {
                 //$('#entityUtteranceTextTable tbody').html('');
+                var delVal = $(this).parent().next().find('input[name=entity]').val();
+                var sameUtterCnt = 0;
+                $('.clickUtter').each(function(){
+                    var utterVal = $(this).find('input[name=entity]').val();
+                    if (delVal === utterVal) {
+                        sameUtterCnt++;
+                    }
+                });
+                if (sameUtterCnt < 2) {
+                    delete dlgMap[delVal];
+                }
+
                 $(this).parent().parent().next().remove();
                 $(this).parent().parent().remove();
             }
@@ -463,6 +475,13 @@ $(document).ready(function(){
 
 });
 
+
+//utter td 클릭
+$(document).on('click','.clickUtter',function(event){
+    var utter = $(this).find('input[name=entity]').val();
+    $('#dialogRecommand').html(dlgMap[utter]);
+});
+
 //intent selbox 선택
 $(document).on('change','#intentNameList',function(event){
     selectDlgListAjax($("#intentNameList option:selected").val());
@@ -615,7 +634,8 @@ function insertDialog(){
 }
 
 var botChatNum = 1; 
-
+//dlg 저장
+var dlgMap = new Object();
 function selectDlgListAjax(entity) {
     $.ajax({
         url: '/learning/selectDlgListAjax',                //주소
@@ -722,6 +742,14 @@ function selectDlgListAjax(entity) {
             //$('#dlgListTable').find('tbody').empty();
 
             $('#dialogRecommand').prepend(inputUttrHtml);
+
+            //dlg 기억.
+            var utter ="";
+            for (var i=0; i<entity.length; i++) {
+                utter += entity[i] + ",";
+            }
+            utter = utter.substr(0, utter.length-1);
+            dlgMap[utter] = inputUttrHtml;
 
             botChatNum++;
         } 
@@ -838,7 +866,7 @@ function utterInput(queryText) {
                 var inputUttrHtml = '';
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
-                inputUttrHtml += '<td class="txt_left" ><input type=hidden name="entity" value="' + result['entities'] + '"/>' + utter + '</td>';
+                inputUttrHtml += '<td class="txt_left clickUtter"><input type=hidden name="entity" value="' + result['entities'] + '"/>' + utter + '</td>';
                 inputUttrHtml += '<tr><td> </td><td class="txt_left" >';
                 if(result.commonEntities){
                     for(var i = 0; i < result.commonEntities.length ; i++){
