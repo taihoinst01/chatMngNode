@@ -105,21 +105,8 @@ $(document).ready(function(){
 
         $('.checkUtter').each(function(){
             if($(this).attr('checked') == 'checked') {
-                //$('#entityUtteranceTextTable tbody').html('');
-                var delVal = $(this).parent().next().find('input[name=entity]').val();
-                var sameUtterCnt = 0;
-                $('.clickUtter').each(function(){
-                    var utterVal = $(this).find('input[name=entity]').val();
-                    if (delVal === utterVal) {
-                        sameUtterCnt++;
-                    }
-                });
-                if (sameUtterCnt < 2) {
-                    delete dlgMap[delVal];
-                }
-
-                $(this).parent().parent().next().remove();
-                $(this).parent().parent().remove();
+                $('#entityUtteranceTextTable tbody').html('');
+                //$(this).parent().parent().remove();
             }
         });
         $('#dialogRecommand').html("");
@@ -167,21 +154,7 @@ $(document).ready(function(){
         $('#mediaCarouselLayout').css('display','none');
         $('#cardLayout').css('display','none');
         $('#appInsertForm')[0].reset();
-        $('.insertForm').remove();
-
-        var insertForm = '';
-        insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
-        insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
-        insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
-        insertForm += '<option value="2" selected>Text</option>';
-        insertForm += '<option value="3">Carousel</option>';
-        insertForm += '<option value="4">Media</option>';
-        insertForm += '</select></p>';
-        insertForm += '<div class="clear-both"></div>';
-        insertForm += '</div>';
-
-        $('#commonLayout div:first').prepend(insertForm);
-        $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>입력해주세요...</p></div></div></div></div></div></div></div>');
+        $('#dialogPreview').html('');
     });
 
     //dlg 체크박스 전체선택 
@@ -208,40 +181,16 @@ $(document).ready(function(){
     // 소스 타입 변경
     $('#sourceType').change(function(e){
         if($(e.target).val() == "API") {
-            $('#dialogPreview').html('');
             $('#commonLayout').css('display','none');
             $('#apiLayout').css('display','block');
         } else {
-
-            $('.insertForm').remove();
-
-            var insertForm = '';
-            insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
-            insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
-            insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
-            insertForm += '<option value="2" selected>Text</option>';
-            insertForm += '<option value="3">Carousel</option>';
-            insertForm += '<option value="4">Media</option>';
-            insertForm += '</select></p>';
-            insertForm += '<div class="clear-both"></div>';
-            insertForm += '<p class="texcon03">Dialogue Text  <span>(required) </span></p>';
-            insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
-            insertForm += '</div>';
-    
-            $('#commonLayout div:first').prepend(insertForm);
-            $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>입력해주세요...</p></div></div></div></div></div></div></div>');
-
             $('#commonLayout').css('display','block');
             $('#apiLayout').css('display','none');
         }
     });
     
-// 타입 변경시 버튼, 이미지 관련 input 생성 및 삭제
-/*
+    // 타입 변경시 버튼, 이미지 관련 input 생성 및 삭제
     $('#dlgType').change(function(e){
-        var idx = $('#dlgType').index(this);
-
-
         if($(e.target).val() == "2"){
             $('#mediaCarouselLayout').css('display','none');
             $('#cardLayout').css('display','none');
@@ -252,10 +201,8 @@ $(document).ready(function(){
             $('#mediaCarouselLayout').css('display','block');
             $('#cardLayout').css('display','block');
         }
-        
         openModalBox('#create_dlg');
     });
-*/
 
     // create LargeGroup
     $('#btnCreateLgroup').on('click',function(){
@@ -273,51 +220,8 @@ $(document).ready(function(){
         return;
     });
     
-    //다이얼로그 Add From
-    $('#addDialogBtn').click(function(e){
-        //$(".insertForm:eq(0)").clone(true).appendTo(".copyForm");
-        //$(".copyForm textarea[name=dialogText]:last").val('');
-
-        var insertForm = '';
-        insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
-        insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
-        insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
-        insertForm += '<option value="2" selected>Text</option>';
-        insertForm += '<option value="3">Carousel</option>';
-        insertForm += '<option value="4">Media</option>';
-        insertForm += '</select></p>';
-        insertForm += '<div class="clear-both"></div>';
-        insertForm += '<div id="textLayout" style="display:block;">';
-        insertForm += '<p class="texcon03">Dialogue Title <span>(required) </span></p>';
-        insertForm += '<p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." /></p>';
-        insertForm += '<p class="texcon03">Dialogue Text  <span>(required) </span></p>';
-        insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
-        insertForm += '</div>';
-        insertForm += '</div>';
-
-        $(".insertForm:last").after(insertForm);
-        
-        var insertHtml = '';
-        insertHtml += '<div class="dialogView">';
-        insertHtml += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
-        insertHtml += '<div class="wc-message-content">';
-        insertHtml += '<svg class="wc-message-callout"></svg>';
-        insertHtml += '<div><div class="format-markdown"><div class="textMent">';
-        insertHtml += '<p>';
-        insertHtml += '입력해주세요...';
-        insertHtml += '</p>';
-        insertHtml += '</div></div></div></div></div>';
-        insertHtml += '</div>';
-
-        $("#dialogPreview").append(insertHtml);
-        e.stopPropagation();
-        e.preventDefault();
-        
-    });
-
-
     //다이얼로그 Add
-    /*$('#addDialogBtn').click(function(e){
+    $('#addDialogBtn').click(function(e){
         var dlgType = $('#dlgType').val();
         var dlgHtml = '';
         if(dlgType == '2'){ //text
@@ -436,7 +340,6 @@ $(document).ready(function(){
         e.stopPropagation();
         e.preventDefault();
     });
-    */
 
     $("#searchLargeGroup").change(function(){
         var str = "";
@@ -462,6 +365,7 @@ $(document).ready(function(){
 
     $("#searchDialogBtn").on('click',function(){
         $("#searchDlgResultDiv").html("");
+        //$("#searchListTbl").next().html("");
         searchDialog();
     });
 
@@ -473,125 +377,11 @@ $(document).ready(function(){
         $("#searchListTbl tbody").html("");
         $("#searchListTbl").next().html("");
     });
-
-});
-
-
-//utter td 클릭
-$(document).on('click','.clickUtter',function(event){
-    var utter = $(this).find('input[name=entity]').val();
-    $('#dialogRecommand').html(dlgMap[utter]);
 });
 
 //intent selbox 선택
 $(document).on('change','#intentNameList',function(event){
     selectDlgListAjax($("#intentNameList option:selected").val());
-});
-
-$(document).on('change','select[name=dlgType]',function(e){
-    var idx = $("select[name=dlgType]").index(this);
-    var insertHtml = "";
-
-    $('.insertForm:eq(' + idx + ') #carouselLayout').remove();
-    $('.insertForm:eq(' + idx + ') #mediaLayout').remove();
-
-    if($(e.target).val() == "2") {
-
-    } else if($(e.target).val() == "3") {
-        var $clone = $('#carouselLayout').clone();
-        $('.insertForm:eq(' + idx + ')').append($clone);
-        $('.insertForm:eq(' + idx + ') #carouselLayout').css('display', 'block');
-    } else if($(e.target).val() == "4") {
-        var $clone = $('#mediaLayout').clone();
-        $('.insertForm:eq(' + idx + ')').append($clone);
-        $('.insertForm:eq(' + idx + ') #mediaLayout').css('display', 'block');
-    }
-
-    if($(e.target).val() == "2") {
-        $(".dialogView").eq(idx).html('');
-        insertHtml += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
-        insertHtml += '<div class="wc-message-content">';
-        insertHtml += '<svg class="wc-message-callout"></svg>';
-        insertHtml += '<div><div class="format-markdown"><div class="textMent">';
-        insertHtml += '<p>';
-        insertHtml += '입력해주세요...';
-        insertHtml += '</p>';
-        insertHtml += '</div></div></div></div></div>';
-
-        $(".dialogView").eq(idx).html(insertHtml);
-    } else if($(e.target).val() == "3") {
-        $(".dialogView").eq(idx).html('');
-        insertHtml += '<div class="wc-message wc-message-from-bot" style="width:90%">';
-        insertHtml += '<div class="wc-message-content" style="width:90%;">';
-        insertHtml += '<svg class="wc-message-callout"></svg>';
-        insertHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
-        insertHtml += '<div>';
-        insertHtml += '<button class="scroll previous" id="prevBtn" style="display: none;" onclick="prevBtn(botChatNum)">';
-        insertHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
-        insertHtml += '</button>';
-        insertHtml += '<div class="wc-hscroll-outer" >';
-        insertHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv">';
-        insertHtml += '<ul>';
-        insertHtml += '<li class="wc-carousel-item">';
-        insertHtml += '<div class="wc-card hero">';
-        insertHtml += '<div class="wc-container imgContainer">';
-        insertHtml += '<img src="https://bot.hyundai.com/assets/images/movieImg/teasure/02_teaser.jpg">';
-        insertHtml += '</div>';
-        insertHtml += '<h1>CARD_TITLE</h1>';
-        insertHtml += '<p class="carousel">CARD_TEXT</p>';
-        insertHtml += '<ul class="wc-card-buttons"><li><button>BTN_1_TITLE</button></li></ul>';
-        insertHtml += '</div>';
-        insertHtml += '</li>';
-        /*
-        insertHtml += '<li class="wc-carousel-item">';
-        insertHtml += '<div class="wc-card hero">';
-        insertHtml += '<div class="wc-container imgContainer">';
-        insertHtml += '<img src="https://bot.hyundai.com/assets/images/movieImg/teasure/02_teaser.jpg">';
-        insertHtml += '</div>';
-        insertHtml += '<h1>CARD_TITLE</h1>';
-        insertHtml += '<p class="carousel">CARD_TEXT</p>';
-        insertHtml += '<ul class="wc-card-buttons"><li><button>BTN_1_TITLE</button></li></ul>';
-        insertHtml += '</div>';
-        insertHtml += '</li>';
-        */
-        insertHtml += '</ul>';
-        insertHtml += '</div>';
-        insertHtml += '</div>';
-        //insertHtml += '<button class="scroll next" id="nextBtn" onclick="nextBtn(botChatNum)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
-        insertHtml += '</div></div></div></div>';
-
-        $(".dialogView").eq(idx).html(insertHtml);
-    } else if($(e.target).val() == "4") {
-        $(".dialogView").eq(idx).html('');
-        insertHtml += '<div class="wc-message wc-message-from-bot">';
-        insertHtml += '<div class="wc-message-content">';
-        insertHtml += '<svg class="wc-message-callout"></svg>';
-        insertHtml += '<div>';
-        insertHtml += '<div class="wc-carousel">';
-        insertHtml += '<div>';
-        insertHtml += '<button class="scroll previous" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png"></button>';
-        insertHtml += '<div class="wc-hscroll-outer">';
-        insertHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
-        insertHtml += '<ul>';
-        insertHtml += '<li class="wc-carousel-item wc-carousel-play">';
-        insertHtml += '<div class="wc-card hero">';
-        insertHtml += '<div class="wc-card-div imgContainer">';
-        insertHtml += '<input type="hidden" name="dlgId" value="dlg_id"/>';
-        insertHtml += '<img src="https://bot.hyundai.com/assets/images/convenience/USP_convenience_09.jpg">';
-        insertHtml += '<div class="playImg"></div>';
-        insertHtml += '<div class="hidden" alt="card_title"></div>';
-        insertHtml += '<div class="hidden" alt="card_value"></div>';
-        insertHtml += '</div>';
-        insertHtml += '<h1>media title</h1>';
-        insertHtml += '<ul class="wc-card-buttons">';
-        insertHtml += '</ul>';
-        insertHtml += '</div>';
-        insertHtml += '</li></ul></div></div>';
-        insertHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
-        insertHtml += '</div></div></div></div></div>';
-
-        $(".dialogView").eq(idx).html(insertHtml);
-    }
 });
 
 //다이얼로그 생성 유효성 검사
@@ -609,22 +399,8 @@ function dialogValidation(type){
     }
 }
 
-$(document).on('change','.insertForm #mediaLayout input[name=imgUrl]',function(e){
-    var idx = $(".insertForm #mediaLayout input[name=imgUrl]").index(this);
-    $('.dialogView .wc-card-div img:eq(' + idx + ')').attr("src",$(e.target).val());
-});
-
 function writeDialog(e) {
-    var idx = $('textarea[name=dialogText]').index(e);
-    
-    if($('.insertForm select[name=dlgType]').eq(idx).val() == 3) {
-        $('.dialogView:eq(' + idx + ') .carousel').html(e.value);
-    } else if($('.insertForm select[name=dlgType]').eq(idx).val() == 4) {
-        $('.dialogView h1').eq(idx).html(e.value);
-    } else {
-        $('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
-    }
-    
+    $('.textMent p').html(e.value);
 }
 
 //다이얼로그 생성
@@ -650,8 +426,7 @@ function insertDialog(){
 }
 
 var botChatNum = 1; 
-//dlg 저장
-var dlgMap = new Object();
+
 function selectDlgListAjax(entity) {
     $.ajax({
         url: '/learning/selectDlgListAjax',                //주소
@@ -707,7 +482,7 @@ function selectDlgListAjax(entity) {
                         inputUttrHtml += '</li>';
                         
                         //다이얼로그가 한개일때에는 오른쪽 버튼 x
-                        if(tmp.dlg.length == 2 && j == 1) {
+                        if(tmp.dlg.length == 1) {
                             inputUttrHtml += '</ul>';
                             inputUttrHtml += '</div>';
                             inputUttrHtml += '</div>';
@@ -758,14 +533,6 @@ function selectDlgListAjax(entity) {
             //$('#dlgListTable').find('tbody').empty();
 
             $('#dialogRecommand').prepend(inputUttrHtml);
-
-            //dlg 기억.
-            var utter ="";
-            for (var i=0; i<entity.length; i++) {
-                utter += entity[i] + ",";
-            }
-            utter = utter.substr(0, utter.length-1);
-            dlgMap[utter] = inputUttrHtml;
 
             botChatNum++;
         } 
@@ -882,7 +649,7 @@ function utterInput(queryText) {
                 var inputUttrHtml = '';
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
                 inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
-                inputUttrHtml += '<td class="txt_left clickUtter"><input type=hidden name="entity" value="' + result['entities'] + '"/>' + utter + '</td>';
+                inputUttrHtml += '<td class="txt_left" ><input type=hidden name="entity" value="' + result['entities'] + '"/>' + utter + '</td>';
                 inputUttrHtml += '<tr><td> </td><td class="txt_left" >';
                 if(result.commonEntities){
                     for(var i = 0; i < result.commonEntities.length ; i++){
@@ -1052,12 +819,6 @@ function openModalBox(target){
             return false;
     });
     wrapWindowByMask();
-
-    if(target == "#create_dlg") {
-        $(".insertForm").append($("#textLayout").clone(true));
-        $(".insertForm #textLayout").css("display","block");
-    }
-
     selectGroup('searchLargeGroup');
 }
 
@@ -1229,6 +990,8 @@ function searchDialog() {
 
                 inputUttrHtml += '</div>';
                 inputUttrHtml += '</div>';
+                
+                botChatNum++;
             }
 
             $('#searchDlgResultDiv').prepend(inputUttrHtml);
@@ -1241,7 +1004,7 @@ function searchDialog() {
 }
 
 function searchSaveDialog() {
-    var entity = $('input[name=entity]').val();
+    var entity = $('input[name=entity').val();
 
     var rowNum;
     $("input[name=chksearch]").each(function(n) {

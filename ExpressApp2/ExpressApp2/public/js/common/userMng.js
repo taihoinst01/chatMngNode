@@ -64,13 +64,13 @@ function makGrid() {
           {name:'USER_ID_HIDDEN' , label:'USER_ID_HIDDEN' , hidden:true},
           {name:'USER_ID'    , label:'ID'            , width:80, editable:false, align:'left', sortable:true, hidden:false},
           {name:'초기화'     , label:'비밀번호' , width:70, editable:false, align:'center', sortable:false, hidden:false, formatter:linkInitPwd},
-          {name:'EMP_NM'    , label:'NAME'            , width:90, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'REG_DT'    , label:'REG_DT'            , width:100, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'REG_ID'    , label:'REG_ID'            , width:100, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'MOD_DT'    , label:'MOD_DT'            , width:100, editable:false, align:'left', sortable:false, hidden:false},
-          {name:'MOD_ID'    , label:'MOD_ID'            , width:100, editable:false, align:'left', sortable:false, hidden:false},
-          {name:'LAST_LOGIN_DT'    , label:'LAST_LOGIN_DT'            , width:100, editable:false, align:'left', sortable:false, hidden:false},
-          {name:'LOGIN_FAIL_DT'    , label:'LOGIN_FAIL_DT'            , width:100, editable:false, align:'left', sortable:false, hidden:false},
+          {name:'EMP_NM'    , label:'앱'            , width:90, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'REG_DT'    , label:'등록 날짜'            , width:100, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'REG_ID'    , label:'등록 ID'            , width:100, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'MOD_DT'    , label:'수정 날짜'            , width:100, editable:false, align:'left', sortable:false, hidden:false},
+          {name:'MOD_ID'    , label:'수정 ID'            , width:100, editable:false, align:'left', sortable:false, hidden:false},
+          {name:'LAST_LOGIN_DT'    , label:'마지막 로그인 날짜'            , width:100, editable:false, align:'left', sortable:false, hidden:false},
+          {name:'LOGIN_FAIL_DT'    , label:'로그인 실패 횟수'            , width:100, editable:false, align:'left', sortable:false, hidden:false},
           {name:'SCRT_NUM'   , label:'비밀번호'      , width:100, editable:false, align:'left', sortable:true, hidden:true}
         ],
         width: $("#gridList").width(),
@@ -179,11 +179,6 @@ function setGridResize(gridId) {
     preWindowWidth = windowWidth; // 현재 사이즈를 저장
 }
 
-
-//클리어
-function clearGridAction() {
-    $('#gridList').clearGridData();
-}
 
 //초기화
 function restoreGridAction() {

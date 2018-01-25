@@ -48,3 +48,8 @@
 	background: #333;
 	color: #fff;
 }
+
+
+td.clickUtter {
+	cursor: pointer;
+}

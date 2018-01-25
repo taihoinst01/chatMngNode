@@ -1,15 +1,77 @@
 ﻿'use strict';
 var express = require('express');
 var Client = require('node-rest-client').Client;
+var sql = require('mssql');
+var dbConfig = require('../config/dbConfig');
+var luisConfig = require('../config/luisConfig');
 var router = express.Router();
 
 const HOST = 'https://westus.api.cognitive.microsoft.com'; // Luis api host
-var subKey = 'db5c8e83e84f4c9e9c21f5da0b5a48fd'; // Subscription Key
+var subKey = luisConfig.subKey; // Subscription Key
 
 /* GET home page. */
 router.get('/', function (req, res) {
     if(req.session.sid) {
-        res.redirect("/list");
+        var client = new Client();
+        var appList;
+        var options = {
+            headers: {
+                'Ocp-Apim-Subscription-Key': subKey
+            }
+        };
+        try{
+            client.get( HOST + '/luis/api/v2.0/apps/', options, function (data, response) {
+                //console.log(data)
+                appList = data;
+                var listStr = 'SELECT APP_ID FROM TBL_LUIS_APP ';
+                (async () => {
+                    try {
+                        let pool = await sql.connect(dbConfig);
+                        let listVal = await pool.request().query(listStr);
+                        let rows = listVal.recordset;
+
+                        var newAppList = [];
+                        for (var i = 0; i < rows.length; i++) {
+                            for (var j=0; j<appList.length; j++) {
+                                if (rows[i].APP_ID === appList[j].id) {
+                                    appList.splice(j,1);
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (appList.length > 0) {
+                            var appStr = "";
+                            var appRelationStr = "";
+                            var loginId = req.session.sid;
+                            for (var i=0; i<appList.length; i++) {
+                                appStr += "INSERT INTO TBL_LUIS_APP (APP_NUM, SUBSC_KEY, APP_ID, VERSION, APP_NAME, OWNER_EMAIL, REG_DT, CULTURE, DESCRIPTION) ";
+                                appStr += "VALUES ((SELECT isNULL(MAX(APP_NUM),0) FROM TBL_LUIS_APP)+1, '" + subKey + "', '" + appList[i].id + "', " +
+                                    " '" + appList[i].activeVersion + "', '" + appList[i].name + "', '" + appList[i].ownerEmail + "', " +
+                                    " convert(VARCHAR(33), '" + appList[i].createdDateTime + "', 126), '" + appList[i].culture + "', '" + appList[i].description + "'); ";
+                            }
+                            //convert(datetime, '2008-10-23T18:52:47.513', 126)
+                            let insertApp = await pool.request().query(appStr);
+                        }
+
+                        res.redirect("/list");
+                        
+                    } catch (err) {
+                        console.log(err);
+                        //res.redirect("/list");
+                    } finally {
+                        sql.close();
+                    }
+                })()
+            
+                sql.on('error', err => {
+                    // ... error handler
+                })
+
+            });
+        }catch(e){
+            console.log(e);
+        }
     }
     else{
         res.render('login');   
@@ -19,28 +81,37 @@ router.get('/', function (req, res) {
 
 router.get('/list', function (req, res) {
     req.session.selMenu = 'm1';
-    //console.log("메뉴 : " + req.param.menu);
+    var loginId = req.session.sid;
+    var userListStr = "SELECT A.APP_ID, A.VERSION, A.APP_NAME, FORMAT(A.REG_DT,'yyyy-MM-dd') REG_DT, A.CULTURE, A.DESCRIPTION" +
+                      "  FROM TBL_LUIS_APP A, TBL_USER_RELATION_APP B " +
+                      " WHERE 1=1 " +
+                      "   AND A.APP_ID = B.APP_ID " +
+                      "   AND B.USER_ID = '" + loginId + "'; ";
+    (async () => {
+        try {
+            let pool = await sql.connect(dbConfig);
+            let userListArr = await pool.request().query(userListStr);
+            let rows = userListArr.recordset;
 
-    var client = new Client();
-
-    var options = {
-        headers: {
-            'Ocp-Apim-Subscription-Key': subKey
-        }
-    };
-    try{
-        client.get( HOST + '/luis/api/v2.0/apps/', options, function (data, response) {
-            //console.log(data)
             res.render('index',
             {
                 title: 'Express',
                 selMenu: req.session.selMenu,
-                list: data
+                list: rows
             });
-        });
-    }catch(e){
-        console.log(e);
-    }
+            
+        } catch (err) {
+            console.log(err);
+            //res.redirect("/list");
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+    
 });
 
 //Luis app insert
