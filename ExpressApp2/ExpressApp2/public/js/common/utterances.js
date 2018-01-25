@@ -171,6 +171,7 @@ $(document).ready(function(){
 
         var insertForm = '';
         insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
+        insertForm += '<form name="dialogLayout" id="dialogLayout">';
         insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
         insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
         insertForm += '<option value="2" selected>Text</option>';
@@ -178,6 +179,7 @@ $(document).ready(function(){
         insertForm += '<option value="4">Media</option>';
         insertForm += '</select></p>';
         insertForm += '<div class="clear-both"></div>';
+        insertForm += '</form>';
         insertForm += '</div>';
 
         $('#commonLayout div:first').prepend(insertForm);
@@ -501,11 +503,11 @@ $(document).on('change','select[name=dlgType]',function(e){
 
     } else if($(e.target).val() == "3") {
         var $clone = $('#carouselLayout').clone();
-        $('.insertForm:eq(' + idx + ')').append($clone);
+        $('.insertForm:eq(' + idx + ') form').append($clone);
         $('.insertForm:eq(' + idx + ') #carouselLayout').css('display', 'block');
     } else if($(e.target).val() == "4") {
         var $clone = $('#mediaLayout').clone();
-        $('.insertForm:eq(' + idx + ')').append($clone);
+        $('.insertForm:eq(' + idx + ') form').append($clone);
         $('.insertForm:eq(' + idx + ') #mediaLayout').css('display', 'block');
     }
 
@@ -652,24 +654,15 @@ function insertDialog(){
 }
 
 function addDialog(){
-    alert($('form[name=dialogLayout]').html());
-
+    //alert($('form[name=dialogLayout]').html());
 
     $.ajax({
         url: '/learning/addDialog',
         dataType: 'json',
         type: 'POST',
-        data: $('#appInsertForm').serializeObject(),
+        data: $('form[name=dialogLayout]').serialize(),
         success: function(data) {
-            if(data.status == 200){
-                var inputUttrHtml = '';
-                inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
-                inputUttrHtml += '<input name="dlgChk" class="tweak-input"  onclick="" type="checkbox"/> </div> </td>';
-                inputUttrHtml += '<td class="txt_left" ><input type="hidden" name="' + data.DLG_ID + '" value="' + data.DLG_ID + '" />' + data.CARD_TEXT + '</td></tr>';
-                $('#dlgListTable').find('tbody').prepend(inputUttrHtml);
-
-                $('#addDialogClose').click();
-            }
+            alet('success');
         }
     });
 }
@@ -1079,7 +1072,7 @@ function openModalBox(target){
     wrapWindowByMask();
 
     if(target == "#create_dlg") {
-        $(".insertForm").append($("#textLayout").clone(true));
+        $(".insertForm form").append($("#textLayout").clone(true));
         $(".insertForm #textLayout").css("display","block");
     }
 
