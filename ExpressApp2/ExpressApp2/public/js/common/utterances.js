@@ -1297,11 +1297,19 @@ $(document).on('click', 'a[name=carouseBtn]',function(e){
 });
 
 $(document).on('click', 'a[name=addCarouselBtn]', function(e){
-    var $textclone = $('#textLayout').clone();
-    var $clone = $('#carouselLayout').clone();
+    var $insertForm = $('.insertForm').eq( ($('.insertForm').length-1) ).clone();
+    
+    $('a[name=addCarouselBtn]').eq(0).parent().parent().remove();
+    $('.insertForm:eq(' + ($('.insertForm').length-1) + ')').after($insertForm);
 
-    $('.insertForm:eq(0)').append($textclone);
-    $('.insertForm:eq(0)').append($clone);
-    $('.insertForm:eq(0) #carouselLayout').eq(($('.insertForm:eq(0) #carouselLayout').length-1)).css('display', 'block');
-    $('.insertForm:eq(0) #carouselLayout').eq(($('.insertForm:eq(0) #carouselLayout').length-2)).find('.layout-float-left').eq(1).remove();
+    var index = 0;
+    $('.insertForm:eq(' + ($('.insertForm').length-1) + ')').find('#carouselLayout').find('.layout-float-left').find('input').each(function() {
+        if ( index !== 0 && $(this).css("display") !== 'none') {
+            $(this).hide();
+            $(this).parent().parent().next().find('input').eq(index).hide();
+            return false;
+        }
+        index++;
+    });
+
 });
