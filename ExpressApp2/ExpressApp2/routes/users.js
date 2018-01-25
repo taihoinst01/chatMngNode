@@ -70,44 +70,6 @@ router.get('/logout', function (req, res) {
 		res.redirect('/');
 	});
 });
-//{selMenu: req.session.selMenu}
-/*
-router.get('/codeMng', function (req, res) {  
-    res.locals.selMenu = req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '공통코드관리';
-    res.render('codeMng');
-});
-
-router.get('/screenMng', function (req, res) {  
-    req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '화면관리';
-    res.render('screenMng');
-});
-
-router.get('/menuMng', function (req, res) {  
-    req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '메뉴관리';
-    res.render('menuMng');
-});
-
-router.get('/authGrpMng', function (req, res) {  
-    req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '권한그룹관리';
-    res.render('authGrpMng');
-});
-
-router.get('/authDtlMng', function (req, res) {  
-    req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '권한상세관리';
-    res.render('authDtlMng');
-});
-
-router.get('/userAppMng', function (req, res) {  
-    req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '사용자앱매핑관리';
-    res.render('userAppMng');
-});
-*/
 
 router.get('/userMng', function (req, res) {  
     res.locals.selMenu = req.session.selMenu = 'm1';
@@ -319,6 +281,105 @@ router.get('/userAuthMng', function (req, res) {
     res.locals.selLeftMenu = '사용자권한관리';
     res.render('userAuthMng');
 });
+
+router.post('/selectUserAppList', function (req, res) {
+    
+    let userId = checkNull(req.body.userId, '');
+    var selectAppListStr = "SELECT APP_NAME, APP_ID,  LEFT(OWNER_EMAIL, CHARINDEX('@', OWNER_EMAIL)-1) OWNER_EMAIL " +
+                           "  FROM TBL_LUIS_APP " +
+                           " WHERE 1=1;";
+    var UserAppListStr = "SELECT distinct APP_ID" +
+                        "   FROM TBL_USER_RELATION_APP " +
+                        "  WHERE 1=1 " +
+                        "    AND USER_ID = '" + userId + "'; ";                    
+    (async () => {
+        try {
+            let pool = await sql.connect(dbConfig);
+            let appList = await pool.request().query(selectAppListStr);
+            let rows = appList.recordset;
+
+            var recordList = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+                item = rows[i];
+                recordList.push(item);
+            }
+
+            let userAppList = await pool.request().query(UserAppListStr);
+            let rows2 = userAppList.recordset;
+
+            var checkedApp = [];
+            for(var i = 0; i < rows2.length; i++){
+                var item = {};
+                item = rows2[i];
+                checkedApp.push(item);
+            }
+
+            res.send({
+                records : recordList.length,
+                rows : recordList,
+                checkedApp : checkedApp,
+            });
+            
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'app Load Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+})
+
+router.post('/updateUserAppList', function (req, res) {
+    let userId = req.body.userId;
+    let saveData = JSON.parse(checkNull(req.body.saveData, ''));
+    let removeData = JSON.parse(checkNull(req.body.removeData, ''));
+    var saveDataStr = "";
+    var removeDataStr = "";
+
+    for (var i=0; i<saveData.length; i++) {
+        saveDataStr += "INSERT INTO TBL_USER_RELATION_APP(USER_ID, APP_ID) " +
+                    "     VALUES ('" + userId + "', '" + saveData[i] + "'); ";    
+    }
+    
+    for (var i=0; i<removeData.length; i++) {
+        removeDataStr += "DELETE FROM TBL_USER_RELATION_APP " +
+                    "      WHERE 1=1 " +
+                    "        AND APP_ID = '" + removeData[i].APP_ID + "' " +
+                    "        AND USER_ID = '" + userId + "'; ";     
+    }
+                        
+                   
+    (async () => {
+        try {
+            let pool = await sql.connect(dbConfig);
+            if (saveData.length > 0) {
+                let appList = await pool.request().query(saveDataStr);
+            }
+            
+            if (removeData.length > 0) {
+                let userAppList = await pool.request().query(removeDataStr);
+            }
+
+            res.send({status:200 , message:'Update Success'});
+            
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'Update Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+    
+})
 /*
 router.post('/', function (req, res) {
     let sortIdx = checkNull(req.body.sort, "USER_ID") + " " + checkNull(req.body.order, "ASC");

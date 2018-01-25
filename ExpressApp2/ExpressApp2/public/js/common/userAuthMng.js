@@ -3,8 +3,8 @@
 $(document).ready(function() {
 
 
-    makGrid(); 
-    
+    makeUserGrid(); 
+    makeAppGrid();
     
  /*
     $('#searchEmpNm,#searchUserId').on('keypress', function(e) {
@@ -15,11 +15,13 @@ $(document).ready(function() {
 
     //jqgrid resize
     gridResize("gridList");
+    gridResize("gridUserAuthList");
 
 });
 
 window.onresize = function() {
     gridResize("gridList");
+    gridResize("gridUserAuthList");
 }
 
 $(document).ready(function() {
@@ -47,7 +49,7 @@ $(document).on('keypress','.edit-cell > input',function(e){
 });
 
 var editableCells = ['EMP_NM'];
-function makGrid() {
+function makeUserGrid() {
     $("#gridList").jqGrid({
         //url: '../json/data.json',
         //datatype: "json",
@@ -77,9 +79,54 @@ function makGrid() {
         sortorder: 'asc',
         //caption:"gridList",
         loadonce:false, // true 하면 리로딩이 안됨 false
+        viewrecords: true, 
+        onSelectRow: function(rowid, status, e) {  			
+            console.log("asdf : " + rowid + "/" + status + "e :" + e);	
+            doSearchApp(rowid);
+        }	
+        
+        });
+}
+
+function makeAppGrid() {
+    $("#gridUserAuthList").jqGrid({
+        //url: '../json/data.json',
+        //datatype: "json",
+        //mtype: 'POST',  
+        //editurl: 'clientArray',
+        datatype: function() {
+            //doSearchApp(rowid);
+        },
+          
+        colModel: [
+          {name:'sel', label:'' , width:30, editable:false, align:'center', sortable:false, hidden:false, formatter:selCell},
+          {name:'APP_NAME'    , label:'APP NAME'            , width:70, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'APP_ID'    , label:'APP ID'            , width:80, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'OWNER_EMAIL'    , label:'OWNER'            , width:120, editable:false, align:'left', sortable:true, hidden:false}
+        ],
+        width: $("#gridUserAuthList").width(),
+        height: 650,
+        pager: '#pagerAuth',
+        emptyrecords: "데이터가 없습니다.",
+        rowNum: 20, // 한페이지에 보여줄 데이터 수
+        rowList: [ 20, 30], // 페이징 옵션
+        rownumbers: true, // show row numbers
+        rownumWidth: 25, // the width of the row numbers columns
+        cellEdit: true, // true 시 틀고정 ( frozen column 기능 불가 )
+        //cellsubmit:'remote',
+        //onSelectRow: selRow,
+        sortorder: 'asc',
+        //caption:"gridList",
+        loadonce:false, // true 하면 리로딩이 안됨 false
         viewrecords: true,
         
         });
+}
+
+function selCell(cellValue, options, rowObject, action) {
+    var empNum = rowObject.empNum;
+    var userId = rowObject.userId;
+    return '<input type="checkbox" name="cell_checkbox" />';
 }
 
 //ㅇㅇㅇㅇㅇㅇㅇㅇㅇ
@@ -122,14 +169,7 @@ function setGridResize(gridId) {
 //초기화
 function restoreGridAction() {
     if(confirm('초기화 하시곘습니까?')) {
-        var grid = $("#gridList");
-        //var gridData = JSON.parse(data.d);
-        grid.clearGridData();
-
-        for (var i=0;i<=saveGridData.rows.length;i++) { 
-            //$("#gridList").jqGrid('addRowData', i+1, data.rows[i]);
-            grid.addRowData(i + 1, saveGridData.rows[i]);
-        }
+        mkAppRow(initAppList, initAppCheck);
     }
 }
 
@@ -163,54 +203,100 @@ function doSearchParam(postData) {
                 //$("#gridList").jqGrid('addRowData', i+1, data.rows[i]);
                 grid.addRowData(i + 1, data.rows[i]);
             }
-            
+            $('#gridList').find('tr').eq(1).children().eq(0).trigger('click');
+
         }
     });
-    
 }
 
+//app 조회
+var initAppList;
+var initAppCheck; // 초기화 할 변수, 저장시 비교
+function doSearchApp( rowid) {
+    var id = $('#gridList').jqGrid().getRowData(rowid).USER_ID;
+    var params = {
+        'userId' : id
+    };
+    
+    $.tiAjax({
+        type: 'POST',
+        data: params,
+        isloading: true,
+        url: '/users/selectUserAppList',
+        success: function(data) {
+            initAppList = data.rows;
+            initAppCheck = data.checkedApp;
+            mkAppRow(data.rows, data.checkedApp);
+        }
+    });
+}
+
+function mkAppRow(rows, checkedApp) {
+    var grid = $("#gridUserAuthList");
+    //var gridData = JSON.parse(data.d);
+    grid.clearGridData();
+
+    for (var i=0;i<rows.length;i++) { 
+        //$("#gridList").jqGrid('addRowData', i+1, data.rows[i]);
+        grid.addRowData(i + 1, rows[i]);
+
+        for (var j=0; j<checkedApp.length; j++) {
+            if (rows[i].APP_ID === checkedApp[j].APP_ID) {
+                $('input[name=cell_checkbox]').eq(i).trigger('click');
+            }
+        }
+    }
+    if (rows.length >0) {
+        $("#gridUserAuthList").setSelection(1);
+    }
+}
 //저장
 function saveAction() {
     // true : select 된 데이터, false : transaction 일으킨 데이터
-    var checkedLen = $('input[name=cell_checkbox]:checked').length;
-    if (checkedLen > 0) {
-        var saveArr = new Array();
-        $('input[name=cell_checkbox]:checked').each(function() {
-            var rowId = $(this).parent().parent().attr("id");
-            //$('#gridList').jqGrid().getRowData(rowId);
-            var data = new Object() ;
-
-            data.statusFlag = $('#gridList').jqGrid().getRowData(rowId).statusFlag;
-            data.USER_ID = $('#gridList').jqGrid().getRowData(rowId).USER_ID;
-            data.EMP_NM = $('#gridList').jqGrid().getRowData(rowId).EMP_NM;
-            saveArr.push(data);
-            //변경된 전체 row값
-            //saveArr2.push($('#gridList').jqGrid().getChangedCells());
-        });    
-
-        //save
-        var jsonData = JSON.stringify(saveArr);
-        var params = {
-            'saveArr' : jsonData
-        };
-        $.tiAjax({
-            type: 'POST',
-            datatype: "JSON",
-            data: params,
-            isloading: true,
-            url: '/users/saveUserInfo',
-            success: function(data) {
-                console.log(data);
-                if (data.status === 200) {
-                    window.location.reload();
-                } else {
-                    alert(data.message);
-                }
+    var saveArr = new Array();
+    $('input[name=cell_checkbox]:checked').each(function() {
+        var rowId = $(this).parent().parent().attr("id");
+        var appId = $("#gridUserAuthList").jqGrid("getRowData", rowId).APP_ID;
+        //추가로 체크한 app, 체크 취소한 app 구분
+        var rememberLen = initAppCheck.length;
+        for (var i=0; i<rememberLen; i++) {
+            if (appId === initAppCheck[i].APP_ID) {
+                initAppCheck.splice(i,1);
+                break;
             }
-        });
-    } else {
-        alert('변경된 데이터가 없습니다.');
-        return;
-    }
+        }
+        if (rememberLen === initAppCheck.length) {
+            saveArr.push(appId);
+        }
+    });    
+    var rowUser  = $("#gridList").jqGrid("getGridParam", "selrow" );			
+	var userId = $("#gridList").jqGrid("getRowData", rowUser).USER_ID;
+
+    //save
+    var jsonsaveArr = JSON.stringify(saveArr);
+    var jsoninitAppCheck = JSON.stringify(initAppCheck);
+    var params = {
+        'userId' : userId,
+        'saveData' : jsonsaveArr,
+        'removeData' : jsoninitAppCheck,
+    };
+    $.tiAjax({
+        type: 'POST',
+        datatype: "JSON",
+        data: params,
+        isloading: true,
+        url: '/users/updateUserAppList',
+        success: function(data) {
+            console.log(data);
+            if (data.status === 200) {
+                //window.location.reload();
+                alert(data.message);
+                $('#gridList').find('tr').eq(rowUser).children().eq(0).trigger('click');
+            } else {
+                alert(data.message);
+            }
+        }
+    });
+    
     
 }
