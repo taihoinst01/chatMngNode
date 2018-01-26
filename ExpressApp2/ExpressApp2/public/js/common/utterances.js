@@ -465,8 +465,11 @@ $(document).ready(function(){
     });
 
     $("#searchDialogBtn").on('click',function(){
+
         $("#searchDlgResultDiv").html("");
+
         searchDialog();
+        
     });
 
     $("#searchDialogClose").on('click',function(){
@@ -1286,3 +1289,38 @@ function searchSaveDialog() {
     });
 
 }
+
+
+
+var carouselDivHtml = 
+$(document).on('click', 'a[name=carouseBtn]',function(e){
+    //e.stopPropagation();
+    //e.preventDefault();
+    var index = 0;
+    $(this).parent().find('input').each(function() {
+        if ( $(this).css("display") === 'none') {
+            $(this).show();
+            $(this).parent().parent().next().find('input').eq(index).show();
+            return false;
+        }
+        index++;
+    });
+});
+
+$(document).on('click', 'a[name=addCarouselBtn]', function(e){
+    var $insertForm = $('.insertForm').eq( ($('.insertForm').length-1) ).clone();
+    
+    $('a[name=addCarouselBtn]').eq(0).parent().parent().remove();
+    $('.insertForm:eq(' + ($('.insertForm').length-1) + ')').after($insertForm);
+
+    var index = 0;
+    $('.insertForm:eq(' + ($('.insertForm').length-1) + ')').find('#carouselLayout').find('.layout-float-left').find('input').each(function() {
+        if ( index !== 0 && $(this).css("display") !== 'none') {
+            $(this).hide();
+            $(this).parent().parent().next().find('input').eq(index).hide();
+            return false;
+        }
+        index++;
+    });
+
+});
