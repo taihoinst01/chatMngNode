@@ -1363,4 +1363,12 @@ router.post('/searchDialog',function(req,res){
 
 });
 
+
+router.post('/addDialog',function(req,res){
+var data = req.body;
+
+console.log(data);
+
+});
+
 module.exports = router;
