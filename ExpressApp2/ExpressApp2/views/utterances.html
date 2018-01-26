@@ -194,7 +194,9 @@
             <div class="clear-both"></div>
             <p class="texcon03">Description  <span>(optional) </span></p>
             <p><textarea name="description" id="description" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup=""></textarea></p>
+        
         </form>
+
             <div id="commonLayout">
                 <div style="overflow-y:scroll; overflow-x:hidden; height:400px;">
                     <div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">
@@ -206,12 +208,14 @@
                             <option value="4">Media</option>
                         </select></p>
                         <div class="clear-both"></div>
+
+                        
                         </form>
                     </div>
 
                     <div id="textLayout" style="display:none;">
                         <p class="texcon03">Dialogue Title <span>(required) </span></p>
-                        <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." /></p>
+                        <p><input name="dialogTitle" type="text" class="inbox02" id="dialogTitle" style="width:95%" placeholder="Input title.." /></p>
 
                         <p class="texcon03">Dialogue Text  <span>(required) </span></p>
                         <p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation('dialogInsert');"></textarea></p>
@@ -224,20 +228,20 @@
                         <div class="layout-float-left">
                             <p class="texcon03">Button Name <span>(optional) </span></p>
                             <p>
-                                <input name="buttonName1" type="text" class="inbox02 btnBox" style="width:95%;" placeholder="Input name.." />
-                                <input name="buttonName2" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input name.." />
-                                <input name="buttonName3" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input name.." />
-                                <input name="buttonName4" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input name.." />
+                                <input name="cButtonName1" type="text" class="inbox02 btnBox" style="width:95%;" placeholder="Input name.." />
+                                <input name="cButtonName2" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input name.." />
+                                <input name="cButtonName3" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input name.." />
+                                <input name="cButtonName4" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input name.." />
                                 <a href="#" class="btn" style="margin:2px 0 5px 0;" name="carouseBtn">AddButton</a>
                             </p>
                         </div>
                         <div class="layout-float-left-last">
                             <p class="texcon03">Button Content <span>(optional) </span></p>
                             <p>
-                                <input name="buttonContent1" type="text" class="inbox02 btnBox" style="width:95%;" placeholder="Input contents.." />
-                                <input name="buttonContent2" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input contents.." />
-                                <input name="buttonContent3" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input contents.." />
-                                <input name="buttonContent4" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input contents.." />
+                                <input name="cButtonContent1" type="text" class="inbox02 btnBox" style="width:95%;" placeholder="Input contents.." />
+                                <input name="cButtonContent2" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input contents.." />
+                                <input name="cButtonContent3" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input contents.." />
+                                <input name="cButtonContent4" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input contents.." />
                             </p>
                         </div>
                         <div class="layout-float-left">
@@ -257,20 +261,20 @@
                         <div class="layout-float-left">
                             <p class="texcon03">Button Name <span>(optional) </span></p>
                             <p> 
-                                <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" style="width:95%;" placeholder="Input name.." />
-                                <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" style="width:95%; display:none;" placeholder="Input name.." />
-                                <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" style="width:95%; display:none;" placeholder="Input name.." />
-                                <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" style="width:95%; display:none;" placeholder="Input name.." />
+                                <input name="mButtonName1" type="text" class="inbox02 btnBox" id="buttonName1" style="width:95%;" placeholder="Input name.." />
+                                <input name="mButtonName2" type="text" class="inbox02 btnBox" id="buttonName2" style="width:95%; display:none;" placeholder="Input name.." />
+                                <input name="mButtonName3" type="text" class="inbox02 btnBox" id="buttonName3" style="width:95%; display:none;" placeholder="Input name.." />
+                                <input name="mButtonName4" type="text" class="inbox02 btnBox" id="buttonName4" style="width:95%; display:none;" placeholder="Input name.." />
                                 <button class="btn" style="margin:2px 0 5px 0" >AddButton</button>
                             </p>
                         </div>
                         <div class="layout-float-left-last">
                             <p class="texcon03">Button Content <span>(optional) </span></p>
                             <p>
-                                <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" style="width:95%" placeholder="Input contents.." />
-                                <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" style="width:95%; display:none;" placeholder="Input contents.." />
-                                <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" style="width:95%; display:none;" placeholder="Input contents.." />
-                                <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" style="width:95%; display:none;" placeholder="Input contents.." />
+                                <input name="mButtonContent1" type="text" class="inbox02 btnBox" id="mButtonContent1" style="width:95%" placeholder="Input contents.." />
+                                <input name="mButtonContent2" type="text" class="inbox02 btnBox" id="mButtonContent2" style="width:95%; display:none;" placeholder="Input contents.." />
+                                <input name="mButtonContent3" type="text" class="inbox02 btnBox" id="mButtonContent3" style="width:95%; display:none;" placeholder="Input contents.." />
+                                <input name="mButtonContent4" type="text" class="inbox02 btnBox" id="mButtonContent4" style="width:95%; display:none;" placeholder="Input contents.." />
                             </p>
                         </div>
                         <div class="clear-both"></div>

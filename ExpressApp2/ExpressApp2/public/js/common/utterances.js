@@ -660,13 +660,21 @@ function insertDialog(){
 }
 
 function addDialog(){
-    //alert($('form[name=dialogLayout]').html());
+    var entity = $('input[name=entity]').val();
+    var idx = $('form[name=dialogLayout]').length;
+    var array = [];
+
+    for(var i = 0 ; i < idx ; i++) {
+        array[i] = JSON.stringify($("form[name=dialogLayout]").eq(i).serializeObject());
+    }
+    
+    array[idx] = JSON.stringify($("form[name=appInsertForm]").serializeObject());
 
     $.ajax({
         url: '/learning/addDialog',
         dataType: 'json',
         type: 'POST',
-        data: $('form[name=dialogLayout]').serialize(),
+        data: {'data' : array, 'entity' : entity},
         success: function(data) {
             alet('success');
         }
