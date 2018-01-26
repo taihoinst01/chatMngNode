@@ -466,9 +466,13 @@ $(document).ready(function(){
 
     $("#searchDialogBtn").on('click',function(){
 
+        if($('input[name=serachDlg]').val() == '' && $('#searchLargeGroup').val() == '') {
+            alert('검색어 또는 그룹을 선택해주세요');
+        } else {
+            searchDialog();
+        }
         $("#searchDlgResultDiv").html("");
 
-        searchDialog();
         
     });
 
@@ -477,8 +481,7 @@ $(document).ready(function(){
     });
 
     $("#searchDialogCancel").on('click',function(){
-        $("#searchListTbl tbody").html("");
-        $("#searchListTbl").next().html("");
+        $("#searchDlgResultDiv").html("");
     });
 
 });
@@ -1032,9 +1035,17 @@ function selectGroup(selectId,str1,str2) {
             var group = result.rows;
             $("#"+selectId).html("");
             if(selectId == "searchLargeGroup") {
-                $("#"+selectId).append('<option value="LargeGroup">LargeGroup</option>' );
+                $("#"+selectId).append('<option value="">largeGroup</option>');
+                $('#searchMediumGroup').html("");
+                $('#searchSmallGroup').html("");
+                $('#searchMediumGroup').append('<option value="">mediumGroup</option>');
+                $('#searchSmallGroup').append('<option value="">smallGroup</option>');
             } else if(selectId == "searchMediumGroup") {
-                $("#"+selectId).append('<option value="MediumGroup">MediumGroup</option>' );
+                $("#"+selectId).append('<option value="">mediumGroup</option>' );
+                $('#searchSmallGroup').html("");
+                $('#searchSmallGroup').append('<option value="">smallGroup</option>');
+            } else {
+                $('#searchSmallGroup').append('<option value="">smallGroup</option>');
             }
             for(var i = 0; i < group.length; i++){
                 $("#"+selectId).append('<option value="' + group[i]['GROUP'] + '">' + group[i]['GROUP'] + '</option>' );
@@ -1151,8 +1162,11 @@ function searchDialog() {
 
                 for(var l = 0; l < val.length; l++){
                     var tmp = val[l];
+
                     for(var j = 0; j < tmp.dlg.length; j++) {
+
                         if(tmp.dlg[j].DLG_TYPE == 2) {
+  
                             inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="width:200px">';
                             inputUttrHtml += '<div class="wc-message-content">';
                             inputUttrHtml += '<svg class="wc-message-callout"></svg>';
@@ -1164,6 +1178,7 @@ function searchDialog() {
                             inputUttrHtml += '</div></div></div></div></div>';
 
                         } else if(tmp.dlg[j].DLG_TYPE == 3) {
+
                             if(j == 0) {
                                 inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="margin-bottom:0px">';
                                 inputUttrHtml += '<div class="wc-message-content">';
@@ -1187,6 +1202,7 @@ function searchDialog() {
                                 inputUttrHtml += '<h1>' + /*cardtitle*/ tmp.dlg[j].CARD_TITLE + '</h1>';
                             }
                             if(tmp.dlg[j].CARD_TEXT != null) {
+
                                 inputUttrHtml += '<p class="carousel" style="height:20px;min-height:20px;">' + /*cardtext*/ tmp.dlg[j].CARD_TEXT + '</p>';
                             }
                             if(tmp.dlg[j].BTN_1_TITLE != null) {
