@@ -292,7 +292,7 @@ $(document).ready(function(){
         insertForm += '<div class="clear-both"></div>';
         insertForm += '<div id="textLayout" style="display:block;">';
         insertForm += '<p class="texcon03">Dialogue Title <span>(required) </span></p>';
-        insertForm += '<p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." /></p>';
+        insertForm += '<p><input name="dialogTitle" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." onkeyup="writeDialogTitle(this);" /></p>';
         insertForm += '<p class="texcon03">Dialogue Text  <span>(required) </span></p>';
         insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
         insertForm += '</div>';
@@ -506,7 +506,7 @@ $(document).on('change','select[name=dlgType]',function(e){
 
     } else if($(e.target).val() == "3") {
         //var $clone = $('#carouselLayout').clone();
-        $('.insertForm:eq(' + idx + ') form').append($carouselForm.html());
+        $('.insertForm:eq(' + idx + ') form').append('<div id="carouselLayout" style="display:none;">' + $carouselForm.html() + '</div>') ;
         $('.insertForm:eq(' + idx + ') #carouselLayout').css('display', 'block');
         $('.insertForm:eq(' + idx + ') #carouselLayout').find('a[name=addCarouselBtn]:last').closest('div').css('display', 'inline-block');
     } else if($(e.target).val() == "4") {
@@ -615,11 +615,35 @@ function dialogValidation(type){
         }
     }
 }
+function writeDialogTitle(e) {
+    var idx = $('input[name=dialogTitle]').index(e);
+    var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
+        var jcx = $(e).parents('.insertForm').find('input[name=dialogTitle]').index(e);
+
+    if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 3) {
+        //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
+        $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('h1').text(e.value);
+    } else if($('.insertForm select[name=dlgType]').eq(idx).val() == 4) {
+        $('#dialogPreview').children().eq(icx).find('h1').html(e.value);
+        //$('.dialogView h1').eq(idx).html(e.value);
+    } else {
+        $('#dialogPreview').children().eq(icx).find('.textMent p').html(e.value);
+        //$('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
+    }
+}
 
 $(document).on('change','.insertForm #mediaLayout input[name=imgUrl]',function(e){
     var idx = $(".insertForm #mediaLayout input[name=imgUrl]").index(this);
     $('.dialogView .wc-card-div img:eq(' + idx + ')').attr("src",$(e.target).val());
 });
+
+
+function writeCarouselImg(e) {
+    var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
+    var jcx = $(e).parents('.insertForm').find('input[name=imgUrl]').index(e);
+
+    $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('.imgContainer img').attr("src",e.value);
+}
 
 function writeDialog(e) {
     var idx = $('textarea[name=dialogText]').index(e);
@@ -633,7 +657,8 @@ function writeDialog(e) {
     } else if($('.insertForm select[name=dlgType]').eq(idx).val() == 4) {
         $('.dialogView h1').eq(idx).html(e.value);
     } else {
-        $('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
+        //$('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
+        $('#dialogPreview').children().eq(icx).find('.textMent p:eq(' + idx + ')').html(e.value);
     }
 
     //캐러졀 용
@@ -1338,7 +1363,7 @@ $(document).on('click', 'a[name=addCarouselBtn]', function(e){
     //var $newCarouselForm = $carouselForm.clone();
     
     var idx =  $("a[name=addCarouselBtn]:visible").index(this);
-
+    var jdx = $('select[name=dlgType]').index(( $("a[name=addCarouselBtn]:visible").eq(idx).parents('#dialogLayout').find('select[name=dlgType]') ));
     //$('a[name=addCarouselBtn]').eq(0).parent().parent().remove();
     //$(this).parents('.insertForm').after( $newInsertForm);
 
@@ -1361,10 +1386,10 @@ $(document).on('click', 'a[name=addCarouselBtn]', function(e){
     inputUttrHtml += '<ul class="wc-card-buttons"><li><button>BTN_1_TITLE</button></li></ul>';
     inputUttrHtml += '</div>';
     inputUttrHtml += '</li>';
-    $('.dialogView').eq( idx ).find('#slideDiv').children().append(inputUttrHtml);
+    $('.dialogView').eq( jdx ).find('#slideDiv').children().append(inputUttrHtml);
     
-    if ($('.dialogView').eq( idx ).find('#slideDiv').children().children().length > 2) {
-        $('#nextBtn'+ idx).show();
+    if ($('.dialogView').eq( jdx ).find('#slideDiv').children().children().length > 2) {
+        $('#nextBtn'+ jdx).show();
     }
 
 });

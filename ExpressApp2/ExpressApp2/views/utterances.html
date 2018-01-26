@@ -215,7 +215,7 @@
 
                     <div id="textLayout" style="display:none;">
                         <p class="texcon03">Dialogue Title <span>(required) </span></p>
-                        <p><input name="dialogTitle" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." /></p>
+                        <p><input name="dialogTitle" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." onkeyup="writeDialogTitle(this);" /></p>
 
                         <p class="texcon03">Dialogue Text  <span>(required) </span></p>
                         <p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation('dialogInsert');"></textarea></p>
@@ -223,7 +223,7 @@
 
                     <div id="carouselLayout" style="display:none;">
                         <p class="texcon03">Image Url <span>(required) </span></p>
-                        <p><input name="imgUrl" type="text" class="inbox02"  style="width:95%" placeholder="Input image url.." /></p><!--id="imgUrl"-->
+                        <p><input name="imgUrl" type="text" class="inbox02"  style="width:95%" placeholder="Input image url.." onkeyup="writeCarouselImg(this);" /></p><!--id="imgUrl"-->
 
                         <div class="layout-float-left">
                             <p class="texcon03">Button Name <span>(optional) </span></p>
