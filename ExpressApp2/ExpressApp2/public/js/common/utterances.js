@@ -465,8 +465,11 @@ $(document).ready(function(){
     });
 
     $("#searchDialogBtn").on('click',function(){
+
         $("#searchDlgResultDiv").html("");
+
         searchDialog();
+        
     });
 
     $("#searchDialogClose").on('click',function(){
