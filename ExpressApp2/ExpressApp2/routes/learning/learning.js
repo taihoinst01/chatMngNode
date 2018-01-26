@@ -1343,9 +1343,125 @@ router.post('/searchDialog',function(req,res){
 
 
 router.post('/addDialog',function(req,res){
-var data = req.body;
+    var entity = req.body['entity'];
+    var data = req.body['data[]'];
+    var array = [];
+    var queryText = "";
 
-console.log(data);
+    if( typeof data == "string"){
+        console.log("data is string");
+        var json = JSON.parse(data);
+
+        for( var key in json) {
+            console.log("key : " + key + " value : " + json[key]);
+        }
+    
+    } else {
+        console.log("data is object");
+
+        var dataIdx = data.length;
+
+        for(var i = 0; i < dataIdx; i++) {
+            array[i] = JSON.parse(data[i]);
+        }
+
+        for(var i = 0; i < array.length; i++) {
+            for( var key in array[i]) {
+                console.log("key : " + key + " value : " + array[i][key]);
+            }
+        }
+    }
+
+    (async () => {
+        try{
+            let pool = await sql.connect(dbConfig);
+            var selectDlgId = 'SELECT ISNULL(MAX(DLG_ID)+1,1) AS DLG_ID FROM TBL_DLG';
+            var selectTextDlgId = 'SELECT ISNULL(MAX(TEXT_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_TEXT';
+            var insertTblDlg = 'INSERT INTO TBL_DLG(DLG_ID,DLG_NAME,DLG_DESCRIPTION,DLG_LANG,DLG_TYPE,DLG_ORDER_NO,USE_YN) VALUES ' +
+            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dialogOrderNo,\'Y\')';
+            var inserTblDlgText = 'INSERT INTO TBL_DLG_TEXT(TEXT_DLG_ID,DLG_ID,CARD_TITLE,CARD_TEXT,USE_YN) VALUES ' +
+            '(@textDlgId,@dlgId,@dialogTitle,@dialogText,\'Y\')';
+            var insertTblRelation = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) " + 
+            "VALUES( 'kona_luis_06', 'luis_test', @entity, @dlgId, 'D', 'Y' )";
+
+            var largeGroup = array[array.length - 1]["largeGroup"];
+            var mediumGroup = array[array.length - 1]["mediumGroup"];
+            var smallGroup = array[array.length - 1]["smallGroup"];
+            var sourceType = array[array.length - 1]["sourceType"];
+            var description = array[array.length - 1]["description"];
+
+
+            for(var i = 0; i < (array.length-1); i++) {
+                if(array[i]["dlgType"] == "2") {
+                    let result1 = await pool.request()
+                    .query(selectDlgId)
+                    let dlgId = result1.recordset;
+
+                    let result2 = await pool.request()
+                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                    .input('dialogText', sql.NVarChar, description)
+                    .input('dlgType', sql.NVarChar, array[i]["dlgType"])
+                    .input('dialogOrderNo', sql.Int, (i+1))
+                    .query(insertTblDlg)
+
+                    let result3 = await pool.request()
+                    .query(selectTextDlgId)
+                    let textDlgId = result3.recordset;
+
+                    let result4 = await pool.request()
+                    .input('textDlgId', sql.Int, textDlgId[0].TYPE_DLG_ID)
+                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                    .input('dialogTitle', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('dialogText', sql.NVarChar, array[i]["dialogText"])
+                    .query(inserTblDlgText)
+
+                    let result5 = await pool.request()
+                    .input('entity', sql.NVarChar, entity)
+                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                    .query(insertTblRelation)
+                } else if(array[i]["dlgType"] == "4") {
+                    let result1 = await pool.request()
+                    .query(selectDlgId)
+                    let dlgId = result1.recordset;
+
+                    let result2 = await pool.request()
+                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                    .input('dialogText', sql.NVarChar, description)
+                    .input('dlgType', sql.NVarChar, array[i]["dlgType"])
+                    .input('dialogOrderNo', sql.Int, (i+1))
+                    .query(insertTblDlg)
+
+                    let result3 = await pool.request()
+                    .query(selectTextDlgId)
+                    let textDlgId = result3.recordset;
+
+                    let result4 = await pool.request()
+                    .input('textDlgId', sql.Int, textDlgId[0].TYPE_DLG_ID)
+                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                    .input('dialogTitle', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('dialogText', sql.NVarChar, array[i]["dialogText"])
+                    .query(inserTblDlgText)
+
+                    let result5 = await pool.request()
+                    .input('entity', sql.NVarChar, entity)
+                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                    .query(insertTblRelation)
+                }
+            }
+
+            res.send({list : result});
+        
+        }catch(err){
+            console.log(err);
+        }finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
+        sql.close();
+        console.log(err);
+    })
 
 });
 
