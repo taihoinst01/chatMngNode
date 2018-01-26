@@ -190,9 +190,6 @@ router.post('/searchGroup', function (req, res) {
     var groupName = req.body.groupName;
     var groupL = req.body.groupL;
 
-    console.log("group: " + group);
-    console.log("groupName: " + groupName);
-    console.log("groupL: " + groupL);
     (async () => {
         try {
 
@@ -230,7 +227,6 @@ router.post('/searchGroup', function (req, res) {
                     var item = {};
 
                     var smallGroup = rows[i].SMALL_GROUP;
-                    console.log("smallGroup : " + smallGroup);
                     item.smallGroup = smallGroup; 
 
                     groupList.push(item);
@@ -1185,19 +1181,25 @@ router.post('/searchDialog',function(req,res){
     var searchLargeGroup = req.body.searchLargeGroup;
     var searchMediumGroup = req.body.searchMediumGroup;
     var searchSmallGroup = req.body.searchSmallGroup;
-    var serachDlg = req.body.serachDlg;
-
+    var serachDlg = req.body.serachDlg.trim();
+    
     var relationText = "SELECT RNUM, LUIS_ENTITIES, A.DLG_ID DLG_ID, B.DLG_TYPE, DLG_ORDER_NO \n";
         relationText += "FROM (\n";
         relationText += "SELECT RANK() OVER(ORDER BY LUIS_ENTITIES) AS RNUM, LUIS_ENTITIES, DLG_ID \n";
         relationText += "FROM TBL_DLG_RELATION_LUIS \n";
         relationText += "WHERE 1=1\n";
-        if(searchLargeGroup != null) {
-            relationText += "AND LUIS_ID = '" + searchLargeGroup + "'\n";
-            if(searchMediumGroup != null) {
-                relationText += "AND LUIS_INTENT = '" + searchMediumGroup + "'\n";
-                if(searchSmallGroup != null) {
-                    relationText += "AND LUIS_ENTITIES LIKE '%" + searchSmallGroup + "%'\n";
+        if(serachDlg) {
+
+            relationText += "AND LUIS_ENTITIES like '%" + serachDlg + "%'\n";
+        } else {
+            
+            if(searchLargeGroup != null) {
+                relationText += "AND LUIS_ID = '" + searchLargeGroup + "'\n";
+                if(searchMediumGroup != null) {
+                    relationText += "AND LUIS_INTENT = '" + searchMediumGroup + "'\n";
+                    if(searchSmallGroup != null) {
+                        relationText += "AND LUIS_ENTITIES LIKE '%" + searchSmallGroup + "%'\n";
+                    }
                 }
             }
         }
@@ -1213,14 +1215,20 @@ router.post('/searchDialog',function(req,res){
         dlgText += "SELECT DISTINCT DLG_ID\n"
         dlgText += "FROM TBL_DLG_RELATION_LUIS\n"
         dlgText += "WHERE 1=1\n";
-        if(searchLargeGroup != null) {
-            dlgText += "AND LUIS_ID = '" + searchLargeGroup + "'\n";
-            if(searchMediumGroup != null) {
-                dlgText += "AND LUIS_INTENT = '" + searchMediumGroup + "'\n";
-                if(searchSmallGroup != null) {
-                    dlgText += "AND LUIS_ENTITIES LIKE '%" + searchSmallGroup + "%'\n";
+
+        if(serachDlg != '' || serachDlg != null) {
+        
+            dlgText += "AND LUIS_ENTITIES like '%" + serachDlg + "%'\n";
+        } else {
+            if(searchLargeGroup != null) {
+                dlgText += "AND LUIS_ID = '" + searchLargeGroup + "'\n";
+                if(searchMediumGroup != null) {
+                    dlgText += "AND LUIS_INTENT = '" + searchMediumGroup + "'\n";
+                    if(searchSmallGroup != null) {
+                        dlgText += "AND LUIS_ENTITIES LIKE '%" + searchSmallGroup + "%'\n";
+                    }
                 }
-            }
+            }   
         }
         dlgText += ") \n ORDER BY DLG_ID";
 
@@ -1236,12 +1244,19 @@ router.post('/searchDialog',function(req,res){
         dlgCard += "SELECT DISTINCT DLG_ID\n";
         dlgCard += "FROM TBL_DLG_RELATION_LUIS\n";
         dlgCard += "WHERE 1=1\n";
-        if(searchLargeGroup != null) {
-            dlgCard += "AND LUIS_ID = '" + searchLargeGroup + "'\n";
-            if(searchMediumGroup != null) {
-                dlgCard += "AND LUIS_INTENT = '" + searchMediumGroup + "'\n";
-                if(searchSmallGroup != null) {
-                    dlgCard += "AND LUIS_ENTITIES LIKE '%" + searchSmallGroup + "%'\n";
+
+        if(serachDlg != '' || serachDlg != null) {
+        
+            dlgCard += "AND LUIS_ENTITIES like '%" + serachDlg + "%'\n";
+        } else {
+
+            if(searchLargeGroup != null) {
+                dlgCard += "AND LUIS_ID = '" + searchLargeGroup + "'\n";
+                if(searchMediumGroup != null) {
+                    dlgCard += "AND LUIS_INTENT = '" + searchMediumGroup + "'\n";
+                    if(searchSmallGroup != null) {
+                        dlgCard += "AND LUIS_ENTITIES LIKE '%" + searchSmallGroup + "%'\n";
+                    }
                 }
             }
         }
@@ -1259,12 +1274,19 @@ router.post('/searchDialog',function(req,res){
         dlgMedia += "SELECT DISTINCT DLG_ID\n";
         dlgMedia += "FROM TBL_DLG_RELATION_LUIS\n";
         dlgMedia += "WHERE 1=1\n";
-        if(searchLargeGroup != null) {
-            dlgMedia += "AND LUIS_ID = '" + searchLargeGroup + "'\n";
-            if(searchMediumGroup != null) {
-                dlgMedia += "AND LUIS_INTENT = '" + searchMediumGroup + "'\n";
-                if(searchSmallGroup != null) {
-                    dlgMedia += "AND LUIS_ENTITIES LIKE '%" + searchSmallGroup + "%'\n";
+
+        if(serachDlg != '' || serachDlg != null) {
+        
+            dlgMedia += "AND LUIS_ENTITIES like '%" + serachDlg + "%'\n";
+        } else {
+
+            if(searchLargeGroup != null) {
+                dlgMedia += "AND LUIS_ID = '" + searchLargeGroup + "'\n";
+                if(searchMediumGroup != null) {
+                    dlgMedia += "AND LUIS_INTENT = '" + searchMediumGroup + "'\n";
+                    if(searchSmallGroup != null) {
+                        dlgMedia += "AND LUIS_ENTITIES LIKE '%" + searchSmallGroup + "%'\n";
+                    }
                 }
             }
         }
