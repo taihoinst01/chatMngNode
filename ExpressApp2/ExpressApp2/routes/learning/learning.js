@@ -198,7 +198,7 @@ router.post('/searchGroup', function (req, res) {
             var searchGroupQuery;
             if(group == 'searchMedium') {
 
-                searchGroupQuery = "select distinct MEDIUM_GROUP from TBL_DLG where LARGE_GROUP = @groupName";
+                searchGroupQuery = "select distinct GroupM from TBL_DLG where GroupL = @groupName";
 
                 let result1 = await pool.request().input('groupName', sql.NVarChar, groupName).query(searchGroupQuery);
                 let rows = result1.recordset;
@@ -207,7 +207,7 @@ router.post('/searchGroup', function (req, res) {
                 for(var i = 0; i < rows.length; i++){
                     var item = {};
 
-                    var mediumGroup = rows[i].MEDIUM_GROUP;
+                    var mediumGroup = rows[i].GroupM;
 
                     item.mediumGroup = mediumGroup; 
 
@@ -217,7 +217,7 @@ router.post('/searchGroup', function (req, res) {
                 res.send({groupList: groupList});
             } else if(group == 'searchSmall') {
 
-                searchGroupQuery = "select distinct SMALL_GROUP from TBL_DLG where LARGE_GROUP = '" + groupL + "' and MEDIUM_GROUP = @groupName";
+                searchGroupQuery = "select distinct GroupS from TBL_DLG where GroupL = '" + groupL + "' and GroupM = @groupName";
 
                 let result1 = await pool.request().input('groupName', sql.NVarChar, groupName).query(searchGroupQuery);
                 let rows = result1.recordset;
@@ -226,7 +226,7 @@ router.post('/searchGroup', function (req, res) {
                 for(var i = 0; i < rows.length; i++){
                     var item = {};
 
-                    var smallGroup = rows[i].SMALL_GROUP;
+                    var smallGroup = rows[i].GroupS;
                     item.smallGroup = smallGroup; 
 
                     groupList.push(item);
@@ -264,13 +264,13 @@ router.post('/selectSmallGroup', function (req, res) {
                                  "(select ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC) AS NUM, " +
                                  "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
                                  "CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
-                                 "DLG_DESCRIPTION, SMALL_GROUP, DLG_API_DEFINE ,LUIS_ENTITIES" +
+                                 "DLG_DESCRIPTION, GroupS, DLG_API_DEFINE ,LUIS_ENTITIES" +
                                  "from TBL_DLG a, TBL_DLG_RELATION_LUIS b " + 
-                                 "where a.DLG_ID = b.DLG_ID and SMALL_GROUP like '%" + groupName + "%' " +
+                                 "where a.DLG_ID = b.DLG_ID and GroupS like '%" + groupName + "%' " +
                                  "and DLG_API_DEFINE like '%" + sourceType + "%') tbp " +
                                  "WHERE PAGEIDX = @currentPage";
 
-            //var searchMidGroup = "select * from TBL_DLG where SMALL_GROUP = @groupName";
+            //var searchMidGroup = "select * from TBL_DLG where GroupS = @groupName";
             let pool = await sql.connect(dbConfig);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(selectSmallGroup);
             let rows = result1.recordset;
@@ -282,12 +282,12 @@ router.post('/selectSmallGroup', function (req, res) {
                 var description = rows[i].DLG_DESCRIPTION;
                 var apidefine = rows[i].DLG_API_DEFINE;
                 var luisentent = rows[i].LUIS_INTENT;
-                var smallGroup = rows[i].SMALL_GROUP;
+                var smallGroup = rows[i].GroupS;
                 
                 item.DLG_DESCRIPTION = description;
                 item.DLG_API_DEFINE = apidefine;
                 item.LUIS_INTENT = luisentent;
-                item.SMALL_GROUP = smallGroup;
+                item.GroupS = smallGroup;
 
                 result.push(item);
             }
@@ -318,7 +318,7 @@ router.post('/searchMidGroup', function (req, res) {
 
     (async () => {
         try {
-            var searchMidGroup = "select distinct MEDIUM_GROUP from TBL_DLG where LARGE_GROUP = @groupName";
+            var searchMidGroup = "select distinct GroupM from TBL_DLG where GroupL = @groupName";
             let pool = await sql.connect(dbConfig);
             let result1 = await pool.request().input('groupName', sql.NVarChar, groupName).query(searchMidGroup);
             let rows = result1.recordset;
@@ -327,7 +327,7 @@ router.post('/searchMidGroup', function (req, res) {
             for(var i = 0; i < rows.length; i++){
                 var item = {};
 
-                var mediumGroup = rows[i].MEDIUM_GROUP;
+                var mediumGroup = rows[i].GroupM;
 
                 item.mediumGroup = mediumGroup; 
                 console.log("mediumGroup:" + mediumGroup);
@@ -372,10 +372,10 @@ router.post('/dialogs2', function (req, res) {
                                      "(select ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC) AS NUM, " +
                                      "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
                                      "CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
-                                     "DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, SMALL_GROUP " +
+                                     "DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, GroupS " +
                                      "from TBL_DLG a, TBL_DLG_RELATION_LUIS b where a.DLG_ID = b.DLG_ID ";
 
-                dlg_desQueryString += "and LARGE_GROUP = '" + searchGroupL + "' and MEDIUM_GROUP = '" + searchGroupM + "' and SMALL_GROUP = '" + searchGroupS + "' ";
+                dlg_desQueryString += "and GroupL = '" + searchGroupL + "' and GroupM = '" + searchGroupM + "' and GroupS = '" + searchGroupS + "' ";
                   
                 dlg_desQueryString += "and DLG_API_DEFINE like '%" + sourceType2 + "%' ";
                 if(searchText != "") {
@@ -394,18 +394,18 @@ router.post('/dialogs2', function (req, res) {
                 var apidefine = rows[i].DLG_API_DEFINE;
                 var luisentties = rows[i].LUIS_ENTITIES;
                 var luisentent = rows[i].LUIS_INTENT;
-                var smallGroup = rows[i].SMALL_GROUP;
+                var smallGroup = rows[i].GroupS;
 
                 item.DLG_DESCRIPTION = description;
                 item.DLG_API_DEFINE = apidefine;
                 item.LUIS_ENTITIES = luisentties;
                 item.LUIS_INTENT = luisentent;
-                item.SMALL_GROUP = smallGroup;
+                item.GroupS = smallGroup;
 
                 result.push(item);
             }
 
-            var group_query = "select distinct LARGE_GROUP from TBL_DLG where LARGE_GROUP is not null";
+            var group_query = "select distinct GroupL from TBL_DLG where GroupL is not null";
             let result2 = await pool.request().query(group_query);
             let rows2 = result2.recordset;
             
@@ -413,7 +413,7 @@ router.post('/dialogs2', function (req, res) {
             for(var i = 0; i < rows2.length; i++){
                 var item2 = {};
 
-                var largeGroup = rows2[i].LARGE_GROUP;
+                var largeGroup = rows2[i].GroupL;
 
                 item2.largeGroup = largeGroup;
 
@@ -452,11 +452,11 @@ router.post('/dialogs', function (req, res) {
                                      "(select ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC) AS NUM, " +
                                      "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
                                      "CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
-                                     "DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, SMALL_GROUP " +
+                                     "DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, GroupS " +
                                      "from TBL_DLG a, TBL_DLG_RELATION_LUIS b where a.DLG_ID = b.DLG_ID ";
             if(groupType != '모두보기') {
 
-                dlg_desQueryString += "and SMALL_GROUP = '" + groupType + "' ";
+                dlg_desQueryString += "and GroupS = '" + groupType + "' ";
             }      
                 dlg_desQueryString += "and DLG_API_DEFINE like '%" + sourceType + "%') tbp " +
                                       "WHERE PAGEIDX = @currentPage";
@@ -472,18 +472,18 @@ router.post('/dialogs', function (req, res) {
                 var apidefine = rows[i].DLG_API_DEFINE;
                 var luisentties = rows[i].LUIS_ENTITIES;
                 var luisentent = rows[i].LUIS_INTENT;
-                var smallGroup = rows[i].SMALL_GROUP;
+                var smallGroup = rows[i].GroupS;
 
                 item.DLG_DESCRIPTION = description;
                 item.DLG_API_DEFINE = apidefine;
                 item.LUIS_ENTITIES = luisentties;
                 item.LUIS_INTENT = luisentent;
-                item.SMALL_GROUP = smallGroup;
+                item.GroupS = smallGroup;
 
                 result.push(item);
             }
 
-            var group_query = "select distinct LARGE_GROUP from TBL_DLG where LARGE_GROUP is not null";
+            var group_query = "select distinct GroupL from TBL_DLG where GroupL is not null";
             let result2 = await pool.request().query(group_query);
             let rows2 = result2.recordset;
             
@@ -491,7 +491,7 @@ router.post('/dialogs', function (req, res) {
             for(var i = 0; i < rows2.length; i++){
                 var item2 = {};
 
-                var largeGroup = rows2[i].LARGE_GROUP;
+                var largeGroup = rows2[i].GroupL;
 
                 item2.largeGroup = largeGroup;
 
@@ -1144,21 +1144,21 @@ router.post('/selectGroup',function(req,res){
             let pool = await sql.connect(dbConfig)
             var queryText = "";
             if(selectId == "searchLargeGroup") {
-                queryText = "SELECT DISTINCT LARGE_GROUP AS 'GROUP' FROM TBL_DLG WHERE LARGE_GROUP IS NOT NULL";
+                queryText = "SELECT DISTINCT GroupL AS 'GROUP' FROM TBL_DLG WHERE GroupL IS NOT NULL";
             } else if(selectId == "searchMediumGroup") {
                 selectValue1 = selectValue1.trim();
-                queryText = "SELECT DISTINCT MEDIUM_GROUP AS 'GROUP'\n";
+                queryText = "SELECT DISTINCT GroupM AS 'GROUP'\n";
                 queryText += "FROM TBL_DLG\n";
-                queryText += "WHERE LARGE_GROUP IS NOT NULL\n";
-                queryText += "AND LARGE_GROUP LIKE '%" + selectValue1 + "%'";
+                queryText += "WHERE GroupL IS NOT NULL\n";
+                queryText += "AND GroupL LIKE '%" + selectValue1 + "%'";
             } else if(selectId == "searchSmallGroup") {
                 selectValue1 = selectValue1.trim();
                 selectValue2 = selectValue2.trim();
-                queryText = "SELECT DISTINCT SMALL_GROUP AS 'GROUP'\n";
+                queryText = "SELECT DISTINCT GroupS AS 'GROUP'\n";
                 queryText += "FROM TBL_DLG\n";
-                queryText += "WHERE LARGE_GROUP IS NOT NULL\n";
-                queryText += "AND LARGE_GROUP LIKE '%" + selectValue1 + "%'\n";
-                queryText += "AND MEDIUM_GROUP LIKE '%" + selectValue2 + "%'";
+                queryText += "WHERE GroupL IS NOT NULL\n";
+                queryText += "AND GroupL LIKE '%" + selectValue1 + "%'\n";
+                queryText += "AND GroupM LIKE '%" + selectValue2 + "%'";
             }
 
             let result = await pool.request().query(queryText);

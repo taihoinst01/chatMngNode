@@ -49,7 +49,7 @@ router.get('/', function (req, res) {
 
             var DlgQry = " SELECT   isnull((  select      count(*)  " +
                          "                    from        TBL_DLG " +
-                         "                    where       LARGE_GROUP = '" + appName + "' " +
+                         "                    where       GroupL = '" + appName + "' " +
                          "                    and         use_yn ='Y'), 0) AS DLG_CNT ";;
             let result3 = await pool.request().query(DlgQry);
             let rows3 = result3.recordset;
@@ -96,7 +96,7 @@ router.post('/getCounts', function (req, res) {
                             "          AND		    A.LUIS_ENTITIES like '%'+B.ENTITY_VALUE+'%'), 0) AS ENTITY_CNT, " +
                             "       isnull((  select      count(*)  " +
                             "          from        TBL_DLG " +
-                            "          where       LARGE_GROUP = '" + appName + "' " +
+                            "          where       GroupL = '" + appName + "' " +
                             "          and         use_yn ='Y'), 0) AS DLG_CNT ";
             let pool = await sql.connect(dbConfig);
             let result1 = await pool.request().query(cntValue);
