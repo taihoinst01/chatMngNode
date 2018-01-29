@@ -292,7 +292,7 @@ $(document).ready(function(){
         insertForm += '<div class="clear-both"></div>';
         insertForm += '<div id="textLayout" style="display:block;">';
         insertForm += '<p class="texcon03">Dialogue Title <span>(required) </span></p>';
-        insertForm += '<p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." /></p>';
+        insertForm += '<p><input name="dialogTitle" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." onkeyup="writeDialogTitle(this);" /></p>';
         insertForm += '<p class="texcon03">Dialogue Text  <span>(required) </span></p>';
         insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
         insertForm += '</div>';
@@ -504,13 +504,21 @@ $(document).on('change','select[name=dlgType]',function(e){
 
     $('.insertForm:eq(' + idx + ') #carouselLayout').remove();
     $('.insertForm:eq(' + idx + ') #mediaLayout').remove();
+    $('.insertForm:eq(' + idx + ')').find('.clear-both').each(function( index) {
+        if ( index != 0 ) {
+            $(this).next().remove();
+            $(this).remove();
+        } 
+    });
 
     if($(e.target).val() == "2") {
 
     } else if($(e.target).val() == "3") {
-        var $clone = $('#carouselLayout').clone();
-        $('.insertForm:eq(' + idx + ') form').append($clone);
+        //var $clone = $('#carouselLayout').clone();  <div id="carouselLayout" style="display: block;">[object Object]</div>
+        var caraousHtml = '<div id="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>'
+        $('.insertForm:eq(' + idx + ') form').append('<div id="carouselLayout" style="display:none;">' + caraousHtml + '</div>') ;
         $('.insertForm:eq(' + idx + ') #carouselLayout').css('display', 'block');
+        $('.insertForm:eq(' + idx + ') #carouselLayout').find('a[name=addCarouselBtn]:last').closest('div').css('display', 'inline-block');
     } else if($(e.target).val() == "4") {
         var $clone = $('#mediaLayout').clone();
         $('.insertForm:eq(' + idx + ') form').append($clone);
@@ -536,11 +544,11 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<svg class="wc-message-callout"></svg>';
         insertHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
         insertHtml += '<div>';
-        insertHtml += '<button class="scroll previous" id="prevBtn" style="display: none;" onclick="prevBtn(botChatNum)">';
+        insertHtml += '<button class="scroll previous" id="prevBtn' + (idx) + '" style="display: none; height: 30px;" onclick="prevBtn(' + idx + ')">';
         insertHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
         insertHtml += '</button>';
         insertHtml += '<div class="wc-hscroll-outer" >';
-        insertHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv">';
+        insertHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (idx) + '">';
         insertHtml += '<ul>';
         insertHtml += '<li class="wc-carousel-item">';
         insertHtml += '<div class="wc-card hero">';
@@ -567,9 +575,8 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '</ul>';
         insertHtml += '</div>';
         insertHtml += '</div>';
-        //insertHtml += '<button class="scroll next" id="nextBtn" onclick="nextBtn(botChatNum)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+        insertHtml += '<button class="scroll next" style="display: none; height: 30px;" id="nextBtn' + (idx) + '" onclick="nextBtn(' + idx + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
         insertHtml += '</div></div></div></div>';
-
         $(".dialogView").eq(idx).html(insertHtml);
     } else if($(e.target).val() == "4") {
         $(".dialogView").eq(idx).html('');
@@ -618,22 +625,64 @@ function dialogValidation(type){
         }
     }
 }
+function writeDialogTitle(e) {
+
+    //var idx = $('input[name=dialogTitle]').index(e);
+    var idx = $('#commonLayout .insertForm').index($(e).parents('.insertForm'));
+    var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
+    var jcx = $(e).parents('.insertForm').find('input[name=dialogTitle]').index(e);
+
+    if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 3) {
+        //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
+        $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('h1').text(e.value);
+    } else if($('.insertForm select[name=dlgType]').eq(idx).val() == 4) {
+        $('#dialogPreview').children().eq(icx).find('h1').html(e.value);
+        //$('.dialogView h1').eq(idx).html(e.value);
+    } else {
+        $('#dialogPreview').children().eq(icx).find('.textMent p').html(e.value);
+        //$('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
+    }
+}
 
 $(document).on('change','.insertForm #mediaLayout input[name=imgUrl]',function(e){
     var idx = $(".insertForm #mediaLayout input[name=imgUrl]").index(this);
     $('.dialogView .wc-card-div img:eq(' + idx + ')').attr("src",$(e.target).val());
 });
 
+
+function writeCarouselImg(e) {
+    var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
+    var jcx = $(e).parents('.insertForm').find('input[name=imgUrl]').index(e);
+
+    $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('.imgContainer img').attr("src",e.value);
+}
+
 function writeDialog(e) {
     var idx = $('textarea[name=dialogText]').index(e);
     
-    if($('.insertForm select[name=dlgType]').eq(idx).val() == 3) {
-        $('.dialogView:eq(' + idx + ') .carousel').html(e.value);
+    if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 3) {
+        //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
+        var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
+        var jcx = $(e).parents('.insertForm').find('textarea[name=dialogText]').index(e);
+
+        $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('p').text(e.value);
     } else if($('.insertForm select[name=dlgType]').eq(idx).val() == 4) {
         $('.dialogView h1').eq(idx).html(e.value);
     } else {
-        $('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
+        //$('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
+        $('#dialogPreview').children().eq(icx).find('.textMent p:eq(' + idx + ')').html(e.value);
     }
+
+    //캐러졀 용
+    /*
+    if ( $(e).parents('.insertForm').find('select[name=dlgType]').val() == 3 ) {
+        var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
+        var jcx = $(e).parents('.insertForm').find('textarea[name=dialogText]').index(e);
+
+        $('#dialogPreview').children().eq((1)).find('ul:eq(0)').children().eq(1).find('p').text(e.value);
+    }
+    */
+    
     
 }
 
@@ -1063,8 +1112,15 @@ function selectGroup(selectId,str1,str2) {
 }
 
 //---------------두연 추가
-
+var $insertForm;
+var $dlgForm;
+var $carouselForm;
 function openModalBox(target){
+    //carousel clone 초기값 저장
+    $insertForm = $('#commonLayout .insertForm').eq(0).clone();
+    $dlgForm = $('#commonLayout #textLayout').eq(0).clone();
+    $carouselForm = $('#commonLayout #carouselLayout').eq(0).clone();
+
 
     // 화면의 높이와 너비를 변수로 만듭니다.
     var maskHeight = $(document).height();
@@ -1317,26 +1373,65 @@ $(document).on('click', 'a[name=carouseBtn]',function(e){
         if ( $(this).css("display") === 'none') {
             $(this).show();
             $(this).parent().parent().next().find('input').eq(index).show();
-            return false;
+            return false;   
         }
         index++;
     });
 });
 
+//textLayout
+
+//var $carouselForm = $('#commonLayout #carouselLayout').eq(($('#commonLayout #carouselLayout').length)-1).clone();
 $(document).on('click', 'a[name=addCarouselBtn]', function(e){
-    var $insertForm = $('.insertForm').eq( ($('.insertForm').length-1) ).clone();
+    //var $newInsertForm = $insertForm.clone();
+    //var $newDlgForm = $dlgForm.clone();
+    //var $newCarouselForm = $carouselForm.clone();
     
-    $('a[name=addCarouselBtn]').eq(0).parent().parent().remove();
-    $('.insertForm:eq(' + ($('.insertForm').length-1) + ')').after($insertForm);
+    var idx =  $("a[name=addCarouselBtn]:visible").index(this);
+    var jdx = $('select[name=dlgType]').index(( $("a[name=addCarouselBtn]:visible").eq(idx).parents('#dialogLayout').find('select[name=dlgType]') ));
+    //$('a[name=addCarouselBtn]').eq(0).parent().parent().remove();
+    //$(this).parents('.insertForm').after( $newInsertForm);  
+    //<div id="textLayout" style="display: block;">  </div>
+    var caraousHtml = '<div id="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>';
+    var dlgFormHtml = '<div id="textLayout" style="display: block;">' + $dlgForm.html() + '</div>';
+    $(this).parents('#dialogLayout').append('<div class="clear-both"></div>').append(dlgFormHtml).append(caraousHtml);
+    //$(this).parents('.insertForm').next().find('.clear-both').after($newDlgForm);
+    var claerLen = $(this).parents('#dialogLayout').children('.clear-both').length-1;
+    $(this).parents('#dialogLayout').children('.clear-both').eq(claerLen).next().css('display', 'block');
+    $(this).parents('#dialogLayout').children('.clear-both').eq(claerLen).next().next().css('display', 'block');
+    //$(this).parent().parent().remove();
+    $(this).parent().parent().css('display', 'none');
+    $(this).parents('#dialogLayout').find('a[name=addCarouselBtn]:last').closest('div').css('display', 'inline-block');
 
-    var index = 0;
-    $('.insertForm:eq(' + ($('.insertForm').length-1) + ')').find('#carouselLayout').find('.layout-float-left').find('input').each(function() {
-        if ( index !== 0 && $(this).css("display") !== 'none') {
-            $(this).hide();
-            $(this).parent().parent().next().find('input').eq(index).hide();
-            return false;
-        }
-        index++;
-    });
+    var inputUttrHtml = '<li class="wc-carousel-item">';
+    inputUttrHtml += '<div class="wc-card hero">';
+    inputUttrHtml += '<div class="wc-container imgContainer" >';
+    inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/movieImg/teasure/02_teaser.jpg">';
+    inputUttrHtml += '</div>';
+    inputUttrHtml += '<h1>CARD_TITLE</h1>';
+    inputUttrHtml += '<p class="carousel">CARD_TEXT</p>';
+    inputUttrHtml += '<ul class="wc-card-buttons"><li><button>BTN_1_TITLE</button></li></ul>';
+    inputUttrHtml += '</div>';
+    inputUttrHtml += '</li>';
+
+    var kdx = $('.insertForm').index($(this).parents('.insertForm'));
+
+    $('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().append(inputUttrHtml);
+    
+    if ($('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().children().length > 2) {
+        $('#nextBtn'+ jdx).show();
+    }
+    
 
 });
+
+$(document).on('')
+
+
+//insertHtml += '<button class="scroll previous" id="prevBtn" style="display: none;" onclick="prevBtn(botChatNum)">';
+//insertHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
+//insertHtml += '</button>';
+
+
+
+//inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
