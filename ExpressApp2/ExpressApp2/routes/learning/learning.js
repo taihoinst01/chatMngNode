@@ -1370,8 +1370,6 @@ router.post('/addDialog',function(req,res){
     var array = [];
     var queryText = "";
 
-    console.log("data = " + data);
-
     if( typeof data == "string"){
         console.log("data is string");
         var json = JSON.parse(data);
