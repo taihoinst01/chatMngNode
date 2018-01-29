@@ -619,7 +619,9 @@ function dialogValidation(type){
     }
 }
 function writeDialogTitle(e) {
-    var idx = $('input[name=dialogTitle]').index(e);
+
+    //var idx = $('input[name=dialogTitle]').index(e);
+    var idx = $('#commonLayout .insertForm').index($(e).parents('.insertForm'));
     var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
         var jcx = $(e).parents('.insertForm').find('input[name=dialogTitle]').index(e);
 
