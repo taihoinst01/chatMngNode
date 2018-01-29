@@ -292,7 +292,7 @@ $(document).ready(function(){
         insertForm += '<div class="clear-both"></div>';
         insertForm += '<div id="textLayout" style="display:block;">';
         insertForm += '<p class="texcon03">Dialogue Title <span>(required) </span></p>';
-        insertForm += '<p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." /></p>';
+        insertForm += '<p><input name="dialogTitle" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." onkeyup="writeDialogTitle(this);" /></p>';
         insertForm += '<p class="texcon03">Dialogue Text  <span>(required) </span></p>';
         insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
         insertForm += '</div>';
@@ -466,9 +466,13 @@ $(document).ready(function(){
 
     $("#searchDialogBtn").on('click',function(){
 
+        if($('input[name=serachDlg]').val() == '' && $('#searchLargeGroup').val() == '') {
+            alert('검색어 또는 그룹을 선택해주세요');
+        } else {
+            searchDialog();
+        }
         $("#searchDlgResultDiv").html("");
 
-        searchDialog();
         
     });
 
@@ -477,8 +481,7 @@ $(document).ready(function(){
     });
 
     $("#searchDialogCancel").on('click',function(){
-        $("#searchListTbl tbody").html("");
-        $("#searchListTbl").next().html("");
+        $("#searchDlgResultDiv").html("");
     });
 
 });
@@ -505,9 +508,10 @@ $(document).on('change','select[name=dlgType]',function(e){
     if($(e.target).val() == "2") {
 
     } else if($(e.target).val() == "3") {
-        var $clone = $('#carouselLayout').clone();
-        $('.insertForm:eq(' + idx + ') form').append($clone);
+        //var $clone = $('#carouselLayout').clone();
+        $('.insertForm:eq(' + idx + ') form').append('<div id="carouselLayout" style="display:none;">' + $carouselForm.html() + '</div>') ;
         $('.insertForm:eq(' + idx + ') #carouselLayout').css('display', 'block');
+        $('.insertForm:eq(' + idx + ') #carouselLayout').find('a[name=addCarouselBtn]:last').closest('div').css('display', 'inline-block');
     } else if($(e.target).val() == "4") {
         var $clone = $('#mediaLayout').clone();
         $('.insertForm:eq(' + idx + ') form').append($clone);
@@ -533,7 +537,7 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<svg class="wc-message-callout"></svg>';
         insertHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
         insertHtml += '<div>';
-        insertHtml += '<button class="scroll previous" id="prevBtn" style="display: none;" onclick="prevBtn(botChatNum)">';
+        insertHtml += '<button class="scroll previous" id="prevBtn' + (idx) + '" style="display: none;" onclick="prevBtn(' + idx + ')">';
         insertHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
         insertHtml += '</button>';
         insertHtml += '<div class="wc-hscroll-outer" >';
@@ -564,9 +568,8 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '</ul>';
         insertHtml += '</div>';
         insertHtml += '</div>';
-        //insertHtml += '<button class="scroll next" id="nextBtn" onclick="nextBtn(botChatNum)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+        insertHtml += '<button class="scroll next" style="display: none;" id="nextBtn' + (idx) + '" onclick="nextBtn(' + idx + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
         insertHtml += '</div></div></div></div>';
-
         $(".dialogView").eq(idx).html(insertHtml);
     } else if($(e.target).val() == "4") {
         $(".dialogView").eq(idx).html('');
@@ -615,22 +618,62 @@ function dialogValidation(type){
         }
     }
 }
+function writeDialogTitle(e) {
+    var idx = $('input[name=dialogTitle]').index(e);
+    var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
+        var jcx = $(e).parents('.insertForm').find('input[name=dialogTitle]').index(e);
+
+    if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 3) {
+        //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
+        $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('h1').text(e.value);
+    } else if($('.insertForm select[name=dlgType]').eq(idx).val() == 4) {
+        $('#dialogPreview').children().eq(icx).find('h1').html(e.value);
+        //$('.dialogView h1').eq(idx).html(e.value);
+    } else {
+        $('#dialogPreview').children().eq(icx).find('.textMent p').html(e.value);
+        //$('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
+    }
+}
 
 $(document).on('change','.insertForm #mediaLayout input[name=imgUrl]',function(e){
     var idx = $(".insertForm #mediaLayout input[name=imgUrl]").index(this);
     $('.dialogView .wc-card-div img:eq(' + idx + ')').attr("src",$(e.target).val());
 });
 
+
+function writeCarouselImg(e) {
+    var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
+    var jcx = $(e).parents('.insertForm').find('input[name=imgUrl]').index(e);
+
+    $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('.imgContainer img').attr("src",e.value);
+}
+
 function writeDialog(e) {
     var idx = $('textarea[name=dialogText]').index(e);
     
-    if($('.insertForm select[name=dlgType]').eq(idx).val() == 3) {
-        $('.dialogView:eq(' + idx + ') .carousel').html(e.value);
+    if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 3) {
+        //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
+        var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
+        var jcx = $(e).parents('.insertForm').find('textarea[name=dialogText]').index(e);
+
+        $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('p').text(e.value);
     } else if($('.insertForm select[name=dlgType]').eq(idx).val() == 4) {
         $('.dialogView h1').eq(idx).html(e.value);
     } else {
-        $('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
+        //$('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
+        $('#dialogPreview').children().eq(icx).find('.textMent p:eq(' + idx + ')').html(e.value);
     }
+
+    //캐러졀 용
+    /*
+    if ( $(e).parents('.insertForm').find('select[name=dlgType]').val() == 3 ) {
+        var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
+        var jcx = $(e).parents('.insertForm').find('textarea[name=dialogText]').index(e);
+
+        $('#dialogPreview').children().eq((1)).find('ul:eq(0)').children().eq(1).find('p').text(e.value);
+    }
+    */
+    
     
 }
 
@@ -1040,9 +1083,17 @@ function selectGroup(selectId,str1,str2) {
             var group = result.rows;
             $("#"+selectId).html("");
             if(selectId == "searchLargeGroup") {
-                $("#"+selectId).append('<option value="LargeGroup">LargeGroup</option>' );
+                $("#"+selectId).append('<option value="">largeGroup</option>');
+                $('#searchMediumGroup').html("");
+                $('#searchSmallGroup').html("");
+                $('#searchMediumGroup').append('<option value="">mediumGroup</option>');
+                $('#searchSmallGroup').append('<option value="">smallGroup</option>');
             } else if(selectId == "searchMediumGroup") {
-                $("#"+selectId).append('<option value="MediumGroup">MediumGroup</option>' );
+                $("#"+selectId).append('<option value="">mediumGroup</option>' );
+                $('#searchSmallGroup').html("");
+                $('#searchSmallGroup').append('<option value="">smallGroup</option>');
+            } else {
+                $('#searchSmallGroup').append('<option value="">smallGroup</option>');
             }
             for(var i = 0; i < group.length; i++){
                 $("#"+selectId).append('<option value="' + group[i]['GROUP'] + '">' + group[i]['GROUP'] + '</option>' );
@@ -1052,8 +1103,15 @@ function selectGroup(selectId,str1,str2) {
 }
 
 //---------------두연 추가
-
+var $insertForm;
+var $dlgForm;
+var $carouselForm;
 function openModalBox(target){
+    //carousel clone 초기값 저장
+    $insertForm = $('#commonLayout .insertForm').eq(0).clone();
+    $dlgForm = $('#commonLayout #textLayout').eq(0).clone();
+    $carouselForm = $('#commonLayout #carouselLayout').eq(0).clone();
+
 
     // 화면의 높이와 너비를 변수로 만듭니다.
     var maskHeight = $(document).height();
@@ -1159,8 +1217,11 @@ function searchDialog() {
 
                 for(var l = 0; l < val.length; l++){
                     var tmp = val[l];
+
                     for(var j = 0; j < tmp.dlg.length; j++) {
+
                         if(tmp.dlg[j].DLG_TYPE == 2) {
+  
                             inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="width:200px">';
                             inputUttrHtml += '<div class="wc-message-content">';
                             inputUttrHtml += '<svg class="wc-message-callout"></svg>';
@@ -1172,6 +1233,7 @@ function searchDialog() {
                             inputUttrHtml += '</div></div></div></div></div>';
 
                         } else if(tmp.dlg[j].DLG_TYPE == 3) {
+
                             if(j == 0) {
                                 inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="margin-bottom:0px">';
                                 inputUttrHtml += '<div class="wc-message-content">';
@@ -1195,6 +1257,7 @@ function searchDialog() {
                                 inputUttrHtml += '<h1>' + /*cardtitle*/ tmp.dlg[j].CARD_TITLE + '</h1>';
                             }
                             if(tmp.dlg[j].CARD_TEXT != null) {
+
                                 inputUttrHtml += '<p class="carousel" style="height:20px;min-height:20px;">' + /*cardtext*/ tmp.dlg[j].CARD_TEXT + '</p>';
                             }
                             if(tmp.dlg[j].BTN_1_TITLE != null) {
@@ -1301,26 +1364,59 @@ $(document).on('click', 'a[name=carouseBtn]',function(e){
         if ( $(this).css("display") === 'none') {
             $(this).show();
             $(this).parent().parent().next().find('input').eq(index).show();
-            return false;
+            return false;   
         }
         index++;
     });
 });
 
+//textLayout
+
+//var $carouselForm = $('#commonLayout #carouselLayout').eq(($('#commonLayout #carouselLayout').length)-1).clone();
 $(document).on('click', 'a[name=addCarouselBtn]', function(e){
-    var $insertForm = $('.insertForm').eq( ($('.insertForm').length-1) ).clone();
+    //var $newInsertForm = $insertForm.clone();
+    //var $newDlgForm = $dlgForm.clone();
+    //var $newCarouselForm = $carouselForm.clone();
     
-    $('a[name=addCarouselBtn]').eq(0).parent().parent().remove();
-    $('.insertForm:eq(' + ($('.insertForm').length-1) + ')').after($insertForm);
+    var idx =  $("a[name=addCarouselBtn]:visible").index(this);
+    var jdx = $('select[name=dlgType]').index(( $("a[name=addCarouselBtn]:visible").eq(idx).parents('#dialogLayout').find('select[name=dlgType]') ));
+    //$('a[name=addCarouselBtn]').eq(0).parent().parent().remove();
+    //$(this).parents('.insertForm').after( $newInsertForm);
 
-    var index = 0;
-    $('.insertForm:eq(' + ($('.insertForm').length-1) + ')').find('#carouselLayout').find('.layout-float-left').find('input').each(function() {
-        if ( index !== 0 && $(this).css("display") !== 'none') {
-            $(this).hide();
-            $(this).parent().parent().next().find('input').eq(index).hide();
-            return false;
-        }
-        index++;
-    });
+    $(this).parents('#dialogLayout').append('<div class="clear-both"></div>').append($dlgForm.html()).append($carouselForm.html());
+    //$(this).parents('.insertForm').next().find('.clear-both').after($newDlgForm);
+    var claerLen = $(this).parents('#dialogLayout').children('.clear-both').length-1;
+    $(this).parents('#dialogLayout').children('.clear-both').eq(claerLen).next().css('display', 'block');
+    $(this).parents('#dialogLayout').children('.clear-both').eq(claerLen).next().next().css('display', 'block');
+    //$(this).parent().parent().remove();
+    $(this).parent().parent().css('display', 'none');
+    $(this).parents('#dialogLayout').find('a[name=addCarouselBtn]:last').closest('div').css('display', 'inline-block');
+
+    var inputUttrHtml = '<li class="wc-carousel-item">';
+    inputUttrHtml += '<div class="wc-card hero">';
+    inputUttrHtml += '<div class="wc-container imgContainer" >';
+    inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/movieImg/teasure/02_teaser.jpg">';
+    inputUttrHtml += '</div>';
+    inputUttrHtml += '<h1>CARD_TITLE</h1>';
+    inputUttrHtml += '<p class="carousel">CARD_TEXT</p>';
+    inputUttrHtml += '<ul class="wc-card-buttons"><li><button>BTN_1_TITLE</button></li></ul>';
+    inputUttrHtml += '</div>';
+    inputUttrHtml += '</li>';
+    $('.dialogView').eq( jdx ).find('#slideDiv').children().append(inputUttrHtml);
+    
+    if ($('.dialogView').eq( jdx ).find('#slideDiv').children().children().length > 2) {
+        $('#nextBtn'+ jdx).show();
+    }
 
 });
+
+$(document).on('')
+
+
+//insertHtml += '<button class="scroll previous" id="prevBtn" style="display: none;" onclick="prevBtn(botChatNum)">';
+//insertHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
+//insertHtml += '</button>';
+
+
+
+//inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';

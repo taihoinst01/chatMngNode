@@ -1182,7 +1182,7 @@ router.post('/searchDialog',function(req,res){
     var searchMediumGroup = req.body.searchMediumGroup;
     var searchSmallGroup = req.body.searchSmallGroup;
     var serachDlg = req.body.serachDlg.trim();
-    
+
     var relationText = "SELECT RNUM, LUIS_ENTITIES, A.DLG_ID DLG_ID, B.DLG_TYPE, DLG_ORDER_NO \n";
         relationText += "FROM (\n";
         relationText += "SELECT RANK() OVER(ORDER BY LUIS_ENTITIES) AS RNUM, LUIS_ENTITIES, DLG_ID \n";
@@ -1193,11 +1193,11 @@ router.post('/searchDialog',function(req,res){
             relationText += "AND LUIS_ENTITIES like '%" + serachDlg + "%'\n";
         } else {
             
-            if(searchLargeGroup != null) {
+            if(searchLargeGroup) {
                 relationText += "AND LUIS_ID = '" + searchLargeGroup + "'\n";
-                if(searchMediumGroup != null) {
+                if(searchMediumGroup) {
                     relationText += "AND LUIS_INTENT = '" + searchMediumGroup + "'\n";
-                    if(searchSmallGroup != null) {
+                    if(searchSmallGroup) {
                         relationText += "AND LUIS_ENTITIES LIKE '%" + searchSmallGroup + "%'\n";
                     }
                 }
@@ -1216,15 +1216,15 @@ router.post('/searchDialog',function(req,res){
         dlgText += "FROM TBL_DLG_RELATION_LUIS\n"
         dlgText += "WHERE 1=1\n";
 
-        if(serachDlg != '' || serachDlg != null) {
+        if(serachDlg) {
         
             dlgText += "AND LUIS_ENTITIES like '%" + serachDlg + "%'\n";
         } else {
-            if(searchLargeGroup != null) {
+            if(searchLargeGroup) {
                 dlgText += "AND LUIS_ID = '" + searchLargeGroup + "'\n";
-                if(searchMediumGroup != null) {
+                if(searchMediumGroup) {
                     dlgText += "AND LUIS_INTENT = '" + searchMediumGroup + "'\n";
-                    if(searchSmallGroup != null) {
+                    if(searchSmallGroup) {
                         dlgText += "AND LUIS_ENTITIES LIKE '%" + searchSmallGroup + "%'\n";
                     }
                 }
@@ -1245,16 +1245,16 @@ router.post('/searchDialog',function(req,res){
         dlgCard += "FROM TBL_DLG_RELATION_LUIS\n";
         dlgCard += "WHERE 1=1\n";
 
-        if(serachDlg != '' || serachDlg != null) {
+        if(serachDlg) {
         
             dlgCard += "AND LUIS_ENTITIES like '%" + serachDlg + "%'\n";
         } else {
 
-            if(searchLargeGroup != null) {
+            if(searchLargeGroup) {
                 dlgCard += "AND LUIS_ID = '" + searchLargeGroup + "'\n";
-                if(searchMediumGroup != null) {
+                if(searchMediumGroup) {
                     dlgCard += "AND LUIS_INTENT = '" + searchMediumGroup + "'\n";
-                    if(searchSmallGroup != null) {
+                    if(searchSmallGroup) {
                         dlgCard += "AND LUIS_ENTITIES LIKE '%" + searchSmallGroup + "%'\n";
                     }
                 }
@@ -1275,16 +1275,16 @@ router.post('/searchDialog',function(req,res){
         dlgMedia += "FROM TBL_DLG_RELATION_LUIS\n";
         dlgMedia += "WHERE 1=1\n";
 
-        if(serachDlg != '' || serachDlg != null) {
+        if(serachDlg) {
         
             dlgMedia += "AND LUIS_ENTITIES like '%" + serachDlg + "%'\n";
         } else {
 
-            if(searchLargeGroup != null) {
+            if(searchLargeGroup) {
                 dlgMedia += "AND LUIS_ID = '" + searchLargeGroup + "'\n";
-                if(searchMediumGroup != null) {
+                if(searchMediumGroup) {
                     dlgMedia += "AND LUIS_INTENT = '" + searchMediumGroup + "'\n";
-                    if(searchSmallGroup != null) {
+                    if(searchSmallGroup) {
                         dlgMedia += "AND LUIS_ENTITIES LIKE '%" + searchSmallGroup + "%'\n";
                     }
                 }
@@ -1332,7 +1332,7 @@ router.post('/searchDialog',function(req,res){
                 }else if(dlg_type == 3){
                     for(var j = 0; j < rowsCard.length; j++){
                         var cardDlgId = rowsCard[j].DLG_ID;
-                        if(row.DLG_ID == cardDlgId){
+                        if(row.DLG_ID == cardDlgId){                       
                             row.dlg.push(rowsCard[j]);
                         }
                     }
