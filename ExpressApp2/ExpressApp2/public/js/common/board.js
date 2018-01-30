@@ -1,10 +1,13 @@
 
-
+google.charts.load('visualization'
+, {'packages':['corechart', 'table']}
+);
 
 //var entityList = [];
 var entityHash = {};
 //실행 순서 1
 $(document).ready(function () {
+    
     //getEntityListAjax ();
 });
 //실행 순서 2
@@ -30,8 +33,9 @@ $(document).ready(function () {
 
     //getEndpointHistory();
     //getEntityLabel();
+    
     drawStatusOverview();
-    getOftQuestion();
+    //getOftQuestion();
 
 
 
@@ -46,7 +50,7 @@ var maxDate = new Date(2010, 8-1, 31);
 var slider;
 var startDate;
 var endDate;
-$(function() {
+$(document).ready(function () {
     slider = $('#slider').slider({range: true, max: daysDiff(minDate, maxDate),
             slide: function(event, ui) { resync(ui.values); }});
     startDate = $('#startDate').datepicker({minDate: minDate, maxDate: maxDate,
@@ -55,6 +59,7 @@ $(function() {
     endDate = $('#endDate').datepicker({minDate: minDate, maxDate: maxDate,
             onSelect: function(dateStr) { resync(); }}).
         keyup(function() { resync(); });
+
 });
 
 function resync(values) {
@@ -403,10 +408,7 @@ function getEntityLabel() {
 
 
 function drawStatusOverview() {
-    google.charts.load(  'visualization'
-                   , '1.1'
-                   , {'packages':['corechart', 'table']}
-    );
+    
     $.ajax({
         url: '/board/intentScore',
         dataType: 'json',

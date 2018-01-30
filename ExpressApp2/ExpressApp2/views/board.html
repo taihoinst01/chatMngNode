@@ -65,11 +65,12 @@
 
                         <!-- 의도수/개체수/개체수리스트/문장수 -->
                          <div class="dashboard_cont01" >
+                            <form action="" id="filterForm">
                             <div style="float: left; margin-right: 15%">
                                 <p class="d_tit01">조회기간</p>
 
                                 <input type="text" name="startDate" id="startDate">~<input type="text" name="endDate" id="endDate">
-                                <div align="center"  id="slider" style="width: 94%; margin: 20px 0 0 9px;"></div>
+                                <div align="center" name="slider" id="slider" style="width: 94%; margin: 20px 0 0 9px;"></div>
 
                             </div>
                             <div style="float: left; margin-right: 15%">
@@ -84,10 +85,12 @@
                                     <option>모두</option>
                                 </select>
                             </div>
+                            </form>
                          </div>
 
-                        <div class="dashboard_cont04" style="margin-right: 1%;" id="score">
+                        <div class="dashboard_cont04" style="margin-right: 1%;" >
                             <p class="d_tit01">INTENT SCORE 평균/최소/최대</p>
+                            <div id="score" style="margin: 20px;"></div>
                         </div>
 
                         <div class="dashboard_cont03" style="margin-bottom: 1%;">
