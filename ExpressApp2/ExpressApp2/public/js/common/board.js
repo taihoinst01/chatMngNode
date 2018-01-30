@@ -397,17 +397,6 @@ function getEntityLabel() {
     });
 }
 
-<<<<<<< HEAD
-function getScorePane() {
-    $.ajax({
-        url: "/board/getScorePane",
-        type: "post",
-        data: $("form").serialize(),
-    }).done(function(data) {
-        alert(data);
-    });
-}
-=======
 
 
 function drawStatusOverview() {
@@ -493,4 +482,3 @@ function drawStatusOverview() {
     });
 
 }
->>>>>>> 763ba4b90fe1c748dceffdd6315f737f31be7a9a
