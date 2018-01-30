@@ -280,17 +280,44 @@ router.post('/nodeQuery', function (req, res) {
         try {
 
             var selectQuery = "";
-            selectQuery += "SELECT	LOWER(LUIS_INTENT) AS INTENT, \n";
-            selectQuery += "AVG(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS 평균INTENTSCORE, \n";
-            selectQuery += "MAX(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS 최대INTENTSCORE , \n";
-            selectQuery += "MIN(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS 최소INTENTSCORE, \n";
-            selectQuery += "CHANNEL AS 채널,\n";
-            selectQuery += "CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS 날짜,\n";
-            selectQuery += "COUNT(*) AS 갯수\n";
-            selectQuery += "FROM	TBL_HISTORY_QUERY A, TBL_QUERY_ANALYSIS_RESULT B \n";
-            selectQuery += "WHERE	REPLACE(REPLACE(LOWER(A.CUSTOMER_COMMENT_KR),'.',''),'?','') = B.QUERY \n";
-            selectQuery += "AND		REG_DATE > '07/19/2017 00:00:00'\n";
-            selectQuery += "GROUP BY LUIS_INTENT, CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120)\n";
+            selectQuery += "SELECT TOP 100 PERCENT korQuery, enQuery, queryCnt, queryDate, channel, result, intent_score, intent, entities, textResult, cardResult, cardBtnResult, mediaResult, mediaBtnResult \n";
+            selectQuery += "FROM ( \n";
+            selectQuery += "SELECT CUSTOMER_COMMENT_KR AS korQuery \n";
+            selectQuery += "     , ISNULL(영어질문,'') AS enQuery \n";
+            selectQuery += "     , 질문수 AS queryCnt \n";
+            selectQuery += "     , dimdate AS queryDate \n";
+            selectQuery += "     , CHANNEL AS channel \n";
+            selectQuery += "     , ISNULL(AN.RESULT,'') AS result \n";
+            selectQuery += "     , ISNULL(AN.LUIS_INTENT_SCORE,'') AS intent_score \n";
+            selectQuery += "     , ISNULL(LOWER(RE.LUIS_INTENT),'') AS intent \n";
+            selectQuery += "     , ISNULL(RE.LUIS_ENTITIES,'') AS entities \n";
+            selectQuery += "     , ISNULL(TE.CARD_TEXT,'') AS textResult \n";
+            selectQuery += "     , ISNULL(CA.CARD_TITLE,'') AS cardResult \n";
+            selectQuery += "     , ISNULL(CA.BTN_1_CONTEXT,'') AS cardBtnResult \n";
+            selectQuery += "     , ISNULL(ME.CARD_TITLE,'') AS mediaResult \n";
+            selectQuery += "     , ISNULL(ME.BTN_1_CONTEXT,'') AS mediaBtnResult \n";
+            selectQuery += "FROM ( \n";
+            selectQuery += "     SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS 영어질문, COUNT(*) AS 질문수, CONVERT(CHAR(19),CONVERT(DATETIME,REG_DATE),120) AS Dimdate, CHANNEL \n";
+            selectQuery += "     FROM TBL_HISTORY_QUERY \n";
+            selectQuery += "     WHERE CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) > '2017-07-24' \n";
+            selectQuery += "     GROUP BY CUSTOMER_COMMENT_KR, CONVERT(CHAR(19),CONVERT(DATETIME,REG_DATE),120), CHANNEL \n";
+            selectQuery += ") HI \n";
+            selectQuery += "LEFT OUTER JOIN TBL_QUERY_ANALYSIS_RESULT AN \n";
+            selectQuery += "     ON REPLACE(REPLACE(LOWER(HI.CUSTOMER_COMMENT_KR),'.',''),'?','') = LOWER(AN.QUERY) \n";
+            selectQuery += "LEFT OUTER JOIN (SELECT LUIS_INTENT,LUIS_ENTITIES,MIN(DLG_ID) AS DLG_ID FROM TBL_DLG_RELATION_LUIS GROUP BY LUIS_INTENT, LUIS_ENTITIES) RE \n";
+            selectQuery += "     ON AN.LUIS_INTENT = RE.LUIS_INTENT \n";
+            selectQuery += "     AND AN.LUIS_ENTITIES = RE.LUIS_ENTITIES \n";
+            selectQuery += "LEFT OUTER JOIN TBL_DLG DL \n";
+            selectQuery += "     ON RE.DLG_ID = DL.DLG_ID\n";
+            selectQuery += "LEFT OUTER JOIN TBL_DLG_TEXT TE \n";
+            selectQuery += "     ON DL.DLG_ID = TE.DLG_ID \n";
+            selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_CARD WHERE CARD_ORDER_NO = 1) CA \n";
+            selectQuery += "     ON DL.DLG_ID = CA.DLG_ID \n";
+            selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_MEDIA) ME \n";
+            selectQuery += "     ON DL.DLG_ID = ME.DLG_ID \n";
+            selectQuery += ") AA \n";
+            selectQuery += "WHERE RESULT = '' OR RESULT IN ('D','N') \n";
+            selectQuery += "ORDER BY queryCnt DESC, queryDate DESC; \n";
 
             let pool = await sql.connect(dbConfig);
             let result1 = await pool.request()
@@ -298,7 +325,7 @@ router.post('/nodeQuery', function (req, res) {
         
             let rows = result1.recordset;
 
-            res.send({list : result});
+            res.send({list : rows});
         } catch (err) {
             console.log(err)
             // ... error checks

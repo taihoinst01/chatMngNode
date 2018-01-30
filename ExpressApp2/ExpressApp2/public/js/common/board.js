@@ -13,7 +13,7 @@ $(document).ready(function () {
 //실행 순서 2
 
 $(document).ready(function () {
-
+    
     /*
     var appName = $('#appName').val();//getParameters('appName')
     $.ajax({
@@ -34,19 +34,25 @@ $(document).ready(function () {
     //getEndpointHistory();
     //getEntityLabel();
     
-    drawStatusOverview();
-    getEndpointHistory();
-    getEntityLabel();
-    getOftQuestion();
+    //drawStatusOverview();
+    //getEndpointHistory();
+    //getEntityLabel();
+    //getOftQuestion();
+    //drawNoneQuerylist();
 
+    //resync([0, 365]);
 });
 
 
 
-
 //slider 시작
-var minDate = new Date(2010, 8-1, 1);
-var maxDate = new Date(2010, 8-1, 31);
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+var yyyy = today.getFullYear();
+
+var minDate = new Date(yyyy.toString()-1, mm.toString()-1, dd.toString());
+var maxDate = new Date(yyyy.toString(), mm.toString()-1, dd.toString());
 var slider;
 var startDate;
 var endDate;
@@ -59,7 +65,9 @@ $(document).ready(function () {
     endDate = $('#endDate').datepicker({minDate: minDate, maxDate: maxDate,
             onSelect: function(dateStr) { resync(); }}).
         keyup(function() { resync(); });
-
+    resync([0, 365]);
+    $('#slider div:eq(0)').css('left','0%').css('width','100%');
+    $('#slider span:eq(1)').css('left','100%');
 });
 
 function resync(values) {
@@ -515,7 +523,7 @@ function getOftQuestion() {
 
 
 
-function drawNoneQueryList() {
+function drawNoneQuerylist() {
     $.ajax({
         url: '/board/nodeQuery',
         dataType: 'json',
@@ -525,25 +533,39 @@ function drawNoneQueryList() {
               if (data.error_code != null && data.error_message != null) {
                   alert(data.error_message);
               } else {
-                    var noneList = data.noneQueryList;
+                    var noneList = data.list;
 
                     var inputData3 = new google.visualization.DataTable();
 
                     //declare the columns
-                    inputData3.addColumn('string', '질문 유저ID');
                     inputData3.addColumn('string', 'INTENT');
                     inputData3.addColumn('string', '한글질문');
-                    inputData3.addColumn('string', '등록일');
+                    inputData3.addColumn('number', '질문수');
+                    inputData3.addColumn('string', '날짜');
+                    inputData3.addColumn('string', '채널');
+                    inputData3.addColumn('string', '결과');
+                    inputData3.addColumn('string', 'TEXT답변');
+                    inputData3.addColumn('string', 'CARD답변');
+                    inputData3.addColumn('string', 'CARDBTN답변');
+                    inputData3.addColumn('string', 'MEDIA답변');
+                    inputData3.addColumn('string', 'MEDIABTN답변');
 
                     //insert data here
                     //don't forget to set the classname TotalCell to the last datarow!!!
 
 
                     for (var i=0; i< noneList.length; i++) {
-                        inputData3.addRow([ noneList[i].userId
-                                          , noneList[i].intentName
-                                          , noneList[i].koQuestion
-                                          , noneList[i].dimdate]);
+                        inputData3.addRow([   noneList[i].intent
+                                            , noneList[i].korQuery
+                                            , noneList[i].queryCnt
+                                            , noneList[i].queryDate
+                                            , noneList[i].channel
+                                            , noneList[i].result
+                                            , noneList[i].textResult
+                                            , noneList[i].cardResult
+                                            , noneList[i].cardBtnResult
+                                            , noneList[i].mediaResult
+                                            , noneList[i].mediaBtnResult]);
                     }
                     /* inputData2.addRow(
                         [{
@@ -558,7 +580,7 @@ function drawNoneQueryList() {
                         ]
                     ); */
 
-                    StatusTable3 = new google.visualization.Table(document.getElementById('StatusOverview3'));
+                    StatusTable3 = new google.visualization.Table(document.getElementById('noneQueryDiv'));
 /*
                     //add the listener events
                     google.visualization.events.addListener(StatusTable2, 'ready', function () {
