@@ -64,6 +64,25 @@
                         <!--// 학습 현황 -->
 
                         <!-- 의도수/개체수/개체수리스트/문장수 -->
+                         <div class="dashboard_cont01" >
+                            <div style="float: left; margin-right: 15%">
+                                <p class="d_tit01">조회기간</p>
+                                <input type="date" class="inbox02"/>~<input type="date" class="inbox02"/>
+                            </div>
+                            <div style="float: left; margin-right: 15%">
+                                <p class="d_tit01">당일구분</p>
+                                <select class="inbox02" style="width: 200px">
+                                    <option>모두</option>
+                                </select>
+                            </div>
+                            <div style="float: left">
+                                <p class="d_tit01">채널</p>
+                                <select class="inbox02" style="width: 200px">
+                                    <option>모두</option>
+                                </select>
+                            </div>
+                         </div>
+
                        <div class="dashboard_cont02">
                             <p class="d_tit01">Intents<!-- 의도수 --></p>
                             <p class="d_tit03"><span id="spanIntentsCount"> <%=INTENT_CNT %> </span></p>
