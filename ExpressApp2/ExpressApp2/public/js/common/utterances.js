@@ -912,9 +912,9 @@ function selectDlgListAjax(entity) {
 function nextBtn(botChatNum) {
     
     $("#slideDiv" + botChatNum).animate({scrollLeft : ($("#slideDiv" + botChatNum).scrollLeft() + 312)}, 500, function(){
-       
+
         if($("#slideDiv" + botChatNum).scrollLeft() == 
-                ((Math.ceil($("#slideDiv" + botChatNum).find(".wc-carousel-item").length / 2)) - 1) * 312) {
+                ($("#slideDiv" + botChatNum).find(".wc-carousel-item").length - 2) * 156) {
             $("#nextBtn" + botChatNum).hide();
         }
         
@@ -1304,7 +1304,7 @@ function searchDialog() {
                         } else if(tmp.dlg[j].DLG_TYPE == 3) {
 
                             if(j == 0) {
-                                inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="margin-bottom:0px">';
+                                inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
                                 inputUttrHtml += '<div class="wc-message-content">';
                                 inputUttrHtml += '<svg class="wc-message-callout"></svg>';
                                 inputUttrHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
@@ -1336,17 +1336,17 @@ function searchDialog() {
                             inputUttrHtml += '</li>';
                             
                             //다이얼로그가 한개일때에는 오른쪽 버튼 x
-                            if(tmp.dlg.length == 2 && j == 1) {
+                            if((tmp.dlg.length == 2 && j == 1) || (tmp.dlg.length == 1 && j == 0)) {
                                 inputUttrHtml += '</ul>';
                                 inputUttrHtml += '</div>';
                                 inputUttrHtml += '</div>';
-                                inputUttrHtml += '</div></div></div></div></div>';
+                                inputUttrHtml += '</div></div></div></div>';
                             } else if((tmp.dlg.length-1) == j) {
                                 inputUttrHtml += '</ul>';
                                 inputUttrHtml += '</div>';
                                 inputUttrHtml += '</div>';
                                 inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
-                                inputUttrHtml += '</div></div></div></div></div>';
+                                inputUttrHtml += '</div></div></div></div>';
                             }
                         } else if(tmp.dlg[j].DLG_TYPE == 4) {
                             inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
