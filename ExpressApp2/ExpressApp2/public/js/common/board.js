@@ -511,3 +511,85 @@ function getOftQuestion() {
 
     });
 }
+
+
+
+
+
+function drawNoneQueryList() {
+    $.ajax({
+        url: '/board/nodeQuery',
+        dataType: 'json',
+        type: 'POST',
+        data: $('#filterForm').serializeObject(),
+        success: function(data) {
+              if (data.error_code != null && data.error_message != null) {
+                  alert(data.error_message);
+              } else {
+                    var noneList = data.noneQueryList;
+
+                    var inputData3 = new google.visualization.DataTable();
+
+                    //declare the columns
+                    inputData3.addColumn('string', '질문 유저ID');
+                    inputData3.addColumn('string', 'INTENT');
+                    inputData3.addColumn('string', '한글질문');
+                    inputData3.addColumn('string', '등록일');
+
+                    //insert data here
+                    //don't forget to set the classname TotalCell to the last datarow!!!
+
+
+                    for (var i=0; i< noneList.length; i++) {
+                        inputData3.addRow([ noneList[i].userId
+                                          , noneList[i].intentName
+                                          , noneList[i].koQuestion
+                                          , noneList[i].dimdate]);
+                    }
+                    /* inputData2.addRow(
+                        [{
+                            v: '합계',
+                            p: {
+                                className: 'TotalCell'
+                            }
+                          },
+                          '',
+                          '',
+                          '',
+                        ]
+                    ); */
+
+                    StatusTable3 = new google.visualization.Table(document.getElementById('StatusOverview3'));
+/*
+                    //add the listener events
+                    google.visualization.events.addListener(StatusTable2, 'ready', function () {
+                        resetStyling('StatusOverview2');
+                    });
+
+                    //sorting event
+                    google.visualization.events.addListener(StatusTable2, 'sort', function (ev) {
+                        //find the last row
+                        var parentRow2 = $('#StatusOverview2 td.TotalCell').parent();
+                        //set the TotalRow row to the last row again.
+                        if (!parentRow2.is(':last-child')) {
+                            parentRow2.siblings().last().after(parentRow2);
+                        }
+
+                        //reset the styling of the table
+                        resetStyling('StatusOverview2');
+                    }); */
+
+                    StatusTable3.draw(inputData3,
+                               {
+                                page: 'enable',
+                                pageSize: 500,
+                                scrollLeftStartPosition: 100,
+                                showRowNumber: false,
+                                width: '90%',
+                                height: '500px',
+                                allowHtml: true
+                                });
+                  }
+              }
+      });
+}
