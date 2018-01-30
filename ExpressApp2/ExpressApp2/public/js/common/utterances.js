@@ -858,12 +858,7 @@ function selectDlgListAjax(entity) {
 function nextBtn(botChatNum) {
     
     $("#slideDiv" + botChatNum).animate({scrollLeft : ($("#slideDiv" + botChatNum).scrollLeft() + 312)}, 500, function(){
-        console.log($("#slideDiv" + botChatNum).scrollLeft());
-        console.log(((Math.ceil($("#slideDiv" + botChatNum).find(".wc-carousel-item").length / 2)) - 1) * 312);
 
-        if($("#slideDiv" + botChatNum).find(".wc-carousel-item").length % 2 != 0) {
-
-        }
         if($("#slideDiv" + botChatNum).scrollLeft() == 
                 ($("#slideDiv" + botChatNum).find(".wc-carousel-item").length - 2) * 156) {
             $("#nextBtn" + botChatNum).hide();
