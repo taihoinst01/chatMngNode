@@ -1381,12 +1381,14 @@ router.post('/addDialog',function(req,res){
     } else {
         console.log("data is object");
 
+        //array = JSON.parse(data);
+        
         var dataIdx = data.length;
-
+        
         for(var i = 0; i < dataIdx; i++) {
             array[i] = JSON.parse(data[i]);
         }
-
+        
         for(var i = 0; i < array.length; i++) {
             for( var key in array[i]) {
                 console.log("key : " + key + " value : " + array[i][key]);
@@ -1405,8 +1407,8 @@ router.post('/addDialog',function(req,res){
             '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dialogOrderNo,\'Y\')';
             var inserTblDlgText = 'INSERT INTO TBL_DLG_TEXT(TEXT_DLG_ID,DLG_ID,CARD_TITLE,CARD_TEXT,USE_YN) VALUES ' +
             '(@textDlgId,@dlgId,@dialogTitle,@dialogText,\'Y\')';
-            var insertTblCarousel = 'INSERT INTO TBL_DLG_CARD(CARD_DLG_ID,DLG_ID,CARD_TEXT,IMG_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_ORDER_NO,USE_YN) VALUES ' +
-            '(@typeDlgId,@dlgId,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardOrderNo,\'Y\')';
+            var insertTblCarousel = 'INSERT INTO TBL_DLG_CARD(CARD_DLG_ID,DLG_ID,CARD_TITLE,CARD_TEXT,IMG_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_ORDER_NO,USE_YN) VALUES ' +
+            '(@typeDlgId,@dlgId,@dialogTitle,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardOrderNo,\'Y\')';
             var insertTblDlgMedia = 'INSERT INTO TBL_DLG_MEDIA(MEDIA_DLG_ID,DLG_ID,CARD_TITLE,CARD_TEXT,MEDIA_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_VALUE,USE_YN) VALUES ' +
             '(@mediaDlgId,@dlgId,@dialogTitle,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardValue,\'Y\')';
             var insertTblRelation = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) " + 
@@ -1448,6 +1450,47 @@ router.post('/addDialog',function(req,res){
                     .input('dlgId', sql.Int, dlgId[0].DLG_ID)
                     .query(insertTblRelation)
                 } else if(array[i]["dlgType"] == "3") {
+                    let result1 = await pool.request()
+                    .query(selectDlgId)
+                    let dlgId = result1.recordset;
+                    
+                    let result2 = await pool.request()
+                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                    .input('dialogText', sql.NVarChar, description)
+                    .input('dlgType', sql.NVarChar, array[i]["dlgType"])
+                    .input('dialogOrderNo', sql.Int, (i+1))
+                    .query(insertTblDlg)
+
+                    for (var j=0; j<array[i].carouselArr.length; j++) {
+                        var carTmp = array[i].carouselArr[j];
+                        
+                        let result2 = await pool.request()
+                        .input('typeDlgId', sql.NVarChar, array[i].dlgType)
+                        .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                        .input('dialogTitle', sql.NVarChar, carTmp["dialogTitle"])
+                        .input('dialogText', sql.NVarChar, carTmp["dialogText"])
+                        .input('imgUrl', sql.NVarChar, carTmp["imgUrl"])
+                        .input('btn1Type', sql.NVarChar, carTmp["btn1Type"])
+                        .input('buttonName1', sql.NVarChar, carTmp["mButtonName1"])
+                        .input('buttonContent1', sql.NVarChar, carTmp["mButtonContent1"])
+                        .input('btn2Type', sql.NVarChar, carTmp["btn2Type"])
+                        .input('buttonName2', sql.NVarChar, carTmp["mButtonName2"])
+                        .input('buttonContent2', sql.NVarChar, carTmp["mButtonContent2"])
+                        .input('btn3Type', sql.NVarChar, carTmp["btn3Type"])
+                        .input('buttonName3', sql.NVarChar, carTmp["mButtonName3"])
+                        .input('buttonContent3', sql.NVarChar, carTmp["mButtonContent3"])
+                        .input('btn4Type', sql.NVarChar, carTmp["btn4Type"])
+                        .input('buttonName4', sql.NVarChar, carTmp["mButtonName4"])
+                        .input('buttonContent4', sql.NVarChar, carTmp["mButtonContent4"])
+                        .input('cardOrderNo', sql.Int, (j+1))
+                        .query(insertTblCarousel);
+
+                    }
+                    let result5 = await pool.request()
+                    .input('entity', sql.NVarChar, entity)
+                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                    .query(insertTblRelation)
+
 
                 } else if(array[i]["dlgType"] == "4") {
                     let result1 = await pool.request()

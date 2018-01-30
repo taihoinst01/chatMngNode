@@ -192,7 +192,7 @@
                 </select></p>
             
             <div class="clear-both"></div>
-            <p class="texcon03">Description  <span>(optional) </span></p>
+            <p class="texcon03">Description  <span>(required) </span></p>
             <p><textarea name="description" id="description" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup=""></textarea></p>
         
         </form>
@@ -225,18 +225,41 @@
                         <p class="texcon03">Image Url <span>(required) </span></p>
                         <p><input name="imgUrl" type="text" class="inbox02"  style="width:95%" placeholder="Input image url.." onkeyup="writeCarouselImg(this);" /></p><!--id="imgUrl"-->
 
+                        <div class="layout-float-left" style="width:20%;">
+                            <p class="texcon03">Btn Type </p>
+                            <p>
+                                <select name="btn1Type" class="inbox02" id="btn1Type" style="width:100%; height: 37px !important; margin: 1.5px 0 1.5px 0;" >
+                                    <option value="imBack" selected>imBack</option>
+                                    <option value="openURL">openURL</option>
+                                </select>
+                                <select name="btn2Type" class="inbox02" id="btn2Type" style="width:100%; height: 37px !important; margin: 1.5px 0 1.5px 0;; display:none" >
+                                    <option value="imBack" selected>imBack</option>
+                                    <option value="openURL">openURL</option>
+                                </select>
+                                <select name="btn3Type" class="inbox02" id="btn3Type" style="width:100%; height: 37px !important; margin: 1.5px 0 1.5px 0;; display:none" >
+                                    <option value="imBack" selected>imBack</option>
+                                    <option value="openURL">openURL</option>
+                                </select>
+                                <select name="btn4Type" class="inbox02" id="btn4Type" style="width:100%; height: 37px !important; margin: 1.5px 0 1.5px 0;; display:none" >
+                                    <option value="imBack" selected>imBack</option>
+                                    <option value="openURL">openURL</option>
+                                </select>
+                            </p>
+                            <p>
+                                <a href="#" class="btn" style="margin:2px 0 5px 0; padding: 0 18px 0 19px;" name="carouseBtn"> Add Btn </a>
+                            </p>
+                        </div>
                         <div class="layout-float-left">
-                            <p class="texcon03">Button Name <span>(optional) </span></p>
+                            <p class="texcon03">Btn Name <span>(optional) </span></p>
                             <p>
                                 <input name="cButtonName1" type="text" class="inbox02 btnBox" style="width:95%;" placeholder="Input name.." />
                                 <input name="cButtonName2" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input name.." />
                                 <input name="cButtonName3" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input name.." />
                                 <input name="cButtonName4" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input name.." />
-                                <a href="#" class="btn" style="margin:2px 0 5px 0;" name="carouseBtn">AddButton</a>
                             </p>
                         </div>
                         <div class="layout-float-left-last">
-                            <p class="texcon03">Button Content <span>(optional) </span></p>
+                            <p class="texcon03">Btn Content <span>(optional) </span></p>
                             <p>
                                 <input name="cButtonContent1" type="text" class="inbox02 btnBox" style="width:95%;" placeholder="Input contents.." />
                                 <input name="cButtonContent2" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input contents.." />
@@ -244,9 +267,9 @@
                                 <input name="cButtonContent4" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input contents.." />
                             </p>
                         </div>
-                        <div class="layout-float-left">
-                            <p class="texcon03">Carousel Add</p>
-                            <p><a href="#" class="btn" style="margin:2px 0 5px 0;" name="addCarouselBtn">Add</a></p>
+                        <div class="layout-float-left" style="float: right;">
+                            <p class="texcon03" style="margin-left: 36px;">Carousel Add</p>
+                            <p style="margin-left: 75px;"><a href="#" class="btn" style="margin:2px 0 5px 0;" name="addCarouselBtn">Add</a></p>
                         </div>
                         <div class="clear-both"></div>
                     </div>
@@ -361,7 +384,7 @@
         <!-- form end -->
     
         <footer>
-          <button class="btn" id="btnAddDlg" onclick="addDialog()">Save</button>
+          <a href="#" class="btn" id="btnAddDlg" onclick="addDialog();">Save</a>
           <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel">Cancel</a>
         </footer>
     

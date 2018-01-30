@@ -635,12 +635,11 @@ function writeDialogTitle(e) {
     if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 3) {
         //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
         $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('h1').text(e.value);
-    } else if($('.insertForm select[name=dlgType]').eq(idx).val() == 4) {
+    } else if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 4) {
         $('#dialogPreview').children().eq(icx).find('h1').html(e.value);
         //$('.dialogView h1').eq(idx).html(e.value);
     } else {
-        $('#dialogPreview').children().eq(icx).find('.textMent p').html(e.value);
-        //$('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
+        //$('#dialogPreview').children().eq(icx).find('.textMent p').html(e.value);
     }
 }
 
@@ -658,19 +657,23 @@ function writeCarouselImg(e) {
 }
 
 function writeDialog(e) {
-    var idx = $('textarea[name=dialogText]').index(e);
+    //var idx = $('textarea[name=dialogText]').index(e);
+    
+    var idx = $('#commonLayout .insertForm').index($(e).parents('.insertForm'));
+    var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
+    //var jcx = $(e).parents('.insertForm').find('input[name=dialogTitle]').index(e);
     
     if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 3) {
         //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
-        var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
+        //var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
         var jcx = $(e).parents('.insertForm').find('textarea[name=dialogText]').index(e);
-
         $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('p').text(e.value);
-    } else if($('.insertForm select[name=dlgType]').eq(idx).val() == 4) {
+    } else if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 4) {
         $('.dialogView h1').eq(idx).html(e.value);
     } else {
         //$('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
-        $('#dialogPreview').children().eq(icx).find('.textMent p:eq(' + idx + ')').html(e.value);
+        //$('#dialogPreview').children().eq(icx).find('.textMent p:eq(' + idx + ')').html(e.value);
+        $('#dialogPreview').children().eq(icx).find('.textMent p').html(e.value);
     }
 
     //캐러졀 용
@@ -709,15 +712,66 @@ function insertDialog(){
 }
 
 function addDialog(){
+
     var entity = $('input[name=entity]').val();
     var idx = $('form[name=dialogLayout]').length;
     var array = [];
+    var exit = false;
+    if ($('#description').val().trim() === "" ) {
+        alert("description을 입력해야 합니다.");
+        return false;
+    }
+    $('.insertForm input[name=dialogTitle]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert("Dialog Title을 입력해야 합니다.");
+            exit = true;
+            return false;
+        }
+    });
+    if(exit) return;
+    $('.insertForm textarea[name=dialogText]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert("Dialog Text을 입력해야 합니다.");
+            exit = true;
+            return false;
+        }
+    });
+    if(exit) return;
+    $('.insertForm input[name=imgUrl]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert("Image URL을 입력해야 합니다.");
+            exit = true;
+            return false;
+        }
+    });
+    if(exit) return;
+
 
     for(var i = 0 ; i < idx ; i++) {
-        array[i] = JSON.stringify($("form[name=dialogLayout]").eq(i).serializeObject());
+        var tmp = $("form[name=dialogLayout]").eq(i).serializeArray();
+        var object  = {};
+        var carouselArr = [];
+        var objectCarousel = {};
+        if (tmp[0].value === "3") {
+            for (var j = 1; j < tmp.length; j++) {
+                if (typeof objectCarousel[tmp[j].name] !== "undefined" || j === tmp.length-1) {
+                    carouselArr.push(objectCarousel);
+                    objectCarousel = {};
+                } 
+                object[tmp[0].name] = tmp[0].value;
+                objectCarousel[tmp[j].name] = tmp[j].value;
+            }
+            object['carouselArr'] = carouselArr;
+        } else {
+            for (var j = 0; j < tmp.length; j++) {
+                object[tmp[j].name] = tmp[j].value;
+            }
+        }
+        
+        array[i] = JSON.stringify(object);//JSON.stringify(tmp);//tmp.substring(1, tmp.length-2);
     }
-    
-    array[idx] = JSON.stringify($("form[name=appInsertForm]").serializeObject());
+    //JSON.stringify($("form[name=appInsertForm]").serializeObject());
+    array[array.length] = JSON.stringify($("form[name=appInsertForm]").serializeObject());//JSON.stringify($("form[name=appInsertForm]"));
 
     $.ajax({
         url: '/learning/addDialog',
@@ -725,7 +779,7 @@ function addDialog(){
         type: 'POST',
         data: {'data' : array, 'entity' : entity},
         success: function(data) {
-            alet('success');
+            alert('success');
         }
     });
 }
@@ -1116,6 +1170,12 @@ var $insertForm;
 var $dlgForm;
 var $carouselForm;
 function openModalBox(target){
+
+    if ($('div[checked=checked]').length !== 1) {
+        alert('Utterance를 1개 선택해야 합니다.');
+        return;
+    }
+
     //carousel clone 초기값 저장
     $insertForm = $('#commonLayout .insertForm').eq(0).clone();
     $dlgForm = $('#commonLayout #textLayout').eq(0).clone();
@@ -1368,14 +1428,14 @@ var carouselDivHtml =
 $(document).on('click', 'a[name=carouseBtn]',function(e){
     //e.stopPropagation();
     //e.preventDefault();
-    var index = 0;
-    $(this).parent().find('input').each(function() {
+    //var index = 0;
+    $(this).parent().parent().find('select').each(function(index) {
         if ( $(this).css("display") === 'none') {
             $(this).show();
             $(this).parent().parent().next().find('input').eq(index).show();
+            $(this).parent().parent().next().next().find('input').eq(index).show();
             return false;   
         }
-        index++;
     });
 });
 
