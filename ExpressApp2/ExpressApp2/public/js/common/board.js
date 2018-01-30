@@ -505,7 +505,7 @@ function getOftQuestion() {
     $.ajax({
         url: "/board/getOftQuestion",
         type: "post",
-        data: $("form").serialize(),
+        data: $("#filterForm").serialize(),
     }).done(function(data) {
         if (data.error_code != null && data.error_message != null) {
             alert(data.error_message);
