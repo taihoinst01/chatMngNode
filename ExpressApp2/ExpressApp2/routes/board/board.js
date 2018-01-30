@@ -173,4 +173,71 @@ router.post('/getScorePane', function (req, res) {
     })
 });
 
+router.post('/getOftQuestion', function (req, res) {
+    var selectQuery = "";
+    selectQuery += "SELECT TOP 100 PERCENT 한글질문, 영어질문, 질문수, 날짜, 채널, RESULT, INTENT_SCORE, INTENT, ENTITIES, TEXT답변, CARD답변, CARDBTN답변, MEDIA답변, MEDIABTN답변\n";
+    selectQuery += "FROM\n";
+    selectQuery += "(";
+    selectQuery += "SELECT CUSTOMER_COMMENT_KR AS 한글질문\n";
+    selectQuery += ", ISNULL(영어질문,'') AS 영어질문\n";
+    selectQuery += ", 질문수\n";
+    selectQuery += ", dimdate AS 날짜\n";
+    selectQuery += ", CHANNEL AS 채널\n";
+    selectQuery += ", ISNULL(AN.RESULT,'') AS RESULT\n";
+    selectQuery += ", ISNULL(AN.LUIS_INTENT_SCORE,'') AS INTENT_SCORE\n";
+    selectQuery += ", ISNULL(LOWER(RE.LUIS_INTENT),'') AS INTENT\n";
+    selectQuery += ", ISNULL(RE.LUIS_ENTITIES,'') AS ENTITIES\n";
+    selectQuery += ", ISNULL(TE.CARD_TEXT,'') AS TEXT답변\n";
+    selectQuery += ", ISNULL(CA.CARD_TITLE,'') AS CARD답변\n";
+    selectQuery += ", ISNULL(CA.BTN_1_CONTEXT,'') AS CARDBTN답변\n";
+    selectQuery += ", ISNULL(ME.CARD_TITLE,'') AS MEDIA답변\n";
+    selectQuery += ", ISNULL(ME.BTN_1_CONTEXT,'') AS MEDIABTN답변\n";
+    selectQuery += "FROM\n";
+    selectQuery += "(\n";
+    selectQuery += "SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS '영어질문', COUNT(*) AS '질문수', CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS Dimdate, CHANNEL\n";
+    selectQuery += "FROM TBL_HISTORY_QUERY\n";
+    selectQuery += "WHERE CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) > '2017-07-24'\n";
+    selectQuery += "GROUP BY CUSTOMER_COMMENT_KR, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), CHANNEL\n";
+    selectQuery += ") HI\n";
+    selectQuery += "LEFT OUTER JOIN TBL_QUERY_ANALYSIS_RESULT AN\n";
+    selectQuery += "ON REPLACE(REPLACE(LOWER(HI.CUSTOMER_COMMENT_KR),'.',''),'?','') = LOWER(AN.QUERY)\n";
+    selectQuery += "LEFT OUTER JOIN (SELECT LUIS_INTENT,LUIS_ENTITIES,MIN(DLG_ID) AS DLG_ID FROM TBL_DLG_RELATION_LUIS GROUP BY LUIS_INTENT, LUIS_ENTITIES) RE\n";
+    selectQuery += "ON AN.LUIS_INTENT = RE.LUIS_INTENT\n";
+    selectQuery += "AND AN.LUIS_ENTITIES = RE.LUIS_ENTITIES\n";
+    selectQuery += "LEFT OUTER JOIN TBL_DLG DL\n";
+    selectQuery += "ON RE.DLG_ID = DL.DLG_ID\n";
+    selectQuery += "LEFT OUTER JOIN TBL_DLG_TEXT TE\n";
+    selectQuery += "ON DL.DLG_ID = TE.DLG_ID\n";
+    selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_CARD WHERE CARD_ORDER_NO = 1) CA\n";
+    selectQuery += "ON DL.DLG_ID = CA.DLG_ID\n";
+    selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_MEDIA) ME\n";
+    selectQuery += "ON DL.DLG_ID = ME.DLG_ID\n";
+    selectQuery += ") AA\n";
+    selectQuery += "WHERE RESULT <> '' AND RESULT IN ('H','S')\n";
+    selectQuery += "ORDER BY 질문수 DESC, 날짜 DESC\n";
+
+    (async () => {
+        try {
+
+            let pool = await sql.connect(dbConfig);
+            let result1 = await pool.request()
+            .query(selectQuery)
+        
+            let rows = result1.recordset;
+
+            res.send({list : result});
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+
+});
+
 module.exports = router;

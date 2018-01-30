@@ -28,6 +28,7 @@ $(document).ready(function () {
 
     getEndpointHistory();
     getEntityLabel();
+    getOftQuestion();
 })
 
 
@@ -479,5 +480,15 @@ function drawStatusOverview() {
               }
           }
     });
+
+    function getOftQuestion() {
+		$.ajax({
+			url: "/board/getOftQuestion",
+			type: "post",
+			data: $("form").serialize(),
+		}).done(function(data) {
+			alert(data);
+		});
+	}
 
 }
