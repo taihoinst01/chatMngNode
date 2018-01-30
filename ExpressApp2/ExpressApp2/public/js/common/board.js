@@ -28,19 +28,14 @@ $(document).ready(function () {
     });
     */
 
-<<<<<<< HEAD
     //getEndpointHistory();
     //getEntityLabel();
     drawStatusOverview();
-=======
-    getEndpointHistory();
-    getEntityLabel();
     getOftQuestion();
->>>>>>> f3e3e2a81f213c6a1d9df23ec46f680258f70a8e
-})
 
 
 
+});
 
 
 
@@ -514,4 +509,3 @@ function getOftQuestion() {
 
     });
 }
-
