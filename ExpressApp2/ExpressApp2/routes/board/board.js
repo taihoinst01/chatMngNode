@@ -83,43 +83,30 @@ router.get('/', function (req, res) {
 
 /* GET users listing. */
 router.post('/intentScore', function (req, res) {
-    req.session.menu = 'm2';
+    var selectQuery = "";
+    selectQuery += "SELECT	LOWER(LUIS_INTENT) AS intentName, \n";
+    selectQuery += "AVG(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreAVG, \n";
+    selectQuery += "MAX(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreMAX , \n";
+    selectQuery += "MIN(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreMIN, \n";
+    selectQuery += "CHANNEL AS channel, \n";
+    selectQuery += "CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS regDate, \n";
+    selectQuery += "COUNT(*) AS intentCount \n";
+    selectQuery += "FROM	TBL_HISTORY_QUERY A, TBL_QUERY_ANALYSIS_RESULT B \n";
+    selectQuery += "WHERE	REPLACE(REPLACE(LOWER(A.CUSTOMER_COMMENT_KR),'.',''),'?','') = B.QUERY \n";
+    selectQuery += "AND		REG_DATE > '07/19/2017 00:00:00' \n";
+    selectQuery += "GROUP BY LUIS_INTENT, CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) \n";
 
-    (async () => {
-        try {
-
-            var selectQuery = "";
-            selectQuery += "SELECT	LOWER(LUIS_INTENT) AS intentName, \n";
-            selectQuery += "AVG(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreAVG, \n";
-            selectQuery += "MAX(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreMAX , \n";
-            selectQuery += "MIN(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreMIN, \n";
-            selectQuery += "CHANNEL AS channel, \n";
-            selectQuery += "CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS regDate, \n";
-            selectQuery += "COUNT(*) AS intentCount \n";
-            selectQuery += "FROM	TBL_HISTORY_QUERY A, TBL_QUERY_ANALYSIS_RESULT B \n";
-            selectQuery += "WHERE	REPLACE(REPLACE(LOWER(A.CUSTOMER_COMMENT_KR),'.',''),'?','') = B.QUERY \n";
-            selectQuery += "AND		REG_DATE > '07/19/2017 00:00:00' \n";
-            selectQuery += "GROUP BY LUIS_INTENT, CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) \n";
-
-            let pool = await sql.connect(dbConfig);
-            let result1 = await pool.request()
-            .query(selectQuery)
-        
-            let rows = result1.recordset;
-
+    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query(selectQuery)
+        }).then(result => {
+            let rows = result.recordset
             res.send({list : rows});
-        } catch (err) {
-            console.log(err)
-            // ... error checks
-        } finally {
             sql.close();
-        }
-    })()
-
-    sql.on('error', err => {
-        // ... error handler
-    })
-
+        }).catch(err => {
+            res.status(500).send({ message: "${err}"})
+            sql.close();
+        });
+        
 });
 
 
@@ -265,10 +252,7 @@ router.post('/getOftQuestion', function (req, res) {
 });
 
 router.post('/nodeQuery', function (req, res) {
-    (async () => {
-        try {
-
-            var selectQuery = "";
+    var selectQuery = "";
             selectQuery += "SELECT TOP 100 PERCENT korQuery, enQuery, queryCnt, queryDate, channel, result, intent_score, intent, entities, textResult, cardResult, cardBtnResult, mediaResult, mediaBtnResult \n";
             selectQuery += "FROM ( \n";
             selectQuery += "SELECT CUSTOMER_COMMENT_KR AS korQuery \n";
@@ -307,25 +291,19 @@ router.post('/nodeQuery', function (req, res) {
             selectQuery += ") AA \n";
             selectQuery += "WHERE RESULT = '' OR RESULT IN ('D','N') \n";
             selectQuery += "ORDER BY queryCnt DESC, queryDate DESC; \n";
-
-            let pool = await sql.connect(dbConfig);
-            let result1 = await pool.request()
-            .query(selectQuery)
-        
-            let rows = result1.recordset;
-
-            res.send({list : rows});
-        } catch (err) {
-            console.log(err)
-            // ... error checks
-        } finally {
-            sql.close();
-        }
-    })()
-
     sql.on('error', err => {
         // ... error handler
     })
+    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query(selectQuery)
+        }).then(result => {
+          let rows = result.recordset
+          res.send({list : rows});
+          sql.close();
+        }).catch(err => {
+          res.status(500).send({ message: "${err}"})
+          sql.close();
+        });
 });
 
 

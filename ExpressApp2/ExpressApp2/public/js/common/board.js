@@ -1,7 +1,5 @@
 
-google.charts.load('visualization'
-, {'packages':['corechart', 'table']}
-);
+
 
 //var entityList = [];
 var entityHash = {};
@@ -34,13 +32,7 @@ $(document).ready(function () {
     //getEndpointHistory();
     //getEntityLabel();
     
-    //drawStatusOverview();
-    //getEndpointHistory();
-    //getEntityLabel();
-    //getOftQuestion();
-    //drawNoneQuerylist();
-
-    //resync([0, 365]);
+    
 });
 
 
@@ -68,6 +60,15 @@ $(document).ready(function () {
     resync([0, 365]);
     $('#slider div:eq(0)').css('left','0%').css('width','100%');
     $('#slider span:eq(1)').css('left','100%');
+
+    google.charts.load('visualization'
+        , {'packages':['corechart', 'table']}
+    );
+    drawStatusOverview();
+    getEndpointHistory();
+    getEntityLabel();
+    getOftQuestion();
+    drawNoneQuerylist();
 });
 
 function resync(values) {
