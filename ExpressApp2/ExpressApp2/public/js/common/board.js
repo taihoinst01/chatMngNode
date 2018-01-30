@@ -28,7 +28,6 @@ $(document).ready(function () {
 
     getEndpointHistory();
     getEntityLabel();
-    getScorePane();
 })
 
 
