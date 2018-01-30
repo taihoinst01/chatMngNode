@@ -35,9 +35,9 @@ $(document).ready(function () {
     //getEntityLabel();
     
     drawStatusOverview();
-    //getOftQuestion();
-
-
+    getEndpointHistory();
+    getEntityLabel();
+    getOftQuestion();
 
 });
 
@@ -491,7 +491,6 @@ function drawStatusOverview() {
     });
 
 }
-
 
 //Also add the css class Totalrow
 function resetStyling(id) {
