@@ -82,9 +82,9 @@ router.get('/', function (req, res) {
 
 
 /* GET users listing. */
-router.get('/boardTest', function (req, res) {
+router.get('/intentScore', function (req, res) {
     req.session.menu = 'm2';
-    res.render('boardTest');
+    res.send();
 });
 
 
