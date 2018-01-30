@@ -58,7 +58,7 @@ em,address{font-style:normal}
 img {-ms-interpolation-mode:bicubic !important;}
 img,table,fieldset,button{ border:0}
 a,img,input,span,button {outline: none;selector-dummy:expression(this.hideFocus=true);}
-table {border-collapse:collapse;border-spacing:0; table-layout:fixed;}
+table {border-collapse:collapse;border-spacing:0; table-layout:auto;} /* table-layout:auto fixed->auto for board 2018-01-30*/
 legend, caption {position:absolute; overflow:hidden; visibility:hidden; width:0; height:0; font-size:0; line-height:0;}
 a:link, a:visited, a:hover, a,active, a:focus { text-decoration:none; cursor:pointer;  }
 input,select,textarea{font-family:나눔고딕,Nanum Gothic, 돋움,Dotum,Helvetica,Verdana,Arial,sans-serif; color:#505153; }

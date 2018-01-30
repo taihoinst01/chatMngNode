@@ -1,9 +1,11 @@
 
+
+
 //var entityList = [];
 var entityHash = {};
 //실행 순서 1
 $(document).ready(function () {
-    getEntityListAjax ();
+    //getEntityListAjax ();
 });
 //실행 순서 2
 
@@ -26,8 +28,9 @@ $(document).ready(function () {
     });
     */
 
-    getEndpointHistory();
-    getEntityLabel();
+    //getEndpointHistory();
+    //getEntityLabel();
+    drawStatusOverview();
 })
 
 
@@ -399,16 +402,20 @@ function getEntityLabel() {
 
 
 function drawStatusOverview() {
-
+    google.charts.load(  'visualization'
+                   , '1.1'
+                   , {'packages':['corechart', 'table']}
+    );
     $.ajax({
-          applyId: 'filterForm',
-          url: '/admin/selectIntentScoreList.do',
-          //isloading: true,
-          success: function(data) {
-              if (data.error_code != null && data.error_message != null) {
+        url: '/board/intentScore',
+        dataType: 'json',
+        type: 'POST',
+        data: $('#filterForm').serializeObject(),
+        success: function(data) {
+            if (data.error_code != null && data.error_message != null) {
                   alert(data.error_message);
-              } else {
-                    var tableList = data.scoreList;
+            } else {
+                    var tableList = data.list;
                     var tmpColumn1 = new Array();
                     var tmpColumn2 = new Array();
                     var tmpColumn3 = new Array();
@@ -450,24 +457,24 @@ function drawStatusOverview() {
 
 
                     //attach table to the html
-                    StatusTable = new google.visualization.Table(document.getElementById('StatusOverview'));
+                    StatusTable = new google.visualization.Table(document.getElementById('score'));
 
                     //add the listener events
                     google.visualization.events.addListener(StatusTable, 'ready', function () {
-                        resetStyling('StatusOverview');
+                        resetStyling('score');
                     });
 
                     //sorting event
                     google.visualization.events.addListener(StatusTable, 'sort', function (ev) {
                         //find the last row
-                        var parentRow = $('#StatusOverview td.TotalCell').parent();
+                        var parentRow = $('#score td.TotalCell').parent();
                         //set the TotalRow row to the last row again.
                         if (!parentRow.is(':last-child')) {
                             parentRow.siblings().last().after(parentRow);
                         }
 
                         //reset the styling of the table
-                        resetStyling('StatusOverview');
+                        resetStyling('score');
                     });
 
                     //draw the table
@@ -480,4 +487,13 @@ function drawStatusOverview() {
           }
     });
 
+}
+
+//Also add the css class Totalrow
+function resetStyling(id) {
+    $('#' + id + ' table')
+        .removeClass('google-visualization-table-table')
+        .addClass('table table-bordered table-condensed table-striped table-hover');
+    var parentRow = $('#' + id + ' td.TotalCell').parent();
+    parentRow.addClass('TotalRow');
 }
