@@ -507,7 +507,57 @@ function getOftQuestion() {
         type: "post",
         data: $("form").serialize(),
     }).done(function(data) {
+        if (data.error_code != null && data.error_message != null) {
+            alert(data.error_message);
+      } else {
+              var tableList = data.list;
 
+              var inputData = new google.visualization.DataTable();
+
+              //declare the columns
+              inputData.addColumn('string', 'INTENT');
+              inputData.addColumn('string', '한글질문');
+              inputData.addColumn('string', '채널');
+              inputData.addColumn('string', '질문수');
+              inputData.addColumn('string', '날짜');
+
+              //insert data here
+              //don't forget to set the classname TotalCell to the last datarow!!!
+
+
+              for (var i=0; i< tableList.length; i++) {
+                  //inputData.addRow([tableList[i].INTENT, tableList[i].KORQ, tableList[i].CHANNEL, tableList[i].QNUM, tableList[i].DATE]);
+                  inputData.addRow([tableList[i].INTENT, tableList[i].KORQ, tableList[i].CHANNEL, tableList[i].QNUM, tableList[i].DATE]);
+              }
+
+              //attach table to the html
+              StatusTable = new google.visualization.Table(document.getElementById('oftQuestion'));
+
+              //add the listener events
+              google.visualization.events.addListener(StatusTable, 'ready', function () {
+                  //resetStyling('score');
+              });
+
+              //sorting event
+              google.visualization.events.addListener(StatusTable, 'sort', function (ev) {
+                  //find the last row
+                  var parentRow = $('#score td.TotalCell').parent();
+                  //set the TotalRow row to the last row again.
+                  if (!parentRow.is(':last-child')) {
+                      parentRow.siblings().last().after(parentRow);
+                  }
+
+                  //reset the styling of the table
+                  //resetStyling('score');
+              });
+
+              //draw the table
+              StatusTable.draw(inputData, {
+                  showRowNumber: false,
+                  width: '90%',
+                  height: 'auto'
+              });
+        }
     });
 }
 

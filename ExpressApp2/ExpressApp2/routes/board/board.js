@@ -210,7 +210,7 @@ router.post('/getScorePane', function (req, res) {
 
 router.post('/getOftQuestion', function (req, res) {
     var selectQuery = "";
-    selectQuery += "SELECT TOP 100 PERCENT 한글질문, 영어질문, 질문수, 날짜, 채널, RESULT, INTENT_SCORE, INTENT, ENTITIES, TEXT답변, CARD답변, CARDBTN답변, MEDIA답변, MEDIABTN답변\n";
+    selectQuery += "SELECT TOP 100 PERCENT 한글질문 AS KORQ, 영어질문 AS ENGQ, 질문수 AS QNUM, 날짜 AS DATE, 채널 AS CHANNEL, RESULT, INTENT_SCORE, INTENT, ENTITIES, TEXT답변 AS TEXT, CARD답변 AS CARD, CARDBTN답변 AS CARDBTN, MEDIA답변 AS MEDIA, MEDIABTN답변 AS MEDIABTN\n";
     selectQuery += "FROM\n";
     selectQuery += "(";
     selectQuery += "SELECT CUSTOMER_COMMENT_KR AS 한글질문\n";
@@ -251,27 +251,16 @@ router.post('/getOftQuestion', function (req, res) {
     selectQuery += "WHERE RESULT <> '' AND RESULT IN ('H','S')\n";
     selectQuery += "ORDER BY 질문수 DESC, 날짜 DESC\n";
 
-    (async () => {
-        try {
-
-            let pool = await sql.connect(dbConfig);
-            let result1 = await pool.request()
-            .query(selectQuery)
-        
-            let rows = result1.recordset;
-
-            res.send({list : result});
-        } catch (err) {
-            console.log(err)
-            // ... error checks
-        } finally {
-            sql.close();
-        }
-    })()
-
-    sql.on('error', err => {
-        // ... error handler
-    })
+    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query(selectQuery)
+        }).then(result => {
+          let rows = result.recordset
+          res.send({list : rows});
+          sql.close();
+        }).catch(err => {
+          res.status(500).send({ message: "${err}"})
+          sql.close();
+        });
 
 });
 
