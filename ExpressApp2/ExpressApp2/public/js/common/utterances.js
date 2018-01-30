@@ -666,10 +666,10 @@ function writeDialog(e) {
     if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 3) {
         //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
         //var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
-        //var jcx = $(e).parents('.insertForm').find('textarea[name=dialogText]').index(e);
-        //$('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('p').text(e.value);
+        var jcx = $(e).parents('.insertForm').find('textarea[name=dialogText]').index(e);
+        $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('p').text(e.value);
     } else if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 4) {
-        //$('.dialogView h1').eq(idx).html(e.value);
+        $('.dialogView h1').eq(idx).html(e.value);
     } else {
         //$('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
         //$('#dialogPreview').children().eq(icx).find('.textMent p:eq(' + idx + ')').html(e.value);
@@ -1428,14 +1428,14 @@ var carouselDivHtml =
 $(document).on('click', 'a[name=carouseBtn]',function(e){
     //e.stopPropagation();
     //e.preventDefault();
-    var index = 0;
-    $(this).parent().find('input').each(function() {
+    //var index = 0;
+    $(this).parent().parent().find('select').each(function(index) {
         if ( $(this).css("display") === 'none') {
             $(this).show();
             $(this).parent().parent().next().find('input').eq(index).show();
+            $(this).parent().parent().next().next().find('input').eq(index).show();
             return false;   
         }
-        index++;
     });
 });
 
