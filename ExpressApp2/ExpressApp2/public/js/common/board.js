@@ -495,7 +495,7 @@ function drawStatusOverview() {
 
 }
 
-<<<<<<< HEAD
+
 //Also add the css class Totalrow
 function resetStyling(id) {
     $('#' + id + ' table')
@@ -504,7 +504,7 @@ function resetStyling(id) {
     var parentRow = $('#' + id + ' td.TotalCell').parent();
     parentRow.addClass('TotalRow');
 }
-=======
+
 function getOftQuestion() {
     $.ajax({
         url: "/board/getOftQuestion",
@@ -514,4 +514,4 @@ function getOftQuestion() {
 
     });
 }
->>>>>>> f3e3e2a81f213c6a1d9df23ec46f680258f70a8e
+
