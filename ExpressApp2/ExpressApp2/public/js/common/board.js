@@ -32,6 +32,62 @@ $(document).ready(function () {
 })
 
 
+
+
+
+
+
+//slider 시작
+var minDate = new Date(2010, 8-1, 1);
+var maxDate = new Date(2010, 8-1, 31);
+var slider;
+var startDate;
+var endDate;
+$(function() {
+    slider = $('#slider').slider({range: true, max: daysDiff(minDate, maxDate),
+            slide: function(event, ui) { resync(ui.values); }});
+    startDate = $('#startDate').datepicker({minDate: minDate, maxDate: maxDate,
+            onSelect: function(dateStr) { resync(); }}).
+        keyup(function() { resync(); });
+    endDate = $('#endDate').datepicker({minDate: minDate, maxDate: maxDate,
+            onSelect: function(dateStr) { resync(); }}).
+        keyup(function() { resync(); });
+});
+
+function resync(values) {
+    if (values) {
+        var date = new Date(minDate.getTime());
+        date.setDate(date.getDate() + values[0]);
+        startDate.val($.datepicker.formatDate('mm/dd/yy', date));
+        date = new Date(minDate.getTime());
+        date.setDate(date.getDate() + values[1]);
+        endDate.val($.datepicker.formatDate('mm/dd/yy', date));
+    }
+    else {
+        var start = daysDiff(minDate, startDate.datepicker('getDate') || minDate);
+        var end = daysDiff(minDate, endDate.datepicker('getDate') || maxDate);
+        start = Math.min(start, end);
+        slider.slider('values', 0, start);
+        slider.slider('values', 1, end);
+    }
+    startDate.datepicker('option', 'maxDate', endDate.datepicker('getDate') || maxDate);
+    endDate.datepicker('option', 'minDate', startDate.datepicker('getDate') || minDate);
+}
+
+function daysDiff(d1, d2) {
+    return  Math.floor((d2.getTime() - d1.getTime()) / 86400000);
+}
+
+//slider 끝
+
+
+
+
+
+
+
+
+
 function getEntityListAjax () {
     var appId = $('#appId').val();//getParameters('appId');
     var subKey = $('#subKey').val();
@@ -341,6 +397,7 @@ function getEntityLabel() {
     });
 }
 
+<<<<<<< HEAD
 function getScorePane() {
     $.ajax({
         url: "/board/getScorePane",
@@ -350,3 +407,90 @@ function getScorePane() {
         alert(data);
     });
 }
+=======
+
+
+function drawStatusOverview() {
+
+    $.ajax({
+          applyId: 'filterForm',
+          url: '/admin/selectIntentScoreList.do',
+          //isloading: true,
+          success: function(data) {
+              if (data.error_code != null && data.error_message != null) {
+                  alert(data.error_message);
+              } else {
+                    var tableList = data.scoreList;
+                    var tmpColumn1 = new Array();
+                    var tmpColumn2 = new Array();
+                    var tmpColumn3 = new Array();
+                    var tmpColumn4 = new Array();
+
+                    var inputData = new google.visualization.DataTable();
+
+                    //declare the columns
+                    inputData.addColumn('string', 'INTENT');
+                    inputData.addColumn('number', '갯수');
+                    inputData.addColumn('number', '평균INTENT_SCORE');
+                    inputData.addColumn('number', '최소INTENT_SCORE');
+                    inputData.addColumn('number', '최대INTENT_SCORE');
+
+                    //insert data here
+                    //don't forget to set the classname TotalCell to the last datarow!!!
+
+
+                    for (var i=0; i< tableList.length; i++) {
+                        inputData.addRow([tableList[i].intentName, tableList[i].intentCount, tableList[i].intentScoreAVG, tableList[i].intentScoreMIN, tableList[i].intentScoreMAX]);
+                        tmpColumn1.push(tableList[i].intentCount);
+                        tmpColumn2.push(tableList[i].intentScoreAVG);
+                        tmpColumn3.push(tableList[i].intentScoreMIN);
+                        tmpColumn4.push(tableList[i].intentScoreMAX);
+                    }
+                    inputData.addRow(
+                        [{
+                            v: '합계',
+                            p: {
+                                className: 'TotalCell'
+                            }
+                          },
+                          google.visualization.data.sum(tmpColumn1),
+                          google.visualization.data.sum(tmpColumn2),
+                          google.visualization.data.sum(tmpColumn3),
+                          google.visualization.data.sum(tmpColumn4),
+                        ]
+                    );
+
+
+                    //attach table to the html
+                    StatusTable = new google.visualization.Table(document.getElementById('StatusOverview'));
+
+                    //add the listener events
+                    google.visualization.events.addListener(StatusTable, 'ready', function () {
+                        resetStyling('StatusOverview');
+                    });
+
+                    //sorting event
+                    google.visualization.events.addListener(StatusTable, 'sort', function (ev) {
+                        //find the last row
+                        var parentRow = $('#StatusOverview td.TotalCell').parent();
+                        //set the TotalRow row to the last row again.
+                        if (!parentRow.is(':last-child')) {
+                            parentRow.siblings().last().after(parentRow);
+                        }
+
+                        //reset the styling of the table
+                        resetStyling('StatusOverview');
+                    });
+
+                    //draw the table
+                    StatusTable.draw(inputData, {
+                        showRowNumber: false,
+                        width: '90%',
+                        height: 'auto'
+                    });
+              }
+          }
+    });
+
+}
+>>>>>>> 763ba4b90fe1c748dceffdd6315f737f31be7a9a
