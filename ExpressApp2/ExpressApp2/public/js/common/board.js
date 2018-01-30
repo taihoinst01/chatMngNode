@@ -28,6 +28,7 @@ $(document).ready(function () {
 
     getEndpointHistory();
     getEntityLabel();
+    getScorePane();
 })
 
 
@@ -337,5 +338,15 @@ function getEntityLabel() {
     })
     .fail(function() {
         //alert("error");
+    });
+}
+
+function getScorePane() {
+    $.ajax({
+        url: "/board/getScorePane",
+        type: "post",
+        data: $("form").serialize(),
+    }).done(function(data) {
+        alert(data);
     });
 }

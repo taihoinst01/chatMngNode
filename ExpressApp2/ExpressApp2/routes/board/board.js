@@ -127,4 +127,41 @@ router.post('/getCounts', function (req, res) {
  });
 */
 
+router.post('/getScorePane', function (req, res) {
+    (async () => {
+        try {
+
+            var selectQuery = "";
+            selectQuery += "SELECT	LOWER(LUIS_INTENT) AS INTENT, \n";
+            selectQuery += "AVG(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS 평균INTENTSCORE, \n";
+            selectQuery += "MAX(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS 최대INTENTSCORE , \n";
+            selectQuery += "MIN(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS 최소INTENTSCORE, \n";
+            selectQuery += "CHANNEL AS 채널,\n";
+            selectQuery += "CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS 날짜,\n";
+            selectQuery += "COUNT(*) AS 갯수\n";
+            selectQuery += "FROM	TBL_HISTORY_QUERY A, TBL_QUERY_ANALYSIS_RESULT B \n";
+            selectQuery += "WHERE	REPLACE(REPLACE(LOWER(A.CUSTOMER_COMMENT_KR),'.',''),'?','') = B.QUERY \n";
+            selectQuery += "AND		REG_DATE > '07/19/2017 00:00:00'\n";
+            selectQuery += "GROUP BY LUIS_INTENT, CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120)\n";
+
+            let pool = await sql.connect(dbConfig);
+            let result1 = await pool.request()
+            .query(selectQuery)
+        
+            let rows = result1.recordset;
+
+            res.send({list : result});
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+});
+
 module.exports = router;
