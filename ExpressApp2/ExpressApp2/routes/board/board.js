@@ -17,66 +17,13 @@ router.get('/', function (req, res) {
         req.session.subKey = luisConfig.subKey;
     }
     
-    var appName = req.session.appName;
-    (async () => {
-        try {
-            var intentQry = " SELECT isnull((  SELECT      COUNT(distinct LUIS_INTENT) " +
-                            "          FROM        TBL_DLG_RELATION_LUIS " +
-                            "          GROUP BY    LUIS_ID "  +
-                            "          HAVING      LUIS_ID = '" + appName + "'), 0) AS INTENT_CNT ";
-            let pool = await sql.connect(dbConfig);
-            let result1 = await pool.request().query(intentQry);
-            let rows1 = result1.recordset;
-            
-            var EntityQry = "SELECT distinct STUFF(( SELECT ',' + b.LUIS_ENTITIES  " +
-                            "                FROM TBL_DLG_RELATION_LUIS b " + 
-                            "                WHERE b.LUIS_ID = '" + appName + "' FOR XML PATH('') ),1,1,'') AS concatEntity " +
-                            "FROM TBL_DLG_RELATION_LUIS a " 
-                            "group by LUIS_ID " + 
-                            "having LUIS_ID = '" + appName + "' ";
-            let result2 = await pool.request().query(EntityQry);
-            let rows2 = result2.recordset;
-            var entityStr = '';
-            var entityList;
-            if (rows2[0].concatEntity != null) {
-                for (var i=0; i<rows2.length; i++) {
-                    entityStr += rows2[i].concatEntity;
-                }
-                entityList = entityStr.split(',');
-            }
-            
-            var uniqArray = Array.from(new Set(entityList));
-
-            var DlgQry = " SELECT   isnull((  select      count(*)  " +
-                         "                    from        TBL_DLG " +
-                         "                    where       GroupL = '" + appName + "' " +
-                         "                    and         use_yn ='Y'), 0) AS DLG_CNT ";;
-            let result3 = await pool.request().query(DlgQry);
-            let rows3 = result3.recordset;
-
-            res.render('board', {   
-                selMenu: req.session.menu,
-                appName: req.session.appName,
-                appId: req.session.appId,
-                subKey: req.session.subKey,
-                INTENT_CNT  : rows1[0].INTENT_CNT,
-                ENTITY_CNT  : uniqArray.length,
-                DLG_CNT     : rows3[0].DLG_CNT
-            } );    
-            //res.send({list : result});
-            
-        } catch (err) {
-            console.log(err)
-            // ... error checks
-        } finally {
-            sql.close();
-        }
-    })()
-
-    sql.on('error', err => {
-        // ... error handler
-    })
-
+    res.render('board', {   
+        selMenu: req.session.menu,
+        appName: req.session.appName,
+        appId: req.session.appId,
+        subKey: req.session.subKey
+    } );    
+    
 });
 
 
@@ -108,55 +55,6 @@ router.post('/intentScore', function (req, res) {
         });
         
 });
-
-
-/*
-router.post('/getCounts', function (req, res) {
-
-    var appName = req.body.appName;
-
-    (async () => {
-        try {
-            var cntValue = " SELECT isnull((  SELECT      COUNT(distinct LUIS_INTENT) " +
-                            "          FROM        TBL_DLG_RELATION_LUIS " +
-                            "          GROUP BY    LUIS_ID "  +
-                            "          HAVING      LUIS_ID = '" + appName + "'), 0) AS INTENT_CNT, " +
-                            "       isnull((  SELECT	    count(distinct B.ENTITY_VALUE) " +
-                            "          FROM	    TBL_DLG_RELATION_LUIS A, TBL_COMMON_ENTITY_DEFINE B " + 
-                            "          WHERE	    A.LUIS_ID = '" + appName + "'  " +
-                            "          AND		    A.LUIS_ENTITIES like '%'+B.ENTITY_VALUE+'%'), 0) AS ENTITY_CNT, " +
-                            "       isnull((  select      count(*)  " +
-                            "          from        TBL_DLG " +
-                            "          where       GroupL = '" + appName + "' " +
-                            "          and         use_yn ='Y'), 0) AS DLG_CNT ";
-            let pool = await sql.connect(dbConfig);
-            let result1 = await pool.request().query(cntValue);
-            let rows = result1.recordset;
-            
-
-            if(rows.length > 0){
-                res.send({
-                    INTENT_CNT  : rows[0].INTENT_CNT,
-                    ENTITY_CNT  : rows[0].ENTITY_CNT,
-                    DLG_CNT     : rows[0].DLG_CNT
-                });           
-            }else{
-                res.send({list : result});
-            }
-        } catch (err) {
-            console.log(err)
-            // ... error checks
-        } finally {
-            sql.close();
-        }
-    })()
-
-    sql.on('error', err => {
-        // ... error handler
-    })
-    
- });
-*/
 
 router.post('/getScorePane', function (req, res) {
     (async () => {

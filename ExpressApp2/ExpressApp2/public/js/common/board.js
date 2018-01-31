@@ -6,33 +6,10 @@ var entityHash = {};
 //실행 순서 1
 $(document).ready(function () {
     
-    //getEntityListAjax ();
 });
 //실행 순서 2
-
 $(document).ready(function () {
-    
-    /*
-    var appName = $('#appName').val();//getParameters('appName')
-    $.ajax({
-        url: '/board/getCounts',
-        dataType: 'json',
-        type: 'POST',
-        data: {'appName':appName},
-        success: function(result) {
-            if (typeof result != 'undefined') {
-                $('#spanIntentsCount').html(result.INTENT_CNT);
-                $('#spanEntitiesCount').html(result.ENTITY_CNT);
-                $('#spanUtteranceCount').html(result.DLG_CNT);
-            }
-        }
-    });
-    */
 
-    //getEndpointHistory();
-    //getEntityLabel();
-    
-    
 });
 
 
@@ -62,19 +39,18 @@ $(document).ready(function () {
     $('#slider span:eq(1)').css('left','100%');
 
     //google.charts.load('current', {'packages':['corechart']});
-    
-    google.charts.load('visualization'
-        , {'packages':['corechart', 'table']}
-    );
+    google.charts.load('visualization', {'packages':['corechart', 'table']} );
     google.charts.load('current' , {'packages':['corechart', 'bar']} );
     
     drawStatusOverview();
-    getEndpointHistory();
-    getEntityLabel();
     getOftQuestion();
     drawNoneQuerylist();
     drawStuff();
     drawFirstQueryTable();
+
+    //안쓰는 차트
+    //getEndpointHistory();
+    //getEntityLabel();
 
 });
 
@@ -181,7 +157,7 @@ var getParameters = function (paramName) {
     }
 };
 
-
+/*//안쓰는 차트 설정 참고용
 function getEndpointHistory () {
     var appId = $('#appId').val();//getParameters('appId');
     var subKey = $('#subKey').val();
@@ -254,7 +230,7 @@ function getEndpointHistory () {
         //alert("error");
     });
 }
-
+*/
 
 function getIsoDate() {
     var dt = new Date();
@@ -300,7 +276,7 @@ function getIsoDate() {
     };
     return date;
 }
-
+/* //안스는 차트, 참고용
 function getEntityLabel() {
     var appId = $('#appId').val();//getParameters('appId');
     var subKey = $('#subKey').val();
@@ -331,19 +307,7 @@ function getEntityLabel() {
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'Task', 'name');
             data.addColumn('number', 'Labels Count', 'labelsCnt');
-            //data.addColumn({type:'string', role:'style'});
-            /*
-            for(var i=0; i<entityList.length; i++){
-
-                var webColor = '#'+'0123456789abcdef'.split('').map(function(v,i,a){return i>5 ? null : a[Math.floor(Math.random()*16)] }).join('');
-                data.addRow(eval("['"+entityList[i].name+"', "+entityList[i].labelsCnt+", 'color: "+webColor+"']"));
-
-            }
             
-            for (var i in entityList) {
-                data.addRow([ entityHash[i], entityList[i], 'color: webColor']);
-            }
-            */
 
             for (var i in entityList) {
                 data.addRow([ entityHash[i], entityList[i]]);
@@ -369,48 +333,10 @@ function getEntityLabel() {
                     //link(intent) 이벤트(else부분)가 걸려있는 곳 말고 다른곳 클릭시 새창에 띄우기.
                     
                 }else{
-                    /*
                     //차트 클릭시 이벤트
-                    var arrTarget = obj.targetID.split("#");
-                    var intentIndex = Number(arrTarget[1]);
-                    var intentName = encodeURI(encodeURIComponent(data.getValue(intentIndex, 0)));
-                    var intentId = intentList[intentIndex].id;
-                    */
-                    //location.href = "/admin/intentDetail.do?name="+intentName+"&id="+intentId;
                 }
             }
             google.visualization.events.addListener(chart, 'click', pieClickHandler);
-            /*
-            var view = new google.visualization.DataView(data);
-            view.setColumns([0, 1,
-                                { calc: "stringify",
-                                    sourceColumn: 1,
-                                    type: "string",
-                                    role: "annotation" },
-                                2]);
-
-            var options = {
-                title: "Entity Breakdown \nON LABELED UTTERANCES",
-                //width: 520,
-                //height: 400,
-                bar: {groupWidth: "1%"},
-                chartArea: {right:5,'width': '90%', 'height': '70%'},
-                legend: { position: "none" }
-                };
-            var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
-            chart.draw(view, options);
-
-            function columnClickHandler (obj) {
-                    if (obj.targetID.indexOf("bar") == -1){
-                        
-                    }else{
-                        var arrTarget = obj.targetID.split("#");
-                        var entityId = data.getValue(Number(arrTarget[1]), 1);
-                        location.href = "/admin/entityList.do";
-                    }
-            }
-            google.visualization.events.addListener(chart, 'click', columnClickHandler);
-            */
             
         }
 
@@ -420,6 +346,7 @@ function getEntityLabel() {
         //alert("error");
     });
 }
+*/
 
 
 
