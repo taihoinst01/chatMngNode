@@ -258,9 +258,9 @@ function dialogsAjax2(group, sourceType2, searchText){
                     }
                     item += '<tr>' +
                             '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
-                            '<td class="txt_center" colspan="3">' + data.list[i].SMALL_GROUP +'</td>' +
-                            '<td class="txt_left" colspan="4">' + data.list[i].DLG_DESCRIPTION + '</td>' +
-                            '<td class="txt_center" colspan="2">' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
+                            '<td class="txt_left">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                            '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
 
@@ -480,9 +480,9 @@ function dialogsAjax(groupType, sourceType){
                     }
                     item += '<tr>' +
                             '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
-                            '<td class="txt_center" colspan="3">' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left" colspan="4">' + data.list[i].DLG_DESCRIPTION + '</td>' +
-                            '<td class="txt_center" colspan="2">' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
+                            '<td class="txt_left">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                            '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
 
