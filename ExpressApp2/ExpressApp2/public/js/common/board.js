@@ -1,14 +1,17 @@
 
+
+
 //var entityList = [];
 var entityHash = {};
 //실행 순서 1
 $(document).ready(function () {
-    getEntityListAjax ();
+    
+    //getEntityListAjax ();
 });
 //실행 순서 2
 
 $(document).ready(function () {
-
+    
     /*
     var appName = $('#appName').val();//getParameters('appName')
     $.ajax({
@@ -26,23 +29,26 @@ $(document).ready(function () {
     });
     */
 
-    getEndpointHistory();
-    getEntityLabel();
-})
-
-
-
-
+    //getEndpointHistory();
+    //getEntityLabel();
+    
+    
+});
 
 
 
 //slider 시작
-var minDate = new Date(2010, 8-1, 1);
-var maxDate = new Date(2010, 8-1, 31);
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+var yyyy = today.getFullYear();
+
+var minDate = new Date(yyyy.toString()-1, mm.toString()-1, dd.toString());
+var maxDate = new Date(yyyy.toString(), mm.toString()-1, dd.toString());
 var slider;
 var startDate;
 var endDate;
-$(function() {
+$(document).ready(function () {
     slider = $('#slider').slider({range: true, max: daysDiff(minDate, maxDate),
             slide: function(event, ui) { resync(ui.values); }});
     startDate = $('#startDate').datepicker({minDate: minDate, maxDate: maxDate,
@@ -51,6 +57,18 @@ $(function() {
     endDate = $('#endDate').datepicker({minDate: minDate, maxDate: maxDate,
             onSelect: function(dateStr) { resync(); }}).
         keyup(function() { resync(); });
+    resync([0, 365]);
+    $('#slider div:eq(0)').css('left','0%').css('width','100%');
+    $('#slider span:eq(1)').css('left','100%');
+
+    google.charts.load('visualization'
+        , {'packages':['corechart', 'table']}
+    );
+    drawStatusOverview();
+    getEndpointHistory();
+    getEntityLabel();
+    getOftQuestion();
+    drawNoneQuerylist();
 });
 
 function resync(values) {
@@ -399,16 +417,17 @@ function getEntityLabel() {
 
 
 function drawStatusOverview() {
-
+    
     $.ajax({
-          applyId: 'filterForm',
-          url: '/admin/selectIntentScoreList.do',
-          //isloading: true,
-          success: function(data) {
-              if (data.error_code != null && data.error_message != null) {
+        url: '/board/intentScore',
+        dataType: 'json',
+        type: 'POST',
+        data: $('#filterForm').serializeObject(),
+        success: function(data) {
+            if (data.error_code != null && data.error_message != null) {
                   alert(data.error_message);
-              } else {
-                    var tableList = data.scoreList;
+            } else {
+                    var tableList = data.list;
                     var tmpColumn1 = new Array();
                     var tmpColumn2 = new Array();
                     var tmpColumn3 = new Array();
@@ -450,24 +469,24 @@ function drawStatusOverview() {
 
 
                     //attach table to the html
-                    StatusTable = new google.visualization.Table(document.getElementById('StatusOverview'));
+                    StatusTable = new google.visualization.Table(document.getElementById('score'));
 
                     //add the listener events
                     google.visualization.events.addListener(StatusTable, 'ready', function () {
-                        resetStyling('StatusOverview');
+                        resetStyling('score');
                     });
 
                     //sorting event
                     google.visualization.events.addListener(StatusTable, 'sort', function (ev) {
                         //find the last row
-                        var parentRow = $('#StatusOverview td.TotalCell').parent();
+                        var parentRow = $('#score td.TotalCell').parent();
                         //set the TotalRow row to the last row again.
                         if (!parentRow.is(':last-child')) {
                             parentRow.siblings().last().after(parentRow);
                         }
 
                         //reset the styling of the table
-                        resetStyling('StatusOverview');
+                        resetStyling('score');
                     });
 
                     //draw the table
@@ -480,4 +499,169 @@ function drawStatusOverview() {
           }
     });
 
+}
+
+//Also add the css class Totalrow
+function resetStyling(id) {
+    $('#' + id + ' table')
+        .removeClass('google-visualization-table-table')
+        .addClass('table table-bordered table-condensed table-striped table-hover');
+    var parentRow = $('#' + id + ' td.TotalCell').parent();
+    parentRow.addClass('TotalRow');
+}
+
+function getOftQuestion() {
+    $.ajax({
+        url: "/board/getOftQuestion",
+        type: "post",
+        data: $("#filterForm").serialize(),
+    }).done(function(data) {
+        if (data.error_code != null && data.error_message != null) {
+            alert(data.error_message);
+      } else {
+              var tableList = data.list;
+
+              var inputData = new google.visualization.DataTable();
+
+              //declare the columns
+              inputData.addColumn('string', 'INTENT');
+              inputData.addColumn('string', '한글질문');
+              inputData.addColumn('string', '채널');
+              inputData.addColumn('string', '질문수');
+              inputData.addColumn('string', '날짜');
+
+              //insert data here
+              //don't forget to set the classname TotalCell to the last datarow!!!
+
+
+              for (var i=0; i< tableList.length; i++) {
+                  //inputData.addRow([tableList[i].INTENT, tableList[i].KORQ, tableList[i].CHANNEL, tableList[i].QNUM, tableList[i].DATE]);
+                  inputData.addRow([tableList[i].INTENT, tableList[i].KORQ, tableList[i].CHANNEL, tableList[i].QNUM, tableList[i].DATE]);
+              }
+
+              //attach table to the html
+              StatusTable = new google.visualization.Table(document.getElementById('oftQuestion'));
+
+              //add the listener events
+              google.visualization.events.addListener(StatusTable, 'ready', function () {
+                  //resetStyling('score');
+              });
+
+              //sorting event
+              google.visualization.events.addListener(StatusTable, 'sort', function (ev) {
+                  //find the last row
+                  var parentRow = $('#score td.TotalCell').parent();
+                  //set the TotalRow row to the last row again.
+                  if (!parentRow.is(':last-child')) {
+                      parentRow.siblings().last().after(parentRow);
+                  }
+
+                  //reset the styling of the table
+                  //resetStyling('score');
+              });
+
+              //draw the table
+              StatusTable.draw(inputData, {
+                  showRowNumber: false,
+                  width: '90%',
+                  height: 'auto'
+              });
+        }
+    });
+}
+
+
+
+
+
+function drawNoneQuerylist() {
+    $.ajax({
+        url: '/board/nodeQuery',
+        dataType: 'json',
+        type: 'POST',
+        data: $('#filterForm').serializeObject(),
+        success: function(data) {
+              if (data.error_code != null && data.error_message != null) {
+                  alert(data.error_message);
+              } else {
+                    var noneList = data.list;
+
+                    var inputData3 = new google.visualization.DataTable();
+
+                    //declare the columns
+                    inputData3.addColumn('string', 'INTENT');
+                    inputData3.addColumn('string', '한글질문');
+                    inputData3.addColumn('number', '질문수');
+                    inputData3.addColumn('string', '날짜');
+                    inputData3.addColumn('string', '채널');
+                    inputData3.addColumn('string', '결과');
+                    inputData3.addColumn('string', 'TEXT답변');
+                    inputData3.addColumn('string', 'CARD답변');
+                    inputData3.addColumn('string', 'CARDBTN답변');
+                    inputData3.addColumn('string', 'MEDIA답변');
+                    inputData3.addColumn('string', 'MEDIABTN답변');
+
+                    //insert data here
+                    //don't forget to set the classname TotalCell to the last datarow!!!
+
+
+                    for (var i=0; i< noneList.length; i++) {
+                        inputData3.addRow([   noneList[i].intent
+                                            , noneList[i].korQuery
+                                            , noneList[i].queryCnt
+                                            , noneList[i].queryDate
+                                            , noneList[i].channel
+                                            , noneList[i].result
+                                            , noneList[i].textResult
+                                            , noneList[i].cardResult
+                                            , noneList[i].cardBtnResult
+                                            , noneList[i].mediaResult
+                                            , noneList[i].mediaBtnResult]);
+                    }
+                    /* inputData2.addRow(
+                        [{
+                            v: '합계',
+                            p: {
+                                className: 'TotalCell'
+                            }
+                          },
+                          '',
+                          '',
+                          '',
+                        ]
+                    ); */
+
+                    StatusTable3 = new google.visualization.Table(document.getElementById('noneQueryDiv'));
+/*
+                    //add the listener events
+                    google.visualization.events.addListener(StatusTable2, 'ready', function () {
+                        resetStyling('StatusOverview2');
+                    });
+
+                    //sorting event
+                    google.visualization.events.addListener(StatusTable2, 'sort', function (ev) {
+                        //find the last row
+                        var parentRow2 = $('#StatusOverview2 td.TotalCell').parent();
+                        //set the TotalRow row to the last row again.
+                        if (!parentRow2.is(':last-child')) {
+                            parentRow2.siblings().last().after(parentRow2);
+                        }
+
+                        //reset the styling of the table
+                        resetStyling('StatusOverview2');
+                    }); */
+
+                    StatusTable3.draw(inputData3,
+                               {
+                                page: 'enable',
+                                pageSize: 500,
+                                scrollLeftStartPosition: 100,
+                                showRowNumber: false,
+                                width: '90%',
+                                height: '500px',
+                                allowHtml: true
+                                });
+                  }
+              }
+      });
 }
