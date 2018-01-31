@@ -76,7 +76,7 @@ router.get('/', function (req, res) {
     sql.on('error', err => {
         // ... error handler
     })
-    
+
 });
 
 
