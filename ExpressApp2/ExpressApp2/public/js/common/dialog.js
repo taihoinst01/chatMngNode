@@ -196,7 +196,6 @@ $(document).on('change', '.searchGroup', function(){
 
         searchGroup($(this).val(), 'searchMedium', 1);
     } else if($(this).attr('id') == 'searchGroupM') {
-        alert("확인1");
         searchGroup($(this).val(), 'searchSmall', 1, $('#searchGroupL').val());
     }
     
@@ -258,9 +257,9 @@ function dialogsAjax2(group, sourceType2, searchText){
                     }
                     item += '<tr>' +
                             '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
-                            '<td class="txt_center" colspan="3">' + data.list[i].SMALL_GROUP +'</td>' +
-                            '<td class="txt_left" colspan="4">' + data.list[i].DLG_DESCRIPTION + '</td>' +
-                            '<td class="txt_center" colspan="2">' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
+                            '<td class="txt_left">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                            '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
 
@@ -373,14 +372,11 @@ function searchGroup(groupName, group, type, groupL) {
                     $('#searchGroupS').html('<option value="default">소그룹</option>');
                     $('#searchGroupM').append(item);
                 } else if(group == 'searchSmall') {
-                    alert("확인3");
                     var item = '<option value="default">소그룹</option>';
 
                     for(var i = 0; i <data.groupList.length; i++) {
-                        alert("확인4");
                         item += '<option>' + data.groupList[i].smallGroup + '</option>';
                     }
-                    alert("확인5");
                     $('#searchGroupS').html('');
                     $('#searchGroupS').append(item);
 
@@ -480,9 +476,9 @@ function dialogsAjax(groupType, sourceType){
                     }
                     item += '<tr>' +
                             '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
-                            '<td class="txt_center" colspan="3">' + data.list[i].SMALL_GROUP +'</td>' +
-                            '<td class="txt_left" colspan="4">' + data.list[i].DLG_DESCRIPTION + '</td>' +
-                            '<td class="txt_center" colspan="2">' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
+                            '<td class="txt_left">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                            '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
 
