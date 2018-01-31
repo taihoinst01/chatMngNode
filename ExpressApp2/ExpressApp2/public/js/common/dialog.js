@@ -196,7 +196,6 @@ $(document).on('change', '.searchGroup', function(){
 
         searchGroup($(this).val(), 'searchMedium', 1);
     } else if($(this).attr('id') == 'searchGroupM') {
-        alert("확인1");
         searchGroup($(this).val(), 'searchSmall', 1, $('#searchGroupL').val());
     }
     
@@ -373,14 +372,11 @@ function searchGroup(groupName, group, type, groupL) {
                     $('#searchGroupS').html('<option value="default">소그룹</option>');
                     $('#searchGroupM').append(item);
                 } else if(group == 'searchSmall') {
-                    alert("확인3");
                     var item = '<option value="default">소그룹</option>';
 
                     for(var i = 0; i <data.groupList.length; i++) {
-                        alert("확인4");
                         item += '<option>' + data.groupList[i].smallGroup + '</option>';
                     }
-                    alert("확인5");
                     $('#searchGroupS').html('');
                     $('#searchGroupS').append(item);
 
