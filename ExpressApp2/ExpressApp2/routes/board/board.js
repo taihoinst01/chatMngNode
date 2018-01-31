@@ -56,41 +56,28 @@ router.post('/intentScore', function (req, res) {
         
 });
 
-router.post('/getScorePane', function (req, res) {
-    (async () => {
-        try {
-
-            var selectQuery = "";
-            selectQuery += "SELECT	LOWER(LUIS_INTENT) AS INTENT, \n";
-            selectQuery += "AVG(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS 평균INTENTSCORE, \n";
-            selectQuery += "MAX(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS 최대INTENTSCORE , \n";
-            selectQuery += "MIN(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS 최소INTENTSCORE, \n";
-            selectQuery += "CHANNEL AS 채널,\n";
-            selectQuery += "CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS 날짜,\n";
-            selectQuery += "COUNT(*) AS 갯수\n";
-            selectQuery += "FROM	TBL_HISTORY_QUERY A, TBL_QUERY_ANALYSIS_RESULT B \n";
-            selectQuery += "WHERE	REPLACE(REPLACE(LOWER(A.CUSTOMER_COMMENT_KR),'.',''),'?','') = B.QUERY \n";
-            selectQuery += "AND		REG_DATE > '07/19/2017 00:00:00'\n";
-            selectQuery += "GROUP BY LUIS_INTENT, CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120)\n";
-
-            let pool = await sql.connect(dbConfig);
-            let result1 = await pool.request()
-            .query(selectQuery)
-        
-            let rows = result1.recordset;
-
-            res.send({list : result});
-        } catch (err) {
-            console.log(err)
-            // ... error checks
-        } finally {
-            sql.close();
-        }
-    })()
-
-    sql.on('error', err => {
-        // ... error handler
-    })
+router.post('/getScorePanel', function (req, res) {
+    
+    var selectQuery = "";
+        selectQuery += "SELECT   COUNT(*) AS CUSOMER_CNT \n";
+        selectQuery += "    , SUM(RESPONSE_TIME)/COUNT(RESPONSE_TIME) AS REPLY_SPEED \n";
+        selectQuery += "    , COUNT(*)/COUNT(DISTINCT USER_NUMBER) AS USER_QRY_AVG \n";
+        selectQuery += "    , ROUND(CONVERT(FLOAT, (SELECT COUNT(*) FROM TBL_QUERY_ANALYSIS_RESULT))/COUNT(*) * 100, 2) * 100  AS CORRECT_QRY \n";
+        selectQuery += "    , (SELECT (ROUND((SELECT CAST(COUNT(RESULT) AS FLOAT) FROM TBL_QUERY_ANALYSIS_RESULT WHERE RESULT='H') ";
+        selectQuery += "      / (SELECT CAST(COUNT(RESULT) AS FLOAT) FROM TBL_QUERY_ANALYSIS_RESULT WHERE RESULT='D') * 100, 2) * 100) ) AS SEARCH_AVG \n";
+        selectQuery += "    , (SELECT MAX(B.CNT) FROM (SELECT COUNT(*) AS CNT FROM TBL_HISTORY_QUERY GROUP BY USER_NUMBER ) B) AS MAX_QRY  \n";
+        selectQuery += "FROM   TBL_HISTORY_QUERY \n";
+    
+    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query(selectQuery)
+        }).then(result => {
+          let rows = result.recordset
+          res.send({list : rows});
+          sql.close();
+        }).catch(err => {
+          res.status(500).send({ message: "${err}"})
+          sql.close();
+        });
 });
 
 router.post('/getOftQuestion', function (req, res) {

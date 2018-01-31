@@ -12,8 +12,6 @@ $(document).ready(function () {
 
 });
 
-
-
 //slider 시작
 var today = new Date();
 var dd = today.getDate();
@@ -42,11 +40,18 @@ $(document).ready(function () {
     google.charts.load('visualization', {'packages':['corechart', 'table']} );
     google.charts.load('current' , {'packages':['corechart', 'bar']} );
     
-    drawStatusOverview();
-    getOftQuestion();
-    drawNoneQuerylist();
-    drawStuff();
-    drawFirstQueryTable();
+    setTimeout("drawStatusOverview();", 100);
+    setTimeout("getOftQuestion();", 100);
+    setTimeout("drawNoneQuerylist();", 100);
+    setTimeout("drawStuff();", 100);
+    setTimeout("drawFirstQueryTable();", 100);
+    setTimeout("getScorePanel();", 100);
+    //drawStatusOverview(); //intent score
+    //getOftQuestion(); //자주하는질문
+    //drawNoneQuerylist(); //미답변 질문
+    //drawStuff(); //고객별 첫질문 막대차트
+    //drawFirstQueryTable(); //고객별 첫질문 테이블
+    //getScorePanel();//누적상담자 수 있는 div
 
     //안쓰는 차트
     //getEndpointHistory();
@@ -79,11 +84,6 @@ function daysDiff(d1, d2) {
 }
 
 //slider 끝
-
-
-
-
-
 
 
 
@@ -230,7 +230,6 @@ function getEndpointHistory () {
         //alert("error");
     });
 }
-*/
 
 function getIsoDate() {
     var dt = new Date();
@@ -276,6 +275,7 @@ function getIsoDate() {
     };
     return date;
 }
+*/
 /* //안스는 차트, 참고용
 function getEntityLabel() {
     var appId = $('#appId').val();//getParameters('appId');
@@ -467,39 +467,44 @@ function getOftQuestion() {
               //insert data here
               //don't forget to set the classname TotalCell to the last datarow!!!
 
+            for (var i=0; i< tableList.length; i++) {
+                //inputData.addRow([tableList[i].INTENT, tableList[i].KORQ, tableList[i].CHANNEL, tableList[i].QNUM, tableList[i].DATE]);
+                inputData.addRow([tableList[i].INTENT, tableList[i].KORQ, tableList[i].CHANNEL, tableList[i].QNUM, tableList[i].DATE]);
+            }
+              
+            //attach table to the html
+            StatusTable = new google.visualization.Table(document.getElementById('oftQuestion'));
+            
+            //add the listener events
+            google.visualization.events.addListener(StatusTable, 'ready', function () {
+                //resetStyling('score');
+            });
 
-              for (var i=0; i< tableList.length; i++) {
-                  //inputData.addRow([tableList[i].INTENT, tableList[i].KORQ, tableList[i].CHANNEL, tableList[i].QNUM, tableList[i].DATE]);
-                  inputData.addRow([tableList[i].INTENT, tableList[i].KORQ, tableList[i].CHANNEL, tableList[i].QNUM, tableList[i].DATE]);
-              }
+            //sorting event
+            google.visualization.events.addListener(StatusTable, 'sort', function (ev) {
+                //find the last row
+                var parentRow = $('#score td.TotalCell').parent();
+                //set the TotalRow row to the last row again.
+                if (!parentRow.is(':last-child')) {
+                    parentRow.siblings().last().after(parentRow);
+                }
 
-              //attach table to the html
-              StatusTable = new google.visualization.Table(document.getElementById('oftQuestion'));
+                //reset the styling of the table
+                //resetStyling('score');
+            });
 
-              //add the listener events
-              google.visualization.events.addListener(StatusTable, 'ready', function () {
-                  //resetStyling('score');
-              });
-
-              //sorting event
-              google.visualization.events.addListener(StatusTable, 'sort', function (ev) {
-                  //find the last row
-                  var parentRow = $('#score td.TotalCell').parent();
-                  //set the TotalRow row to the last row again.
-                  if (!parentRow.is(':last-child')) {
-                      parentRow.siblings().last().after(parentRow);
-                  }
-
-                  //reset the styling of the table
-                  //resetStyling('score');
-              });
-
-              //draw the table
-              StatusTable.draw(inputData, {
-                  showRowNumber: false,
-                  width: '90%',
-                  height: 'auto'
-              });
+            //draw the table
+            StatusTable.draw(inputData, {
+                showRowNumber: false,
+                width: '90%',
+                height: 'auto'
+            });
+            
+            if (tableList.length === 0) {
+                var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
+                           + '<td class="google-visualization-table-td" colspan="5" style="padding: 0 0 0 50px;">데이터가 없습니다.</td></tr>'
+                $('#oftQuestion').find('tbody').append(tdHtml);
+            }
         }
     });
 }
@@ -566,7 +571,7 @@ function drawNoneQuerylist() {
                     ); */
 
                     StatusTable3 = new google.visualization.Table(document.getElementById('noneQueryDiv'));
-/*
+                    /*
                     //add the listener events
                     google.visualization.events.addListener(StatusTable2, 'ready', function () {
                         resetStyling('StatusOverview2');
@@ -719,6 +724,30 @@ function drawFirstQueryTable() {
                 }
                 filterSearch(5);
               }
+        }
+    })
+  }
+
+
+
+
+//누적 상담자, 평균답변속도 등등 
+function getScorePanel() {
+    $.ajax({
+        url: '/board/getScorePanel',
+        dataType: 'json',
+        type: 'POST',
+        data: $('#filterForm').serializeObject(),
+        success: function(data) {
+            var scores = data.list[0];
+            $('#allCustomer').html(scores.CUSOMER_CNT);
+            $('#avgReplySpeed').html(scores.REPLY_SPEED);
+            $('#avgQueryCnt').html(scores.USER_QRY_AVG);
+
+            var CORRECT_QRY = scores.CORRECT_QRY.toString();
+            $('#avgCorrectAnswer').html(  (CORRECT_QRY.length>4? CORRECT_QRY.substr(0,4) : CORRECT_QRY )+ '%'  );
+            $('#avgReply').html(scores.SEARCH_AVG);
+            $('#maxQueryCnt').html(scores.MAX_QRY);
         }
     })
   }

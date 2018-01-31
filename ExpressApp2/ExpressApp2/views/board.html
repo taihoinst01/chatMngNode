@@ -102,26 +102,32 @@
                         <div class="dashboard_cont04" style="width: 50%; background-color: white; padding: 0%">
                                 <div class="dashboard_cont02 pane01">
                                         <p class="d_tit01">누적 상담자수</p>
+                                        <p class="d_tit03" id="allCustomer"></p>
                                 </div>
     
                                 <div class="dashboard_cont02 pane01">
                                         <p class="d_tit01">평균 답변 속도</p>
+                                        <p class="d_tit03" id="avgReplySpeed"></p>
                                 </div>
     
                                 <div class="dashboard_cont02 pane01">
                                         <p class="d_tit01">고객 평균 질문수</p>
+                                        <p class="d_tit03" id="avgQueryCnt"></p>
                                 </div>
     
                                 <div class="dashboard_cont02 pane01">
                                         <p class="d_tit01">평균 정상답변율</p>
+                                        <p class="d_tit03" id="avgCorrectAnswer"></p>
                                 </div>
         
                                 <div class="dashboard_cont02 pane01">
                                         <p class="d_tit01">검색 답변율</p>
+                                        <p class="d_tit03" id="avgReply"></p>
                                 </div>
         
                                 <div class="dashboard_cont02 pane01">
                                         <p class="d_tit01">고객 최대 질문수</p>
+                                        <p class="d_tit03" id="maxQueryCnt"></p>
                                 </div>
                             
                             </div>
@@ -131,8 +137,11 @@
                        
                        <!-- //Intent Breakdown/Entity Breakdown -->
                        
-                       <div class="dashboard_cont06" id="noneQueryDiv">
-                            <p class="d_tit03" style="line-height: 8;"><span> Loading.. </span></p>
+                       <div class="dashboard_cont06">
+                           <p class="d_tit01"> 미답변 질문 </p>
+                           <div id="noneQueryDiv">
+                               <p class="d_tit03" style="line-height: 8;"><span> Loading.. </span></p>
+                           </div>
                         </div>
 
                         <div class="dashboard_cont04" id="top_x_div" style="float: left;">
