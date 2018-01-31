@@ -61,14 +61,21 @@ $(document).ready(function () {
     $('#slider div:eq(0)').css('left','0%').css('width','100%');
     $('#slider span:eq(1)').css('left','100%');
 
+    //google.charts.load('current', {'packages':['corechart']});
+    
     google.charts.load('visualization'
         , {'packages':['corechart', 'table']}
     );
+    google.charts.load('current' , {'packages':['corechart', 'bar']} );
+    
     drawStatusOverview();
     getEndpointHistory();
     getEntityLabel();
     getOftQuestion();
     drawNoneQuerylist();
+    drawStuff();
+    drawFirstQueryTable();
+
 });
 
 function resync(values) {
@@ -665,3 +672,126 @@ function drawNoneQuerylist() {
               }
       });
 }
+
+
+
+
+
+
+
+
+
+var barChart;
+var inputDataforBar;
+// bar 그래프를 그린다.
+function drawStuff() {
+    $.ajax({
+        url: '/board/firstQueryBar',
+        dataType: 'json',
+        type: 'POST',
+        data: $('#filterForm').serializeObject(),
+        success: function(data) {
+            inputDataforBar = new google.visualization.DataTable();
+            inputDataforBar.addRows(data.list.length);
+            inputDataforBar.addColumn('string','');
+            inputDataforBar.addColumn('number','');
+            //inputData.addColumn({type:'string', role: 'style' });
+            //inputData.addColumn({type:'string', role: 'annotation' });
+            if (data.list != null && data.list.length >0) {
+                for (var i=0;i<data.list.length; i++) {
+                    inputDataforBar.setCell(i, 0, data.list[i].intentName);
+                    inputDataforBar.setCell(i, 1, data.list[i].intentCount);
+                    //inputData.setCell(i, 2, 'adsfdsfadsfads');
+                }
+            }
+            var options = {
+            title: 'Chess opening moves',
+            width: '90%',
+            height: '90%',
+            legend: { position: 'none' },
+            chart: { title: '고객별 첫 질문' },
+            bars: 'horizontal', // Required for Material Bar Charts.
+            bar: { groupWidth: "90%" }
+            };
+
+            barChart = new google.charts.Bar(document.getElementById('top_x_div'));
+            barChart.draw(inputDataforBar, options);
+
+            //google.visualization.events.addListener(barChart, 'select', selectHandler);
+            /* //바 클릭시 이벤트
+            function selectHandler() {
+                var selection = barChart.getSelection();
+                var message = '';
+                for (var i = 0; i < selection.length; i++) {
+                    var item = selection[i];
+                    if (item.row != null && item.column != null) {
+                        $('#intentName').val(inputDataforBar.getFormattedValue(item.row, 0));
+                    } else if (item.row != null) {
+                        $('#intentName').val(inputDataforBar.getFormattedValue(item.row, 0));
+                    } else if (item.column != null) {
+                        $('#intentName').val(inputDataforBar.getFormattedValue(0, 0));
+                    }
+                }
+            }
+            */
+        }
+    })
+};
+
+// table을 그린다.
+function drawFirstQueryTable() {
+    $.ajax({
+        url: '/board/firstQueryTable',
+        dataType: 'json',
+        type: 'POST',
+        data: $('#filterForm').serializeObject(),
+        success: function(data) {
+            var inputData = new google.visualization.DataTable();
+            inputData.addRows(data.list.length);
+            inputData.addColumn('string', 'koQuestion');
+            inputData.addColumn('string', 'query_date');
+            inputData.addColumn('string', 'channel');
+            inputData.addColumn('number', 'query_cnt');
+            inputData.addColumn('number', 'intent_score');
+            inputData.addColumn('string', 'intent_name');
+            inputData.addColumn('string', 'txt_answer');
+            inputData.addColumn('string', 'card_answer');
+            inputData.addColumn('string', 'cardBtn_answer');
+            inputData.addColumn('string', 'media_answer');
+            inputData.addColumn('string', 'mediaBtn_answer');
+            inputData.addColumn('string', 'message_type');
+            for (var i=0;i<data.list.length; i++) {
+                inputData.setCell(i,0,data.list[i].koQuestion);
+                inputData.setCell(i,1,data.list[i].query_date);
+                inputData.setCell(i,2,data.list[i].channel);
+                inputData.setCell(i,3,data.list[i].query_cnt);
+                inputData.setCell(i,4,data.list[i].intent_score);
+                inputData.setCell(i,5,data.list[i].intent_name);
+                inputData.setCell(i,6,data.list[i].txt_answer);
+                inputData.setCell(i,7,data.list[i].card_answer);
+                inputData.setCell(i,8,data.list[i].cardBtn_answer);
+                inputData.setCell(i,9,data.list[i].media_answer);
+                inputData.setCell(i,10,data.list[i].mediaBtn_answer);
+                inputData.setCell(i,11,data.list[i].message_type);
+            }
+             var table = new google.visualization.Table(document.getElementById('table_div'));
+             table.draw(inputData, {showRowNumber: true, width: '100%', height: '400px'});
+              google.visualization.events.addListener(table, 'select', selectHandler);
+              function selectHandler() {
+                var selection = table.getSelection();
+                var message = '';
+                for (var i = 0; i < selection.length; i++) {
+                  var item = selection[i];
+                  if (item.row != null && item.column != null) {
+                    $('#intentName').val(inputData.getFormattedValue(item.row, 0));
+                  } else if (item.row != null) {
+                      $('#intentName').val(inputData.getFormattedValue(item.row, 0));
+                  } else if (item.column != null) {
+                      $('#intentName').val(inputData.getFormattedValue(0, 0));
+                  }
+                }
+                filterSearch(5);
+              }
+        }
+    })
+  }

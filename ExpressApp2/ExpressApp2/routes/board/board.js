@@ -291,9 +291,6 @@ router.post('/nodeQuery', function (req, res) {
             selectQuery += ") AA \n";
             selectQuery += "WHERE RESULT = '' OR RESULT IN ('D','N') \n";
             selectQuery += "ORDER BY queryCnt DESC, queryDate DESC; \n";
-    sql.on('error', err => {
-        // ... error handler
-    })
     new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -306,5 +303,102 @@ router.post('/nodeQuery', function (req, res) {
         });
 });
 
+
+
+router.post('/firstQueryBar', function (req, res) {
+    var selectQuery =  "";
+        selectQuery += "SELECT ISNULL(INTENT,'intent 없음') AS INTENT, ISNULL(날짜,'') AS REG_DATE, COUNT(*) AS INTENT_CNT, 채널 AS CHANNEL \n";
+        selectQuery += "FROM ( \n";
+        selectQuery += "    SELECT distinct history.user_number as 유저아이디 \n";
+        selectQuery += "         , history.sid, history.customer_comment_kr as 한글질문 \n";
+        selectQuery += "         , history.customer_comment_en as 영어질문 \n";
+        selectQuery += "         , history.channel as 채널 \n";
+        selectQuery += "         , history.reg_date as 질문등록시간 \n";
+        selectQuery += "         , LOWER(analysis.LUIS_INTENT) as INTENT \n";
+        selectQuery += "         , analysis.LUIS_ENTITIES as 답변 \n";
+        selectQuery += "         , ROUND(CAST(analysis.LUIS_INTENT_SCORE AS FLOAT),2) as 컨피던스 \n";
+        selectQuery += "         , case when history.customer_comment_kr ='Kona의 주요특징' or history.customer_comment_kr ='견적 내기' or history.customer_comment_kr ='시승신청' \n";
+        selectQuery += "                     or history.customer_comment_kr ='나에게 맞는 모델을 추천해줘' then '메뉴' else '대화' end as 메시지구분 \n";
+        selectQuery += "         , 날짜 \n";
+        selectQuery += "    FROM ( \n";
+        selectQuery += "        SELECT  ROW_NUMBER() OVER (PARTITION BY user_number ORDER BY min(sid) asc) AS Row \n";
+        selectQuery += "            , user_number \n";
+        selectQuery += "            , min(sid) AS sid \n";
+        selectQuery += "            , customer_comment_kr \n";
+        selectQuery += "            , customer_comment_en \n";
+        selectQuery += "            , reg_date \n";
+        selectQuery += "            , channel \n";
+        selectQuery += "            , CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS 날짜 \n";
+        selectQuery += "        FROM    tbl_history_query \n";
+        selectQuery += "        WHERE  REG_DATE > '07/19/2017 00:00:00' \n";
+        selectQuery += "        GROUP BY user_number, customer_comment_kr, customer_comment_en, reg_date, channel \n";
+        selectQuery += "    )   AS history INNER join tbl_query_analysis_result as analysis on history.customer_comment_kr = analysis.query \n";
+        selectQuery += "    WHERE history.Row = 1 \n";
+        selectQuery += ") A \n";
+        selectQuery += "GROUP BY INTENT, 날짜, 채널 \n";
+    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query(selectQuery)
+        }).then(result => {
+          let rows = result.recordset
+          res.send({list : rows});
+          sql.close();
+        }).catch(err => {
+          res.status(500).send({ message: "${err}"})
+          sql.close();
+        });
+});
+
+router.post('/firstQueryTable', function (req, res) {
+    var selectQuery =  "";
+        selectQuery += "SELECT CUSTOMER_COMMENT_KR AS koQuestion, 날짜 AS query_date, 채널 AS channel, 질문수 AS query_cnt  \n";
+        selectQuery += "    , ROUND(CAST(ISNULL(AN.LUIS_INTENT_SCORE,0) AS FLOAT),2) AS intent_score \n";
+        selectQuery += "    , ISNULL(LOWER(AN.LUIS_INTENT),'') AS intent_name \n";
+        selectQuery += "    , ISNULL(TE.CARD_TEXT,'') AS txt_answer \n";
+        selectQuery += "    , ISNULL(CA.CARD_TITLE,'') AS card_answer \n";
+        selectQuery += "    , ISNULL(CA.BTN_1_CONTEXT,'') AS cardBtn_answer \n";
+        selectQuery += "    , ISNULL(ME.CARD_TITLE,'') AS media_answer \n";
+        selectQuery += "    , ISNULL(ME.BTN_1_CONTEXT,'') AS mediaBtn_answer \n";
+        selectQuery += "    , CASE WHEN CUSTOMER_COMMENT_KR ='KONA의 주요특징' OR CUSTOMER_COMMENT_KR ='견적 내기' OR CUSTOMER_COMMENT_KR ='시승신청' \n";
+        selectQuery += "         OR CUSTOMER_COMMENT_KR ='나에게 맞는 모델을 추천해줘' THEN '메뉴' ELSE '대화' END AS message_type \n";
+        selectQuery += "FROM( \n";
+        selectQuery += "    SELECT CUSTOMER_COMMENT_KR,날짜,COUNT(*) AS 질문수,채널 \n";
+        selectQuery += "    FROM( \n";
+        selectQuery += "        SELECT  ROW_NUMBER() OVER (PARTITION BY USER_NUMBER ORDER BY MIN(SID) ASC) AS ROW \n";
+        selectQuery += "            , USER_NUMBER \n";
+        selectQuery += "            , MIN(SID) AS SID \n";
+        selectQuery += "            , CUSTOMER_COMMENT_KR \n";
+        selectQuery += "            , CUSTOMER_COMMENT_EN \n";
+        selectQuery += "            , REG_DATE \n";
+        selectQuery += "            , CHANNEL AS 채널 \n";
+        selectQuery += "            , CONVERT(CHAR(19),CONVERT(DATETIME,REG_DATE),120) AS 날짜 \n";
+        selectQuery += "        FROM    TBL_HISTORY_QUERY \n";
+        selectQuery += "        WHERE  REG_DATE > '07/19/2017 00:00:00' \n";
+        selectQuery += "        GROUP BY USER_NUMBER, CUSTOMER_COMMENT_KR, CUSTOMER_COMMENT_EN, REG_DATE, CHANNEL \n";
+        selectQuery += "    ) A \n";
+        selectQuery += "    WHERE ROW = 1 \n";
+        selectQuery += "    GROUP BY CUSTOMER_COMMENT_KR,날짜,채널 \n";
+        selectQuery += ") HI LEFT OUTER JOIN TBL_QUERY_ANALYSIS_RESULT AN ON REPLACE(REPLACE(LOWER(HI.CUSTOMER_COMMENT_KR),'.',''),'?','') = LOWER(AN.QUERY) \n";
+        selectQuery += "LEFT OUTER JOIN (SELECT LUIS_INTENT,LUIS_ENTITIES,MIN(DLG_ID) AS DLG_ID FROM TBL_DLG_RELATION_LUIS GROUP BY LUIS_INTENT, LUIS_ENTITIES) RE \n";
+        selectQuery += "    ON AN.LUIS_INTENT = RE.LUIS_INTENT \n";
+        selectQuery += "    AND AN.LUIS_ENTITIES = RE.LUIS_ENTITIES \n";
+        selectQuery += "LEFT OUTER JOIN TBL_DLG DL \n";
+        selectQuery += "    ON RE.DLG_ID = DL.DLG_ID \n";
+        selectQuery += "LEFT OUTER JOIN TBL_DLG_TEXT TE \n";
+        selectQuery += "    ON DL.DLG_ID = TE.DLG_ID \n";
+        selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_CARD WHERE CARD_ORDER_NO = 1) CA \n";
+        selectQuery += "    ON DL.DLG_ID = CA.DLG_ID \n";
+        selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_MEDIA) ME \n";
+        selectQuery += "    ON DL.DLG_ID = ME.DLG_ID \n";
+    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query(selectQuery)
+        }).then(result => {
+          let rows = result.recordset
+          res.send({list : rows});
+          sql.close();
+        }).catch(err => {
+          res.status(500).send({ message: "${err}"})
+          sql.close();
+        });
+});
 
 module.exports = router;
