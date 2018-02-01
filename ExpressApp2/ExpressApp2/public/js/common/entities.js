@@ -35,11 +35,21 @@ function entitiesAjax(){
             var item = '';
             if(data.list.length > 0){
                 for(var i = 0; i < data.list.length; i++){
-                    item += '<tr>' +
-                        '<td class="txt_center" style="width: 30%">' + data.list[i].ENTITY + "</td>" ;
-                    item += '<td class="txt_center" style="width: 40%">' + data.list[i].ENTITY_VALUE + '</td>';
-                    item += '<td class="txt_center" style="width: 30%">' + data.list[i].API_GROUP + '</td>' +    
-                        '</tr>';
+                    item += '<tr>';
+                    item += '<td class="txt_center" style="width: 30%">' + data.list[i].ENTITY + "</td>" ;
+                    item += '<td class="txt_center" style="width: 40%">' + data.list[i].ENTITY_VALUE; 
+                    item += '<form action="" method="post" name="entityForm" style="display: inline;">';
+                    item += '<img src="../images/plus_icon.png" class="openAddInput" style="height:17px; width: 17px; margin-left: 10px;">';
+                    item += '<img src="../images/minus_icon.png" class="closeAddInput" style="height:17px; width: 17px; margin-left: 10px; display: none;">';
+                    item += '<div style="display: none;"><input type="text" name="addEntityValue"/>';
+                    item += '<button class="btn addEntityValueBtn">저장</button>';
+                    item += '</div>';
+                    item += '<input type="hidden" name="entityDefine" value="' + data.list[i].ENTITY + '">';
+                    item += '<input type="hidden" name="apiGroup" value="' + data.list[i].API_GROUP + '">';
+                    item += '</td>';
+                    item += '<td class="txt_center" style="width: 30%">' + data.list[i].API_GROUP + '</td>';  
+                    item += '</form>';
+                    item += '</tr>';
                 }
                 
             }
@@ -55,6 +65,62 @@ $(document).on('click','.li_paging',function(e){
         entitiesAjax();
     }
 });
+
+//엔티티 밸류 추가창 열기버튼
+$(document).on('click', '.openAddInput', function() {
+
+    $('.openAddInput').not($(this)).each(function(){
+        if($(this).css('display') == 'none') {
+            $(this).next().click();
+        }
+    })
+
+    $(this).toggle();
+    $(this).next().toggle();
+    $(this).next().next().toggle();
+})
+
+//엔티티 밸류 추가창 닫기 버튼
+$(document).on('click', '.closeAddInput', function() {
+
+    $(this).toggle();
+    $(this).prev().toggle();
+    $(this).next().toggle();
+})
+
+//엔티티 밸류 저장 버튼
+$(document).on('click', '.addEntityValueBtn', function() {
+    
+    var submitAction = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        /* do something with Error */
+    };
+    $(this).parent().parent().bind('submit', submitAction);
+
+    var addValues = $(this).parent().parent().serializeObject();
+    addEntityValueAjax(addValues);
+})
+
+//엔티티 밸류 저장(추가) ajax
+function addEntityValueAjax(addValues) {
+
+    $.ajax({
+        url: '/learning/addEntityValue',
+        dataType: 'json',
+        type: 'POST',
+        data: addValues,
+        success: function(data) {
+            if(data.status == 200){
+                alert("추가하였습니다.");
+                $("#iptentites").val(addValues.addEntityValue);
+                searchEntities();
+            } else {
+                alert("오류 발생으로 인해 추가하지 못하였습니다.");
+            }
+        }
+    });
+}
 
 //엔티티 검색
 function searchEntities() {
@@ -77,11 +143,21 @@ function searchEntities() {
                 var item = '';
                 if(data.list.length > 0){
                     for(var i = 0; i < data.list.length; i++){
-                        item += '<tr>' +
-                            '<td class="txt_center" style="width: 30%">' + data.list[i].ENTITY + "</td>" ;
-                        item += '<td class="txt_center" style="width: 40%">' + data.list[i].ENTITY_VALUE + '</td>';
-                        item += '<td class="txt_center" style="width: 30%">' + data.list[i].API_GROUP + '</td>' +    
-                            '</tr>';
+                        item += '<tr>';
+                        item += '<td class="txt_center" style="width: 30%">' + data.list[i].ENTITY + "</td>" ;
+                        item += '<td class="txt_center" style="width: 40%">' + data.list[i].ENTITY_VALUE; 
+                        item += '<form action="" method="post" name="entityForm" style="display: inline;">';
+                        item += '<img src="../images/plus_icon.png" class="openAddInput" style="height:17px; width: 17px; margin-left: 10px;">';
+                        item += '<img src="../images/minus_icon.png" class="closeAddInput" style="height:17px; width: 17px; margin-left: 10px; display: none;">';
+                        item += '<div style="display: none;"><input type="text" name="addEntityValue"/>';
+                        item += '<button class="btn addEntityValueBtn">저장</button>';
+                        item += '</div>';
+                        item += '<input type="hidden" name="entityDefine" value="' + data.list[i].ENTITY + '">';
+                        item += '<input type="hidden" name="apiGroup" value="' + data.list[i].API_GROUP + '">';
+                        item += '</td>';
+                        item += '<td class="txt_center" style="width: 30%">' + data.list[i].API_GROUP + '</td>';  
+                        item += '</form>';
+                        item += '</tr>';
                     }
                     
                 }

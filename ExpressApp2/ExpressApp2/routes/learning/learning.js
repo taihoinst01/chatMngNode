@@ -640,17 +640,17 @@ router.post('/entities', function (req, res) {
     (async () => {
         try {
          
-            var entitiesQueryString = "select tbp.* from " +
-                                      "(select ROW_NUMBER() OVER(ORDER BY api_group DESC) AS NUM, " +
-                                      "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
-                                      "CEILING((ROW_NUMBER() OVER(ORDER BY api_group DESC))/ convert(numeric ,10)) PAGEIDX, " +
-                                      "entity_value, entity, api_group from ( SELECT DISTINCT entity, API_GROUP , STUFF(( " +
-                                      "SELECT ',' + b.entity_value FROM TBL_COMMON_ENTITY_DEFINE b " +
-                                      "WHERE b.entity = a.entity FOR XML PATH('') ),1,1,'') AS entity_value " +
-                                      "FROM TBL_COMMON_ENTITY_DEFINE a where API_GROUP != 'OCR TEST' " +
-                                      "group by entity, API_GROUP) " +
-                                      "tbl_common_entity_define where api_group != 'OCR TEST') tbp " +
-                                      "WHERE PAGEIDX = @currentPage";
+            var entitiesQueryString = "select tbp.* from                                                                    "    
+                                    + "(select ROW_NUMBER() OVER(ORDER BY api_group DESC) AS NUM,                           "
+                                    + "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT,                                         "
+                                    + "CEILING((ROW_NUMBER() OVER(ORDER BY api_group DESC))/ convert(numeric ,10)) PAGEIDX, " 
+                                    + "entity_value, entity, api_group from ( SELECT DISTINCT entity, API_GROUP , STUFF((   "
+                                    + "SELECT '[' + b.entity_value + ']' FROM TBL_COMMON_ENTITY_DEFINE b                    "
+                                    + "WHERE b.entity = a.entity FOR XML PATH('') ),1,1,'[') AS entity_value                "
+                                    + "FROM TBL_COMMON_ENTITY_DEFINE a where API_GROUP != 'OCR TEST'                        "
+                                    + "group by entity, API_GROUP)                                                          "
+                                    + "tbl_common_entity_define where api_group != 'OCR TEST') tbp                          "
+                                    + "WHERE PAGEIDX = @currentPage                                                         "
             
             let pool = await sql.connect(dbConfig)
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(entitiesQueryString);
@@ -687,6 +687,41 @@ router.post('/entities', function (req, res) {
     sql.on('error', err => {
         // ... error handler
     })
+});
+
+//엔티티 밸류 추가
+router.post('/addEntityValue', function (req, res) {
+    
+    var apiGroup = req.body.apiGroup;
+    var entityDefine = req.body.entityDefine;
+    var addEntityValue = req.body.addEntityValue;
+
+    (async () => {
+        try {
+
+            var insertQueryString1 = "insert into TBL_COMMON_ENTITY_DEFINE(ENTITY, ENTITY_VALUE, API_GROUP) values(@entityDefine, @addEntityValue, @apiGroup)";
+                      
+            let pool = await sql.connect(dbConfig);
+
+            let result1 = await pool.request()
+                .input('entityDefine', sql.NVarChar, entityDefine)
+                .input('addEntityValue', sql.NVarChar, addEntityValue)
+                .input('apiGroup', sql.NVarChar, apiGroup)
+                .query(insertQueryString1);  
+            
+            res.send({status:200 , message:'insert Success'});
+        
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'insert Entity Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
+    })
+    
 });
 
 //엔티티 추가
