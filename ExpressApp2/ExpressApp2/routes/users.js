@@ -380,6 +380,68 @@ router.post('/updateUserAppList', function (req, res) {
     })
     
 })
+
+router.get('/apiSetting', function (req, res) {
+    res.locals.selMenu = req.session.selMenu = 'm1';
+    res.locals.selLeftMenu = 'API 관리';
+    res.render('apiSetting');
+})
+
+router.post('/selectApiList', function (req, res) {
+    res.locals.selMenu = req.session.selMenu = 'm1';
+    
+    let sortIdx = checkNull(req.body.sort, "USER_ID") + " " + checkNull(req.body.order, "ASC");
+    let pageSize = checkNull(req.body.rows, 10);
+    let currentPageNo = checkNull(req.body.page, 1);
+    
+    let searchId = checkNull(req.body.searchId, null);
+
+    var selectAppListStr = "SELECT API_SEQ, API_ID AS API_ID_HIDDEN, API_ID,  API_URL, API_DESC " +
+                           "  FROM TBL_URL " +
+                           " WHERE 1=1 ";
+    if (searchId) {
+        selectAppListStr +="   AND API_ID like '%" + searchId + "%' ";
+    }          
+    selectAppListStr +=  "ORDER BY API_SEQ ASC, API_ID ASC; ";
+    (async () => {
+        try {
+            let pool = await sql.connect(dbConfig);
+            let appList = await pool.request().query(selectAppListStr);
+            let rows = appList.recordset;
+
+
+            var recordList = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+                item = rows[i];
+                recordList.push(item);
+            }
+
+            res.send({
+                records : recordList.length,
+                rows : recordList
+            });
+            
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'app Load Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+})
+
+
+
+
+
+
+
+
 /*
 router.post('/', function (req, res) {
     let sortIdx = checkNull(req.body.sort, "USER_ID") + " " + checkNull(req.body.order, "ASC");

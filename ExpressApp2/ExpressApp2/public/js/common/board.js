@@ -1,15 +1,29 @@
 
 
-
-//var entityList = [];
 var entityHash = {};
+/*
+//var entityList = [];
 //실행 순서 1
-$(document).ready(function () {
-    
+$(document).ready(function () {   
 });
 //실행 순서 2
 $(document).ready(function () {
+});
+*/
+//top버튼
+$(window).scroll(function() {
+    if ($(this).scrollTop() > 400) {
+        $('#MOVE_TOP_BTN').fadeIn();
+    } else {
+        $('#MOVE_TOP_BTN').fadeOut();
+    }
+});
 
+$("#MOVE_TOP_BTN").click(function() {
+   $('html, body').animate({
+       scrollTop : 0
+   }, 400);
+   return false;
 });
 
 //slider 시작
@@ -38,20 +52,26 @@ $(document).ready(function () {
 
     //google.charts.load('current', {'packages':['corechart']});
     google.charts.load('visualization', {'packages':['corechart', 'table']} );
-    google.charts.load('current' , {'packages':['corechart', 'bar']} );
+    google.charts.load('current', {packages: ['corechart', 'bar']});
     
-    setTimeout("drawStatusOverview();", 100);
-    setTimeout("getOftQuestion();", 100);
-    setTimeout("drawNoneQuerylist();", 100);
-    setTimeout("drawStuff();", 100);
-    setTimeout("drawFirstQueryTable();", 100);
-    setTimeout("getScorePanel();", 100);
-    //drawStatusOverview(); //intent score
-    //getOftQuestion(); //자주하는질문
-    //drawNoneQuerylist(); //미답변 질문
-    //drawStuff(); //고객별 첫질문 막대차트
-    //drawFirstQueryTable(); //고객별 첫질문 테이블
-    //getScorePanel();//누적상담자 수 있는 div
+    google.charts.setOnLoadCallback(drawStatusOverview);
+    google.charts.setOnLoadCallback(getOftQuestion);
+    google.charts.setOnLoadCallback(drawNoneQuerylist);
+    google.charts.setOnLoadCallback(drawStuff);
+    google.charts.setOnLoadCallback(getScorePanel);
+    google.charts.setOnLoadCallback(drawFirstQueryTable);
+    google.charts.setOnLoadCallback(getResponseScores);
+    google.charts.setOnLoadCallback(getQueryByEachTime);
+    /*
+    setTimeout("drawStatusOverview();", 100); //intent score
+    setTimeout("getOftQuestion();", 100); //자주하는질문
+    setTimeout("drawNoneQuerylist();", 100); //미답변 질문
+    setTimeout("drawStuff();", 100); //고객별 첫질문 막대차트
+    setTimeout("drawFirstQueryTable();", 100); //고객별 첫질문 테이블
+    setTimeout("getScorePanel();", 100); //누적상담자 수 있는 div
+    setTimeout("getResponseScores();", 100); //평균 답 시간
+    setTimeout("getQueryByEachTime();", 100); //시간대별 
+    */
 
     //안쓰는 차트
     //getEndpointHistory();
@@ -426,8 +446,8 @@ function drawStatusOverview() {
                     //draw the table
                     StatusTable.draw(inputData, {
                         showRowNumber: false,
-                        width: '90%',
-                        height: 'auto'
+                        width: '100%',
+                        height: '100%'
                     });
               }
           }
@@ -496,7 +516,7 @@ function getOftQuestion() {
             //draw the table
             StatusTable.draw(inputData, {
                 showRowNumber: false,
-                width: '90%',
+                width: '100%',
                 height: 'auto'
             });
             
@@ -596,9 +616,15 @@ function drawNoneQuerylist() {
                                 pageSize: 500,
                                 scrollLeftStartPosition: 100,
                                 showRowNumber: false,
-                                width: '90%',
+                                width: '100%',
                                 height: '500px',
-                                allowHtml: true
+                                allowHtml: true,
+                                chartArea: {
+                                    left: "20%",
+                                    //top: "13%",
+                                    //height: "85%",
+                                    width: "100%"
+                                }
                                 });
                   }
               }
@@ -751,3 +777,110 @@ function getScorePanel() {
         }
     })
   }
+
+//누적 상담자, 평균답변속도 등등 
+function getResponseScores() {
+    $.ajax({
+        url: '/board/getResponseScore',
+        dataType: 'json',
+        type: 'POST',
+        data: $('#filterForm').serializeObject(),
+        success: function(data) {
+            
+            var arrTmp = [];
+            var arr0 = ['NAME', 'second'];
+            var arr1 = ['평균 답변율', data.list[0].REPLY_AVG];
+            var arr2 = ['최대 답변율', data.list[0].MAX_REPLY];
+            var arr3 = ['최소 답변율', data.list[0].MIN_REPLY];
+            var arr4 = ['평균 머무르는 시간', data.list[0].REPLY_SUM];
+            arrTmp.push(arr0);
+            arrTmp.push(arr1);
+            arrTmp.push(arr2);
+            arrTmp.push(arr3);
+            arrTmp.push(arr4);
+
+            var data = google.visualization.arrayToDataTable(arrTmp);
+      
+              var options = {
+                //title: 'Population of Largest U.S. Cities',
+                chartArea: {
+                    left: "15%",
+                    //top: "13%",
+                    height: "85%",
+                    width: "65%"
+                }
+                /*
+                hAxis: {
+                  title: 'Total Population',
+                  minValue: 0
+                },
+                vAxis: {
+                  title: 'City'
+                }
+                */
+              };
+      
+              var chart = new google.visualization.BarChart(document.getElementById('resonseScoreDiv'));
+      
+              google.visualization.events.addListener(chart, 'ready', function(){
+                didWait = true;
+              });
+      
+              chart.draw(data, options);
+        }
+    })
+}
+
+
+
+//시간대별 질문수
+function getQueryByEachTime() {
+    $.ajax({
+        url: '/board/getQueryByEachTime',
+        //dataType: 'json',
+        type: 'POST',
+        data: $('#filterForm').serializeObject(),
+        success: function(data) {
+            var arrList = data.list;
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Time of Day');
+            //data.addColumn({type: 'string', role: 'annotation'});
+            data.addColumn('number', 'query hits');
+            data.addColumn({type: 'number', role: 'annotation'});
+            
+            for (var i=0; i<arrList.length; i++) {
+                //var key = Object.keys(arrList[i])[0];
+                //var val = arrList[i][key];
+                data.addRow([{v: pad(i, 2)+":00", f: pad(i, 2)+":00"}, arrList[i], arrList[i]]);
+            }
+
+            var options = {
+                //title: 'Motivation Level Throughout the Day',
+                hAxis: {
+                },
+                vAxis: {
+                },
+                width: "100%",
+                legend: { position: "none" },
+                chartArea: {
+                    left: "10%",
+                    //top: "13%",
+                    height: "85%",
+                    width: "85%"
+                }
+            };
+
+            var chart = new google.visualization.ColumnChart(
+            document.getElementById('timeOfDay_div'));
+
+            chart.draw(data, options);
+            
+        }
+    })
+}
+
+function pad(n, width) {
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+}
+
