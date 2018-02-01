@@ -91,17 +91,19 @@ $(document).on('click', '.closeAddInput', function() {
 //엔티티 밸류 저장 버튼
 $(document).on('click', '.addEntityValueBtn', function() {
     
+    //form submit 방지
     var submitAction = function(e) {
         e.preventDefault();
         e.stopPropagation();
         /* do something with Error */
     };
     $(this).parent().parent().bind('submit', submitAction);
+
     if($(this).prev().val() == '' || $(this).prev().val() == null) {
 
         alert("저장하실 엔티티 밸류를 입력해주세요");
     } else {
-           
+
         var addValues = $(this).parent().parent().serializeObject();
         addEntityValueAjax(addValues);
     }
