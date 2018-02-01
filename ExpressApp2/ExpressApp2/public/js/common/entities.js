@@ -97,9 +97,14 @@ $(document).on('click', '.addEntityValueBtn', function() {
         /* do something with Error */
     };
     $(this).parent().parent().bind('submit', submitAction);
+    if($(this).prev().val() == '' || $(this).prev().val() == null) {
 
-    var addValues = $(this).parent().parent().serializeObject();
-    addEntityValueAjax(addValues);
+        alert("저장하실 엔티티 밸류를 입력해주세요");
+    } else {
+           
+        var addValues = $(this).parent().parent().serializeObject();
+        addEntityValueAjax(addValues);
+    }
 })
 
 //엔티티 밸류 저장(추가) ajax
