@@ -7,11 +7,11 @@ $(document).ready(function() {
     
     
  /*
-    $('#searchEmpNm,#searchUserId').on('keypress', function(e) {
+    $('#searchEmpNm,#searchApiId').on('keypress', function(e) {
         if (e.keyCode == 13) doSearchParam();
     });
 */
-    $('#searchUserId').focus();
+    $('#searchApiId').focus();
 
     //jqgrid resize
     gridResize("gridList");
@@ -28,7 +28,7 @@ $(document).ready(function() {
         doSearchParam();
     });
     */
-    $('#searchEmpNm, #searchUserId').on('keypress', function(e) {
+    $('#searchApiId').on('keypress', function(e) {
         if (e.keyCode == 13) doSearchParam();
     });
 
@@ -46,7 +46,7 @@ $(document).on('keypress','.edit-cell > input',function(e){
     }
 });
 
-var editableCells = ['EMP_NM'];
+var editableCells = ['API_ID', 'API_URL', 'API_DESC'];
 function makGrid() {
     $("#gridList").jqGrid({
         //url: '../json/data.json',
@@ -56,22 +56,14 @@ function makGrid() {
         datatype: function(postdata) {
             doSearchParam(postdata);
         },
-          
         
         colModel: [
           {name:'sel', label:'' , width:30, editable:false, align:'center', sortable:false, hidden:false, formatter:selCell},
           {name:'statusFlag', label:'상태', width:40, align:'center', sortable:false},
-          {name:'USER_ID_HIDDEN' , label:'USER_ID_HIDDEN' , hidden:true},
-          {name:'USER_ID'    , label:'ID'            , width:80, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'초기화'     , label:'비밀번호' , width:70, editable:false, align:'center', sortable:false, hidden:false, formatter:linkInitPwd},
-          {name:'EMP_NM'    , label:'앱'            , width:90, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'REG_DT'    , label:'등록 날짜'            , width:100, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'REG_ID'    , label:'등록 ID'            , width:100, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'MOD_DT'    , label:'수정 날짜'            , width:100, editable:false, align:'left', sortable:false, hidden:false},
-          {name:'MOD_ID'    , label:'수정 ID'            , width:100, editable:false, align:'left', sortable:false, hidden:false},
-          {name:'LAST_LOGIN_DT'    , label:'마지막 로그인 날짜'            , width:100, editable:false, align:'center', sortable:false, hidden:false},
-          {name:'LOGIN_FAIL_CNT'    , label:'로그인 실패 횟수'            , width:100, editable:false, align:'center', sortable:false, hidden:false},
-          {name:'SCRT_NUM'   , label:'비밀번호'      , width:100, editable:false, align:'left', sortable:true, hidden:true}
+          {name:'API_ID_HIDDEN' , label:'API_ID_HIDDEN' , hidden:true},
+          {name:'API_ID'    , label:'API_ID'            , width:80, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'API_URL'    , label:'URL'            , width:90, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'API_DESC'    , label:'DESC'            , width:200, editable:false, align:'left', sortable:true, hidden:false}
         ],
         width: $("#gridList").width(),
         height: 650,
@@ -93,18 +85,12 @@ function makGrid() {
             var colName = colModels[iCol].name; 
 
             var statusVal = $('#gridList').jqGrid().getRowData(rowid).statusFlag;
-            if (editableCells.indexOf(colName) >= 0 || (statusVal ==='NEW' && colName === 'USER_ID') ) { 
+            if (editableCells.indexOf(colName) >= 0 || (statusVal ==='NEW' && colName === 'API_ID') ) { 
                 beforVal = $(this).getCell(iRow, iCol);
                 $(this).setColProp(colName, { editable: true }); 
                 $(this).editCell(iRow, iCol, true); 
             } 
-        },/*
-        editCellValid: function(rowid, cellname) {
-            if (cellname == "USER_ID" && $("#gridList").jqGrid('getCell', rowid, "USER_ID_HIDDEN") != "") {
-                return false;
-            }
-            return true;
-        },*/
+        },
         afterEditCell: function (rowid, cellname, value, iRow, iCol) { 
             //$(this).setColProp(cellname, { editable: false }); 
         },
@@ -130,10 +116,6 @@ function makGrid() {
         });
 }
 
-function linkInitPwd(cellValue, options, rowObject, action) {
-    var userId = rowObject.USER_ID_HIDDEN;
-    return '<a href="javascript://" class="sbtn" onclick="initPassword(\''+ userId +'\');">초기화</a>';
-}
 
 function selCell(cellValue, options, rowObject, action) {
     var empNum = rowObject.empNum;
@@ -212,14 +194,14 @@ function doSearchParam(postData) {
         applyId:"frm",
         data: params,
         isloading: true,
-        url: '/users/selectUserList',
+        url: '/users/selectApiList',
         success: function(data) {
             saveGridData = data;
             var grid = $("#gridList");
             //var gridData = JSON.parse(data.d);
             grid.clearGridData();
 
-            for (var i=0;i<=data.rows.length;i++) { 
+            for (var i=0;i<=data.records;i++) { 
                 //$("#gridList").jqGrid('addRowData', i+1, data.rows[i]);
                 grid.addRowData(i + 1, data.rows[i]);
             }
@@ -236,7 +218,7 @@ function insertAction() {
         alert("추가중인 사용자가 있습니다.");
     } else if ($('#gridList').find('input[type=text]').length >0) {
         alert('수정중인 cell이 있습니다.');
-    } else {
+    }else {
         var grid = $('#gridList');
         grid.jqGrid('addRowData', "addRow", {  statusFlag : "NEW"}, "first");
         $('input[name=cell_checkbox]').eq(0).trigger('click');
@@ -244,16 +226,11 @@ function insertAction() {
         $("#gridList").jqGrid("resetSelection");
         $('#gridList').setSelection("addRow", true);
         
-        $('#gridList').setColProp("USER_ID", { editable: true }); 
+        $('#gridList').setColProp("API_ID", { editable: true }); 
         //$('#gridList').setColProp("EMP_NM", { editable: true }); 
-        $('#gridList').editCell(1, 4, true); 
+        $('#gridList').editCell(1, 3, true); 
         //$('#gridList').editCell(1, 6, true);
     }
-    
-    //{  statusFlag : "NEW",  position : "first"}
-    //$('#gridList').addRowData("addRow", {  statusFlag : "NEW"}, "first");
-    //$('#gridList').find("#addRow_").eq(0).trigger("click");
-    //$('#gridList').setSelection("addRow", true);
 }
 
 //저장
@@ -298,162 +275,6 @@ function saveAction() {
     } else {
         alert('변경된 데이터가 없습니다.');
         return;
-    }
-    
-
-
-
-
-/*
-
-
-    var selarrw = $('#gridList').getArrayFromGridRow(false);
-    if (selarrw.length == 0) {
-        alert('변경된 데이터가 없습니다.');
-        return;
-    }
-
-    var dataIDs = $('#gridList').getDataIDs();
-    for (var i = 0, len = dataIDs.length; i < len; i++) {
-
-        var rowId = dataIDs[i];
-        var row = $('#gridList').jqGrid ('getRowData', rowId);
-        // 등록/수정만 Validation
-        if (row.statusFlag != "D" && row.delYn != "N") {
-
-            // ID
-            if (row.userId == null || row.userId == "") {
-                alert('ID를 입력 해주세요.');
-                var rowIndex = $("#" + rowId)[0].rowIndex;
-                $('#gridList').setSelectionGrid(rowIndex, 6, false);
-                return false;
-            }
-            if (row.userId.indexOf(" ") > 0) {
-                alert('ID는 공백을 입력할 수 없습니다.');
-                var rowIndex = $("#" + rowId)[0].rowIndex;
-                $('#gridList').setSelectionGrid(rowIndex, 6, false);
-                return false;
-            }
-            // State : NEW 에 해당 되는 것만 id 체크 
-            if (rowId.indexOf("new") != -1) {
-                if (isEmail(row.userId) == false) {
-                    alert('ID는 Email형식으로 입력 해주세요.');
-                    var rowIndex = $("#" + rowId)[0].rowIndex;
-                    $('#gridList').setSelectionGrid(rowIndex, 6, false);
-                    return false;
-                }
-            }
-            if (row.userId.length > 100) {
-                var rowIndex = $("#" + rowId)[0].rowIndex;
-                $('#gridList').setSelectionGrid(rowIndex, 6, false);
-                return false;
-            }
-            if (row.userIdHidden != "" && row.userIdHidden != null && row.userId != row.userIdHidden) {
-                alert('현재 사용중인 ID는 변경 할 수 없습니다.');
-                return false;
-            }
-
-            // 사원명
-            if (row.empNm == null || row.empNm == "") {
-                alert('사용자명을 입력 해주세요.');
-                var rowIndex = $("#" + rowId)[0].rowIndex;
-                $('#gridList').setSelectionGrid(rowIndex, 8, false);
-                return false;
-            }
-            if (row.empNm.indexOf(" ") > 0) {
-                alert('사용자명은 공백은 입력할 수 없습니다.');
-                var rowIndex = $("#" + rowId)[0].rowIndex;
-                $('#gridList').setSelectionGrid(rowIndex, 8, false);
-                return false;
-            }
-            if (rowId.indexOf("new") != -1) {
-                if (isHanEngSpace(row.empNm) == false) {
-                    alert('사용자명은 한글과 영어형식으로 입력 해주세요.');
-                    var rowIndex = $("#" + rowId)[0].rowIndex;
-                    $('#gridList').setSelectionGrid(rowIndex, 8, false);
-                    return false;
-                }
-            }
-
-            // 사원 영문명
-            if (row.empEngnm == null || row.empEngnm == "") {
-                alert('사용자영문명을 입력 해주세요.');
-                var rowIndex = $("#" + rowId)[0].rowIndex;
-                $('#gridList').setSelectionGrid(rowIndex, 9, false);
-                return false;
-            }
-            if (row.empEngnm.indexOf(" ") > 0) {
-                alert('사용자영문명은 공백은 입력할 수 없습니다.');
-                var rowIndex = $("#" + rowId)[0].rowIndex;
-                $('#gridList').setSelectionGrid(rowIndex, 9, false);
-                return false;
-            }
-            if (rowId.indexOf("new") != -1) {
-                if (isEngSpace(row.empEngnm) == false) {
-                    alert('사용자영문명은 영어형식으로 입력 해주세요.');
-                    var rowIndex = $("#" + rowId)[0].rowIndex;
-                    $('#gridList').setSelectionGrid(rowIndex, 9, false);
-                    return false;
-                }
-            }
-
-            // 이메일
-            if (row.email == null || row.email == "") {
-                alert('이메일을 입력 해주세요.');
-                var rowIndex = $("#" + rowId)[0].rowIndex;
-                $('#gridList').setSelectionGrid(rowIndex, 10, false);
-                return false;
-            }
-            if (row.email.indexOf(" ") > 0) {
-                alert('이메일은 공백은 입력할 수 없습니다.');
-                var rowIndex = $("#" + rowId)[0].rowIndex;
-                $('#gridList').setSelectionGrid(rowIndex, 10, false);
-                return false;
-            }
-            if (isEmail(row.email) == false) {
-                alert('이메일은 Email형식으로 입력 해주세요.');
-                var rowIndex = $("#" + rowId)[0].rowIndex;
-                $('#gridList').setSelectionGrid(rowIndex, 10, false);
-                return false;
-            }
-        }
-    }
-
-    if (confirm('저장하시겠습니까?')) {
-        var gridIds = {
-            "gridList" : "dsGridList"
-        };
-        
-        $.tiAjax({
-            applyId: "frm",
-            category: "grid",
-            gridId: gridIds,
-            gridSelect : false,   // true : select 된 데이터, false : transaction 일으킨 데이터
-            url: '/admin/saveUserList.do',
-            success: function(data) {
-                doSearchParam();
-            }
-        });
-        
-    }
-    */
-}
-
-// 비밀번호 초기화 
-function initPassword(userId) {
-    if (confirm('비밀번호를 초기화 하시겠습니까?')) {
-        var params = {
-            paramUserId: userId
-        }
-        
-        $.tiAjax({
-            data: params,
-            url: '/users/inItPassword',
-            success: function(data) {
-                alert(data.message);
-            }
-        });
-        
     }
 }
 
