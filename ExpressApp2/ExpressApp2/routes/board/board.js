@@ -286,4 +286,81 @@ router.post('/firstQueryTable', function (req, res) {
         });
 });
 
+
+router.post('/getResponseScore', function (req, res) {
+    
+    var selectQuery = "";
+        selectQuery += "SELECT  AVG(유저별평균답변시간) AS REPLY_AVG \n";
+        selectQuery += "	 , (SELECT MAX(RESPONSE_TIME) FROM TBL_HISTORY_QUERY) AS MAX_REPLY \n";
+        selectQuery += "	 , (SELECT MIN(RESPONSE_TIME) FROM TBL_HISTORY_QUERY WHERE RESPONSE_TIME >0) AS MIN_REPLY \n";
+        selectQuery += "	 , AVG(유저별답변시간합) AS REPLY_SUM \n";
+        selectQuery += "FROM ( ";
+        selectQuery += "SELECT USER_NUMBER, SUM(RESPONSE_TIME) AS 유저별답변시간합, AVG(RESPONSE_TIME) AS 유저별평균답변시간 \n";
+        selectQuery += "from TBL_HISTORY_QUERY  \n";
+        selectQuery += "group by USER_NUMBER \n";
+        selectQuery += ") A \n";
+    
+    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query(selectQuery)
+        }).then(result => {
+          let rows = result.recordset
+          res.send({list : rows});
+          sql.close();
+        }).catch(err => {
+          res.status(500).send({ message: "${err}"})
+          sql.close();
+        });
+});
+
+router.post('/getQueryByEachTime', function (req, res) {
+    
+    var selectQuery = "";
+        selectQuery += "SELECT REPLICATE('0', 2 - LEN(시간)) + 시간 AS TIME ";
+        selectQuery += "     , SUM(질문수) AS QUERY_CNT \n";
+        selectQuery += "FROM ( \n";
+        selectQuery += "	 SELECT USER_NUMBER , datename(hh,reg_date) as 시간, CHANNEL AS 채널 ";
+        selectQuery += "	     ,  CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS 날짜, COUNT(*) AS 질문수, CUSTOMER_COMMENT_KR \n";
+        selectQuery += "	 FROM TBL_HISTORY_QUERY \n";
+        selectQuery += "	 GROUP BY USER_NUMBER, datename(hh,reg_date), CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), CUSTOMER_COMMENT_KR \n";
+        selectQuery += "	 ) HI \n";
+        selectQuery += "LEFT OUTER JOIN TBL_QUERY_ANALYSIS_RESULT AN \n";
+        selectQuery += "ON REPLACE(REPLACE(LOWER(HI.CUSTOMER_COMMENT_KR),'.',''),'?','') = LOWER(AN.QUERY) \n";
+        selectQuery += "GROUP BY (REPLICATE('0', 2 - LEN(시간)) + 시간)  \n";
+        selectQuery += "HAVING 1=1 \n";
+        selectQuery += "ORDER BY TIME; \n";
+
+    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query(selectQuery)
+        }).then(result => {
+          let rows = result.recordset
+          var resultMap = [];
+          var k=0;
+          for (var i=0; i<24; i++) {
+              if (Number(rows[k].TIME) === i ) {
+                var obj = {};
+                resultMap[i] = obj[rows[k].TIME] = rows[k].QUERY_CNT;
+                k++;
+              }else {
+                  for (var j=i; j<Number(rows[k].TIME); j++) {
+                    var obj = {};
+                    resultMap[j] = obj[pad(j, 2)] =  0;
+                  }
+                  i=j-1;
+              }
+              if (resultMap.length === 25) break;
+          }
+          res.send({list : resultMap});
+          sql.close();
+        }).catch(err => {
+          res.status(500).send({ message: "${err}"})
+          sql.close();
+        });
+});
+function pad(n, width) {
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+}
+
+
+
 module.exports = router;
