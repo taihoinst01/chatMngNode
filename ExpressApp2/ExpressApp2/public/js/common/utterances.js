@@ -481,7 +481,8 @@ $(document).ready(function(){
     });
 
     $("#searchDialogCancel").on('click',function(){
-        $("#searchDlgResultDiv").html("");
+        $('input[name=serachDlg]').val('');
+        $('#searchDlgResultDiv').html('');
     });
 
 });
