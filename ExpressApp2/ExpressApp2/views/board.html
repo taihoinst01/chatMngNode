@@ -99,68 +99,66 @@
                             <div id="oftQuestion" style="margin: 20px;"></div>
                         </div>
 
-                       <div class="dashboard_cont02">
-                            <p class="d_tit01">Intents<!-- 의도수 --></p>
-                            <p class="d_tit03"><span id="spanIntentsCount"> <%=INTENT_CNT %> </span></p>
-                       </div>
-                       <div class="dashboard_cont02">
-                            <p class="d_tit01">Entities<!-- 개체수 --></p>
-                            <p class="d_tit03"><span id="spanEntitiesCount"> <%=ENTITY_CNT %></span></p>
-                       </div>
-                       <div class="dashboard_cont02">
-                            <p class="d_tit01">Labeled Utterances<!-- 문장수 --> </p>
-                            <p class="d_tit03"><span id="spanUtteranceCount"> <%=DLG_CNT %> </span></p>
-                       </div>
-                       <!-- //의도수/개체수/개체수리스트/문장수 -->
+                        <div class="dashboard_cont04" style="width: 50%; background-color: white; padding: 0%">
+                                <div class="dashboard_cont02 pane01">
+                                        <p class="d_tit01">누적 상담자수</p>
+                                        <p class="d_tit03" id="allCustomer"></p>
+                                </div>
+    
+                                <div class="dashboard_cont02 pane01">
+                                        <p class="d_tit01">평균 답변 속도</p>
+                                        <p class="d_tit03" id="avgReplySpeed"></p>
+                                </div>
+    
+                                <div class="dashboard_cont02 pane01">
+                                        <p class="d_tit01">고객 평균 질문수</p>
+                                        <p class="d_tit03" id="avgQueryCnt"></p>
+                                </div>
+    
+                                <div class="dashboard_cont02 pane01">
+                                        <p class="d_tit01">평균 정상답변율</p>
+                                        <p class="d_tit03" id="avgCorrectAnswer"></p>
+                                </div>
+        
+                                <div class="dashboard_cont02 pane01">
+                                        <p class="d_tit01">검색 답변율</p>
+                                        <p class="d_tit03" id="avgReply"></p>
+                                </div>
+        
+                                <div class="dashboard_cont02 pane01">
+                                        <p class="d_tit01">고객 최대 질문수</p>
+                                        <p class="d_tit03" id="maxQueryCnt"></p>
+                                </div>
+                            
+                            </div>
+                            <div class="dashboard_cont04" style="width: 47%;" >
+                                    <p class="d_tit01">응답(평균/최고/최소)/평균머무는시간(s)</p>
+                        </div>
 
-                       <!-- Endpoint Hits per period / Total Endpoint Hits-->
-                       <div class="dashboard_cont03" id='chart_div'>
-                         <p class="d_tit03" style="line-height: 8;"><span> Loading.. </span></p>
-                            <!-- <p class="d_tit01">Endpoint Hits per period  <span>PER DAY (LAST WEEK)</span> <a href="#" class="btn_setting" id="sett" ></a> </p>
-                            <div class="chart_w" ><div id='chart_div' style='width: 900px; height: 500px;'></div></div> -->
-                       </div>
-                       <div class="dashboard_cont03_sett" >
-                            <p class="d_tit04"><a href="#" class="btn_sett_back"  id="sett_back" ></a> </p>
-                            <p class="d_tit04">Endpoint Hits Per Period  </p>
-                            <p class="mt30"> Select Period:
-                               <select name="" class="inbox02" style="width:98%;">
-                                  <option>Last Week</option>
-                               </select>
-                            </p>
-                       </div>
-
-                       <div class="dashboard_cont04">
-                            <p class="d_tit01">Total Endpoint Hits <span>SINCE APP CREATION</span></p>
-                            <p class="d_tit03"><span id="spanEndpointCount"> Loading.. </span></p>
-                       </div>
-<!--                               <div class="dashboard_cont04">
-                            <p class="d_tit01">Key Usage </p>
-                            <p class="d_tit03"><span> </span></p>
-                       </div> -->
-                       <!-- //Endpoint Hits per period / Total Endpoint Hits -->
-
-
-                       <div class="dashboard_cont06" id="columnchart_values">
-                         <p class="d_tit03" style="line-height: 8;"><span> Loading.. </span></p>
-<!--                                    <p class="d_tit01">Entity Breakdown  <span>ON LABELED UTTERANCES</span> <a href="#" class="btn_setting" id="sett03" ></a> </p> -->
-<!--                                    <div class="chart_w"><div id="columnchart_values" style="width: 900px; height: 300px;"></div></div> -->
-                       </div>
-
-                       <div class="dashboard_cont06_sett">
-                            <p class="d_tit04"><a href="#" class="btn_sett_back"  id="sett_back03"  ></a> </p>
-                            <p class="d_tit04">Entity Breakdown</p>
-                            <p class="mt30"> Breakdown based on:
-                               <select name="" class="inbox02" style="width:98%;">
-                                  <option>Last Week</option>
-                               </select>
-                            </p>
-                       </div>
+                        <div class="dashboard_cont06" id="">
+                            <p class="d_tit01">시간대별 질문수</p>
+                                <p class="d_tit03" style="line-height: 8;"><span> Loading.. </span></p>
+                        </div>
                        
                        <!-- //Intent Breakdown/Entity Breakdown -->
+                       
+                       <div class="dashboard_cont06">
+                           <p class="d_tit01"> 미답변 질문 </p>
+                           <div id="noneQueryDiv">
+                               <p class="d_tit03" style="line-height: 8;"><span> Loading.. </span></p>
+                           </div>
+                        </div>
 
-                       <div class="dashboard_cont06" id="noneQueryDiv">
+                        <div class="dashboard_cont04" id="top_x_div" style="float: left;">
                             <p class="d_tit03" style="line-height: 8;"><span> Loading.. </span></p>
                         </div>
+
+                        <div class="dashboard_cont03" id="table_div" style="float: left; margin: 0 0 15px 10px;">
+                            <p class="d_tit03" style="line-height: 8;"><span> Loading.. </span></p>
+                        </div>
+
+                        
+
                   </div>
 
 
