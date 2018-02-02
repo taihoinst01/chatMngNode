@@ -519,95 +519,112 @@ router.post('/dialogs', function (req, res) {
 router.post('/utterInputAjax', function(req, res, next) {
  
     //view에 있는 data 에서 던진 값을 받아서
-    var iptUtterance = req.body.iptUtterance;
+    var iptUtterance = req.body['iptUtterance[]'];
+    var iptUtteranceArr = [];
+    var entitiesArr = [];
+    var selBoxArr = [];
+    var commonEntitiesArr = [];
 
     (async () => {
         try {
             let pool = await sql.connect(dbConfig)
-            let result1 = await pool.request()
-                .input('iptUtterance', sql.NVarChar, iptUtterance)
-                .query('SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(@iptUtterance)')
             
-            let rows = result1.recordset;
-
-            if(rows[0]['RESULT'] != '') {
-                var entities = rows[0]['RESULT'];
-                var entityArr = entities.split(',');
-                var queryString = "";
-                for(var i = 0; i < entityArr.length; i++) {
-                    if(i == 0){
-                        queryString += "SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'"
-                    }else{
-                        queryString += "OR LUIS_ENTITIES LIKE '%" + entityArr[i] + "%'";
-                    }
-                }
-
-                let result2 = await pool.request()
-                .query(queryString)
+            //res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2, commonEntities: commonEntities});
+            for (var i=0; i< (typeof iptUtterance !=='string'? iptUtterance.length : 1); i++) {
+                var iptUtterTmp = (typeof iptUtterance ==='string'? iptUtterance:iptUtterance[i]);
+                let result1 = await pool.request()
+                    .input('iptUtterance', sql.NVarChar, iptUtterTmp)
+                    .query('SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(@iptUtterance)')
                 
-                let rows2 = result2.recordset
-
-                var queryString2 = "SELECT ENTITY_VALUE,ENTITY FROM TBL_COMMON_ENTITY_DEFINE WHERE ENTITY IN (";
-                for(var i = 0; i < entityArr.length; i++) {
-                    queryString2 += "'";
-                    queryString2 += entityArr[i];
-                    queryString2 += "'";
-                    queryString2 += (i != entityArr.length-1)? "," : "";
-                }
-                queryString2 += ")";
-                let result3 = await pool.request()
-                .query(queryString2)
-                
-                let rows3 = result3.recordset
-                var commonEntities = [];
-                for(var i = 0; i < rows3.length; i++) {
-                    // 중복되는 엔티티가 있는 경우 길이가 긴 것이 우선순위를 갖음
-                    if(iptUtterance.indexOf(rows3[i].ENTITY_VALUE) != -1){
-                        // 첫번째 엔티티는 등록
-                        var isCommonAdd = false;
-                        if(commonEntities.length == 0){
-                            isCommonAdd = true;
+                let rows = result1.recordset;
+    
+                if(rows[0]['RESULT'] != '') {
+                    var entities = rows[0]['RESULT'];
+                    var entityArr = entities.split(',');
+                    var queryString = "";
+                    for(var j = 0; j < entityArr.length; j++) {
+                        if(j == 0){
+                            queryString += "SELECT DISTINCT LUIS_INTENT FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ENTITIES LIKE '%" + entityArr[j] + "%'"
                         }else{
-                            for(var j = 0 ; j < commonEntities.length ; j ++){
-                                var longEntity = '';
-                                var shortEntity = '';
-                                var isAdd = false;
-                                if(rows3[i].ENTITY_VALUE.length >= commonEntities[j].ENTITY_VALUE.length){
-                                    longEntity = rows3[i].ENTITY_VALUE;
-                                    shortEntity = commonEntities[j].ENTITY_VALUE;
-                                    isAdd = true;
-                                }else{
-                                    longEntity = commonEntities[j].ENTITY_VALUE;
-                                    shortEntity = rows3[i].ENTITY_VALUE;
-                                }
-                                if(longEntity.indexOf(shortEntity) != -1){
-                                    if(isAdd){
-                                        commonEntities.splice(j,1);
-                                        isCommonAdd = true;
-                                        break;
+                            queryString += "OR LUIS_ENTITIES LIKE '%" + entityArr[j] + "%'";
+                        }
+                    }
+    
+                    let result2 = await pool.request()
+                    .query(queryString)
+                    
+                    let rows2 = result2.recordset
+    
+                    var queryString2 = "SELECT ENTITY_VALUE,ENTITY FROM TBL_COMMON_ENTITY_DEFINE WHERE ENTITY IN (";
+                    for(var j = 0; j < entityArr.length; j++) {
+                        queryString2 += "'";
+                        queryString2 += entityArr[j];
+                        queryString2 += "'";
+                        queryString2 += (j != entityArr.length-1)? "," : "";
+                    }
+                    queryString2 += ")";
+                    let result3 = await pool.request()
+                    .query(queryString2)
+                    
+                    let rows3 = result3.recordset
+                    var commonEntities = [];
+                    for(var j = 0; j < rows3.length; j++) {
+                        // 중복되는 엔티티가 있는 경우 길이가 긴 것이 우선순위를 갖음
+                        if(iptUtterTmp.indexOf(rows3[j].ENTITY_VALUE) != -1){
+                            // 첫번째 엔티티는 등록
+                            var isCommonAdd = false;
+                            if(commonEntities.length == 0){
+                                isCommonAdd = true;
+                            }else{
+                                for(var k = 0 ; k < commonEntities.length ; k ++){
+                                    var longEntity = '';
+                                    var shortEntity = '';
+                                    var isAdd = false;
+                                    if(rows3[j].ENTITY_VALUE.length >= commonEntities[k].ENTITY_VALUE.length){
+                                        longEntity = rows3[j].ENTITY_VALUE;
+                                        shortEntity = commonEntities[k].ENTITY_VALUE;
+                                        isAdd = true;
+                                    }else{
+                                        longEntity = commonEntities[k].ENTITY_VALUE;
+                                        shortEntity = rows3[j].ENTITY_VALUE;
                                     }
-                                }else{
-                                    isAdd = true;
-                                }
-                                if(isAdd && j == commonEntities.length-1){
-                                    isCommonAdd = true;
+                                    if(longEntity.indexOf(shortEntity) != -1){
+                                        if(isAdd){
+                                            commonEntities.splice(k,1);
+                                            isCommonAdd = true;
+                                            break;
+                                        }
+                                    }else{
+                                        isAdd = true;
+                                    }
+                                    if(isAdd && k == commonEntities.length-1){
+                                        isCommonAdd = true;
+                                    }
                                 }
                             }
-                        }
-                        if(isCommonAdd){
-                            var item = {};
-                            item.ENTITY_VALUE = rows3[i].ENTITY_VALUE;
-                            item.ENTITY = rows3[i].ENTITY;
-                            commonEntities.push(item);
+                            if(isCommonAdd){
+                                var item = {};
+                                item.ENTITY_VALUE = rows3[j].ENTITY_VALUE;
+                                item.ENTITY = rows3[j].ENTITY;
+                                commonEntities.push(item);
+                            }
                         }
                     }
+                    iptUtteranceArr.push(iptUtterTmp);
+                    entitiesArr.push(entities);
+                    selBoxArr.push(rows2);
+                    commonEntitiesArr.push(commonEntities);
+                    //res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2, commonEntities: commonEntities});
+                } else {
+                    iptUtteranceArr.push(iptUtterTmp);
+                    //entitiesArr.push(null);
+                    //selBoxArr.push(null);
+                    //commonEntitiesArr.push(null);
+                    //res.send({result:true, iptUtterance:iptUtterance});
                 }
-
-                res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2, commonEntities: commonEntities});
-            } else {
-                res.send({result:true, iptUtterance:iptUtterance});
             }
-        
+            res.send({result:true, iptUtterance:iptUtteranceArr, entities:entitiesArr, selBox:selBoxArr, commonEntities: commonEntitiesArr});
+
         } catch (err) {
             // ... error checks
             console.log(err);

@@ -28,7 +28,11 @@
 
 
             <div class="subt_wrap">
-                <div id="subtitDiv"><h2><%= title %></h2></div>
+                <div id="subtitDiv" style="float:left;"><h2><%= title %></h2></div>
+                <div id="subtitDiv" style="float:right; margin: 0 30px 0 0;">
+                    <button class="btn" id="entites" onclick="openModalBox('#create_entity')">Add Entity</button>
+                    <button class="btn disable" id="utterLearn"  disabled="disabled">learn</button>
+                </div>
             </div>
 
             <div id="utterDiv">
@@ -36,9 +40,9 @@
 
                     
                     <div class="in-line">
-                        <input name="iptUtterance" id="iptUtterance" type="text" class="inbox02" style="width:70%; margin: 3px;" placeholder="입력문장" >
-                        <button class="btn disable" id="utterDelete" disabled="disabled">delete</button>
-                        <button class="btn disable" id="utterLearn"  disabled="disabled">learn</button>
+                        <input name="iptUtterance" id="iptUtterance" type="text" class="inbox02" style="width:99.3%; margin: 3px;" placeholder="입력문장" >
+                        <!--<button class="btn disable" id="utterDelete" disabled="disabled">delete</button>-->
+                        <!--<button class="btn disable" id="utterLearn"  disabled="disabled">learn</button>-->
                         
                     </div>                                            
 
@@ -51,11 +55,12 @@
                                         <input type="hidden" name="dlgRowPerPage" value="6">
                                     </form>
                                 </caption>
-                                <colgroup><col width="7%" ><col width="93%" ></colgroup>
+                                <colgroup><col width="7%" ><col width="86%" ><col width="7%" ></colgroup>
                                 <thead>
                                     <tr>
                                         <th><input name="ch1All" class="tweak-input" id="allCheck" type="checkbox"/></th>
                                         <th class="txt_left">Utterance</th>
+                                        <th class="txt_right"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -449,6 +454,46 @@
             <a href="#" class="btn b02  btn-small js-modal-close" id="searchDialogCancel">Cancel</a>
         </footer>
     </div>
+
+
+    <!--신규 엔티티 등록 -->
+    <div id="create_entity" class="modal_box w900" style="height: auto !important; width: 30%;">
+            <header> <a href="#" id="addDialogClose" class="js-modal-close close">×</a>
+              <h3>Create new Entity Set</h3><!-- 신규 엔티티 등록 -->
+            </header>
+        
+            <!-- form start -->
+            <form name="entityInsertForm" id="entityInsertForm" method="post">
+        
+            <div id="dialogSet" class="modal-body" style="margin: 10%;">
+                <p class="texcon03">엔티티 디파인<span>(required) </span></p>
+                <p style="margin-bottom: 5%;">
+                    <input type="text" name="entityDefine" style="width:100%;" onkeyup="dialogValidation();"/>
+                </p>
+    
+                <p class="texcon03">엔티티 밸류<span>(required) </span></p>
+                <p style="margin-bottom: 5%;">
+                    <input type="text" name="entityValue" style="width:100%;" onkeyup="dialogValidation();"/>
+                </p>
+    
+                <p class="texcon03">API_Group <span>(required) </span></p>
+                <p><select name="apiGroup" class="inbox02" id="apiGroup" style="width: 100%;" >
+                    <option value="api testdrive" selected>api testdrive</option>
+                    <option value="COMMON">COMMON</option>
+                </select></p>
+    
+            </div>
+    
+            </form>
+            <!-- form end -->
+        
+            <footer>
+                <button class="btn disable" id="btnAddDlg" onclick="insertEntity()">Save</button>
+                <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel">Cancel</a>
+            </footer>
+        
+        </div>
+        <!--//신규 엔티티 등록 -->
 </body>
 
     
