@@ -97,7 +97,7 @@ $(document).on('click', '.addEntityValueBtn', function() {
         e.stopPropagation();
         /* do something with Error */
     };
-    $(this).parent().parent().bind('submit', submitAction);
+    $(this).parent().parent().on('submit', submitAction);
 
     if($(this).prev().val() == '' || $(this).prev().val() == null) {
 
