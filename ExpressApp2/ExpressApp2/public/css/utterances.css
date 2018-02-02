@@ -3,7 +3,7 @@
 #layoutBackground { position:absolute; z-index:900; background-color:#000; display:none; left:0; top:0; } 
 
 /*create Dialogue Modal CSS*/
-.group-float-left{ float:left;width: 30%;margin-right: 5%; }
+.group-float-left{ float:left;width: 45%;margin-right: 5%; }
 .group-float-left-last {float:left;width: 30%; }
 .layout-float-left{ float:left; width: 30%; margin-right:5%; }
 .layout-float-left-last{ float:left; width: 40%; }

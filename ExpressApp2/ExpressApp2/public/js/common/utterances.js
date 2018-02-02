@@ -177,7 +177,6 @@ $(document).ready(function(){
         $('#cardLayout').css('display','none');
         $('#appInsertForm')[0].reset();
         $('.insertForm').remove();
-
         var insertForm = '';
         insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
         insertForm += '<form name="dialogLayout" id="dialogLayout">';
@@ -190,7 +189,9 @@ $(document).ready(function(){
         insertForm += '<div class="clear-both"></div>';
         insertForm += '</form>';
         insertForm += '</div>';
-
+        
+        $('#apiLayout').css('display', 'none');
+        $('#commonLayout').css('display', 'block');
         $('#commonLayout div:first').prepend(insertForm);
         $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>입력해주세요...</p></div></div></div></div></div></div></div>');
     });
@@ -272,12 +273,12 @@ $(document).ready(function(){
     $('#btnCreateLgroup').on('click',function(){
         if($(this).html() == "new") {
             $(this).html('cancel');
-            $(this).css('margin','6px 0 0 20px');
+            $(this).css('margin','6px 0 0 55px');
             $('#largeGroupEdit').css('display','block');
             $('#largeGroup').css('display','none');
         } else {
             $(this).html('new');
-            $(this).css('margin','6px 0 0 30px');
+            $(this).css('margin','6px 0 0 65px');
             $('#largeGroupEdit').css('display','none');
             $('#largeGroup').css('display','block');
         }

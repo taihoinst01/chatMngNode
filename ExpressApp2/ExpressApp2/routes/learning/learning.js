@@ -1467,11 +1467,8 @@ router.post('/addDialog',function(req,res){
             "VALUES( 'kona_luis_06', 'luis_test', @entity, @dlgId, 'D', 'Y' )";
 
             var largeGroup = array[array.length - 1]["largeGroup"];
-            var mediumGroup = array[array.length - 1]["mediumGroup"];
-            var smallGroup = array[array.length - 1]["smallGroup"];
             var sourceType = array[array.length - 1]["sourceType"];
             var description = array[array.length - 1]["description"];
-
 
             for(var i = 0; i < (array.length-1); i++) {
                 if(array[i]["dlgType"] == "2") {
