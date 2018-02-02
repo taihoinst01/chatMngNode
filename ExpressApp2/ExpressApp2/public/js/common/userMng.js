@@ -106,7 +106,13 @@ function makGrid() {
             return true;
         },*/
         afterEditCell: function (rowid, cellname, value, iRow, iCol) { 
-            //$(this).setColProp(cellname, { editable: false }); 
+            $('tbody').find('tr').each(function () {
+                if ($(this).hasClass('ui-state-highlight')) {
+                    $(this).removeClass('ui-state-highlight')
+                }
+            });
+            $('tbody').find('#' + rowid).children().eq(iCol).removeClass('ui-state-highlight');
+            $('tbody').find('#' + rowid).addClass('ui-state-highlight');
         },
 
         beforeSubmitCell : function(rowid, cellName, cellValue) {   // submit 전
@@ -119,7 +125,8 @@ function makGrid() {
 
                 $("#gridList").jqGrid('setCell', rowid, 'statusFlag', "EDIT");
                 //var len = $('input[name=cell_checkbox]:checked').length;
-                $('input[name=cell_checkbox]').eq(rowid-1).trigger('click');
+                var checkRow = ($('#gridList').jqGrid().getRowData('addRow').statusFlag === 'NEW' ? rowid : rowid-1);
+                $('input[name=cell_checkbox]').eq(checkRow).trigger('click');
                 
               }
           }

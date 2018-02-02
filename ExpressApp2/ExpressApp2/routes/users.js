@@ -435,10 +435,53 @@ router.post('/selectApiList', function (req, res) {
     })
 })
 
+router.post('/saveApiInfo', function(req, res){
+    var apiArr = JSON.parse(req.body.saveArr);
+    var saveStr = "";
+    var updateStr = "";
+    var deleteStr = "";
 
+    for (var i=0; i<apiArr.length; i++) {
+        if (apiArr[i].statusFlag === 'NEW') {
+            saveStr += "INSERT INTO TBL_URL (API_ID, API_URL, API_DESC) ";
+            saveStr += "VALUES ('" + apiArr[i].API_ID  + "', '" + apiArr[i].API_URL  + "', '" + apiArr[i].API_DESC  + "'); ";
+        } else if (apiArr[i].statusFlag === 'EDIT') {
+            updateStr += "UPDATE TBL_URL SET API_ID = '" + apiArr[i].API_ID  + "', "
+                                        +  " API_URL = '" + apiArr[i].API_URL  + "', "
+                                        +  " API_DESC = '" + apiArr[i].API_DESC   + "' "
+                      +  "WHERE API_ID = '" + apiArr[i].API_ID_HIDDEN + "'; ";
+        } else { //DEL
+            deleteStr += "UPDATE TBL_URL SET USE_YN = 'N' WHERE API_ID = '" + apiArr[i].API_ID_HIDDEN + "'; ";
+        }
+    }
 
+    (async () => {
+        try {
+            let pool = await sql.connect(dbConfig);
+            if (saveStr !== "") {
+                let insertUser = await pool.request().query(saveStr);
+            }
+            if (updateStr !== "") {
+                let updateUser = await pool.request().query(updateStr);
+            }
+            if (deleteStr !== "") {
+                let deleteUser = await pool.request().query(deleteStr);
+            }
 
+            res.send({status:200 , message:'Save Success'});
+            
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'Save Error'});
+        } finally {
+            sql.close();
+        }
+    })()
 
+    sql.on('error', err => {
+        // ... error handler
+    })
+});
 
 
 

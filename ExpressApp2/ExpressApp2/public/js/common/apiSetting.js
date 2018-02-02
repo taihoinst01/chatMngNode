@@ -93,9 +93,21 @@ function makGrid() {
         },
         afterEditCell: function (rowid, cellname, value, iRow, iCol) { 
             //$(this).setColProp(cellname, { editable: false }); 
+            //console.log("rowid-" + rowid + "cellname-" + cellname + "value-" + value );
+            //console.log("iRow-" + iRow + "iCol-" + iCol );
+            //$('tbody').find('#' + rowid).removeClass('ui-state-highlight');
+            
+            $('tbody').find('tr').each(function () {
+                if ($(this).hasClass('ui-state-highlight')) {
+                    $(this).removeClass('ui-state-highlight')
+                }
+            });
+            $('tbody').find('#' + rowid).children().eq(iCol).removeClass('ui-state-highlight');
+            $('tbody').find('#' + rowid).addClass('ui-state-highlight');
+            //$('tbody').find('#' + rowid).trigger('click');
         },
 
-        beforeSubmitCell : function(rowid, cellName, cellValue) {   // submit 전
+        beforeSubmitCell : function(rowid, cellName, cellValue, iRow, iCol) {   // submit 전
           //console.log(  "@@@@@@ rowid = " +rowid + " , cellName = " + cellName + " , cellValue = " + cellValue );
           if ( $(this).val() !== beforVal) {
               var statusVal = $('#gridList').jqGrid().getRowData(rowid).statusFlag;
@@ -105,10 +117,12 @@ function makGrid() {
 
                 $("#gridList").jqGrid('setCell', rowid, 'statusFlag', "EDIT");
                 //var len = $('input[name=cell_checkbox]:checked').length;
-                $('input[name=cell_checkbox]').eq(rowid-1).trigger('click');
+                var checkRow = ($('#gridList').jqGrid().getRowData('addRow').statusFlag === 'NEW' ? rowid : rowid-1);
+                $('input[name=cell_checkbox]').eq(checkRow).trigger('click');
                 
               }
           }
+          $('tbody').find('#' + rowid).children().eq(iCol).removeClass('ui-state-highlight');
           //return {"id":rowid, "cellName":cellName, "cellValue": cellValue}
         },
   
@@ -237,7 +251,21 @@ function insertAction() {
 function saveAction() {
     // true : select 된 데이터, false : transaction 일으킨 데이터
     var checkedLen = $('input[name=cell_checkbox]:checked').length;
-    if (checkedLen > 0) {
+    if (checkedLen < 1) {
+        alert('체크된 데이터가 없습니다.');
+        return;
+    } else {
+        for (var i=0; i< checkedLen; i++) {
+            var checkedId = $('input[name=cell_checkbox]:checked').eq(i).parents('tr').attr('id');
+            if($('#gridList').jqGrid().getRowData(checkedId).API_ID === "") {
+                alert('API ID를 입력해야 합니다')
+                return;
+            } else if($('#gridList').jqGrid().getRowData(checkedId).API_URL === "") {
+                alert('API URL을 입력해야 합니다')
+                return;
+            } 
+        }
+
         var saveArr = new Array();
         $('input[name=cell_checkbox]:checked').each(function() {
             var rowId = $(this).parent().parent().attr("id");
@@ -245,8 +273,10 @@ function saveAction() {
             var data = new Object() ;
 
             data.statusFlag = $('#gridList').jqGrid().getRowData(rowId).statusFlag;
-            data.USER_ID = $('#gridList').jqGrid().getRowData(rowId).USER_ID;
-            data.EMP_NM = $('#gridList').jqGrid().getRowData(rowId).EMP_NM;
+            data.API_ID = $('#gridList').jqGrid().getRowData(rowId).API_ID;
+            data.API_ID_HIDDEN = $('#gridList').jqGrid().getRowData(rowId).API_ID_HIDDEN;
+            data.API_URL = $('#gridList').jqGrid().getRowData(rowId).API_URL;
+            data.API_DESC = $('#gridList').jqGrid().getRowData(rowId).API_DESC;
             saveArr.push(data);
             //변경된 전체 row값
             //saveArr2.push($('#gridList').jqGrid().getChangedCells());
@@ -262,7 +292,7 @@ function saveAction() {
             datatype: "JSON",
             data: params,
             isloading: true,
-            url: '/users/saveUserInfo',
+            url: '/users/saveApiInfo',
             success: function(data) {
                 console.log(data);
                 if (data.status === 200) {
@@ -272,17 +302,18 @@ function saveAction() {
                 }
             }
         });
-    } else {
-        alert('변경된 데이터가 없습니다.');
-        return;
-    }
+
+
+    } 
+    
+    
+    
+    
 }
 
 // 선택된 rows delete
 function deleteAction() {
     //var selRow = $('#gridList').jqGrid('getGridParam', 'selrow');
-    
-
     if ($('input[name=cell_checkbox]:checked').length > 0) {
         if ( confirm('삭제하시겠습니까?')) {
             $('input[name=cell_checkbox]:checked').each(function() {
