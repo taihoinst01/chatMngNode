@@ -786,18 +786,18 @@ router.post('/searchEntities', function (req, res) {
     (async () => {
         try {
          
-            var entitiesQueryString = "select tbp.* from " +
-                                      "(select ROW_NUMBER() OVER(ORDER BY api_group DESC) AS NUM, " +
-                                      "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
-                                      "CEILING((ROW_NUMBER() OVER(ORDER BY api_group DESC))/ convert(numeric ,10)) PAGEIDX, " +
-                                      "entity_value, entity, api_group from (SELECT DISTINCT entity, API_GROUP , STUFF(( " +
-                                      "SELECT ',' + b.entity_value FROM TBL_COMMON_ENTITY_DEFINE b " +
-                                      " WHERE b.entity = a.entity FOR XML PATH('') ),1,1,'') AS entity_value " +
-                                      "FROM TBL_COMMON_ENTITY_DEFINE a where API_GROUP != 'OCR TEST' " +
-                                      "and (entity = @searchEntities or entity_value = @searchEntities) " +
-                                      "group by entity, API_GROUP) a" +
-                                      " ) tbp " +
-                                      "WHERE PAGEIDX = @currentPage";
+            var entitiesQueryString = "select tbp.* from 																																		"
+                                    + "(select ROW_NUMBER() OVER(ORDER BY api_group DESC) AS NUM,                           "
+                                    + "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT,                                         "
+                                    + "CEILING((ROW_NUMBER() OVER(ORDER BY api_group DESC))/ convert(numeric ,10)) PAGEIDX, "
+                                    + "entity_value, entity, api_group from (SELECT DISTINCT entity, API_GROUP , STUFF((    "
+                                    + "SELECT '[' + b.entity_value + ']' FROM TBL_COMMON_ENTITY_DEFINE b                    "
+                                    + " WHERE b.entity = a.entity FOR XML PATH('') ),1,1,'[') AS entity_value               "
+                                    + "FROM TBL_COMMON_ENTITY_DEFINE a where API_GROUP != 'OCR TEST'                        "
+                                    + "and (entity = 'game' or entity_value = 'game')                                       "
+                                    + "group by entity, API_GROUP) a                                                        "
+                                    + " ) tbp                                                                               "
+                                    + "WHERE PAGEIDX = 1                                                                    ";
             
             let pool = await sql.connect(dbConfig)
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).input('searchEntities', sql.NVarChar, searchEntities).query(entitiesQueryString);
