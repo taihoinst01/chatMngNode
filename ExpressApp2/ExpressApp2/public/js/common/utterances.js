@@ -229,6 +229,7 @@ $(document).ready(function(){
 
             var insertForm = '';
             insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
+            insertForm += '<form name="dialogLayout" id="dialogLayout">';
             insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
             insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
             insertForm += '<option value="2" selected>Text</option>';
@@ -236,15 +237,16 @@ $(document).ready(function(){
             insertForm += '<option value="4">Media</option>';
             insertForm += '</select></p>';
             insertForm += '<div class="clear-both"></div>';
-            insertForm += '<p class="texcon03">Dialogue Text  <span>(required) </span></p>';
-            insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
+            insertForm += '</form>';
             insertForm += '</div>';
     
+            $('#commonLayout').css('display','block');
             $('#commonLayout div:first').prepend(insertForm);
             $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>입력해주세요...</p></div></div></div></div></div></div></div>');
-
-            $('#commonLayout').css('display','block');
+            
             $('#apiLayout').css('display','none');
+            $(".insertForm form").append($("#textLayout").clone(true));
+            $('.insertForm #textLayout').css('display','block');
         }
     });
     
@@ -310,7 +312,7 @@ $(document).ready(function(){
         insertForm += '</div>';
 
         $(".insertForm:last").after(insertForm);
-        
+        //$(".insertFormWrap").append(insertForm);
         var insertHtml = '';
         insertHtml += '<div class="dialogView">';
         insertHtml += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
