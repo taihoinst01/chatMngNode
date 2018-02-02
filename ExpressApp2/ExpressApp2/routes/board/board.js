@@ -53,6 +53,10 @@ router.post('/intentScore', function (req, res) {
             res.status(500).send({ message: "${err}"})
             sql.close();
         });
+    
+        sql.on('error', err => {
+            sql.close();
+        })
         
 });
 
@@ -78,6 +82,10 @@ router.post('/getScorePanel', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
+
+        sql.on('error', err => {
+            sql.close();
+        })
 });
 
 router.post('/getOftQuestion', function (req, res) {
@@ -134,6 +142,10 @@ router.post('/getOftQuestion', function (req, res) {
           sql.close();
         });
 
+        sql.on('error', err => {
+            sql.close();
+        })
+
 });
 
 router.post('/nodeQuery', function (req, res) {
@@ -186,6 +198,10 @@ router.post('/nodeQuery', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
+
+        sql.on('error', err => {
+            sql.close();
+        })
 });
 
 
@@ -231,6 +247,10 @@ router.post('/firstQueryBar', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
+
+        sql.on('error', err => {
+            sql.close();
+        })
 });
 
 router.post('/firstQueryTable', function (req, res) {
@@ -284,6 +304,10 @@ router.post('/firstQueryTable', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
+
+        sql.on('error', err => {
+            sql.close();
+        })
 });
 
 
@@ -310,6 +334,10 @@ router.post('/getResponseScore', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
+
+        sql.on('error', err => {
+            sql.close();
+        })
 });
 
 router.post('/getQueryByEachTime', function (req, res) {
@@ -355,6 +383,10 @@ router.post('/getQueryByEachTime', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
+
+        sql.on('error', err => {
+            sql.close();
+        })
 });
 function pad(n, width) {
     n = n + '';
