@@ -54,16 +54,37 @@ $(document).ready(function () {
     google.charts.load('visualization', {'packages':['corechart', 'table']} );
     google.charts.load('current', {packages: ['corechart', 'bar']});
     
-    /* //느려서 개발중 주석처리 start
+
     google.charts.setOnLoadCallback(drawStatusOverview);
+    //google.charts.setOnLoadCallback(getScorePanel);
+
+
     google.charts.setOnLoadCallback(getOftQuestion);
-    google.charts.setOnLoadCallback(drawNoneQuerylist);
-    google.charts.setOnLoadCallback(drawStuff);
+    //google.charts.setOnLoadCallback(getQueryByEachTime);
+    //google.charts.setOnLoadCallback(drawNoneQuerylist);
+
+    //google.charts.setOnLoadCallback(getResponseScores);
+    //google.charts.setOnLoadCallback(drawFirstQueryTable);
+    //google.charts.setOnLoadCallback(drawStuff);
+
+
+     //느려서 개발중 주석처리 start
+    /*
+    google.charts.setOnLoadCallback(drawStatusOverview);
     google.charts.setOnLoadCallback(getScorePanel);
-    google.charts.setOnLoadCallback(drawFirstQueryTable);
-    google.charts.setOnLoadCallback(getResponseScores);
+
+
+    google.charts.setOnLoadCallback(getOftQuestion);
     google.charts.setOnLoadCallback(getQueryByEachTime);
-    */ //느려서 개발중 주석처리 end
+    google.charts.setOnLoadCallback(drawNoneQuerylist);
+
+
+    google.charts.setOnLoadCallback(getResponseScores);
+    google.charts.setOnLoadCallback(drawFirstQueryTable);
+    google.charts.setOnLoadCallback(drawStuff);
+    */
+    
+     //느려서 개발중 주석처리 end
 
 
     /*
@@ -455,6 +476,8 @@ function drawStatusOverview() {
                     });
               }
           }
+    }).always(function(){
+        google.charts.setOnLoadCallback(getScorePanel);
     });
 
 }
@@ -530,7 +553,14 @@ function getOftQuestion() {
                 $('#oftQuestion').find('tbody').append(tdHtml);
             }
         }
-    });
+    }).always(function(){
+        google.charts.setOnLoadCallback(getQueryByEachTime);
+        
+    }).always(function(){
+        google.charts.setOnLoadCallback(drawNoneQuerylist);
+    }).always(function(){
+        google.charts.setOnLoadCallback(getResponseScores);
+    });;
 }
 
 
@@ -841,7 +871,11 @@ function getResponseScores() {
       
               chart.draw(data, options);
         }
-    })
+    }).always(function(){
+        google.charts.setOnLoadCallback(drawFirstQueryTable);
+    }).always(function(){
+        google.charts.setOnLoadCallback(drawStuff);
+    });
 }
 
 

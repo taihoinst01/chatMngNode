@@ -48,7 +48,7 @@ router.post('/recommend', function (req, res) {
             entitiesQueryString += " ) TBX) TBY) TBZ";
             entitiesQueryString += " WHERE PAGEIDX = @currentPage";
             entitiesQueryString += " ORDER BY NUM";
-
+            sql.close();
             let pool = await sql.connect(dbConfig)
             let result1 = await pool.request()
                 .input('currentPage', sql.Int, currentPage)
