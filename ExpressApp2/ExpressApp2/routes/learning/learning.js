@@ -617,9 +617,9 @@ router.post('/utterInputAjax', function(req, res, next) {
                     //res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2, commonEntities: commonEntities});
                 } else {
                     iptUtteranceArr.push(iptUtterTmp);
-                    //entitiesArr.push(null);
-                    //selBoxArr.push(null);
-                    //commonEntitiesArr.push(null);
+                    entitiesArr.push(null);
+                    selBoxArr.push(null);
+                    commonEntitiesArr.push(null);
                     //res.send({result:true, iptUtterance:iptUtterance});
                 }
             }
