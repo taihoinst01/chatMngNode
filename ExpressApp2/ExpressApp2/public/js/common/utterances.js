@@ -2,24 +2,42 @@
 
 
 
-// 대사표시방법 (ctrl + e) 
-var iVal = 1;
-$(document).keydown(function(e) {
-    if (e.ctrlKey == true && e.which == 69) {
-        // Ctrl + E 를 할 때  entityInfo 작업중인 라벨링이 있다면 삭제 처리 
-        $('input[name=entityInfo]').each(function(e) {
-           if($(this).val() == null || $(this).val() == "") {
-               $(this).remove();
-           }
-        });
 
-        iVal++;
-        if (iVal ==  3) iVal = 0;
-        var valueTokenArr = ["tokens","entities","compositeEntities"];
-        $("select[name=tokenStyleSelectBox]").val(valueTokenArr[iVal]).trigger("change");
-        return false;
+// Utterance 삭제
+$(document).on('click', '#utterDelete', function() {
+    $(this).parent().parent().next().remove();
+    $(this).parent().parent().remove();
+
+    $('#dialogRecommand').html("");
+    $('input[name=ch1All]').parent().attr('checked', false);
+
+    if ($('.clickUtter').length < 1) {
+        $('#nav').remove();
     }
+    changeBtnAble(false);
+    /*
+    $('.checkUtter').each(function(){
+        if($(this).attr('checked') == 'checked') {
+            //$('#entityUtteranceTextTable tbody').html('');
+            var delVal = $(this).parent().next().find('input[name=entity]').val();
+            var sameUtterCnt = 0;
+            $('.clickUtter').each(function(){
+                var utterVal = $(this).find('input[name=entity]').val();
+                if (delVal === utterVal) {
+                    sameUtterCnt++;
+                }
+            });
+            if (sameUtterCnt < 2) {
+                delete dlgMap[delVal];
+            }
+
+            $(this).parent().parent().next().remove();
+            $(this).parent().parent().remove();
+        }
+    });
+    */
 });
+
 
 $(document).ready(function(){
 
@@ -100,32 +118,7 @@ $(document).ready(function(){
 
     });
 
-    // Utterance 삭제
-    $('#utterDelete').click(function(){
-
-        $('.checkUtter').each(function(){
-            if($(this).attr('checked') == 'checked') {
-                //$('#entityUtteranceTextTable tbody').html('');
-                var delVal = $(this).parent().next().find('input[name=entity]').val();
-                var sameUtterCnt = 0;
-                $('.clickUtter').each(function(){
-                    var utterVal = $(this).find('input[name=entity]').val();
-                    if (delVal === utterVal) {
-                        sameUtterCnt++;
-                    }
-                });
-                if (sameUtterCnt < 2) {
-                    delete dlgMap[delVal];
-                }
-
-                $(this).parent().parent().next().remove();
-                $(this).parent().parent().remove();
-            }
-        });
-        $('#dialogRecommand').html("");
-        $('input[name=ch1All]').parent().attr('checked', false);
-        changeBtnAble(false);
-    });
+    
 
     //다이얼로그 생성 모달 닫는 이벤트(초기화)
     $(".js-modal-close").click(function() {
@@ -160,7 +153,7 @@ $(document).ready(function(){
                 checkedVal = false;
             });
         }
-        changeBtnAble('delete', checkedVal);
+        //changeBtnAble('delete', checkedVal);
     });
 
 	$('#addDialogClose , #addDialogCancel').click(function(){
@@ -959,7 +952,7 @@ $(document).on('click','div[type=checkbox]',function(event){
             checkedVal = true;
         } 
     });
-    changeBtnAble('delete', checkedVal);
+    //changeBtnAble('delete', checkedVal);
 
     $("input[name=dlgChk]").each(function() {
         if (typeof $(this).parent().attr("checked") != 'undefined') {
@@ -986,145 +979,158 @@ function changeBtnAble(btnName, boolVal){
         }
     } else {
         if (!boolVal) {
-            $('#utterDelete').attr("disabled", "disabled");
-            $('#utterDelete').addClass("disable");   
+            //$('#utterDelete').attr("disabled", "disabled");
+            //$('#utterDelete').addClass("disable");   
         } else {
-            $('#utterDelete').removeAttr('disabled');
-            $('#utterDelete').removeClass("disable");
+            //$('#utterDelete').removeAttr('disabled');
+            //$('#utterDelete').removeClass("disable");
         }
     }
 }
 
 
 function utterInput(queryText) {
-    
+    var queryTextArr = [];
+    if (typeof queryText === 'string') {
+        queryTextArr[0] = queryText;
+    } else {  //'object'
+        queryTextArr = queryText;
+    }
+
+
     $.ajax({
         url: '/learning/utterInputAjax',                //주소
         dataType: 'json',                  //데이터 형식
         type: 'POST',                      //전송 타입
-        data: {'iptUtterance':queryText},      //데이터를 json 형식, 객체형식으로 전송
+        data: {'iptUtterance': queryTextArr},      //데이터를 json 형식, 객체형식으로 전송
 
         success: function(result) {          //성공했을 때 함수 인자 값으로 결과 값 나옴
-
             var entities = result['entities'];
-            if(entities != null) {
-                entities = entities.split(",");
-            }else{
-                entities = [];
-            }
+            for (var k=0; k< queryTextArr.length; k++) {
 
-            if ( result['result'] == true ) {
-                //var utter = utterHighlight(entities,result['iptUtterance']);
-                var utter = utterHighlight(result.commonEntities,result['iptUtterance']);
-                var selBox = result['selBox'];
-
-                $('#iptUtterance').val('');
-                var inputUttrHtml = '';
-                inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
-                inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
-                inputUttrHtml += '<td class="txt_left clickUtter"><input type=hidden name="entity" value="' + result['entities'] + '"/>' + utter + '</td>';
-                inputUttrHtml += '<tr><td> </td><td class="txt_left" >';
-                if(result.commonEntities){
-                    for(var i = 0; i < result.commonEntities.length ; i++){
-                        inputUttrHtml += '<input type=hidden value="' + result.commonEntities[i].ENTITY_VALUE + '"/>' + result.commonEntities[i].ENTITY_VALUE + '::' + result.commonEntities[i].ENTITY;
-                        if(i != result.commonEntities.length - 1 ) {
-                            inputUttrHtml += "&nbsp&nbsp";
+                
+                if(entities[k] != null) {
+                    entities[k] = entities[k].split(",");
+                }else{
+                    entities[k] = [];
+                }
+    
+                if ( result['result'] == true ) {
+                    //var utter = utterHighlight(entities,result['iptUtterance']);
+                    var utter = utterHighlight(result.commonEntities[k],result['iptUtterance'][k]);
+                    var selBox = result['selBox'];
+    
+                    $('#iptUtterance').val('');
+                    var inputUttrHtml = '';
+                    inputUttrHtml += '<tr><input type="hidden" name="hiddenUtter" value="' + queryText + '"/> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
+                    inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
+                    inputUttrHtml += '<td class="txt_left clickUtter"><input type=hidden name="entity" value="' + result['entities'][k] + '"/>' + utter + '</td>';
+                    inputUttrHtml += '<td class="txt_right"><button class="btn_delete" id="utterDelete" style="width: 19px; margin: 0 5px 0 0;"></button></td>';
+                    inputUttrHtml += '<tr><td></td><td class="txt_left" >';
+                    
+                    if(result.commonEntities[k]){
+                        for(var i = 0; i < result.commonEntities[k].length ; i++){
+                            var commonTmp = result.commonEntities[k];
+                            inputUttrHtml += '<input type=hidden value="' + commonTmp[i].ENTITY_VALUE + '"/>' + commonTmp[i].ENTITY_VALUE + '::' + commonTmp[i].ENTITY;
+                            if(i != commonTmp[i].length - 1 ) {
+                                inputUttrHtml += "&nbsp&nbsp";
+                            }
+                        }
+                    }else{
+                        inputUttrHtml += '엔티티 없음';
+                    }
+                    inputUttrHtml += '</td><td></td></tr>';
+             
+                    /*
+                    if(result.commonEntities){
+                        for(var i = 0; i < result.commonEntities.length ; i++){
+                            inputUttrHtml += '<tr> <td> </td>';
+                            inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result.commonEntities[i].ENTITY_VALUE + '"/>' + result.commonEntities[i].ENTITY_VALUE + '::' + result.commonEntities[i].ENTITY + '</td>';
                         }
                     }
-                }else{
-                    inputUttrHtml += '엔티티 없음';
-                }
-                inputUttrHtml += '</td></tr>';
-         
-                /*
-                if(result.commonEntities){
-                    for(var i = 0; i < result.commonEntities.length ; i++){
-                        inputUttrHtml += '<tr> <td> </td>';
-                        inputUttrHtml += '<td class="txt_left" ><input type=hidden value="' + result.commonEntities[i].ENTITY_VALUE + '"/>' + result.commonEntities[i].ENTITY_VALUE + '::' + result.commonEntities[i].ENTITY + '</td>';
+                    */
+                    //inputUttrHtml += '<td class="txt_right02" >'; 
+                    //inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
+                    /*
+                    if(selBox != null) {
+                        for( var i = 0 ; i < selBox.length; i++) {
+                            inputUttrHtml += '<option value="' + selBox[i]['LUIS_INTENT'] + '">' + selBox[i]['LUIS_INTENT'] + '</option>'
+                        }
+                        selectDlgListAjax(selBox[0]['LUIS_INTENT']);
+                    } else {
+                        inputUttrHtml += '<option value="" selected>no intent</option>'
                     }
-                }
-                */
-                //inputUttrHtml += '<td class="txt_right02" >'; 
-                //inputUttrHtml += '<select id="intentNameList" name="intentNameList" class="select_box">'
-                /*
-                if(selBox != null) {
-                    for( var i = 0 ; i < selBox.length; i++) {
-                        inputUttrHtml += '<option value="' + selBox[i]['LUIS_INTENT'] + '">' + selBox[i]['LUIS_INTENT'] + '</option>'
-                    }
-                    selectDlgListAjax(selBox[0]['LUIS_INTENT']);
-                } else {
-                    inputUttrHtml += '<option value="" selected>no intent</option>'
-                }
-
-                inputUttrHtml += '</select></td></tr>';
-                */
-                $('#entityUtteranceTextTable').find('tbody').prepend(inputUttrHtml);
-
-                selectDlgListAjax(entities);
-
-                var rowPerPage = $('[name="dlgRowPerPage"]').val() * 1;// 1 을  곱하여 문자열을 숫자형로 변환
-
-                //		console.log(typeof rowPerPage);
-                
-                    var zeroWarning = 'Sorry, but we cat\'t display "0" rows page. + \nPlease try again.'
-                    if (!rowPerPage) {
-                        alert(zeroWarning);
-                        return;
-                    }
-                    $('#nav').remove();
-                    var $products = $('#entityUtteranceTextTable');
-                
-                    $products.after('<div id="nav" style="text-align:center">');
-                
-                
-                    var $tr = $($products).children('tbody').children('tr');
-                    var rowTotals = $tr.length;
-                //	console.log(rowTotals);
-                
-                    var pageTotal = Math.ceil(rowTotals/ rowPerPage);
-                    var i = 0;
-                
-                    for (; i < pageTotal; i++) {
-                        $('<a href="#"></a>')
-                                .attr('rel', i)
-                                .html(i + 1)
-                                .appendTo('#nav');
-                    }
-                
-                    $tr.addClass('off-screen')
-                            .slice(0, rowPerPage)
-                            .removeClass('off-screen');
-                
-                    var $pagingLink = $('#nav a');
-                    $pagingLink.on('click', function (evt) {
-                        evt.preventDefault();
-                        var $this = $(this);
-                        if ($this.hasClass('active')) {
+    
+                    inputUttrHtml += '</select></td></tr>';
+                    */
+                    $('#entityUtteranceTextTable').find('tbody').prepend(inputUttrHtml);
+    
+                    selectDlgListAjax(entities[k]);
+    
+                    var rowPerPage = $('[name="dlgRowPerPage"]').val() * 1;// 1 을  곱하여 문자열을 숫자형로 변환
+    
+                    //		console.log(typeof rowPerPage);
+                    
+                        var zeroWarning = 'Sorry, but we cat\'t display "0" rows page. + \nPlease try again.'
+                        if (!rowPerPage) {
+                            alert(zeroWarning);
                             return;
                         }
-                        $pagingLink.removeClass('active');
-                        $this.addClass('active');
-                
-                        // 0 => 0(0*4), 4(0*4+4)
-                        // 1 => 4(1*4), 8(1*4+4)
-                        // 2 => 8(2*4), 12(2*4+4)
-                        // 시작 행 = 페이지 번호 * 페이지당 행수
-                        // 끝 행 = 시작 행 + 페이지당 행수
-                
-                        var currPage = $this.attr('rel');
-                        var startItem = currPage * rowPerPage;
-                        var endItem = startItem + rowPerPage;
-                
-                        $tr.css('opacity', '0.0')
-                                .addClass('off-screen')
-                                .slice(startItem, endItem)
-                                .removeClass('off-screen')
-                                .animate({opacity: 1}, 300);
-                
-                    });
-                
-                    $pagingLink.filter(':first').addClass('active');
-                
+                        $('#nav').remove();
+                        var $products = $('#entityUtteranceTextTable');
+                    
+                        $products.after('<div id="nav" style="text-align:center">');
+                    
+                    
+                        var $tr = $($products).children('tbody').children('tr');
+                        var rowTotals = $tr.length;
+                    //	console.log(rowTotals);
+                    
+                        var pageTotal = Math.ceil(rowTotals/ rowPerPage);
+                        var i = 0;
+                    
+                        for (; i < pageTotal; i++) {
+                            $('<a href="#"></a>')
+                                    .attr('rel', i)
+                                    .html(i + 1)
+                                    .appendTo('#nav');
+                        }
+                    
+                        $tr.addClass('off-screen')
+                                .slice(0, rowPerPage)
+                                .removeClass('off-screen');
+                    
+                        var $pagingLink = $('#nav a');
+                        $pagingLink.on('click', function (evt) {
+                            evt.preventDefault();
+                            var $this = $(this);
+                            if ($this.hasClass('active')) {
+                                return;
+                            }
+                            $pagingLink.removeClass('active');
+                            $this.addClass('active');
+                    
+                            // 0 => 0(0*4), 4(0*4+4)
+                            // 1 => 4(1*4), 8(1*4+4)
+                            // 2 => 8(2*4), 12(2*4+4)
+                            // 시작 행 = 페이지 번호 * 페이지당 행수
+                            // 끝 행 = 시작 행 + 페이지당 행수
+                    
+                            var currPage = $this.attr('rel');
+                            var startItem = currPage * rowPerPage;
+                            var endItem = startItem + rowPerPage;
+                    
+                            $tr.css('opacity', '0.0')
+                                    .addClass('off-screen')
+                                    .slice(startItem, endItem)
+                                    .removeClass('off-screen')
+                                    .animate({opacity: 1}, 300);
+                    
+                        });
+                    
+                        $pagingLink.filter(':first').addClass('active');
+                    
+                }
             }
         } //function끝
 
@@ -1528,7 +1534,65 @@ $(document).on('click', 'a[name=addCarouselBtn]', function(e){
 
 });
 
-$(document).on('')
+
+//** 모달창 */
+function openModalBox(target){
+
+    // 화면의 높이와 너비를 변수로 만듭니다.
+    var maskHeight = $(document).height();
+    var maskWidth = $(window).width();
+
+    // 마스크의 높이와 너비를 화면의 높이와 너비 변수로 설정합니다.
+    $('.mask').css({'width':maskWidth,'height':maskHeight});
+
+
+    // 레이어 팝업을 가운데로 띄우기 위해 화면의 높이와 너비의 가운데 값과 스크롤 값을 더하여 변수로 만듭니다.
+    var left = ( $(window).scrollLeft() + ( $(window).width() - $(target).width()) / 2 );
+    var top = ( $(window).scrollTop() + ( $(window).height() - $(target).height()) / 2 );
+
+    // css 스타일을 변경합니다.
+    $(target).css({'left':left,'top':top, 'position':'absolute'});
+
+    // 레이어 팝업을 띄웁니다.
+    $(target).show();
+
+    $('#dialogPreview').css({'height':$('#dialogSet').height()});
+
+    $('html').css({'overflow': 'hidden', 'height': '100%'});
+    $('#element').on('scroll touchmove mousewheel', function(event) { // 터치무브와 마우스휠 스크롤 방지
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    });
+    wrapWindowByMask();
+}
+
+//엔티티 추가
+function insertEntity(){
+
+    $.ajax({
+        url: '/learning/insertEntity',
+        dataType: 'json',
+        type: 'POST',
+        data: $('#entityInsertForm').serializeObject(),
+        success: function(data) {
+            if(data.status == 200){
+                $('#addDialogClose').click();
+                alert("추가하였습니다.");
+                var originalUtter = [];
+                $('input[name=hiddenUtter]').each(function() {
+                    originalUtter.push($(this).val());
+                });
+                $('#utterListDiv').find('tbody').html('');
+                $('#nav').remove();
+                utterInput(originalUtter);
+            } else {
+                alert("오류 발생으로 인해 추가하지 못하였습니다.");
+            }
+        }
+    });
+}
+//** 모달창 끝 */
 
 
 //insertHtml += '<button class="scroll previous" id="prevBtn" style="display: none;" onclick="prevBtn(botChatNum)">';

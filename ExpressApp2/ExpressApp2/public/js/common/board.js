@@ -54,6 +54,7 @@ $(document).ready(function () {
     google.charts.load('visualization', {'packages':['corechart', 'table']} );
     google.charts.load('current', {packages: ['corechart', 'bar']});
     
+    /* //느려서 개발중 주석처리 start
     google.charts.setOnLoadCallback(drawStatusOverview);
     google.charts.setOnLoadCallback(getOftQuestion);
     google.charts.setOnLoadCallback(drawNoneQuerylist);
@@ -62,6 +63,9 @@ $(document).ready(function () {
     google.charts.setOnLoadCallback(drawFirstQueryTable);
     google.charts.setOnLoadCallback(getResponseScores);
     google.charts.setOnLoadCallback(getQueryByEachTime);
+    */ //느려서 개발중 주석처리 end
+
+
     /*
     setTimeout("drawStatusOverview();", 100); //intent score
     setTimeout("getOftQuestion();", 100); //자주하는질문
@@ -706,18 +710,18 @@ function drawFirstQueryTable() {
         success: function(data) {
             var inputData = new google.visualization.DataTable();
             inputData.addRows(data.list.length);
-            inputData.addColumn('string', 'koQuestion');
-            inputData.addColumn('string', 'query_date');
-            inputData.addColumn('string', 'channel');
-            inputData.addColumn('number', 'query_cnt');
-            inputData.addColumn('number', 'intent_score');
-            inputData.addColumn('string', 'intent_name');
-            inputData.addColumn('string', 'txt_answer');
-            inputData.addColumn('string', 'card_answer');
-            inputData.addColumn('string', 'cardBtn_answer');
-            inputData.addColumn('string', 'media_answer');
-            inputData.addColumn('string', 'mediaBtn_answer');
-            inputData.addColumn('string', 'message_type');
+            inputData.addColumn('string', '한글 질문');
+            inputData.addColumn('string', '날짜');
+            inputData.addColumn('string', '채널');
+            inputData.addColumn('number', '질문 수');
+            inputData.addColumn('number', '인텐트 점수');
+            inputData.addColumn('string', '인텐트 명');
+            inputData.addColumn('string', '텍스트 답변');
+            inputData.addColumn('string', '카드 답변');
+            inputData.addColumn('string', '카드 버튼');
+            inputData.addColumn('string', '미디어 답변');
+            inputData.addColumn('string', '미디어 버튼');
+            inputData.addColumn('string', '타입');
             for (var i=0;i<data.list.length; i++) {
                 inputData.setCell(i,0,data.list[i].koQuestion);
                 inputData.setCell(i,1,data.list[i].query_date);
@@ -732,23 +736,32 @@ function drawFirstQueryTable() {
                 inputData.setCell(i,10,data.list[i].mediaBtn_answer);
                 inputData.setCell(i,11,data.list[i].message_type);
             }
-             var table = new google.visualization.Table(document.getElementById('table_div'));
-             table.draw(inputData, {showRowNumber: true, width: '100%', height: '400px'});
-              google.visualization.events.addListener(table, 'select', selectHandler);
-              function selectHandler() {
-                var selection = table.getSelection();
-                var message = '';
-                for (var i = 0; i < selection.length; i++) {
-                  var item = selection[i];
-                  if (item.row != null && item.column != null) {
-                    $('#intentName').val(inputData.getFormattedValue(item.row, 0));
-                  } else if (item.row != null) {
-                      $('#intentName').val(inputData.getFormattedValue(item.row, 0));
-                  } else if (item.column != null) {
-                      $('#intentName').val(inputData.getFormattedValue(0, 0));
-                  }
-                }
-                filterSearch(5);
+
+
+            var table = new google.visualization.Table(document.getElementById('table_div'));
+            table.draw(inputData, 
+                       { page: 'enable',
+                        pageSize: 500,
+                        //scrollLeftStartPosition: 100,
+                        showRowNumber: true, 
+                        width: '100%', 
+                        height: '400px'});
+               
+            google.visualization.events.addListener(table, 'select', selectHandler);
+                function selectHandler() {
+                    var selection = table.getSelection();
+                        var message = '';
+                        for (var i = 0; i < selection.length; i++) {
+                        var item = selection[i];
+                        if (item.row != null && item.column != null) {
+                            $('#intentName').val(inputData.getFormattedValue(item.row, 0));
+                        } else if (item.row != null) {
+                            $('#intentName').val(inputData.getFormattedValue(item.row, 0));
+                        } else if (item.column != null) {
+                            $('#intentName').val(inputData.getFormattedValue(0, 0));
+                        }
+                    }
+                    filterSearch(5);
               }
         }
     })
