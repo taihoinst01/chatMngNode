@@ -474,7 +474,8 @@ $(document).ready(function(){
     });
 
     $("#searchDialogCancel").on('click',function(){
-        $("#searchDlgResultDiv").html("");
+        $('input[name=serachDlg]').val('');
+        $('#searchDlgResultDiv').html('');
     });
 
 });
@@ -696,15 +697,14 @@ function insertDialog(){
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
                 inputUttrHtml += '<input name="dlgChk" class="tweak-input"  onclick="" type="checkbox"/> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" ><input type="hidden" name="' + data.DLG_ID + '" value="' + data.DLG_ID + '" />' + data.CARD_TEXT + '</td></tr>';
-                $('#dlgListTable').find('tbody').prepend(inputUttrHtml);
-
+                $('#dlgListTable').find('tbody').prepend(inputUttrHtml);                    
                 $('#addDialogClose').click();
             }
         }
     });
 }
 
-function addDialog(){
+function createDialog(){
 
     var entity = $('input[name=entity]').val();
     var idx = $('form[name=dialogLayout]').length;
@@ -773,6 +773,11 @@ function addDialog(){
         data: {'data' : array, 'entity' : entity},
         success: function(data) {
             alert('success');
+
+            var createDlgClone = $('#dialogPreview .dialogView').children().clone();          
+            $('#dialogRecommand').html('');
+            $('#dialogRecommand').append(createDlgClone);
+            $('#addDialogCancel').click();
         }
     });
 }
@@ -1177,10 +1182,12 @@ var $dlgForm;
 var $carouselForm;
 function openModalBox(target){
 
+    /*
     if ($('div[checked=checked]').length !== 1) {
         alert('Utterance를 1개 선택해야 합니다.');
         return;
     }
+    */
 
     //carousel clone 초기값 저장
     $insertForm = $('#commonLayout .insertForm').eq(0).clone();
@@ -1284,11 +1291,11 @@ function searchDialog() {
 
                 inputUttrHtml += '<div style="width: 405px; height: 85%; float:left; margin: 15px 20px;">';
                 inputUttrHtml += '<div style="height: 10%; width: 100%; z-index:5; background-color: #6f6c6c;">';
-                inputUttrHtml += '<div class="check-radio-tweak-wrapper2" type="checkbox">';
+                inputUttrHtml += '<div class="check-radio-tweak-wrapper2 searchDlgChk" type="checkbox">';
                 inputUttrHtml += '<input name="chksearch" class="tweak-input" type="checkbox"/>';
                 inputUttrHtml += '</div>';
                 inputUttrHtml += '</div>';
-                inputUttrHtml += '<div style="height: 90%; overflow: scroll; overflow-x: hidden; background-color:#e7e7e7; padding:10px;">';
+                inputUttrHtml += '<div style="height: 90%; overflow: scroll; overflow-x: hidden; background-color: rgb(241, 243, 246);; padding:10px;">';
 
                 for(var l = 0; l < val.length; l++){
                     var tmp = val[l];
@@ -1398,7 +1405,41 @@ function searchDialog() {
     });
 }
 
+// Search Dialogue 팝업창 
+// 다이얼로그 체크박스 단일 체크
+$(document).on('click', '.searchDlgChk', function() {
+
+    $('.searchDlgChk').not($(this)).each(function(){
+        $(this).removeAttr('checked');
+    });
+})
+
+function selectDialog() {
+
+    var rowNum = -1;
+    $("input[name=chksearch]").each(function(n) {
+        var chk = $("input[name=chksearch]").parent().eq(n).attr('checked');
+        if(chk == "checked") {
+            rowNum = n;
+        }
+    });
+
+    if(rowNum == -1) {
+
+        alert("다이얼로그를 선택해주세요");
+    } else {
+        var cloneDlg = $("input[name=chksearch]").parent().parent().eq(rowNum).next().children().clone();
+        $('#dialogRecommand').html('');
+        $('#dialogRecommand').append(cloneDlg);
+        $('#searchDialogCancel').click();
+    }
+
+}
+
+/*
 function searchSaveDialog() {
+
+    
     var entity = $('input[name=entity]').val();
 
     var rowNum;
@@ -1425,9 +1466,11 @@ function searchSaveDialog() {
             $("#searchDialogCancel").click();
         }
     });
+    
+
 
 }
-
+*/
 
 
 var carouselDivHtml = 
