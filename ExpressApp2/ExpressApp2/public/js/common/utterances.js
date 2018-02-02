@@ -1227,7 +1227,10 @@ function openModalBox(target){
         $(".insertForm #textLayout").css("display","block");
     }
 
-    selectGroup('searchLargeGroup');
+    if(target == "#search_dlg") {
+        
+        selectGroup('searchLargeGroup');
+    }
 }
 
 function wrapWindowByMask(){ //화면의 높이와 너비를 구한다. 
