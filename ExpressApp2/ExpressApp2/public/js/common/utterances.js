@@ -41,6 +41,17 @@ $(document).on('click', '#utterDelete', function() {
 
 $(document).ready(function(){
 
+    //add eneity mordal save btn check
+    $('#entityDefine, #entityValue').on('input',function(e){
+        if( $('#entityDefine').val() !== "" &&  $('#entityValue').val() !== "") {
+            $('#btnAddEntity').removeClass('disable');
+            $('#btnAddEntity').prop("disabled", false);
+        } else {
+            $('#btnAddEntity').addClass('disable');
+            $('#btnAddEntity').prop("disabled", true);
+        }   
+    });
+
     $("input[name=dlgChk]").bind('click',function(){
         $(this).each(function(){
             //
@@ -77,7 +88,6 @@ $(document).ready(function(){
 
             $("#iptUtterance").attr("readonly",false);
         }
-
     });
 
     // Utterance Learn
@@ -123,18 +133,24 @@ $(document).ready(function(){
     //다이얼로그 생성 모달 닫는 이벤트(초기화)
     $(".js-modal-close").click(function() {
         $('html').css({'overflow': 'auto', 'height': '100%'}); //scroll hidden 해제
+        $('#layoutBackground').hide();
+
         //$('#element').off('scroll touchmove mousewheel'); // 터치무브 및 마우스휠 스크롤 가능
 
-        $('#appInsertDes').val('');
-        $("#intentList option:eq(0)").attr("selected", "selected");
+        //$('#appInsertDes').val('');
+        //$("#intentList option:eq(0)").attr("selected", "selected");
         //$('#intentList').find('option:first').attr('selected', 'selected');
-        initMordal('intentList', 'Select Intent');
-        initMordal('entityList', 'Select Entity');
-        $('#dlgLang').find('option:first').attr('selected', 'selected');
-        $('#dlgOrder').find('option:first').attr('selected', 'selected');
-        $('#layoutBackground').hide();
+        //initMordal('intentList', 'Select Intent');
+        //initMordal('entityList', 'Select Entity');
+        //$('#dlgLang').find('option:first').attr('selected', 'selected');
+        //$('#dlgOrder').find('option:first').attr('selected', 'selected');
     });
-
+    //add entity mordal close event
+    $('#addEntityClose , #addEntityCancel').click(function(){
+        $('#layoutBackground').css('display','none');
+        $('#entityDefine').val("");  
+        $('#entityValue').val("");
+    });
     //utter 체크박스 전체선택 
     $('#allCheck').parent().click(function() {
         var checkedVal = false;
@@ -994,7 +1010,7 @@ function utterInput(queryText) {
     if (typeof queryText === 'string') {
         queryTextArr[0] = queryText;
     } else {  //'object'
-        queryTextArr = queryText;
+        queryTextArr = queryText.reverse();
     }
 
 
@@ -1536,7 +1552,7 @@ $(document).on('click', 'a[name=addCarouselBtn]', function(e){
 
 
 //** 모달창 */
-function openModalBox(target){
+function openModalEntity(target){
 
     // 화면의 높이와 너비를 변수로 만듭니다.
     var maskHeight = $(document).height();
@@ -1577,7 +1593,7 @@ function insertEntity(){
         data: $('#entityInsertForm').serializeObject(),
         success: function(data) {
             if(data.status == 200){
-                $('#addDialogClose').click();
+                $('#addEntityClose').click();
                 alert("추가하였습니다.");
                 var originalUtter = [];
                 $('input[name=hiddenUtter]').each(function() {
