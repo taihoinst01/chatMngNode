@@ -16,13 +16,32 @@ router.get('/', function (req, res) {
         req.session.appId = req.query.appId;
         req.session.subKey = luisConfig.subKey;
     }
+    var selectChannel = "";
+    selectChannel += "  SELECT ISNULL(CHANNEL,'') AS CHANNEL FROM TBL_HISTORY_QUERY \n";
+    selectChannel += "   WHERE REG_DATE > '08/28/2017 00:00:00' \n";
+    selectChannel += "GROUP BY CHANNEL \n";
     
-    res.render('board', {   
-        selMenu: req.session.menu,
-        appName: req.session.appName,
-        appId: req.session.appId,
-        subKey: req.session.subKey
-    } );    
+    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query(selectChannel)
+        }).then(result => {
+            let rows = result.recordset
+            
+            res.render('board', {   
+                selMenu: req.session.menu,
+                appName: req.session.appName,
+                appId: req.session.appId,
+                subKey: req.session.subKey,
+                channelList : rows
+            } );   
+            sql.close();
+        }).catch(err => {
+            res.status(500).send({ message: "${err}"})
+            sql.close();
+    });
+    
+    sql.on('error', err => {
+        sql.close();
+    })
     
 });
 
@@ -52,12 +71,7 @@ router.post('/intentScore', function (req, res) {
         }).catch(err => {
             res.status(500).send({ message: "${err}"})
             sql.close();
-        });
-    
-        sql.on('error', err => {
-            sql.close();
-        })
-        
+        });        
 });
 
 router.post('/getScorePanel', function (req, res) {
@@ -82,10 +96,6 @@ router.post('/getScorePanel', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
-
-        sql.on('error', err => {
-            sql.close();
-        })
 });
 
 router.post('/getOftQuestion', function (req, res) {
@@ -141,11 +151,6 @@ router.post('/getOftQuestion', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
-
-        sql.on('error', err => {
-            sql.close();
-        })
-
 });
 
 router.post('/nodeQuery', function (req, res) {
@@ -198,10 +203,6 @@ router.post('/nodeQuery', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
-
-        sql.on('error', err => {
-            sql.close();
-        })
 });
 
 
@@ -247,10 +248,6 @@ router.post('/firstQueryBar', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
-
-        sql.on('error', err => {
-            sql.close();
-        })
 });
 
 router.post('/firstQueryTable', function (req, res) {
@@ -304,10 +301,6 @@ router.post('/firstQueryTable', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
-
-        sql.on('error', err => {
-            sql.close();
-        })
 });
 
 
@@ -334,10 +327,6 @@ router.post('/getResponseScore', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
-
-        sql.on('error', err => {
-            sql.close();
-        })
 });
 
 router.post('/getQueryByEachTime', function (req, res) {
@@ -383,10 +372,6 @@ router.post('/getQueryByEachTime', function (req, res) {
           res.status(500).send({ message: "${err}"})
           sql.close();
         });
-
-        sql.on('error', err => {
-            sql.close();
-        })
 });
 function pad(n, width) {
     n = n + '';

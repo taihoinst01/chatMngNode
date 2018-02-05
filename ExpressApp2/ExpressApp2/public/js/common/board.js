@@ -55,15 +55,17 @@ $(document).ready(function () {
     google.charts.load('current', {packages: ['corechart', 'bar']});
     
 
-    google.charts.setOnLoadCallback(drawStatusOverview);
+    //google.charts.setOnLoadCallback(drawStatusOverview);
+    setTimeout("google.charts.setOnLoadCallback(drawStatusOverview);", 100);
     //google.charts.setOnLoadCallback(getScorePanel);
-
-
-    google.charts.setOnLoadCallback(getOftQuestion);
+    
+    //google.charts.setOnLoadCallback(getOftQuestion);
+    setTimeout("google.charts.setOnLoadCallback(getOftQuestion);", 150);
     //google.charts.setOnLoadCallback(getQueryByEachTime);
     //google.charts.setOnLoadCallback(drawNoneQuerylist);
-
+    
     //google.charts.setOnLoadCallback(getResponseScores);
+    setTimeout("google.charts.setOnLoadCallback(getResponseScores);", 200);
     //google.charts.setOnLoadCallback(drawFirstQueryTable);
     //google.charts.setOnLoadCallback(drawStuff);
 
@@ -73,11 +75,9 @@ $(document).ready(function () {
     google.charts.setOnLoadCallback(drawStatusOverview);
     google.charts.setOnLoadCallback(getScorePanel);
 
-
     google.charts.setOnLoadCallback(getOftQuestion);
     google.charts.setOnLoadCallback(getQueryByEachTime);
     google.charts.setOnLoadCallback(drawNoneQuerylist);
-
 
     google.charts.setOnLoadCallback(getResponseScores);
     google.charts.setOnLoadCallback(drawFirstQueryTable);
@@ -558,9 +558,7 @@ function getOftQuestion() {
         
     }).always(function(){
         google.charts.setOnLoadCallback(drawNoneQuerylist);
-    }).always(function(){
-        google.charts.setOnLoadCallback(getResponseScores);
-    });;
+    });
 }
 
 
