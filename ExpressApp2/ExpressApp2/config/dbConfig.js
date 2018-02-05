@@ -1,3 +1,4 @@
+
 var dbConfig = {
     user: 'taihoinst',
     password: 'taiho9788!',
@@ -9,3 +10,5 @@ var dbConfig = {
 };
 
 module.exports = dbConfig;
+
+

@@ -3,6 +3,7 @@ var express = require('express');
 var Client = require('node-rest-client').Client;
 var sql = require('mssql');
 var dbConfig = require('../config/dbConfig');
+var dbConnect = require('../config/dbConnect');
 var luisConfig = require('../config/luisConfig');
 var router = express.Router();
 
@@ -24,9 +25,51 @@ router.get('/', function (req, res) {
                 //console.log(data)
                 appList = data;
                 var listStr = 'SELECT APP_ID FROM TBL_LUIS_APP ';
+
+                dbConnect.getConnection(sql).then(pool => {
+                    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
+                        return pool.request().query(listStr)
+                        }).then(result => {
+                            let rows = result.recordset;
+                            console.log(rows);
+                            var newAppList = [];
+                            for (var i = 0; i < rows.length; i++) {
+                                for (var j=0; j<appList.length; j++) {
+                                    if (rows[i].APP_ID === appList[j].id) {
+                                        appList.splice(j,1);
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (appList.length > 0) {
+                                var appStr = "";
+                                var appRelationStr = "";
+                                var loginId = req.session.sid;
+                                for (var i=0; i<appList.length; i++) {
+                                    appStr += "INSERT INTO TBL_LUIS_APP (APP_NUM, SUBSC_KEY, APP_ID, VERSION, APP_NAME, OWNER_EMAIL, REG_DT, CULTURE, DESCRIPTION) ";
+                                    appStr += "VALUES ((SELECT isNULL(MAX(APP_NUM),0) FROM TBL_LUIS_APP)+1, '" + subKey + "', '" + appList[i].id + "', " +
+                                        " '" + appList[i].activeVersion + "', '" + appList[i].name + "', '" + appList[i].ownerEmail + "', " +
+                                        " convert(VARCHAR(33), '" + appList[i].createdDateTime + "', 126), '" + appList[i].culture + "', '" + appList[i].description + "'); ";
+                                }
+                                //convert(datetime, '2008-10-23T18:52:47.513', 126)
+                                //let insertApp = await pool.request().query(appStr);
+                                pool.request().query(appStr)
+                            }
+
+                            res.redirect("/list");
+                            
+                          sql.close();
+                        }).catch(err => {
+                          console.log(err);
+                          sql.close();
+                        });
+
+                /*    
                 (async () => {
                     try {
-                        let pool = await sql.connect(dbConfig);
+                        //let pool = await sql.connect(dbConfig);
+                        let pool = dbConfig.getConnection(sql);
                         let listVal = await pool.request().query(listStr);
                         let rows = listVal.recordset;
 
@@ -67,11 +110,15 @@ router.get('/', function (req, res) {
                 sql.on('error', err => {
                     // ... error handler
                 })
-
+                
             });
+            */
+            })    
+
         }catch(e){
             console.log(e);
         }
+        
     }
     else{
         res.render('login');   
@@ -87,31 +134,35 @@ router.get('/list', function (req, res) {
                       " WHERE 1=1 " +
                       "   AND A.APP_ID = B.APP_ID " +
                       "   AND B.USER_ID = '" + loginId + "'; ";
-    (async () => {
-        try {
-            let pool = await sql.connect(dbConfig);
-            let userListArr = await pool.request().query(userListStr);
-            let rows = userListArr.recordset;
 
+
+    dbConnect.getConnection(sql).then(pool => {
+    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query(userListStr)
+        }).then(result => {
+            let rows = result.recordset
+            
             res.render('index',
             {
                 title: 'Express',
                 selMenu: req.session.selMenu,
                 list: rows
             });
-            
-        } catch (err) {
-            console.log(err);
-            //res.redirect("/list");
-        } finally {
             sql.close();
-        }
-    })()
-
-    sql.on('error', err => {
-        // ... error handler
-    })
+        }).catch(err => {
+            res.status(500).send({ message: "${err}"})
+            sql.close();
+    });
     
+    sql.on('error', err => {
+        sql.close();
+    })
+                        
+
+
+
+
+
 });
 
 //Luis app insert
