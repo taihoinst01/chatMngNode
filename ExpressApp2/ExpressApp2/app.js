@@ -18,7 +18,7 @@ var learning = require('./routes/learning/learning');
 
 var app = express();
 
-process.setMaxListeners(20);
+process.setMaxListeners(0);
 
 // view engine setup test ydy pjs
 app.set('views', path.join(__dirname, 'views'));
