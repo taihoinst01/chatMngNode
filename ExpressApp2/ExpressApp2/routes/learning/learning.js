@@ -23,41 +23,40 @@ router.post('/recommend', function (req, res) {
     var selectType = req.body.selectType;
     var currentPage = req.body.currentPage;
 
-//-------------------------------------------
-//-------------------------------------------
-    var entitiesQueryString = "SELECT TBZ.* "+
-        "FROM (SELECT TBY.* "+
-        "FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) AS NUM, "+
-        "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "+
-        "CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX, "+
-        "TBX.* "+
-        "FROM ( "+
-        "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
-        "FROM TBL_QUERY_ANALYSIS_RESULT " + 
-        "WHERE RESULT='D'";
-        
-        if(selectType == 'yesterday'){
-            entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) like '%'+(select CONVERT(CHAR(10), (select dateadd(day,-1,getdate())), 23)) + '%'";
-        }else if(selectType == 'lastWeek'){
-            entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) >= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, -1)), 23))";
-            entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) <= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, 5)), 23))";
-        }else if(selectType == 'lastMonth'){
-            entitiesQueryString += " AND (CONVERT(CHAR(7), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(7), (select dateadd(month,-1,getdate())), 23)) + '%'";
-        }else{
-        }
+    (async () => {
+        try {
+            var entitiesQueryString = "SELECT TBZ.* "+
+            "FROM (SELECT TBY.* "+
+            "FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) AS NUM, "+
+            "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "+
+            "CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX, "+
+            "TBX.* "+
+            "FROM ( "+
+            "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
+            "FROM TBL_QUERY_ANALYSIS_RESULT " + 
+            "WHERE RESULT='D'";
+            
+            if(selectType == 'yesterday'){
+                entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) like '%'+(select CONVERT(CHAR(10), (select dateadd(day,-1,getdate())), 23)) + '%'";
+            }else if(selectType == 'lastWeek'){
+                entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) >= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, -1)), 23))";
+                entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) <= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, 5)), 23))";
+            }else if(selectType == 'lastMonth'){
+                entitiesQueryString += " AND (CONVERT(CHAR(7), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(7), (select dateadd(month,-1,getdate())), 23)) + '%'";
+            }else{
+            }
 
-        entitiesQueryString += " ) TBX) TBY) TBZ";
-        entitiesQueryString += " WHERE PAGEIDX = @currentPage";
-        entitiesQueryString += " ORDER BY NUM";
+            entitiesQueryString += " ) TBX) TBY) TBZ";
+            entitiesQueryString += " WHERE PAGEIDX = @currentPage";
+            entitiesQueryString += " ORDER BY NUM";
 
-
-
-    dbConnect.getConnection(sql).then(pool => {
-    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
-        return pool.request().input('currentPage', sql.Int, currentPage).query(entitiesQueryString)
-        }).then(result1 => {
+            let pool = await dbConnect.getConnection(sql);
+            let result1 = await pool.request()
+                .input('currentPage', sql.Int, currentPage)
+                .query(entitiesQueryString)
             let rows = result1.recordset;
 
+            
             var result = [];
             for(var i = 0; i < rows.length; i++){
                 var item = {};
@@ -82,17 +81,9 @@ router.post('/recommend', function (req, res) {
                             luisQueryString += "OR LUIS_ENTITIES LIKE '%" + entityArr[j] + "%'";
                         }
                     }
-
-                    //******** */
-
-                    dbConnect.getConnection(sql).then(pool=> 
-                        {
-                            return pool.request().query(luisQueryString)
-                        }
-                    ).then(luisIntentList => {
-                        item.intentList = luisIntentList.recordset
-                    })
-                    //******** */
+                    let luisIntentList = await pool.request()
+                    .query(luisQueryString)
+                    item.intentList = luisIntentList.recordset
                 }
                 result.push(item);
             }
@@ -102,17 +93,18 @@ router.post('/recommend', function (req, res) {
             }else{
                 res.send({list : result});
             }
-          sql.close();
-        }).catch(err => {
-          res.status(500).send({ message: "${err}"})
-          sql.close();
-        });
 
-        sql.on('error', err => {
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
             sql.close();
-        })
+        }
+    })()
 
-    
+    sql.on('error', err => {
+        // ... error handler
+    })
 });
 
 router.get('/utterances', function (req, res) {
@@ -202,7 +194,7 @@ router.post('/searchGroup', function (req, res) {
     (async () => {
         try {
 
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
 
             var searchGroupQuery;
             if(group == 'searchMedium') {
@@ -280,7 +272,7 @@ router.post('/selectSmallGroup', function (req, res) {
                                  "WHERE PAGEIDX = @currentPage";
 
             //var searchMidGroup = "select * from TBL_DLG where GroupS = @groupName";
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(selectSmallGroup);
             let rows = result1.recordset;
             
@@ -391,7 +383,7 @@ router.post('/dialogs2', function (req, res) {
                     dlg_desQueryString+= "and LUIS_ENTITIES like '%" + searchText + "%' ";
                 }
                 dlg_desQueryString += ") tbp WHERE PAGEIDX = @currentPage";
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(dlg_desQueryString);
             let rows = result1.recordset;
             
@@ -469,7 +461,7 @@ router.post('/dialogs', function (req, res) {
             }      
                 dlg_desQueryString += "and DLG_API_DEFINE like '%" + sourceType + "%') tbp " +
                                       "WHERE PAGEIDX = @currentPage";
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(dlg_desQueryString);
             let rows = result1.recordset;
             
@@ -536,7 +528,7 @@ router.post('/utterInputAjax', function(req, res, next) {
 
     (async () => {
         try {
-            let pool = await sql.connect(dbConfig)
+            let pool = await dbConnect.getConnection(sql);
             
             //res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2, commonEntities: commonEntities});
             for (var i=0; i< (typeof iptUtterance !=='string'? iptUtterance.length : 1); i++) {
@@ -678,7 +670,7 @@ router.post('/entities', function (req, res) {
                                     + "tbl_common_entity_define where api_group != 'OCR TEST') tbp                          "
                                     + "WHERE PAGEIDX = @currentPage                                                         "
             
-            let pool = await sql.connect(dbConfig)
+            let pool = await dbConnect.getConnection(sql);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(entitiesQueryString);
 
             let rows = result1.recordset;
@@ -727,7 +719,7 @@ router.post('/addEntityValue', function (req, res) {
 
             var insertQueryString1 = "insert into TBL_COMMON_ENTITY_DEFINE(ENTITY, ENTITY_VALUE, API_GROUP) values(@entityDefine, @addEntityValue, @apiGroup)";
                       
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
 
             let result1 = await pool.request()
                 .input('entityDefine', sql.NVarChar, entityDefine)
@@ -763,7 +755,7 @@ router.post('/insertEntity', function (req, res) {
             var insertQueryString1 = 'INSERT INTO tbl_common_entity_define(ENTITY, ENTITY_VALUE, API_GROUP) VALUES ' +
             '(@entityDefine, @entityValue, @apiGroup)';
             
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
 
             let result1 = await pool.request()
                 .input('entityDefine', sql.NVarChar, entityDefine)
@@ -808,7 +800,7 @@ router.post('/searchEntities', function (req, res) {
                                     + " ) tbp                                                                               "
                                     + "WHERE PAGEIDX = 1                                                                    ";
             
-            let pool = await sql.connect(dbConfig)
+            let pool = await dbConnect.getConnection(sql);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).input('searchEntities', sql.NVarChar, searchEntities).query(entitiesQueryString);
 
             let rows = result1.recordset;
@@ -950,7 +942,7 @@ router.post('/selectDlgListAjax', function (req, res) {
 
     (async () => {
         try {
-            let pool = await sql.connect(dbConfig)
+            let pool = await dbConnect.getConnection(sql);
 
             let dlgTextResult = await pool.request()
                 .query(dlgText);
@@ -1139,7 +1131,7 @@ router.post('/learnUtterAjax', function (req, res) {
     
     (async () => {
         try {
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
             let result1;
             for(var i = 0 ; i < dlgId.length; i++) {
                 result1 = await pool.request()
@@ -1177,7 +1169,7 @@ router.post('/deleteRecommend',function(req,res){
     var arryseq = seqs.split(',');
         (async () => {
         try{
-                let pool = await sql.connect(dbConfig)
+                let pool = await dbConnect.getConnection(sql);
                 for(var i = 0 ; i < arryseq.length; i ++)
                 {
                    var deleteQueryString1 = "UPDATE TBL_QUERY_ANALYSIS_RESULT SET RESULT='T' WHERE seq='"+arryseq[i]+"'";
@@ -1202,7 +1194,7 @@ router.post('/selectGroup',function(req,res){
     var selectValue2 = req.body.selectValue2;
     (async () => {
     try{
-            let pool = await sql.connect(dbConfig)
+            let pool = await dbConnect.getConnection(sql);
             var queryText = "";
             if(selectId == "searchLargeGroup") {
                 queryText = "SELECT DISTINCT GroupL AS 'GROUP' FROM TBL_DLG WHERE GroupL IS NOT NULL";
@@ -1355,7 +1347,7 @@ router.post('/searchDialog',function(req,res){
 
     (async () => {
         try{
-            let pool = await sql.connect(dbConfig)
+            let pool = await dbConnect.getConnection(sql);
 
             let dlgTextResult = await pool.request()
                 .query(dlgText);
@@ -1459,7 +1451,7 @@ router.post('/addDialog',function(req,res){
 
     (async () => {
         try{
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
             var selectDlgId = 'SELECT ISNULL(MAX(DLG_ID)+1,1) AS DLG_ID FROM TBL_DLG';
             var selectTextDlgId = 'SELECT ISNULL(MAX(TEXT_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_TEXT';
             var selectCarouselDlgId = 'SELECT ISNULL(MAX(CARD_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_CARD';
@@ -1609,5 +1601,4 @@ router.post('/addDialog',function(req,res){
     })
 
 });
-
 module.exports = router;
