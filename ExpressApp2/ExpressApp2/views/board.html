@@ -21,7 +21,7 @@
     <!-- Google Chart 끝 -->
     <script type="text/javascript" src="/js/common/board.js"></script>
     
-    <  
+    
     <style type="text/css">
         a#MOVE_TOP_BTN {
             position: fixed;
@@ -91,7 +91,14 @@
                                 <p class="d_tit01">채널</p>
                                 <select class="inbox02" id="selChannel" name="selChannel" style="width: 200px">
                                     <option value="all">모두</option>
-                                </select>
+                                    <% if (channelList) { %>
+                                    <%      for (var i=0; i <channelList.length; i++) { %>
+                                                <option value="<%=channelList[i].CHANNEL%>"><%=channelList[i].CHANNEL%></option>
+                                    <%      } 
+                                       } else { %>
+                                        
+                                    <% } %>
+                                </select> 
                             </div>
                             </form>
                          </div>

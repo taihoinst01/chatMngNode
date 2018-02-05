@@ -209,7 +209,7 @@ button{cursor:pointer;}
   display: inline-block;
   width:10px;
   height:10px;
-  background:#6bb700;
+  background:gray; /* #6bb700 */
   border-radius:5px;
   margin-left: -5px;
   margin-right: 5px;
