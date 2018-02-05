@@ -69,7 +69,7 @@
                     <thead>
                         <tr>
                             <th class="txt_center" style="width: 15%">
-                                <select name="sourceType" id="sourceType">
+                                <select name="sourceType" id="tblSourceType">
                                     <option value="D" selected="selected">Common</option>
                                     <option value="api quot">Api Quot</option>
                                     <option value="api testdrive">Api Testdrive</option>
@@ -108,140 +108,241 @@
         
     </div>
         <hr>
-
-        <!--신규 다이얼로그 등록 -->
+    <!--신규 다이얼로그 등록 -->
     <div id="create_dlg" class="modal_box w900" style="height: auto !important">
-        <header> <a href="#" id="addDialogClose" class="js-modal-close close">×</a>
-          <h3>Create new Dialogue Set</h3><!-- 신규 다이얼로그 등록 -->
-        </header>
-    
-        <!-- form start -->
-        <form name="appInsertForm" id="appInsertForm" method="post">
-    
-        <div id="dialogSet" class="modal-body" style="float:left; width: 50%;">
-            <p class="texcon03">Source Type <span>(required) </span></p>
-            <p><select name="sourceType" class="inbox02" id="sourceType" style="width:100%" >
-                <option value="Common" selected>Common</option>
-                <option value="Api Quot">Api Quot</option>
-                <option value="Api Testdrive">Api Testdrive</option>
-            </select></p>
-
-            <p class="texcon03">Group <span>(required) </span></p>
-            <div class="group-float-left">
-                <p class="texcon03">대그룹</p>
-                <p><select name="largeGroup" class="inbox02" id="largeGroup" style="width: 100%;" >
-                    <option value="" selected>largeGroup1</option>
-                    <option value="">largeGroup2</option>
-                    <option value="">largeGroup3</option>
-                </select></p>
-            </div>
-            <div class="group-float-left">
-                <p class="texcon03">중그룹</p>
-                <p><select name="mediumGroup" class="inbox02" id="mediumGroup" style="width: 100%;" >
-                    <option value="" selected>mediumGroup1</option>
-                    <option value="">mediumGroup2</option>
-                    <option value="">mediumGroup3</option>
-                </select></p>
-            </div>
-            <div class="group-float-left-last">
-                <p class="texcon03">소그룹</p>
-                <p><select name="smallGroup" class="inbox02" id="smallGroup" style="width: 100%;" >
-                    <option value="" selected>smallGroup1</option>
-                    <option value="">smallGroup2</option>
-                    <option value="">smallGroup3</option>
-                </select></p>
-            </div>
-            <div class="clear-both"></div>
-
-            <p class="texcon03">Description  <span>(optional) </span></p>
-            <p><textarea name="description" id="description" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup=""></textarea></p>
-
-            <div class="layout-float-left">
-                <p class="texcon03">Dialogue Type <span>(required) </span></p>
-                <p><select name="dlgType" class="inbox02" id="dlgType" style="width:100%" >
-                    <option value="2" selected>Text</option>
-                    <option value="3">Carousel</option>
-                    <option value="4">Media</option>
-                </select></p>
-            </div>
-            <div class="layout-float-left-last">
-                <p class="texcon03">Dialogue Order <span>(required) </span></p>
-                <p><select name="dialogOrderNo" class="inbox02" id="dialogOrderNo" style="width:100%" >
-                    <option value="1" selected>1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                </select></p>
-            </div>
-            <div class="clear-both"></div>
-
-            <p class="texcon03">Dialogue Text  <span>(required) </span></p>
-            <p><textarea name="dialogText" id="dialogText" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup="dialogValidation('dialogInsert');"></textarea></p>
-            
-            <!-- carousal 일 경우 card 순서 input box 추가 layout -->
-            <div id="cardLayout" style="display:none;">
-                <p class="texcon03">Card Order <span>(required) </span></p>
-                <p><select name="cardOrderNo" class="inbox02" id="cardOrderNo" style="width:100%" >
-                    <option value="1" selected>1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                </select></p>
-            </div>
-
-            <!-- media , carousal 일 경우 input box 추가 layout -->
-            <div id="mediaCarouselLayout" style="display:none;">
-                <div class="layout-float-left">
-                    <p class="texcon03">Button Name <span>(optional) </span></p>
+            <header> <a href="#" id="addDialogClose" class="js-modal-close close">×</a>
+              <h3>Create new Dialogue Set</h3><!-- 신규 다이얼로그 등록 -->
+            </header>
+        
+            <!-- form start -->
+            <form name="appInsertForm" id="appInsertForm" method="post">
+        
+            <div id="dialogSet" class="modal-body" style="float:left; width: 50%;">
+                <p class="texcon03">Group <span>(required) </span></p>
+                <div class="group-float-left">
+                    <div class="group-float-left" style="width: 45%">
+                        <p class="texcon03">대그룹</p>
+                    </div>
+                    <div class="group-float-left-last">
+                        <a href="#" class="btn b02  btn-small" id="btnCreateLgroup" style="padding:0 5px 0 5px; height:20px; line-height:15px; margin:6px 0 0 65px;">new</a>
+                    </div>
                     <p>
-                        <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
-                        <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" placeholder="Input name.." />
-                        <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" placeholder="Input name.." />
-                        <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" placeholder="Input name.." />
+                        <select name="largeGroup" class="inbox02" id="largeGroup" style="width:100%;">
+                            <option value="" selected>largeGroup1</option>
+                            <option value="">largeGroup2</option>
+                            <option value="">largeGroup3</option>
+                        </select>
+                        <input type="text" name="largeGroupEdit" id="largeGroupEdit" class="inbox02" style="width:100%; display:none;"/>
                     </p>
                 </div>
-                <div class="layout-float-left-last">
-                    <p class="texcon03">Button Content <span>(optional) </span></p>
-                    <p>
-                        <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
-                        <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." />
-                        <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." />
-                        <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" placeholder="Input contents.." />
-                    </p>
+                <div class="group-float-left">
+                    <p class="texcon03">Source Type <span>(required) </span></p>
+                    <p><select name="sourceType" class="inbox02" id="sourceType" style="width:100%" >
+                        <option value="COMMON" selected>COMMON</option>
+                        <option value="API">API</option>
+                    </select>
+                </p>
                 </div>
+    
                 <div class="clear-both"></div>
-
-                <p class="texcon03">Image Url <span>(optional) </span></p>
-                <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:100%" placeholder="Input image url.." /></p>
+                <p class="texcon03">Description  <span>(required) </span></p>
+                <p><textarea name="description" id="description" cols="" rows="3" style="width:100%; resize:none;" placeholder="Input text.." onkeyup=""></textarea></p>
+            
+            </form>
+    
+                <div id="commonLayout">
+                    <div class="insertFormWrap" style="overflow-y:scroll; overflow-x:hidden; height:400px;">
+                        <div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">
+                            <form name="dialogLayout" id="dialogLayout">
+                            <p class="texcon03">Dialogue Type <span>(required) </span></p>
+                            <p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >
+                                <option value="2" selected>Text</option>
+                                <option value="3">Carousel</option>
+                                <option value="4">Media</option>
+                            </select></p>
+                            <div class="clear-both"></div>
+    
+                            
+                            </form>
+                        </div>
+    
+                        <div id="textLayout" style="display:none;">
+                            <p class="texcon03">Dialogue Title <span>(required) </span></p>
+                            <p><input name="dialogTitle" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." onkeyup="writeDialogTitle(this);" /></p>
+    
+                            <p class="texcon03">Dialogue Text  <span>(required) </span></p>
+                            <p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation('dialogInsert');"></textarea></p>
+                        </div>
+    
+                        <div id="carouselLayout" style="display:none;">
+                            <p class="texcon03">Image Url <span>(required) </span></p>
+                            <p><input name="imgUrl" type="text" class="inbox02"  style="width:95%" placeholder="Input image url.." onkeyup="writeCarouselImg(this);" /></p><!--id="imgUrl"-->
+    
+                            <div class="layout-float-left" style="width:20%;">
+                                <p class="texcon03">Btn Type </p>
+                                <p>
+                                    <select name="btn1Type" class="inbox02" id="btn1Type" style="width:100%; height: 37px !important; margin: 1.5px 0 1.5px 0;" >
+                                        <option value="imBack" selected>imBack</option>
+                                        <option value="openURL">openURL</option>
+                                    </select>
+                                    <select name="btn2Type" class="inbox02" id="btn2Type" style="width:100%; height: 37px !important; margin: 1.5px 0 1.5px 0;; display:none" >
+                                        <option value="imBack" selected>imBack</option>
+                                        <option value="openURL">openURL</option>
+                                    </select>
+                                    <select name="btn3Type" class="inbox02" id="btn3Type" style="width:100%; height: 37px !important; margin: 1.5px 0 1.5px 0;; display:none" >
+                                        <option value="imBack" selected>imBack</option>
+                                        <option value="openURL">openURL</option>
+                                    </select>
+                                    <select name="btn4Type" class="inbox02" id="btn4Type" style="width:100%; height: 37px !important; margin: 1.5px 0 1.5px 0;; display:none" >
+                                        <option value="imBack" selected>imBack</option>
+                                        <option value="openURL">openURL</option>
+                                    </select>
+                                </p>
+                                <p>
+                                    <a href="#" class="btn" style="margin:2px 0 5px 0; padding: 0 18px 0 19px;" name="carouseBtn"> Add Btn </a>
+                                </p>
+                            </div>
+                            <div class="layout-float-left">
+                                <p class="texcon03">Btn Name <span>(optional) </span></p>
+                                <p>
+                                    <input name="cButtonName1" type="text" class="inbox02 btnBox" style="width:95%;" placeholder="Input name.." />
+                                    <input name="cButtonName2" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input name.." />
+                                    <input name="cButtonName3" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input name.." />
+                                    <input name="cButtonName4" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input name.." />
+                                </p>
+                            </div>
+                            <div class="layout-float-left-last">
+                                <p class="texcon03">Btn Content <span>(optional) </span></p>
+                                <p>
+                                    <input name="cButtonContent1" type="text" class="inbox02 btnBox" style="width:95%;" placeholder="Input contents.." />
+                                    <input name="cButtonContent2" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input contents.." />
+                                    <input name="cButtonContent3" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input contents.." />
+                                    <input name="cButtonContent4" type="text" class="inbox02 btnBox" style="width:95%; display:none;" placeholder="Input contents.." />
+                                </p>
+                            </div>
+                            <div class="layout-float-left" style="float: right;">
+                                <p class="texcon03" style="margin-left: 36px;">Carousel Add</p>
+                                <p style="margin-left: 75px;"><a href="#" class="btn" style="margin:2px 0 5px 0;" name="addCarouselBtn">Add</a></p>
+                            </div>
+                            <div class="clear-both"></div>
+                        </div>
+    
+                        <div id="mediaLayout" style="display:none;">
+                            <p class="texcon03">Image Url <span>(optional) </span></p>
+                            <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:95%;" placeholder="Input image url.." /></p>
+    
+                            <p class="texcon03">Media Url <span>(optional) </span></p>
+                            <p><input name="mediaUrl" type="text" class="inbox02" id="mediaUrl" style="width:95%;" placeholder="Input media url.." /></p>
+    
+                            <div class="layout-float-left">
+                                <p class="texcon03">Button Name <span>(optional) </span></p>
+                                <p> 
+                                    <input name="mButtonName1" type="text" class="inbox02 btnBox" id="buttonName1" style="width:95%;" placeholder="Input name.." />
+                                    <input name="mButtonName2" type="text" class="inbox02 btnBox" id="buttonName2" style="width:95%; display:none;" placeholder="Input name.." />
+                                    <input name="mButtonName3" type="text" class="inbox02 btnBox" id="buttonName3" style="width:95%; display:none;" placeholder="Input name.." />
+                                    <input name="mButtonName4" type="text" class="inbox02 btnBox" id="buttonName4" style="width:95%; display:none;" placeholder="Input name.." />
+                                    <button class="btn" style="margin:2px 0 5px 0" >AddButton</button>
+                                </p>
+                            </div>
+                            <div class="layout-float-left-last">
+                                <p class="texcon03">Button Content <span>(optional) </span></p>
+                                <p>
+                                    <input name="mButtonContent1" type="text" class="inbox02 btnBox" id="mButtonContent1" style="width:95%" placeholder="Input contents.." />
+                                    <input name="mButtonContent2" type="text" class="inbox02 btnBox" id="mButtonContent2" style="width:95%; display:none;" placeholder="Input contents.." />
+                                    <input name="mButtonContent3" type="text" class="inbox02 btnBox" id="mButtonContent3" style="width:95%; display:none;" placeholder="Input contents.." />
+                                    <input name="mButtonContent4" type="text" class="inbox02 btnBox" id="mButtonContent4" style="width:95%; display:none;" placeholder="Input contents.." />
+                                </p>
+                            </div>
+                            <div class="clear-both"></div>
+                        </div>
+                        
+                        <!-- carousal 일 경우 card 순서 input box 추가 layout -->
+                        <div id="cardLayout" style="display:none;">
+                            <p class="texcon03">Card Order <span>(required) </span></p>
+                            <p><select name="cardOrderNo" class="inbox02" id="cardOrderNo" style="width:100%" >
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                            </select></p>
+                        </div>
+    
+                        <!-- media , carousal 일 경우 input box 추가 layout -->
+                        <div id="mediaCarouselLayout" style="display:none;">
+                            <div class="layout-float-left">
+                                <p class="texcon03">Button Name <span>(optional) </span></p>
+                                <p>
+                                    <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
+                                    <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" placeholder="Input name.." />
+                                    <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" placeholder="Input name.." />
+                                    <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" placeholder="Input name.." />
+                                </p>
+                            </div>
+                            <div class="layout-float-left-last">
+                                <p class="texcon03">Button Content <span>(optional) </span></p>
+                                <p>
+                                    <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
+                                    <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." />
+                                    <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." />
+                                    <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" placeholder="Input contents.." />
+                                </p>
+                            </div>
+                            <div class="clear-both"></div>
+    
+                            <p class="texcon03">Image Url <span>(optional) </span></p>
+                            <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:100%" placeholder="Input image url.." /></p>
+                        </div>
+                        <!--// media , carousal 일 경우 input box 추가 layout -->
+    
+                        <div class="layout-float-left">
+                            <p class="texcon03">Dialogue Add</p>
+                            <p><button class="btn margin0 w82" id="addDialogBtn">Add</button></p>
+                        </div>
+                        <div class="clear-both"></div>
+                    </div>
+                </div>
+    
+    
+                <div id="apiLayout" style="display:none;">
+                    <p class="texcon03">API Name<span>(optional) </span></p>
+                    <p><input type="text" name="apiName" id="apiName" class="inbox02" style="width:100%"/></p>
+                    <p class="texcon03">API Url <span>(optional) </span></p>
+                    <p><input type="text" name="apiUrl" id="apiUrl" class="inbox02" style="width:100%"/></p>
+                </div>
+                
             </div>
-            <!--// media , carousal 일 경우 input box 추가 layout -->
-
-            <div class="layout-float-left">
-                <p class="texcon03">Dialogue Add</p>
-                <p><button class="btn margin0 w82" id="addDialogBtn">Add</button></p>
+            <div id="dialogPreview" style="float:left; width: 47%; overflow: auto; margin:0 0 0 10px; border: 1px solid #ccc; background: #f1f3f6; padding: 5px;">
+                <div class="dialogView">
+                    <div class="wc-message wc-message-from-bot" style="width:80%;">
+                        <div class="wc-message-content">
+                            <svg class="wc-message-callout"></svg>
+                            <div>
+                                <div class="format-markdown">
+                                    <div class="textMent">
+                                        <p>
+                                            입력해주세요...
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="clear-both"></div>
             
+            <!-- form end -->
+        
+            <footer>
+              <a href="#" class="btn" id="btnAddDlg" onclick="createDialog();">Create</a>
+              <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel">Cancel</a>
+            </footer>
+        
         </div>
-    	<div id="dialogPreview" style="float:left; width: 47%; overflow: auto; margin:0 0 0 10px; border: 1px solid #ccc; background: #f1f3f6; padding: 5px;">
-        </div>
-        <div class="clear-both"></div>
-        </form>
-        <!-- form end -->
-    
-        <footer>
-          <button class="btn disable" id="btnAddDlg" onclick="insertDialog()">Save</button>
-          <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel">Cancel</a>
-        </footer>
-    
-    </div>
-    <!--//신규 다이얼로그 등록 -->
+        <!--//신규 다이얼로그 등록 -->    
 
     <div id="layoutBackground" ></div>
     <div class="mask"></div>  
