@@ -3,6 +3,7 @@
 var express = require('express');
 var sql = require('mssql');
 var dbConfig = require('../../config/dbConfig');
+var dbConnect = require('../../config/dbConnect');
 var paging = require('../../config/paging');
 var util = require('../../config/util');
 var luisConfig = require('../../config/luisConfig');
@@ -20,7 +21,7 @@ router.get('/', function (req, res) {
     selectChannel += "  SELECT ISNULL(CHANNEL,'') AS CHANNEL FROM TBL_HISTORY_QUERY \n";
     selectChannel += "   WHERE REG_DATE > '08/28/2017 00:00:00' \n";
     selectChannel += "GROUP BY CHANNEL \n";
-    dbConfig.getConnection(sql).then(pool => {
+    dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectChannel)
         }).then(result => {
@@ -61,7 +62,7 @@ router.post('/intentScore', function (req, res) {
     selectQuery += "WHERE	REPLACE(REPLACE(LOWER(A.CUSTOMER_COMMENT_KR),'.',''),'?','') = B.QUERY \n";
     selectQuery += "AND		REG_DATE > '07/19/2017 00:00:00' \n";
     selectQuery += "GROUP BY LUIS_INTENT, CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) \n";
-    dbConfig.getConnection(sql).then(pool => {
+    dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -85,7 +86,7 @@ router.post('/getScorePanel', function (req, res) {
         selectQuery += "      / (SELECT CAST(COUNT(RESULT) AS FLOAT) FROM TBL_QUERY_ANALYSIS_RESULT WHERE RESULT='D') * 100, 2) * 100) ) AS SEARCH_AVG \n";
         selectQuery += "    , (SELECT MAX(B.CNT) FROM (SELECT COUNT(*) AS CNT FROM TBL_HISTORY_QUERY GROUP BY USER_NUMBER ) B) AS MAX_QRY  \n";
         selectQuery += "FROM   TBL_HISTORY_QUERY \n";
-    dbConfig.getConnection(sql).then(pool => {
+    dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -140,7 +141,7 @@ router.post('/getOftQuestion', function (req, res) {
     selectQuery += ") AA\n";
     selectQuery += "WHERE RESULT <> '' AND RESULT IN ('H','S')\n";
     selectQuery += "ORDER BY 질문수 DESC, 날짜 DESC\n";
-    dbConfig.getConnection(sql).then(pool => {
+    dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -194,7 +195,7 @@ router.post('/nodeQuery', function (req, res) {
             selectQuery += "WHERE RESULT = '' OR RESULT IN ('D','N') \n";
             selectQuery += "ORDER BY queryCnt DESC, queryDate DESC; \n";
     
-    dbConfig.getConnection(sql).then(pool => {
+    dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -241,7 +242,7 @@ router.post('/firstQueryBar', function (req, res) {
         selectQuery += ") A \n";
         selectQuery += "GROUP BY INTENT, 날짜, 채널 \n";
     
-    dbConfig.getConnection(sql).then(pool => {
+    dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -296,7 +297,7 @@ router.post('/firstQueryTable', function (req, res) {
         selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_MEDIA) ME \n";
         selectQuery += "    ON DL.DLG_ID = ME.DLG_ID \n";
     
-    dbConfig.getConnection(sql).then(pool => {
+    dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -323,7 +324,7 @@ router.post('/getResponseScore', function (req, res) {
         selectQuery += "group by USER_NUMBER \n";
         selectQuery += ") A \n";
     
-    dbConfig.getConnection(sql).then(pool => {
+    dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -354,7 +355,7 @@ router.post('/getQueryByEachTime', function (req, res) {
         selectQuery += "ORDER BY TIME; \n";
 
 
-    dbConfig.getConnection(sql).then(pool => {
+    dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {

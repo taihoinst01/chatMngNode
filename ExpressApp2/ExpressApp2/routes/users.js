@@ -3,6 +3,7 @@ var express = require('express');
 var crypto = require('crypto');
 var sql = require('mssql');
 var dbConfig = require('../config/dbConfig');
+var dbConnect = require('../config/dbConnect');
 var router = express.Router();
 
 var key = 'taiho123!@#$';
@@ -30,7 +31,7 @@ router.post('/login', function (req, res) {
     var cipheredOutput = cipher.final('base64');
     console.log(cipheredOutput);
     */
-    dbConfig.getConnection(sql).then(pool => {
+    dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query("SELECT USER_ID, SCRT_NUM FROM TB_USER_M WHERE USER_ID = '" + userId +"'")
         }).then(result => {

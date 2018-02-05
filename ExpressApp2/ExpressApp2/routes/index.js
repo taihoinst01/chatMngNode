@@ -3,6 +3,7 @@ var express = require('express');
 var Client = require('node-rest-client').Client;
 var sql = require('mssql');
 var dbConfig = require('../config/dbConfig');
+var dbConnect = require('../config/dbConnect');
 var luisConfig = require('../config/luisConfig');
 var router = express.Router();
 
@@ -25,7 +26,7 @@ router.get('/', function (req, res) {
                 appList = data;
                 var listStr = 'SELECT APP_ID FROM TBL_LUIS_APP ';
 
-                dbConfig.getConnection(sql).then(pool => {
+                dbConnect.getConnection(sql).then(pool => {
                     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
                         return pool.request().query(listStr)
                         }).then(result => {
@@ -135,7 +136,7 @@ router.get('/list', function (req, res) {
                       "   AND B.USER_ID = '" + loginId + "'; ";
 
 
-    dbConfig.getConnection(sql).then(pool => {
+    dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(userListStr)
         }).then(result => {

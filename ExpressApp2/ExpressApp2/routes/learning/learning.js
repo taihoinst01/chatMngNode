@@ -2,6 +2,7 @@
 var express = require('express');
 var sql = require('mssql');
 var dbConfig = require('../../config/dbConfig');
+var dbConnect = require('../../config/dbConnect');
 var paging = require('../../config/paging');
 var util = require('../../config/util');
 var router = express.Router();
@@ -51,7 +52,7 @@ router.post('/recommend', function (req, res) {
 
 
 
-    dbConfig.getConnection(sql).then(pool => {
+    dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().input('currentPage', sql.Int, currentPage).query(entitiesQueryString)
         }).then(result1 => {
@@ -84,7 +85,7 @@ router.post('/recommend', function (req, res) {
 
                     //******** */
 
-                    dbConfig.getConnection(sql).then(pool=> 
+                    dbConnect.getConnection(sql).then(pool=> 
                         {
                             return pool.request().query(luisQueryString)
                         }
@@ -112,16 +113,7 @@ router.post('/recommend', function (req, res) {
         })
 
     
-//-------------------------------------------
-//-------------------------------------------
-//-------------------------------------------
-    
 });
-
-//-------------------------------------------
-//-------------------------------------------
-//-------------------------------------------
-//-------------------------------------------
 
 router.get('/utterances', function (req, res) {
 	var utterance = req.query.utterance;
