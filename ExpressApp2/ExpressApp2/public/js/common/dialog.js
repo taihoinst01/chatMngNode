@@ -210,6 +210,21 @@ $(document).ready(function(){
         });
     });
 
+    $(document).on('click', '[name=addMediaBtn]',function(e){
+
+        $(this).parent().parent().find($('.mediaBtnName')).each(function(index){
+
+            if($(this).css('display') === 'none') {
+
+                $(this).show();
+                $(this).parent().parent().next().find($('.mediaBtnContent')).eq(index).show();
+                return false; 
+            }
+        });
+
+
+    });
+    
     $(document).on('change','select[name=dlgType]',function(e){
         var idx = $("select[name=dlgType]").index(this);
         var insertHtml = "";
@@ -232,9 +247,11 @@ $(document).ready(function(){
             $('.insertForm:eq(' + idx + ') #carouselLayout').css('display', 'block');
             $('.insertForm:eq(' + idx + ') #carouselLayout').find('a[name=addCarouselBtn]:last').closest('div').css('display', 'inline-block');
         } else if($(e.target).val() == "4") {
-            var $clone = $('#mediaLayout').clone();
-            $('.insertForm:eq(' + idx + ') form').append($clone);
+
+            var mediaForm = '<div id="mediaLayout" style="display: block;">' + $mediaForm.html() + '</div>'
+            $('.insertForm:eq(' + idx + ') form').append('<div id="mediaLayout" style="display:none;">' + mediaForm + '</div>') ;
             $('.insertForm:eq(' + idx + ') #mediaLayout').css('display', 'block');
+            $('.insertForm:eq(' + idx + ') #mediaLayout').find('[name=addMediaBtn]:last').closest('div').css('display', 'inline-block');
         }
     
         if($(e.target).val() == "2") {
@@ -563,7 +580,7 @@ function prevBtn(botChatNum) {
 
 function createDialog(){
 
-    var entity = $('input[name=entity]').val();
+    var entity = 'null';
     var idx = $('form[name=dialogLayout]').length;
     var array = [];
     var exit = false;
@@ -987,7 +1004,7 @@ function openModalBox(target){
     $insertForm = $('#commonLayout .insertForm').eq(0).clone();
     $dlgForm = $('#commonLayout #textLayout').eq(0).clone();
     $carouselForm = $('#commonLayout #carouselLayout').eq(0).clone();
-
+    $mediaForm = $('#commonLayout #mediaLayout').eq(0).clone();
 
     // 화면의 높이와 너비를 변수로 만듭니다.
     var maskHeight = $(document).height();
@@ -1021,52 +1038,6 @@ function openModalBox(target){
         $(".insertForm #textLayout").css("display","block");
     }
 
-    if(target == "#search_dlg") {
-        
-        selectGroup('searchLargeGroup');
-    }
-}
-
-/** 모달 */
-function openModalBox(target){
-
-    //carousel clone 초기값 저장
-    $insertForm = $('#commonLayout .insertForm').eq(0).clone();
-    $dlgForm = $('#commonLayout #textLayout').eq(0).clone();
-    $carouselForm = $('#commonLayout #carouselLayout').eq(0).clone();
-
-    // 화면의 높이와 너비를 변수로 만듭니다.
-    var maskHeight = $(document).height();
-    var maskWidth = $(window).width();
-
-    // 마스크의 높이와 너비를 화면의 높이와 너비 변수로 설정합니다.
-    $('.mask').css({'width':maskWidth,'height':maskHeight});
-
-
-    // 레이어 팝업을 가운데로 띄우기 위해 화면의 높이와 너비의 가운데 값과 스크롤 값을 더하여 변수로 만듭니다.
-    var left = ( $(window).scrollLeft() + ( $(window).width() - $(target).width()) / 2 );
-    //var top = ( $(window).scrollTop() + ( $(window).height() - $(target).height()) / 2 );
-
-    // css 스타일을 변경합니다.
-    $(target).css({'left':left,'top':'25px', 'position':'absolute'});
-
-    // 레이어 팝업을 띄웁니다.
-    $(target).show();
-    $('#dialogPreview').css({'height':$('#dialogSet').height()});
-
-    $('html').css({'overflow': 'hidden', 'height': '100%'});
-        $('#element').on('scroll touchmove mousewheel', function(event) { // 터치무브와 마우스휠 스크롤 방지
-            event.preventDefault();
-            event.stopPropagation();
-            return false;
-    });
-
-    if(target == "#create_dlg") {
-        $(".insertForm form").append($("#textLayout").clone(true));
-        $(".insertForm #textLayout").css("display","block");
-    }
-
-    wrapWindowByMask();
 }
 
 function wrapWindowByMask(){ //화면의 높이와 너비를 구한다. 
