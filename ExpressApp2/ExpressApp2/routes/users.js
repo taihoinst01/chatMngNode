@@ -30,8 +30,8 @@ router.post('/login', function (req, res) {
     var cipheredOutput = cipher.final('base64');
     console.log(cipheredOutput);
     */
-
-    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+    dbConfig.getConnection(sql).then(pool => {
+    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query("SELECT USER_ID, SCRT_NUM FROM TB_USER_M WHERE USER_ID = '" + userId +"'")
         }).then(result => {
             let rows = result.recordset;

@@ -20,8 +20,8 @@ router.get('/', function (req, res) {
     selectChannel += "  SELECT ISNULL(CHANNEL,'') AS CHANNEL FROM TBL_HISTORY_QUERY \n";
     selectChannel += "   WHERE REG_DATE > '08/28/2017 00:00:00' \n";
     selectChannel += "GROUP BY CHANNEL \n";
-    
-    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+    dbConfig.getConnection(sql).then(pool => {
+    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectChannel)
         }).then(result => {
             let rows = result.recordset
@@ -61,8 +61,8 @@ router.post('/intentScore', function (req, res) {
     selectQuery += "WHERE	REPLACE(REPLACE(LOWER(A.CUSTOMER_COMMENT_KR),'.',''),'?','') = B.QUERY \n";
     selectQuery += "AND		REG_DATE > '07/19/2017 00:00:00' \n";
     selectQuery += "GROUP BY LUIS_INTENT, CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) \n";
-
-    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+    dbConfig.getConnection(sql).then(pool => {
+    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
             let rows = result.recordset
@@ -90,8 +90,8 @@ router.post('/getScorePanel', function (req, res) {
         selectQuery += "      / (SELECT CAST(COUNT(RESULT) AS FLOAT) FROM TBL_QUERY_ANALYSIS_RESULT WHERE RESULT='D') * 100, 2) * 100) ) AS SEARCH_AVG \n";
         selectQuery += "    , (SELECT MAX(B.CNT) FROM (SELECT COUNT(*) AS CNT FROM TBL_HISTORY_QUERY GROUP BY USER_NUMBER ) B) AS MAX_QRY  \n";
         selectQuery += "FROM   TBL_HISTORY_QUERY \n";
-    
-    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+    dbConfig.getConnection(sql).then(pool => {
+    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
           let rows = result.recordset
@@ -149,8 +149,8 @@ router.post('/getOftQuestion', function (req, res) {
     selectQuery += ") AA\n";
     selectQuery += "WHERE RESULT <> '' AND RESULT IN ('H','S')\n";
     selectQuery += "ORDER BY 질문수 DESC, 날짜 DESC\n";
-
-    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+    dbConfig.getConnection(sql).then(pool => {
+    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
           let rows = result.recordset
@@ -207,7 +207,9 @@ router.post('/nodeQuery', function (req, res) {
             selectQuery += ") AA \n";
             selectQuery += "WHERE RESULT = '' OR RESULT IN ('D','N') \n";
             selectQuery += "ORDER BY queryCnt DESC, queryDate DESC; \n";
-    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+    
+    dbConfig.getConnection(sql).then(pool => {
+    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
           let rows = result.recordset
@@ -256,7 +258,9 @@ router.post('/firstQueryBar', function (req, res) {
         selectQuery += "    WHERE history.Row = 1 \n";
         selectQuery += ") A \n";
         selectQuery += "GROUP BY INTENT, 날짜, 채널 \n";
-    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+    
+    dbConfig.getConnection(sql).then(pool => {
+    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
           let rows = result.recordset
@@ -313,7 +317,9 @@ router.post('/firstQueryTable', function (req, res) {
         selectQuery += "    ON DL.DLG_ID = CA.DLG_ID \n";
         selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_MEDIA) ME \n";
         selectQuery += "    ON DL.DLG_ID = ME.DLG_ID \n";
-    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+    
+    dbConfig.getConnection(sql).then(pool => {
+    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
           let rows = result.recordset
@@ -343,7 +349,8 @@ router.post('/getResponseScore', function (req, res) {
         selectQuery += "group by USER_NUMBER \n";
         selectQuery += ") A \n";
     
-    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+    dbConfig.getConnection(sql).then(pool => {
+    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
           let rows = result.recordset
@@ -376,7 +383,9 @@ router.post('/getQueryByEachTime', function (req, res) {
         selectQuery += "HAVING 1=1 \n";
         selectQuery += "ORDER BY TIME; \n";
 
-    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+
+    dbConfig.getConnection(sql).then(pool => {
+    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
           let rows = result.recordset

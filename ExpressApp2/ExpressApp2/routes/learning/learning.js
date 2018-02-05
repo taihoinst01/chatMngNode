@@ -22,40 +22,41 @@ router.post('/recommend', function (req, res) {
     var selectType = req.body.selectType;
     var currentPage = req.body.currentPage;
 
-    (async () => {
-        try {
-            var entitiesQueryString = "SELECT TBZ.* "+
-            "FROM (SELECT TBY.* "+
-            "FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) AS NUM, "+
-            "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "+
-            "CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX, "+
-            "TBX.* "+
-            "FROM ( "+
-            "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
-            "FROM TBL_QUERY_ANALYSIS_RESULT " + 
-            "WHERE RESULT='D'";
-            
-            if(selectType == 'yesterday'){
-                entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) like '%'+(select CONVERT(CHAR(10), (select dateadd(day,-1,getdate())), 23)) + '%'";
-            }else if(selectType == 'lastWeek'){
-                entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) >= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, -1)), 23))";
-                entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) <= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, 5)), 23))";
-            }else if(selectType == 'lastMonth'){
-                entitiesQueryString += " AND (CONVERT(CHAR(7), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(7), (select dateadd(month,-1,getdate())), 23)) + '%'";
-            }else{
-            }
+//-------------------------------------------
+//-------------------------------------------
+    var entitiesQueryString = "SELECT TBZ.* "+
+        "FROM (SELECT TBY.* "+
+        "FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) AS NUM, "+
+        "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "+
+        "CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX, "+
+        "TBX.* "+
+        "FROM ( "+
+        "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
+        "FROM TBL_QUERY_ANALYSIS_RESULT " + 
+        "WHERE RESULT='D'";
+        
+        if(selectType == 'yesterday'){
+            entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) like '%'+(select CONVERT(CHAR(10), (select dateadd(day,-1,getdate())), 23)) + '%'";
+        }else if(selectType == 'lastWeek'){
+            entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) >= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, -1)), 23))";
+            entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) <= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, 5)), 23))";
+        }else if(selectType == 'lastMonth'){
+            entitiesQueryString += " AND (CONVERT(CHAR(7), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(7), (select dateadd(month,-1,getdate())), 23)) + '%'";
+        }else{
+        }
 
-            entitiesQueryString += " ) TBX) TBY) TBZ";
-            entitiesQueryString += " WHERE PAGEIDX = @currentPage";
-            entitiesQueryString += " ORDER BY NUM";
+        entitiesQueryString += " ) TBX) TBY) TBZ";
+        entitiesQueryString += " WHERE PAGEIDX = @currentPage";
+        entitiesQueryString += " ORDER BY NUM";
 
-            let pool = await sql.connect(dbConfig)
-            let result1 = await pool.request()
-                .input('currentPage', sql.Int, currentPage)
-                .query(entitiesQueryString)
+
+
+    dbConfig.getConnection(sql).then(pool => {
+    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().input('currentPage', sql.Int, currentPage).query(entitiesQueryString)
+        }).then(result1 => {
             let rows = result1.recordset;
 
-            
             var result = [];
             for(var i = 0; i < rows.length; i++){
                 var item = {};
@@ -80,9 +81,17 @@ router.post('/recommend', function (req, res) {
                             luisQueryString += "OR LUIS_ENTITIES LIKE '%" + entityArr[j] + "%'";
                         }
                     }
-                    let luisIntentList = await pool.request()
-                    .query(luisQueryString)
-                    item.intentList = luisIntentList.recordset
+
+                    //******** */
+
+                    dbConfig.getConnection(sql).then(pool=> 
+                        {
+                            return pool.request().query(luisQueryString)
+                        }
+                    ).then(luisIntentList => {
+                        item.intentList = luisIntentList.recordset
+                    })
+                    //******** */
                 }
                 result.push(item);
             }
@@ -92,20 +101,27 @@ router.post('/recommend', function (req, res) {
             }else{
                 res.send({list : result});
             }
+          sql.close();
+        }).catch(err => {
+          res.status(500).send({ message: "${err}"})
+          sql.close();
+        });
 
-        } catch (err) {
-            console.log(err)
-            // ... error checks
-        } finally {
+        sql.on('error', err => {
             sql.close();
-        }
-    })()
+        })
 
-    sql.on('error', err => {
-        // ... error handler
-        sql.close();
-    })
+    
+//-------------------------------------------
+//-------------------------------------------
+//-------------------------------------------
+    
 });
+
+//-------------------------------------------
+//-------------------------------------------
+//-------------------------------------------
+//-------------------------------------------
 
 router.get('/utterances', function (req, res) {
 	var utterance = req.query.utterance;
