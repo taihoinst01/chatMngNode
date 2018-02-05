@@ -39,17 +39,18 @@ router.get('/', function (req, res) {
             res.status(500).send({ message: "${err}"})
             sql.close();
     });
-    
-    sql.on('error', err => {
-        sql.close();
-    })
-    
 });
 
 
 
 /* GET users listing. */
 router.post('/intentScore', function (req, res) {
+
+    var startDate = req.body.startDate;
+    var endDate = req.body.endDate;
+    var selDate = req.body.selDate;
+    var selChannel = req.body.selChannel;
+
     var selectQuery = "";
     selectQuery += "SELECT	LOWER(LUIS_INTENT) AS intentName, \n";
     selectQuery += "AVG(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreAVG, \n";
@@ -60,23 +61,37 @@ router.post('/intentScore', function (req, res) {
     selectQuery += "COUNT(*) AS intentCount \n";
     selectQuery += "FROM	TBL_HISTORY_QUERY A, TBL_QUERY_ANALYSIS_RESULT B \n";
     selectQuery += "WHERE	REPLACE(REPLACE(LOWER(A.CUSTOMER_COMMENT_KR),'.',''),'?','') = B.QUERY \n";
-    selectQuery += "AND		REG_DATE > '07/19/2017 00:00:00' \n";
+    selectQuery += "AND CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), 112))  \n";
+    selectQuery += "    BETWEEN	 CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,'" + startDate + "'),120), 112)) \n";
+    selectQuery += "    AND		 CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,'" + endDate + "'),120), 112)) \n";
+    
+    if (selDate !== 'allDay') {
+        selectQuery += "AND CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), 112)) = CONVERT(VARCHAR, GETDATE(), 112) \n";
+    }
+    if (selChannel !== 'all') {
+        selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
+    }
+
     selectQuery += "GROUP BY LUIS_INTENT, CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) \n";
     dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
-        }).then(result => {
-            let rows = result.recordset
-            res.send({list : rows});
-            sql.close();
-        }).catch(err => {
-            res.status(500).send({ message: "${err}"})
-            sql.close();
-        });        
+    }).then(result => {
+        let rows = result.recordset
+        res.send({list : rows});
+        sql.close();
+    }).catch(err => {
+        res.status(500).send({ message: "${err}"})
+        sql.close();
+    });        
 });
 
 router.post('/getScorePanel', function (req, res) {
-    
+    var startDate = req.body.startDate;
+    var endDate = req.body.endDate;
+    var selDate = req.body.selDate;
+    var selChannel = req.body.selChannel;
+
     var selectQuery = "";
         selectQuery += "SELECT   COUNT(*) AS CUSOMER_CNT \n";
         selectQuery += "    , SUM(RESPONSE_TIME)/COUNT(RESPONSE_TIME) AS REPLY_SPEED \n";
@@ -86,6 +101,17 @@ router.post('/getScorePanel', function (req, res) {
         selectQuery += "      / (SELECT CAST(COUNT(RESULT) AS FLOAT) FROM TBL_QUERY_ANALYSIS_RESULT WHERE RESULT='D') * 100, 2) * 100) ) AS SEARCH_AVG \n";
         selectQuery += "    , (SELECT MAX(B.CNT) FROM (SELECT COUNT(*) AS CNT FROM TBL_HISTORY_QUERY GROUP BY USER_NUMBER ) B) AS MAX_QRY  \n";
         selectQuery += "FROM   TBL_HISTORY_QUERY \n";
+        selectQuery += "WHERE  1=1 \n";
+        selectQuery += "AND CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), 112))  \n";
+        selectQuery += "    BETWEEN	 CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,'" + startDate + "'),120), 112)) \n";
+        selectQuery += "    AND		 CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,'" + endDate + "'),120), 112)) \n";
+    
+    if (selDate !== 'allDay') {
+        selectQuery += "AND CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), 112)) = CONVERT(VARCHAR, GETDATE(), 112) \n";
+    }
+    if (selChannel !== 'all') {
+        selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
+    }
     dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
