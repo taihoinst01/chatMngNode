@@ -16,13 +16,32 @@ router.get('/', function (req, res) {
         req.session.appId = req.query.appId;
         req.session.subKey = luisConfig.subKey;
     }
+    var selectChannel = "";
+    selectChannel += "  SELECT ISNULL(CHANNEL,'') AS CHANNEL FROM TBL_HISTORY_QUERY \n";
+    selectChannel += "   WHERE REG_DATE > '08/28/2017 00:00:00' \n";
+    selectChannel += "GROUP BY CHANNEL \n";
     
-    res.render('board', {   
-        selMenu: req.session.menu,
-        appName: req.session.appName,
-        appId: req.session.appId,
-        subKey: req.session.subKey
-    } );    
+    new sql.ConnectionPool(dbConfig).connect().then(pool => {
+        return pool.request().query(selectChannel)
+        }).then(result => {
+            let rows = result.recordset
+            
+            res.render('board', {   
+                selMenu: req.session.menu,
+                appName: req.session.appName,
+                appId: req.session.appId,
+                subKey: req.session.subKey,
+                channelList : rows
+            } );   
+            sql.close();
+        }).catch(err => {
+            res.status(500).send({ message: "${err}"})
+            sql.close();
+    });
+    
+    sql.on('error', err => {
+        sql.close();
+    })
     
 });
 
