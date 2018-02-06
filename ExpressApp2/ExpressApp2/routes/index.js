@@ -121,6 +121,7 @@ router.get('/', function (req, res) {
         
     }
     else{
+        res.cookie('i18n', 'ko', { maxAge: 900000, httpOnly: true });
         res.render('login');   
     }
     
@@ -262,6 +263,18 @@ router.post('/ajax2', function(req, res, next) {
     //json 형식으로 보내 준다.
     res.send({result:true, msg:msg});
 
+});
+
+router.get('/index/lang', function (req, res) {
+    console.log("cookie", req.cookies);
+
+    if(req.cookies.i18n == "en") {
+        res.cookie('i18n', 'ko', { maxAge: 900000, httpOnly: true });
+    } else if (req.cookies.i18n == "ko") {
+        res.cookie('i18n', 'en', { maxAge: 900000, httpOnly: true });
+    }
+
+    res.redirect('back');
 });
 
 module.exports = router;

@@ -59,8 +59,8 @@ router.post('/intentScore', function (req, res) {
     selectQuery += "AVG(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreAVG, \n";
     selectQuery += "MAX(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreMAX , \n";
     selectQuery += "MIN(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreMIN, \n";
-    selectQuery += "CHANNEL AS channel, \n";
-    selectQuery += "CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS regDate, \n";
+    //selectQuery += "CHANNEL AS channel, \n";
+    //selectQuery += "CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS regDate, \n";
     selectQuery += "COUNT(*) AS intentCount \n";
     selectQuery += "FROM	TBL_HISTORY_QUERY A, TBL_QUERY_ANALYSIS_RESULT B \n";
     selectQuery += "WHERE	1=1 \n";
@@ -74,7 +74,7 @@ router.post('/intentScore', function (req, res) {
         selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
     }
 
-    selectQuery += "GROUP BY LUIS_INTENT, CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) \n";
+    selectQuery += "GROUP BY LUIS_INTENT \n";
     dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
@@ -278,7 +278,7 @@ router.post('/firstQueryBar', function (req, res) {
     var selChannel = req.body.selChannel;
 
     var selectQuery =  "";
-        selectQuery += "SELECT ISNULL(INTENT,'intent 없음') AS INTENT, ISNULL(날짜,'') AS REG_DATE, COUNT(*) AS INTENT_CNT, 채널 AS CHANNEL \n";
+        selectQuery += "SELECT ISNULL(INTENT,'intent 없음') AS INTENT, COUNT(*) AS INTENT_CNT \n";
         selectQuery += "FROM ( \n";
         selectQuery += "    SELECT distinct history.user_number as 유저아이디 \n";
         selectQuery += "         , history.sid, history.customer_comment_kr as 한글질문 \n";
@@ -314,7 +314,7 @@ router.post('/firstQueryBar', function (req, res) {
         selectQuery += "    )   AS history INNER join tbl_query_analysis_result as analysis on history.customer_comment_kr = analysis.query \n";
         selectQuery += "    WHERE history.Row = 1 \n";
         selectQuery += ") A \n";
-        selectQuery += "GROUP BY INTENT, 날짜, 채널 \n";
+        selectQuery += "GROUP BY INTENT \n";
     
     dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {

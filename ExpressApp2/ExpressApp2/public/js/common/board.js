@@ -396,9 +396,9 @@ function drawStatusOverview() {
                     //declare the columns
                     inputData.addColumn('string', 'INTENT');
                     inputData.addColumn('number', '갯수');
-                    inputData.addColumn('number', '평균INTENT_SCORE');
-                    inputData.addColumn('number', '최소INTENT_SCORE');
-                    inputData.addColumn('number', '최대INTENT_SCORE');
+                    inputData.addColumn('number', '평균');
+                    inputData.addColumn('number', '최소 ');
+                    inputData.addColumn('number', '최대 ');
 
                     //insert data here
                     //don't forget to set the classname TotalCell to the last datarow!!!
@@ -451,7 +451,7 @@ function drawStatusOverview() {
                     StatusTable.draw(inputData, {
                         showRowNumber: false,
                         width: '100%',
-                        height: '100%'
+                        height: 'fit-content'
                     });
               }
           }
@@ -528,7 +528,7 @@ function getOftQuestion() {
             
             if (tableList.length === 0) {
                 var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
-                           + '<td class="google-visualization-table-td" colspan="5" style="padding: 13% 43%;">데이터가 없습니다.</td></tr>'
+                           + '<td class="google-visualization-table-td" colspan="5" style="padding: 10% 40%;"><div style="width:120px;">데이터가 없습니다.</div></td></tr>'
                 $('#oftQuestion').find('tbody').append(tdHtml);
             }
         }
@@ -639,7 +639,7 @@ function drawNoneQuerylist() {
                    
                    if (noneList.length === 0) {
                     var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
-                               + '<td class="google-visualization-table-td" colspan="11" style="padding: 13% 45%;">데이터가 없습니다.</td></tr>'
+                               + '<td class="google-visualization-table-td" colspan="11" style="padding: 10% 45%;"><div style="width:120px;">데이터가 없습니다.</div></td></tr>'
                     $('#noneQueryDiv').find('tbody').append(tdHtml);
                     }
                     
@@ -669,25 +669,25 @@ function drawStuff() {
         success: function(data) {
             inputDataforBar = new google.visualization.DataTable();
             inputDataforBar.addRows(data.list.length);
-            inputDataforBar.addColumn('string','');
-            inputDataforBar.addColumn('number','');
+            inputDataforBar.addColumn('string','INTENT');
+            inputDataforBar.addColumn('number','CNT');
             //inputData.addColumn({type:'string', role: 'style' });
             //inputData.addColumn({type:'string', role: 'annotation' });
             if (data.list != null && data.list.length >0) {
                 for (var i=0;i<data.list.length; i++) {
-                    inputDataforBar.setCell(i, 0, data.list[i].intentName);
-                    inputDataforBar.setCell(i, 1, data.list[i].intentCount);
+                    inputDataforBar.setCell(i, 0, data.list[i].INTENT);
+                    inputDataforBar.setCell(i, 1, data.list[i].INTENT_CNT);
                     //inputData.setCell(i, 2, 'adsfdsfadsfads');
                 }
             }
             var options = {
-            title: 'Chess opening moves',
+            title: '고객별 첫 질문',
             width: '90%',
             height: '90%',
             legend: { position: 'none' },
             chart: { title: '고객별 첫 질문' },
             bars: 'horizontal', // Required for Material Bar Charts.
-            bar: { groupWidth: "90%" }
+            bar: { groupWidth: "20%" }
             };
 
             barChart = new google.charts.Bar(document.getElementById('top_x_div'));
@@ -763,7 +763,7 @@ function drawFirstQueryTable() {
 
             if (data.list.length === 0) {
                 var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
-                            + '<td class="google-visualization-table-td" colspan="13" style="padding: 11% 43%;">데이터가 없습니다.</td></tr>'
+                            + '<td class="google-visualization-table-td" colspan="13" style="padding: 10% 42%;"><div style="width:120px;">데이터가 없습니다.</div></td></tr>'
                 $('#table_div').find('tbody').append(tdHtml);
                 }
                
@@ -837,7 +837,7 @@ function getResponseScores() {
               var options = {
                 //title: 'Population of Largest U.S. Cities',
                 chartArea: {
-                    left: "15%",
+                    left: "18%",
                     //top: "13%",
                     height: "85%",
                     width: "65%"
