@@ -6,7 +6,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var i18n = require("i18n");
 //세션
 var session = require('express-session');
 
@@ -40,6 +40,15 @@ app.use(session({
     resave: false,
     saveUninitialized: true
    }));
+
+i18n.configure({
+    locales: ['en', 'ko'],
+    directory: __dirname + '/public/locales',
+    queryParameter: 'lang',
+    cookie: 'i18n',
+});
+
+app.use(i18n.init);
 
 //페이지 요청시마다 세션값이 있는지 확인
 app.use(function(req, res, next) {
@@ -87,7 +96,7 @@ app.use(function(req, res, next) {
     } else { 
         res.locals.subKey = null;
     }
-
+    
     next();
 });
 
