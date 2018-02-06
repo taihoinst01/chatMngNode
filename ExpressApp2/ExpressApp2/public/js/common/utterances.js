@@ -120,6 +120,8 @@ $(document).ready(function(){
                     $('#utterLearn').attr("disabled", "disabled");
                     $('#utterLearn').addClass("disable");
 
+                    $('.utterList div[type=checkbox]').removeAttr('checked');
+                    $('#nav').remove();
                 }else{
                     alert("실패하였습니다.");
                 }
