@@ -101,7 +101,16 @@ router.post('/getScorePanel', function (req, res) {
         selectQuery += "    , CASE WHEN COUNT(*) != 0 THEN ROUND(CONVERT(FLOAT, (SELECT COUNT(*) FROM TBL_QUERY_ANALYSIS_RESULT))/COUNT(*) * 100, 2) * 100 ELSE 0 END AS CORRECT_QRY \n";
         selectQuery += "    , CASE WHEN COUNT(*) != 0 THEN (SELECT (ROUND((SELECT CAST(COUNT(RESULT) AS FLOAT) FROM TBL_QUERY_ANALYSIS_RESULT WHERE RESULT='H')  ";
         selectQuery += "      / (SELECT CAST(COUNT(RESULT) AS FLOAT) FROM TBL_QUERY_ANALYSIS_RESULT WHERE RESULT='D') * 100, 2) * 100) ) ELSE 0 END AS SEARCH_AVG \n";
-        selectQuery += "    , (SELECT MAX(B.CNT) FROM (SELECT COUNT(*) AS CNT FROM TBL_HISTORY_QUERY GROUP BY USER_NUMBER ) B) AS MAX_QRY  \n";
+        selectQuery += "    , ISNULL((SELECT MAX(B.CNT) FROM (SELECT COUNT(*) AS CNT FROM TBL_HISTORY_QUERY WHERE 1=1 ";
+        selectQuery += "AND CONVERT(date, '" + startDate + "') <= CONVERT(date, REG_DATE)  AND  CONVERT(date, REG_DATE)   <= CONVERT(date, '" + endDate + "') ";
+    
+    if (selDate !== 'allDay') {
+        selectQuery += "AND CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), 112)) = CONVERT(VARCHAR, GETDATE(), 112) \n";
+    }
+    if (selChannel !== 'all') {
+        selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
+    }
+        selectQuery += "  GROUP BY USER_NUMBER ) B), 0) AS MAX_QRY  \n";
         selectQuery += "FROM   TBL_HISTORY_QUERY \n";
         selectQuery += "WHERE  1=1 \n";
         selectQuery += "AND CONVERT(date, '" + startDate + "') <= CONVERT(date, REG_DATE)  AND  CONVERT(date, REG_DATE)   <= CONVERT(date, '" + endDate + "') ";
