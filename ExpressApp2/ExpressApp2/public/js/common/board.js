@@ -56,52 +56,30 @@ $(document).ready(function () {
     
 
     //google.charts.setOnLoadCallback(drawStatusOverview);
-    setTimeout("google.charts.setOnLoadCallback(drawStatusOverview);", 100);
+    setTimeout("google.charts.setOnLoadCallback(drawStatusOverview);", 50);
     //google.charts.setOnLoadCallback(getScorePanel);
     
     //google.charts.setOnLoadCallback(getOftQuestion);
-    setTimeout("google.charts.setOnLoadCallback(getOftQuestion);", 150);
+    setTimeout("google.charts.setOnLoadCallback(getOftQuestion);", 100);
     //google.charts.setOnLoadCallback(getQueryByEachTime);
     //google.charts.setOnLoadCallback(drawNoneQuerylist);
     
     //google.charts.setOnLoadCallback(getResponseScores);
-    setTimeout("google.charts.setOnLoadCallback(getResponseScores);", 200);
+    setTimeout("google.charts.setOnLoadCallback(getResponseScores);", 150);
     //google.charts.setOnLoadCallback(drawFirstQueryTable);
     //google.charts.setOnLoadCallback(drawStuff);
 
-
-     //느려서 개발중 주석처리 start
-    /*
-    google.charts.setOnLoadCallback(drawStatusOverview);
-    google.charts.setOnLoadCallback(getScorePanel);
-
-    google.charts.setOnLoadCallback(getOftQuestion);
-    google.charts.setOnLoadCallback(getQueryByEachTime);
-    google.charts.setOnLoadCallback(drawNoneQuerylist);
-
-    google.charts.setOnLoadCallback(getResponseScores);
-    google.charts.setOnLoadCallback(drawFirstQueryTable);
-    google.charts.setOnLoadCallback(drawStuff);
-    */
     
-     //느려서 개발중 주석처리 end
-
-
-    /*
-    setTimeout("drawStatusOverview();", 100); //intent score
-    setTimeout("getOftQuestion();", 100); //자주하는질문
-    setTimeout("drawNoneQuerylist();", 100); //미답변 질문
-    setTimeout("drawStuff();", 100); //고객별 첫질문 막대차트
-    setTimeout("drawFirstQueryTable();", 100); //고객별 첫질문 테이블
-    setTimeout("getScorePanel();", 100); //누적상담자 수 있는 div
-    setTimeout("getResponseScores();", 100); //평균 답 시간
-    setTimeout("getQueryByEachTime();", 100); //시간대별 
-    */
-
     //안쓰는 차트
     //getEndpointHistory();
     //getEntityLabel();
 
+    //조회 버튼
+    $('#selectBtn').click(function() {
+        setTimeout("google.charts.setOnLoadCallback(drawStatusOverview);", 50);
+        setTimeout("google.charts.setOnLoadCallback(getOftQuestion);", 100);
+        setTimeout("google.charts.setOnLoadCallback(getResponseScores);", 150);
+    });
 });
 
 function resync(values) {

@@ -518,6 +518,7 @@ $(document).on('change','select[name=dlgType]',function(e){
     $('.insertForm:eq(' + idx + ') #carouselLayout').remove();
     $('.insertForm:eq(' + idx + ') #mediaLayout').remove();
     $('.insertForm:eq(' + idx + ')').find('.clear-both').each(function( index) {
+
         if ( index != 0 ) {
             $(this).next().remove();
             $(this).remove();
@@ -533,9 +534,10 @@ $(document).on('change','select[name=dlgType]',function(e){
         $('.insertForm:eq(' + idx + ') #carouselLayout').css('display', 'block');
         $('.insertForm:eq(' + idx + ') #carouselLayout').find('a[name=addCarouselBtn]:last').closest('div').css('display', 'inline-block');
     } else if($(e.target).val() == "4") {
-        var $clone = $('#mediaLayout').clone();
-        $('.insertForm:eq(' + idx + ') form').append($clone);
+        var mediaForm = '<div id="mediaLayout" style="display: block;">' + $mediaForm.html() + '</div>'
+        $('.insertForm:eq(' + idx + ') form').append('<div id="mediaLayout" style="display:none;">' + mediaForm + '</div>') ;
         $('.insertForm:eq(' + idx + ') #mediaLayout').css('display', 'block');
+        $('.insertForm:eq(' + idx + ') #mediaLayout').find('[name=addMediaBtn]:last').closest('div').css('display', 'inline-block');
     }
 
     if($(e.target).val() == "2") {
@@ -1205,6 +1207,7 @@ function selectGroup(selectId,str1,str2) {
 var $insertForm;
 var $dlgForm;
 var $carouselForm;
+var $mediaForm;
 function openModalBox(target){
 
     /*
@@ -1218,7 +1221,7 @@ function openModalBox(target){
     $insertForm = $('#commonLayout .insertForm').eq(0).clone();
     $dlgForm = $('#commonLayout #textLayout').eq(0).clone();
     $carouselForm = $('#commonLayout #carouselLayout').eq(0).clone();
-
+    $mediaForm = $('#commonLayout #mediaLayout').eq(0).clone();
 
     // 화면의 높이와 너비를 변수로 만듭니다.
     var maskHeight = $(document).height();
@@ -1514,6 +1517,20 @@ $(document).on('click', 'a[name=carouseBtn]',function(e){
             return false;   
         }
     });
+});
+
+$(document).on('click', '[name=addMediaBtn]',function(e){
+
+    $(this).parent().parent().find($('.mediaBtnName')).each(function(index){
+
+        if($(this).css('display') === 'none') {
+
+            $(this).show();
+            $(this).parent().parent().next().find($('.mediaBtnContent')).eq(index).show();
+            return false; 
+        }
+    });
+
 });
 
 //textLayout
