@@ -580,7 +580,6 @@ function prevBtn(botChatNum) {
 
 function createDialog(){
 
-    var entity = 'null';
     var idx = $('form[name=dialogLayout]').length;
     var array = [];
     var exit = false;
@@ -644,7 +643,7 @@ function createDialog(){
         url: '/learning/addDialog',
         dataType: 'json',
         type: 'POST',
-        data: {'data' : array, 'entity' : entity},
+        data: {'data' : array},
         success: function(data) {
             alert('success');
 

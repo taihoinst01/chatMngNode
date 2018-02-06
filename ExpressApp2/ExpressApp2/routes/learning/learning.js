@@ -1495,10 +1495,13 @@ router.post('/addDialog',function(req,res){
                     .input('dialogText', sql.NVarChar, array[i]["dialogText"])
                     .query(inserTblDlgText)
 
-                    let result5 = await pool.request()
-                    .input('entity', sql.NVarChar, entity)
-                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
-                    .query(insertTblRelation)
+                    if(entity) {
+                        
+                        let result5 = await pool.request()
+                        .input('entity', sql.NVarChar, entity)
+                        .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                        .query(insertTblRelation)
+                    }
                 } else if(array[i]["dlgType"] == "3") {
                     let result1 = await pool.request()
                     .query(selectDlgId)
@@ -1536,10 +1539,14 @@ router.post('/addDialog',function(req,res){
                         .query(insertTblCarousel);
 
                     }
-                    let result5 = await pool.request()
-                    .input('entity', sql.NVarChar, entity)
-                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
-                    .query(insertTblRelation)
+
+                    if(entity) {
+                        
+                        let result5 = await pool.request()
+                        .input('entity', sql.NVarChar, entity)
+                        .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                        .query(insertTblRelation)
+                    }
 
 
                 } else if(array[i]["dlgType"] == "4") {
@@ -1579,10 +1586,13 @@ router.post('/addDialog',function(req,res){
                     .input('cardValue', sql.NVarChar, array[i]["mediaUrl"])
                     .query(insertTblDlgMedia)
 
-                    let result5 = await pool.request()
-                    .input('entity', sql.NVarChar, entity)
-                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
-                    .query(insertTblRelation)
+                    if(entity) {
+                        
+                        let result5 = await pool.request()
+                        .input('entity', sql.NVarChar, entity)
+                        .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                        .query(insertTblRelation)
+                    }
                 }
             }
 
