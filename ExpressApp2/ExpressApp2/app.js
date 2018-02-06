@@ -7,7 +7,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var i18n = require("i18n");
-var appendQuery = require('append-query');
 //세션
 var session = require('express-session');
 
@@ -97,7 +96,7 @@ app.use(function(req, res, next) {
     } else { 
         res.locals.subKey = null;
     }
-    res.locals.lang = 'en';
+    
     next();
 });
 
