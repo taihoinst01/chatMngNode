@@ -1,5 +1,23 @@
 {
     "viewsperiods" : "viewsperiods",
     "datetype" : "datetype",
-    "channel" : "channel"
+    "channel" : "channel",
+    "allDates" : "all dates",
+    "day" : "day",
+    "lookup" : "lookup",
+    "average" : "average",
+    "minimum" : "minimum",
+    "maximum" : "maximum",
+    "Answers to Frequently Asked Questions" : "Answers to Frequently Asked Questions",
+    "Cumulative counselor count" : "Cumulative counselor count",
+    "Average response speed" : "Average response speed",
+    "Averagenormal response rate" : "Averagenormal response rate",
+    "Search response rate" : "Search response rate",
+    "Maximum Number of Customer Questions" : "Maximum Number of Customer Questions",
+    "Response" : "Response",
+    "Mean stay time" : "Mean stay time",
+    "Number of hours of questions" : "Number of hours of questions",
+    "Unanswered questions" : "Unanswered questions",
+    "Description 1" : "Displays a list of learning intentions. You can create or edit new learning intent."
+    
 }

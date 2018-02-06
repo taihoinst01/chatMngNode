@@ -1,5 +1,23 @@
 {
-    "viewsperiods" : "조회기간",
-    "datetype" : "당일구분",
-    "channel" : "채널"
+	"viewsperiods": "조회기간",
+	"datetype": "당일구분",
+	"channel": "채널",
+	"allDates": "모두",
+	"day": "당일",
+	"lookup": "조회",
+	"average": "평균",
+	"minimum": "최소",
+	"maximum": "최대",
+    "Answers to Frequently Asked Questions": "자주 묻는 질문에 대한 답변",
+    "Cumulative counselor count": "누적 상담자 수",
+	"Description 1": "학습 의도 목록을 표시합니다. 학습 의도를 새롭게 생성하거나 편집 할 수 있습니다. ",
+	"Average response speed": "평균 응답 속도",
+	"Average number of customer questions": "평균 고객 질문 수",
+	"Search response rate": "검색 응답률",
+	"Maximum Number of Customer Questions": "최대 고객 질문 수",
+	"Response": "응답",
+	"Mean stay time": "평균 머무르는 시간",
+	"Question count per time zone": "시간대 별 질문수",
+    "Unanswered questions": "미답변 질문"
+    
 }
