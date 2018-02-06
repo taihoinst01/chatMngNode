@@ -795,7 +795,7 @@ router.post('/searchEntities', function (req, res) {
                                     + "SELECT '[' + b.entity_value + ']' FROM TBL_COMMON_ENTITY_DEFINE b                    "
                                     + " WHERE b.entity = a.entity FOR XML PATH('') ),1,1,'[') AS entity_value               "
                                     + "FROM TBL_COMMON_ENTITY_DEFINE a where API_GROUP != 'OCR TEST'                        "
-                                    + "and (entity = 'game' or entity_value = 'game')                                       "
+                                    + "and (entity = @searchEntities or entity_value = @searchEntities)                                       "
                                     + "group by entity, API_GROUP) a                                                        "
                                     + " ) tbp                                                                               "
                                     + "WHERE PAGEIDX = 1                                                                    ";
@@ -1124,7 +1124,8 @@ router.post('/insertDialog', function (req, res) {
 router.post('/learnUtterAjax', function (req, res) {
     var intent = req.body.intent;
     var entity = req.body.entity;
-    var dlgId = req.body['dlgId[]'];
+    var dlgId = [];
+    dlgId = req.body['dlgId[]'];
 
     var queryText = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) "
                   + "VALUES( 'kona_luis_06', 'luis_test', @entity, @dlgId, 'D', 'Y' )";
@@ -1133,13 +1134,21 @@ router.post('/learnUtterAjax', function (req, res) {
         try {
             let pool = await dbConnect.getConnection(sql);
             let result1;
-            for(var i = 0 ; i < dlgId.length; i++) {
+
+            if(typeof dlgId == "string") {
                 result1 = await pool.request()
-                    .input('entity', sql.NVarChar, entity)
-                    .input('dlgId', sql.NVarChar, dlgId[i])
-                    .query(queryText);
+                .input('entity', sql.NVarChar, entity)
+                .input('dlgId', sql.NVarChar, dlgId)
+                .query(queryText);
+            } else {
+                for(var i = 0 ; i < dlgId.length; i++) {
+                    result1 = await pool.request()
+                        .input('entity', sql.NVarChar, entity)
+                        .input('dlgId', sql.NVarChar, dlgId[i])
+                        .query(queryText);
+                }
             }
-            
+
             console.log(result1);
 
             let rows = result1.rowsAffected;
@@ -1422,7 +1431,7 @@ router.post('/addDialog',function(req,res){
     var data = req.body['data[]'];
     var array = [];
     var queryText = "";
-
+    var tblDlgId = [];
     if( typeof data == "string"){
         console.log("data is string");
         var json = JSON.parse(data);
@@ -1495,10 +1504,8 @@ router.post('/addDialog',function(req,res){
                     .input('dialogText', sql.NVarChar, array[i]["dialogText"])
                     .query(inserTblDlgText)
 
-                    let result5 = await pool.request()
-                    .input('entity', sql.NVarChar, entity)
-                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
-                    .query(insertTblRelation)
+                    tblDlgId.push(dlgId[0].DLG_ID);
+
                 } else if(array[i]["dlgType"] == "3") {
                     let result1 = await pool.request()
                     .query(selectDlgId)
@@ -1521,26 +1528,23 @@ router.post('/addDialog',function(req,res){
                         .input('dialogText', sql.NVarChar, carTmp["dialogText"])
                         .input('imgUrl', sql.NVarChar, carTmp["imgUrl"])
                         .input('btn1Type', sql.NVarChar, carTmp["btn1Type"])
-                        .input('buttonName1', sql.NVarChar, carTmp["mButtonName1"])
-                        .input('buttonContent1', sql.NVarChar, carTmp["mButtonContent1"])
+                        .input('buttonName1', sql.NVarChar, carTmp["cButtonName1"])
+                        .input('buttonContent1', sql.NVarChar, carTmp["cButtonContent1"])
                         .input('btn2Type', sql.NVarChar, carTmp["btn2Type"])
-                        .input('buttonName2', sql.NVarChar, carTmp["mButtonName2"])
-                        .input('buttonContent2', sql.NVarChar, carTmp["mButtonContent2"])
+                        .input('buttonName2', sql.NVarChar, carTmp["cButtonName2"])
+                        .input('buttonContent2', sql.NVarChar, carTmp["cButtonContent2"])
                         .input('btn3Type', sql.NVarChar, carTmp["btn3Type"])
-                        .input('buttonName3', sql.NVarChar, carTmp["mButtonName3"])
-                        .input('buttonContent3', sql.NVarChar, carTmp["mButtonContent3"])
+                        .input('buttonName3', sql.NVarChar, carTmp["cButtonName3"])
+                        .input('buttonContent3', sql.NVarChar, carTmp["cButtonContent3"])
                         .input('btn4Type', sql.NVarChar, carTmp["btn4Type"])
-                        .input('buttonName4', sql.NVarChar, carTmp["mButtonName4"])
-                        .input('buttonContent4', sql.NVarChar, carTmp["mButtonContent4"])
+                        .input('buttonName4', sql.NVarChar, carTmp["cButtonName4"])
+                        .input('buttonContent4', sql.NVarChar, carTmp["cButtonContent4"])
                         .input('cardOrderNo', sql.Int, (j+1))
                         .query(insertTblCarousel);
 
                     }
-                    let result5 = await pool.request()
-                    .input('entity', sql.NVarChar, entity)
-                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
-                    .query(insertTblRelation)
 
+                    tblDlgId.push(dlgId[0].DLG_ID);
 
                 } else if(array[i]["dlgType"] == "4") {
                     let result1 = await pool.request()
@@ -1579,14 +1583,11 @@ router.post('/addDialog',function(req,res){
                     .input('cardValue', sql.NVarChar, array[i]["mediaUrl"])
                     .query(insertTblDlgMedia)
 
-                    let result5 = await pool.request()
-                    .input('entity', sql.NVarChar, entity)
-                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
-                    .query(insertTblRelation)
+                    tblDlgId.push(dlgId[0].DLG_ID);
                 }
             }
 
-            res.send({list : result});
+            res.send({list : tblDlgId});
         
         }catch(err){
             console.log(err);

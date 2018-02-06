@@ -251,7 +251,7 @@ $(document).ready(function(){
             var mediaForm = '<div id="mediaLayout" style="display: block;">' + $mediaForm.html() + '</div>'
             $('.insertForm:eq(' + idx + ') form').append('<div id="mediaLayout" style="display:none;">' + mediaForm + '</div>') ;
             $('.insertForm:eq(' + idx + ') #mediaLayout').css('display', 'block');
-            $('.insertForm:eq(' + idx + ') #mediaLayout').find('[name=addMediaBtn]:last').closest('div').css('display', 'inline-block');
+            //$('.insertForm:eq(' + idx + ') #mediaLayout').find('[name=addMediaBtn]:last').closest('div').css('display', 'inline-block');
         }
     
         if($(e.target).val() == "2") {
@@ -362,7 +362,9 @@ $(document).ready(function(){
         $('#apiLayout').css('display', 'none');
         $('#commonLayout').css('display', 'block');
         $('#commonLayout div:first').prepend(insertForm);
+        $('#btnCreateLgroup').click();
         $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>입력해주세요...</p></div></div></div></div></div></div></div>');
+
     });
 
     //다이얼로그 생성 모달 닫는 이벤트(초기화)
@@ -580,7 +582,6 @@ function prevBtn(botChatNum) {
 
 function createDialog(){
 
-    var entity = 'null';
     var idx = $('form[name=dialogLayout]').length;
     var array = [];
     var exit = false;
@@ -644,7 +645,7 @@ function createDialog(){
         url: '/learning/addDialog',
         dataType: 'json',
         type: 'POST',
-        data: {'data' : array, 'entity' : entity},
+        data: {'data' : array},
         success: function(data) {
             alert('success');
 
