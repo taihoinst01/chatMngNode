@@ -644,7 +644,9 @@ function drawNoneQuerylist() {
                     }
                     
               }
-      });
+      }).always(function(){
+        google.charts.setOnLoadCallback(drawStuff);
+    });
 }
 
 
@@ -861,8 +863,6 @@ function getResponseScores() {
         }
     }).always(function(){
         google.charts.setOnLoadCallback(drawFirstQueryTable);
-    }).always(function(){
-        google.charts.setOnLoadCallback(drawStuff);
     });
 }
 
