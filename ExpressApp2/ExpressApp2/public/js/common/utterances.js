@@ -120,6 +120,8 @@ $(document).ready(function(){
                     $('#utterLearn').attr("disabled", "disabled");
                     $('#utterLearn').addClass("disable");
 
+                    $('.utterList div[type=checkbox]').removeAttr('checked');
+                    $('#nav').remove();
                 }else{
                     alert("실패하였습니다.");
                 }
@@ -193,6 +195,7 @@ $(document).ready(function(){
         $('#apiLayout').css('display', 'none');
         $('#commonLayout').css('display', 'block');
         $('#commonLayout div:first').prepend(insertForm);
+        $('#btnCreateLgroup').click();
         $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>입력해주세요...</p></div></div></div></div></div></div></div>');
     });
 

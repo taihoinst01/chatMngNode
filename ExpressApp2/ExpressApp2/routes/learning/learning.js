@@ -795,7 +795,7 @@ router.post('/searchEntities', function (req, res) {
                                     + "SELECT '[' + b.entity_value + ']' FROM TBL_COMMON_ENTITY_DEFINE b                    "
                                     + " WHERE b.entity = a.entity FOR XML PATH('') ),1,1,'[') AS entity_value               "
                                     + "FROM TBL_COMMON_ENTITY_DEFINE a where API_GROUP != 'OCR TEST'                        "
-                                    + "and (entity = 'game' or entity_value = 'game')                                       "
+                                    + "and (entity = @searchEntities or entity_value = @searchEntities)                                       "
                                     + "group by entity, API_GROUP) a                                                        "
                                     + " ) tbp                                                                               "
                                     + "WHERE PAGEIDX = 1                                                                    ";

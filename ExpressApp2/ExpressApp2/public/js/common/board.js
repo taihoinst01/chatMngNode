@@ -56,19 +56,19 @@ $(document).ready(function () {
     
 
     //google.charts.setOnLoadCallback(drawStatusOverview);
-    setTimeout("google.charts.setOnLoadCallback(drawStatusOverview);", 50);
+    setTimeout("google.charts.setOnLoadCallback(drawStatusOverview);", 10);
     //google.charts.setOnLoadCallback(getScorePanel);
     
     //google.charts.setOnLoadCallback(getOftQuestion);
-    setTimeout("google.charts.setOnLoadCallback(getOftQuestion);", 100);
+    setTimeout("google.charts.setOnLoadCallback(getOftQuestion);", 30);
     //google.charts.setOnLoadCallback(getQueryByEachTime);
     //google.charts.setOnLoadCallback(drawNoneQuerylist);
     
     //google.charts.setOnLoadCallback(getResponseScores);
-    setTimeout("google.charts.setOnLoadCallback(getResponseScores);", 150);
+    setTimeout("google.charts.setOnLoadCallback(getResponseScores);", 50);
     //google.charts.setOnLoadCallback(drawFirstQueryTable);
     //google.charts.setOnLoadCallback(drawStuff);
-
+    setTimeout("google.charts.setOnLoadCallback(drawNoneQuerylist);", 70);
     
     //안쓰는 차트
     //getEndpointHistory();
@@ -76,9 +76,10 @@ $(document).ready(function () {
 
     //조회 버튼
     $('#selectBtn').click(function() {
-        setTimeout("google.charts.setOnLoadCallback(drawStatusOverview);", 50);
-        setTimeout("google.charts.setOnLoadCallback(getOftQuestion);", 100);
-        setTimeout("google.charts.setOnLoadCallback(getResponseScores);", 150);
+        setTimeout("google.charts.setOnLoadCallback(drawStatusOverview);", 10);
+        setTimeout("google.charts.setOnLoadCallback(getOftQuestion);", 30);
+        setTimeout("google.charts.setOnLoadCallback(getResponseScores);", 50);
+        setTimeout("google.charts.setOnLoadCallback(drawNoneQuerylist);", 70);
     });
 });
 
@@ -522,20 +523,18 @@ function getOftQuestion() {
             StatusTable.draw(inputData, {
                 showRowNumber: false,
                 width: '100%',
-                height: 'auto'
+                height: '330px'
             });
             
             if (tableList.length === 0) {
                 var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
-                           + '<td class="google-visualization-table-td" colspan="5" style="padding: 0 0 0 50px;">데이터가 없습니다.</td></tr>'
+                           + '<td class="google-visualization-table-td" colspan="5" style="padding: 13% 43%;">데이터가 없습니다.</td></tr>'
                 $('#oftQuestion').find('tbody').append(tdHtml);
             }
         }
     }).always(function(){
         google.charts.setOnLoadCallback(getQueryByEachTime);
         
-    }).always(function(){
-        google.charts.setOnLoadCallback(drawNoneQuerylist);
     });
 }
 
@@ -621,24 +620,33 @@ function drawNoneQuerylist() {
                     }); */
 
                     StatusTable3.draw(inputData3,
-                               {
-                                page: 'enable',
-                                pageSize: 500,
-                                scrollLeftStartPosition: 100,
-                                showRowNumber: false,
-                                width: '100%',
-                                height: '500px',
-                                allowHtml: true,
-                                chartArea: {
-                                    left: "20%",
-                                    //top: "13%",
-                                    //height: "85%",
-                                    width: "100%"
-                                }
-                                });
-                  }
+                        {
+                            page: 'enable',
+                            pageSize: 500,
+                            scrollLeftStartPosition: 100,
+                            showRowNumber: false,
+                            width: '100%',
+                            height: '500px',
+                            allowHtml: true,
+                            chartArea: {
+                                left: "20%",
+                                //top: "13%",
+                                //height: "85%",
+                                width: "100%"
+                            }
+                        });
+                   }
+                   
+                   if (noneList.length === 0) {
+                    var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
+                               + '<td class="google-visualization-table-td" colspan="11" style="padding: 13% 45%;">데이터가 없습니다.</td></tr>'
+                    $('#noneQueryDiv').find('tbody').append(tdHtml);
+                    }
+                    
               }
-      });
+      }).always(function(){
+        google.charts.setOnLoadCallback(drawStuff);
+    });
 }
 
 
@@ -751,7 +759,13 @@ function drawFirstQueryTable() {
                         //scrollLeftStartPosition: 100,
                         showRowNumber: true, 
                         width: '100%', 
-                        height: '400px'});
+                        height: '340px'});
+
+            if (data.list.length === 0) {
+                var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
+                            + '<td class="google-visualization-table-td" colspan="13" style="padding: 11% 43%;">데이터가 없습니다.</td></tr>'
+                $('#table_div').find('tbody').append(tdHtml);
+                }
                
             google.visualization.events.addListener(table, 'select', selectHandler);
                 function selectHandler() {
@@ -849,8 +863,6 @@ function getResponseScores() {
         }
     }).always(function(){
         google.charts.setOnLoadCallback(drawFirstQueryTable);
-    }).always(function(){
-        google.charts.setOnLoadCallback(drawStuff);
     });
 }
 
@@ -892,10 +904,10 @@ function getQueryByEachTime() {
                     width: "85%"
                 }
             };
-
-            var chart = new google.visualization.ColumnChart(
-            document.getElementById('timeOfDay_div'));
-
+            var chart_div = document.getElementById('timeOfDay_div');
+            //chart_div.clearChart();
+            var chart = new google.visualization.ColumnChart(document.getElementById('timeOfDay_div'));
+            chart.clearChart();
             chart.draw(data, options);
             
         }
