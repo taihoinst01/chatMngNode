@@ -96,9 +96,9 @@ $(document).ready(function(){
         var entity = $('input[name=entity').val();
         
         var inputDlgId = $('input[name=dlgId]');
-        var dlgId = [];
+        var dlgId = new Array();
         inputDlgId.each(function(n) { 
-            dlgId[n] = inputDlgId[n].value;
+            dlgId.push(inputDlgId[n].value);
             return dlgId;
         });
 
@@ -796,9 +796,15 @@ function createDialog(){
         success: function(data) {
             alert('success');
 
-            var createDlgClone = $('#dialogPreview .dialogView').children().clone();          
+            var inputUttrHtml = '';
+            for(var i = 0; i < data.list.length; i++) {
+                inputUttrHtml += '<input type="hidden" name="dlgId" value="' + data.list[i] + '"/>';
+            }
+
+            var createDlgClone = $('#dialogPreview .dialogView').children().clone();
             $('#dialogRecommand').html('');
             $('#dialogRecommand').append(createDlgClone);
+            $('#dialogRecommand').append(inputUttrHtml);
             $('#addDialogCancel').click();
         }
     });
@@ -1335,7 +1341,7 @@ function searchDialog() {
                             inputUttrHtml += '<svg class="wc-message-callout"></svg>';
                             inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
                             inputUttrHtml += '<p>';
-                            inputUttrHtml += '<input type="hidden" name="searchDlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                            inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
                             inputUttrHtml += tmp.dlg[j].CARD_TEXT;
                             inputUttrHtml += '</p>';
                             inputUttrHtml += '</div></div></div></div></div>';
@@ -1354,7 +1360,7 @@ function searchDialog() {
                                 inputUttrHtml += '<div class="wc-hscroll-outer" >';
                                 inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum) + '">';
                                 inputUttrHtml += '<ul>';
-                                inputUttrHtml += '<input type="hidden" name="searchDlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                                inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
                             }
                             inputUttrHtml += '<li class="wc-carousel-item">';
                             inputUttrHtml += '<div class="wc-card hero">';
@@ -1401,7 +1407,7 @@ function searchDialog() {
                             inputUttrHtml += '<li class="wc-carousel-item wc-carousel-play">';
                             inputUttrHtml += '<div class="wc-card hero" style="width:70%">';
                             inputUttrHtml += '<div class="wc-card-div imgContainer">';
-                            inputUttrHtml += '<input type="hidden" name="searchDlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                            inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
                             inputUttrHtml += '<img src="' + /* 이미지 url */ tmp.dlg[j].MEDIA_URL + '">';
                             inputUttrHtml += '<div class="playImg"></div>';
                             inputUttrHtml += '<div class="hidden" alt="' + tmp.dlg[j].CARD_TITLE + '"></div>';
