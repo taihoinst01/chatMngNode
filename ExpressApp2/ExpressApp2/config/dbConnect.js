@@ -1,7 +1,28 @@
 
 var pool = null;
+var appPool = null;
 module.exports = {
-    
+
+    getAppConnection : function (sql, dbConfig) {
+
+        if (appPool) return appPool;
+        var conn = new sql.ConnectionPool(dbConfig);
+
+        //override close behavior to eliminate the pool
+        var close_conn = conn.close;
+        conn.close = function(){
+            appPool = null;
+            close_conn.apply(conn, arguments);
+        }
+
+        return appPool = conn.connect()
+            .then(function(){ return conn; })
+            .catch(function(err){
+                appPool = null;
+                return Promise.reject(err);
+            });
+    },
+
     getConnection : function (sql) {
 
         var dbConfig = {

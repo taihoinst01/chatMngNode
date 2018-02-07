@@ -466,7 +466,7 @@ function drawStatusOverview() {
                     StatusTable.draw(inputData, {
                         showRowNumber: false,
                         width: '100%',
-                        height: 'fit-content'
+                        height: '90%'
                     });
               }
           }
@@ -502,7 +502,7 @@ function getOftQuestion() {
               inputData.addColumn('string', 'INTENT');
               inputData.addColumn('string', '한글질문');
               inputData.addColumn('string', '채널');
-              inputData.addColumn('string', '질문수');
+              inputData.addColumn('number', '질문수');
               inputData.addColumn('string', '날짜');
 
               //insert data here
