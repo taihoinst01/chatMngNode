@@ -267,12 +267,10 @@ router.post('/ajax2', function(req, res, next) {
 });
 
 router.get('/index/lang', function (req, res) {
-    console.log("cookie", req.cookies);
-
     if(req.cookies.i18n == "en") {
-        res.cookie('i18n', 'ko', { maxAge: 900000, httpOnly: true });
+        res.cookie('i18n', 'ko', { maxAge: 24000 * 60 * 60 , httpOnly: true });
     } else if (req.cookies.i18n == "ko") {
-        res.cookie('i18n', 'en', { maxAge: 900000, httpOnly: true });
+        res.cookie('i18n', 'en', { maxAge: 24000 * 60 * 60, httpOnly: true });
     }
 
     res.redirect('back');

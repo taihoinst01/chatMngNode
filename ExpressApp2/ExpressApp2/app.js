@@ -38,7 +38,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: '@#@$MYSIGN#@$#$',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 24000 * 60 * 60
+    }
    }));
 
 i18n.configure({
