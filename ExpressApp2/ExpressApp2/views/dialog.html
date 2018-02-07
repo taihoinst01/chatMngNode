@@ -46,20 +46,20 @@
             <div id="dialogDiv">
                 <div class="dialogLeft">     
                     <div class="in-line">
-                        <input name="iptDialog" id="iptDialog" type="text" class="inbox02" style="width:35%; margin: 3px;" placeholder="연결 어터런스 입력" >
+                        <input name="iptDialog" id="iptDialog" type="text" class="inbox02" style="width:35%; margin: 3px;" placeholder="<%= __('Enter Connection utterance') %>" >
                         <select id="sourceType2" name="sourceType" style="width:12%;">
                             <option value="D" selected="selected">Common</option>
                             <option value="api quot">Api Quot</option>
                             <option value="api testdrive">Api Testdrive</option>    
                         </select>
                         <select id="searchGroupL" class="searchGroup" name="searchGroupL" style="width:12%;">
-                            <option value="default">대그룹</option>     
+                            <option value="default"><%= __('A big group') %></option>     
                         </select>
                         <select id="searchGroupM" class="searchGroup" name="searchGroupM" style="width:12%;">
-                            <option value="default">중그룹</option>
+                            <option value="default"><%= __('Middle group') %></option>
                         </select>
                         <select id="searchGroupS" class="searchGroup" name="searchGroupS" style="width:12%;">
-                            <option value="default">소그룹</option>
+                            <option value="default"><%= __('Small group') %></option>
                         </select>
                         <button class="btn" id="searchDlgBtn">search</button>
                         <button class="btn" id="dialog" onclick="openModalBox('#create_dlg')">new</button>
@@ -79,7 +79,7 @@
                                 <div id="selectBoxArea" class="selectArea">
                                     <div class="inputfield selectArea">
                                         <div class="selectbox selectArea">
-                                            <div class="selected selectArea">모두보기</div>
+                                            <div class="selected selectArea">View all</div>
                                             <i class="selectarrow selectArea">&nbsp;</i>
                                             <div class="selectOptionsbox selectArea">                                                   
                                             </div>
@@ -92,8 +92,8 @@
                                     <option value="audio" >audio</option>
                                 </select>-->
                             </th>
-                            <th class="txt_center" style="width: 45%">설명</th>
-                            <th class="txt_center" style="width: 15%">연결 어터런스</th>
+                            <th class="txt_center" style="width: 45%"><%= __('explanation') %></th>
+                            <th class="txt_center" style="width: 15%"><%= __('Connection utterance') %></th>
                         </tr>
                     </thead>
                     <tbody id="dialogTbltbody">
@@ -121,7 +121,7 @@
                 <p class="texcon03">Group <span>(required) </span></p>
                 <div class="group-float-left">
                     <div class="group-float-left" style="width: 45%">
-                        <p class="texcon03">대그룹</p>
+                        <p class="texcon03"><%= __('A big group') %></p>
                     </div>
                     <div class="group-float-left-last">
                         <a href="#" class="btn b02  btn-small" id="btnCreateLgroup" style="padding:0 5px 0 5px; height:20px; line-height:15px; margin:6px 0 0 65px;">new</a>

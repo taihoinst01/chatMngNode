@@ -53,8 +53,8 @@ $(document).ready(function () {
     //google.charts.load('current', {'packages':['corechart']});
     google.charts.load('visualization', {'packages':['corechart', 'table']} );
     google.charts.load('current', {packages: ['corechart', 'bar']});
-    
 
+    
     //google.charts.setOnLoadCallback(drawStatusOverview);
     setTimeout("google.charts.setOnLoadCallback(drawStatusOverview);", 10);
     //google.charts.setOnLoadCallback(getScorePanel);
@@ -392,6 +392,8 @@ function drawStatusOverview() {
                     var tmpColumn4 = new Array();
 
                     var inputData = new google.visualization.DataTable();
+
+                    console.log(data.lang.viewsperiods);
 
                     //declare the columns
                     inputData.addColumn('string', 'INTENT');
