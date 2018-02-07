@@ -1,3 +1,15 @@
+var language;
+;(function($) {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language= data.lang;
+        }
+    });
+})(jQuery);
+
 $(document).ready(function(){
     entitiesAjax();
 
@@ -42,7 +54,7 @@ function entitiesAjax(){
                     item += '<img src="../images/plus_icon.png" class="openAddInput" style="height:17px; width: 17px; margin-left: 10px;">';
                     item += '<img src="../images/minus_icon.png" class="closeAddInput" style="height:17px; width: 17px; margin-left: 10px; display: none;">';
                     item += '<div style="display: none;"><input type="text" name="addEntityValue"/>';
-                    item += '<button class="btn addEntityValueBtn">저장</button>';
+                    item += '<button class="btn addEntityValueBtn">'+ language.SAVE +'</button>';
                     item += '</div>';
                     item += '<input type="hidden" name="entityDefine" value="' + data.list[i].ENTITY + '">';
                     item += '<input type="hidden" name="apiGroup" value="' + data.list[i].API_GROUP + '">';
@@ -101,7 +113,7 @@ $(document).on('click', '.addEntityValueBtn', function() {
 
     if($(this).prev().val() == '' || $(this).prev().val() == null) {
 
-        alert("저장하실 엔티티 밸류를 입력해주세요");
+        alert(language.Enter_entity_value_to_save);
     } else {
 
         var addValues = $(this).parent().parent().serializeObject();
@@ -119,11 +131,11 @@ function addEntityValueAjax(addValues) {
         data: addValues,
         success: function(data) {
             if(data.status == 200){
-                alert("추가하였습니다.");
+                alert(language.Added);
                 $("#iptentites").val(addValues.addEntityValue);
                 searchEntities();
             } else {
-                alert("오류 발생으로 인해 추가하지 못하였습니다.");
+                alert(language.It_failed);
             }
         }
     });
@@ -157,7 +169,7 @@ function searchEntities() {
                         item += '<img src="../images/plus_icon.png" class="openAddInput" style="height:17px; width: 17px; margin-left: 10px;">';
                         item += '<img src="../images/minus_icon.png" class="closeAddInput" style="height:17px; width: 17px; margin-left: 10px; display: none;">';
                         item += '<div style="display: none;"><input type="text" name="addEntityValue"/>';
-                        item += '<button class="btn addEntityValueBtn">저장</button>';
+                        item += '<button class="btn addEntityValueBtn">' + language.SAVE +'</button>';
                         item += '</div>';
                         item += '<input type="hidden" name="entityDefine" value="' + data.list[i].ENTITY + '">';
                         item += '<input type="hidden" name="apiGroup" value="' + data.list[i].API_GROUP + '">';
@@ -242,10 +254,10 @@ function insertEntity(){
         success: function(data) {
             if(data.status == 200){
                 $('#addDialogClose').click();
-                alert("추가하였습니다.");
+                alert(language.Added);
                 entitiesAjax();
             } else {
-                alert("오류 발생으로 인해 추가하지 못하였습니다.");
+                alert(language.It_failed);
             }
         }
     });

@@ -1,4 +1,20 @@
+var language;
+;(function($) {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language= data.lang;
 
+            // recommend에서 넘어온 문장 insert
+            var recommendParam = $('#utterence').val();
+            if(recommendParam){
+                utterInput(recommendParam);
+            }
+        }
+    });
+})(jQuery);
 
 
 
@@ -65,11 +81,6 @@ $(document).ready(function(){
         });
     })
 
-    // recommend에서 넘어온 문장 insert
-    var recommendParam = $('#utterence').val();
-    if(recommendParam){
-        utterInput(recommendParam);
-    }
     // Utterance 입력
     $("#iptUtterance").keypress(function(e) {
 
@@ -109,7 +120,7 @@ $(document).ready(function(){
             data: {'entity':entity, 'dlgId':dlgId},
             success: function(result) {
                 if(result['result'] == true) {
-                    alert("추가 하였습니다.");
+                    alert(language.Added);
                     
                     $('input[name=ch1All]').parent().attr('checked', false);
                     changeBtnAble(false);
@@ -123,7 +134,7 @@ $(document).ready(function(){
                     $('.utterList div[type=checkbox]').removeAttr('checked');
                     $('#nav').remove();
                 }else{
-                    alert("실패하였습니다.");
+                    alert(language.It_failed);
                 }
             }
         });
@@ -326,7 +337,7 @@ $(document).ready(function(){
         insertHtml += '<svg class="wc-message-callout"></svg>';
         insertHtml += '<div><div class="format-markdown"><div class="textMent">';
         insertHtml += '<p>';
-        insertHtml += '입력해주세요...';
+        insertHtml += language.Please_enter
         insertHtml += '</p>';
         insertHtml += '</div></div></div></div></div>';
         insertHtml += '</div>';
@@ -485,7 +496,7 @@ $(document).ready(function(){
     $("#searchDialogBtn").on('click',function(){
 
         if($('input[name=serachDlg]').val() == '' && $('#searchLargeGroup').val() == '') {
-            alert('검색어 또는 그룹을 선택해주세요');
+            alert(language.Select_search_word_or_group);
         } else {
             searchDialog();
         }
@@ -553,7 +564,7 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<svg class="wc-message-callout"></svg>';
         insertHtml += '<div><div class="format-markdown"><div class="textMent">';
         insertHtml += '<p>';
-        insertHtml += '입력해주세요...';
+        insertHtml += language.Please_enter;
         insertHtml += '</p>';
         insertHtml += '</div></div></div></div></div>';
 
@@ -738,12 +749,12 @@ function createDialog(){
     var array = [];
     var exit = false;
     if ($('#description').val().trim() === "" ) {
-        alert("description을 입력해야 합니다.");
+        alert(language.Description_must_be_entered);
         return false;
     }
     $('.insertForm input[name=dialogTitle]').each(function(index) {
         if ($(this).val().trim() === "") {
-            alert("Dialog Title을 입력해야 합니다.");
+            alert(language.You_must_enter_a_Dialog_Title);
             exit = true;
             return false;
         }
@@ -751,7 +762,7 @@ function createDialog(){
     if(exit) return;
     $('.insertForm textarea[name=dialogText]').each(function(index) {
         if ($(this).val().trim() === "") {
-            alert("Dialog Text을 입력해야 합니다.");
+            alert(language.You_must_enter_the_dialog_text);
             exit = true;
             return false;
         }
@@ -759,7 +770,7 @@ function createDialog(){
     if(exit) return;
     $('.insertForm input[name=imgUrl]').each(function(index) {
         if ($(this).val().trim() === "") {
-            alert("Image URL을 입력해야 합니다.");
+            alert(language.ImageURL_must_be_entered);
             exit = true;
             return false;
         }
@@ -1070,7 +1081,7 @@ function utterInput(queryText) {
                             }
                         }
                     }else{
-                        inputUttrHtml += '엔티티 없음';
+                        inputUttrHtml += language.NoEntity;
                     }
                     inputUttrHtml += '</td><td></td></tr>';
              
@@ -1463,7 +1474,7 @@ function selectDialog() {
 
     if(rowNum == -1) {
 
-        alert("다이얼로그를 선택해주세요");
+        alert(language.Please_select_a_dialogue);
     } else {
         var cloneDlg = $("input[name=chksearch]").parent().parent().eq(rowNum).next().children().clone();
         $('#dialogRecommand').html('');
@@ -1629,7 +1640,7 @@ function insertEntity(){
         success: function(data) {
             if(data.status == 200){
                 $('#addEntityClose').click();
-                alert("추가하였습니다.");
+                alert(language.Added);
                 var originalUtter = [];
                 $('input[name=hiddenUtter]').each(function() {
                     originalUtter.push($(this).val());
@@ -1638,7 +1649,7 @@ function insertEntity(){
                 $('#nav').remove();
                 utterInput(originalUtter);
             } else {
-                alert("오류 발생으로 인해 추가하지 못하였습니다.");
+                alert(language.It_failed);
             }
         }
     });
