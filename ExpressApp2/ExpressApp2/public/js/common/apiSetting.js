@@ -92,10 +92,9 @@ function makGrid() {
             } 
         },
         afterEditCell: function (rowid, cellname, value, iRow, iCol) { 
-            //$(this).setColProp(cellname, { editable: false }); 
-            //console.log("rowid-" + rowid + "cellname-" + cellname + "value-" + value );
-            //console.log("iRow-" + iRow + "iCol-" + iCol );
-            //$('tbody').find('#' + rowid).removeClass('ui-state-highlight');
+            $('.edit-cell > input').blur(function(){
+                $("#gridList").jqGrid("saveCell",iRow,iCol);
+            });
             
             $('tbody').find('tr').each(function () {
                 if ($(this).hasClass('ui-state-highlight')) {
