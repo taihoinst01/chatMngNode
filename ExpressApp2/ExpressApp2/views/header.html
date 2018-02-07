@@ -91,12 +91,22 @@
             <% }%>
         
         </div> -->
-        <div class="loginOk" style="margin:0 90px 0 0">
-            <ul class="headerUl">
-                <li class="headerHover" style="padding: 0.8rem 1rem;">
-                    <a href="/index/lang" style="color:white;">kor/eng</a>
-                </li>
-            </ul>
+        <div class="loginOk" style="margin:0 110px 0 0">
+            <select class="selectLan" id="selectLang" name="selectLang">
+                <%
+                    if(languageNow == 'ko') {
+                %>
+                    <option value="ko" selected="selected"><%= __('Korean') %></option>
+                    <option value="en"><%= __('English') %></option>
+                <%
+                    } else {
+                %>
+                    <option value="ko"><%= __('Korean') %></option>
+                    <option value="en" selected="selected"><%= __('English') %></option>
+                <%
+                    }
+                %>
+            </select>
         </div>
         <div class="loginOk" onclick="userLayoutPop(event, this);">
  

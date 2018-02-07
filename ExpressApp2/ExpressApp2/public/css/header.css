@@ -91,6 +91,11 @@
     padding:10px;
     font-weight:bold;
 }
+
+.selectLan{
+    width: 90px;
+    margin: 5px 10px 0 0;
+}
 /*
 #learningTest { 
     width : 300px; 

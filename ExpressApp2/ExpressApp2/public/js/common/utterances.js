@@ -53,6 +53,32 @@ $(document).ready(function(){
     });
 
     $("input[name=dlgChk]").bind('click',function(){
+        var checkedVal = false;
+        var checkedVal2 = false;
+
+        
+        $("input[name=ch1]").each(function() {
+            if (typeof $(this).parent().attr("checked") != 'undefined') {
+                checkedVal = true;
+            } 
+        });
+
+        if($(this).parent().attr('checked') == "checked") {
+            $(this).parent().removeAttr('checked');
+            checkedVal2 = false;
+            //changeBtnAble('learn', false);
+        } else {
+            $(this).parent().attr("checked", "checked");
+            checkedVal2 = true;
+            //changeBtnAble('learn', true);
+        }
+
+        if(checkedVal == true && checkedVal2 == true) {
+            changeBtnAble('learn', true);
+        } else {
+            changeBtnAble('learn', false);
+        }
+        /*
         $(this).each(function(){
             //
             if($(this).parent().attr('checked') == "checked") {
@@ -63,6 +89,7 @@ $(document).ready(function(){
                 changeBtnAble('learn', true);
             }
         });
+        */
     })
 
     // recommend에서 넘어온 문장 insert
