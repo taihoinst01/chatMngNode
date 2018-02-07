@@ -1,21 +1,27 @@
 
 
+//가장 먼저 실행.
 var language;
-$(document).ready(function() {
-
-    getLanguage();
-
-
-    makGrid(); 
- /*
-    $('#searchEmpNm,#searchUserId').on('keypress', function(e) {
-        if (e.keyCode == 13) doSearchParam();
+;(function($) {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language= data.lang;
+        }
     });
-*/
-    $('#searchUserId').focus();
-
+})(jQuery);
+window.onload = function() {
+    makGrid(); 
     //jqgrid resize
     gridResize("gridList");
+}
+$(document).ready(function() {
+
+    
+    $('#searchUserId').focus();
+
 
 });
 
@@ -47,16 +53,6 @@ $(document).on('keypress','.edit-cell > input',function(e){
     }
 });
 
-function getLanguage() {
-    $.ajax({
-        url: '/jsLang',
-        dataType: 'json',
-        type: 'POST',
-        success: function(data) {
-            language= data.lang;
-        }
-    });
-}
 
 var editableCells = ['EMP_NM'];
 function makGrid() {
@@ -72,23 +68,23 @@ function makGrid() {
         
         colModel: [
           {name:'sel', label:'' , width:30, editable:false, align:'center', sortable:false, hidden:false, formatter:selCell},
-          {name:'statusFlag', label:'상태', width:40, align:'center', sortable:false},
-          {name:'USER_ID_HIDDEN' , label:'USER_ID_HIDDEN' , hidden:true},
-          {name:'USER_ID'    , label:'ID'            , width:80, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'초기화'     , label:'비밀번호' , width:70, editable:false, align:'center', sortable:false, hidden:false, formatter:linkInitPwd},
-          {name:'EMP_NM'    , label:'앱'            , width:90, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'REG_DT'    , label:'등록 날짜'            , width:100, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'REG_ID'    , label:'등록 ID'            , width:100, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'MOD_DT'    , label:'수정 날짜'            , width:100, editable:false, align:'left', sortable:false, hidden:false},
-          {name:'MOD_ID'    , label:'수정 ID'            , width:100, editable:false, align:'left', sortable:false, hidden:false},
-          {name:'LAST_LOGIN_DT'    , label:'마지막 로그인 날짜'            , width:100, editable:false, align:'center', sortable:false, hidden:false},
-          {name:'LOGIN_FAIL_CNT'    , label:'로그인 실패 횟수'            , width:100, editable:false, align:'center', sortable:false, hidden:false},
-          {name:'SCRT_NUM'   , label:'비밀번호'      , width:100, editable:false, align:'left', sortable:true, hidden:true}
+          {name:'statusFlag', label:language['STATUS'], width:40, align:'center', sortable:false},
+          {name:'USER_ID_HIDDEN' , label:language['USER_ID'], hidden:true},
+          {name:'USER_ID'    , label:language['USER_ID'], width:80, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'초기화'     , label:language['INIT']  , width:70, editable:false, align:'center', sortable:false, hidden:false, formatter:linkInitPwd},
+          {name:'EMP_NM'    , label:language['APP'] , width:90, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'REG_DT'    , label:language['REGIST_DATE'] , width:100, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'REG_ID'    , label:language['REGIST_ID'] , width:100, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'MOD_DT'    , label:language['MODIFIED_DATE'],  width:100, editable:false, align:'left', sortable:false, hidden:false},
+          {name:'MOD_ID'    , label:language['MODIFY_ID'] , width:100, editable:false, align:'left', sortable:false, hidden:false},
+          {name:'LAST_LOGIN_DT'    , label:language['LAST_LOGIN_DATE'], width:100, editable:false, align:'center', sortable:false, hidden:false},
+          {name:'LOGIN_FAIL_CNT'    , label:language['LOGIN_FAIL_CNT'] , width:100, editable:false, align:'center', sortable:false, hidden:false},
+          {name:'SCRT_NUM'   , label:language['PASSWORD'], width:100, editable:false, align:'left', sortable:true, hidden:true}
         ],
         width: $("#gridList").width(),
         height: 650,
         pager: '#pager',
-        emptyrecords: "데이터가 없습니다.",
+        emptyrecords: language['NO_DATA'],
         rowNum: 20, // 한페이지에 보여줄 데이터 수
         rowList: [ 20, 30], // 페이징 옵션
         rownumbers: true, // show row numbers
@@ -151,7 +147,7 @@ function makGrid() {
 
 function linkInitPwd(cellValue, options, rowObject, action) {
     var userId = rowObject.USER_ID_HIDDEN;
-    return '<a href="javascript://" class="sbtn" onclick="initPassword(\''+ userId +'\');">초기화</a>';
+    return '<a href="javascript://" class="sbtn" onclick="initPassword(\''+ userId +'\');">' + language['INIT'] + '</a>';
 }
 
 function selCell(cellValue, options, rowObject, action) {
@@ -201,7 +197,7 @@ function setGridResize(gridId) {
 
 //초기화
 function restoreGridAction() {
-    if(confirm('초기화 하시곘습니까?')) {
+    if(confirm(language['ASK_INIT'])) {
         var grid = $("#gridList");
         //var gridData = JSON.parse(data.d);
         grid.clearGridData();
@@ -252,9 +248,9 @@ function doSearchParam(postData) {
 //var editableCells = ['USER_ID', 'EMP_NM'];
 function insertAction() {
     if ($('#gridList').find("#addRow").length !== 0) {
-        alert("추가중인 사용자가 있습니다.");
+        alert(language['ADDED_USER_EXISTS']);
     } else if ($('#gridList').find('input[type=text]').length >0) {
-        alert('수정중인 cell이 있습니다.');
+        alert(language['MODIFIED_USER_EXISTS']);
     } else {
         var grid = $('#gridList');
         grid.jqGrid('addRowData', "addRow", {  statusFlag : "NEW"}, "first");
@@ -315,7 +311,7 @@ function saveAction() {
             }
         });
     } else {
-        alert('변경된 데이터가 없습니다.');
+        alert(language['THERE_IS_NO_MODIFIED_DATA']);
         return;
     }
     
@@ -460,7 +456,7 @@ function saveAction() {
 
 // 비밀번호 초기화 
 function initPassword(userId) {
-    if (confirm('비밀번호를 초기화 하시겠습니까?')) {
+    if (confirm(language['ASK_PW_INIT'])) {
         var params = {
             paramUserId: userId
         }
@@ -482,7 +478,7 @@ function deleteAction() {
     
 
     if ($('input[name=cell_checkbox]:checked').length > 0) {
-        if ( confirm('삭제하시겠습니까?')) {
+        if ( confirm(language['ASK_DELETE'])) {
             $('input[name=cell_checkbox]:checked').each(function() {
                 //$(this).parent().parent().removeNode();
                 //$('#gridList').jqGrid('delRowData', $(this).parent().parent().attr("id"));
@@ -492,6 +488,6 @@ function deleteAction() {
             });
         }
     } else {
-        alert('선택된 행이 없습니다.');
+        alert(language['NO_SELECTED_CELL']);
     }
 }
