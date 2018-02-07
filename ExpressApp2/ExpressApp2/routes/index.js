@@ -55,7 +55,14 @@ router.get('/', function (req, res) {
                                 }
                                 //convert(datetime, '2008-10-23T18:52:47.513', 126)
                                 //let insertApp = await pool.request().query(appStr);
-                                pool.request().query(appStr)
+                                dbConnect.getConnection(sql).then(pool => { 
+                                    return pool.request().query(appStr) 
+                                }).then(result => {
+
+                                }).catch(err => {
+                                    console.log(err);
+                                    sql.close();
+                                });
                             }
 
                             res.redirect("/list");
