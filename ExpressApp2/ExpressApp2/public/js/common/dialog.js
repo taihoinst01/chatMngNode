@@ -1,3 +1,15 @@
+var language;
+;(function($) {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language= data.lang;
+        }
+    });
+})(jQuery);
+
 $(document).ready(function(){
 
     //그룹박스
@@ -184,7 +196,7 @@ $(document).ready(function(){
         insertHtml += '<svg class="wc-message-callout"></svg>';
         insertHtml += '<div><div class="format-markdown"><div class="textMent">';
         insertHtml += '<p>';
-        insertHtml += '입력해주세요...';
+        insertHtml += language.Please_enter;
         insertHtml += '</p>';
         insertHtml += '</div></div></div></div></div>';
         insertHtml += '</div>';
@@ -261,7 +273,7 @@ $(document).ready(function(){
             insertHtml += '<svg class="wc-message-callout"></svg>';
             insertHtml += '<div><div class="format-markdown"><div class="textMent">';
             insertHtml += '<p>';
-            insertHtml += '입력해주세요...';
+            insertHtml += language.Please_enter;
             insertHtml += '</p>';
             insertHtml += '</div></div></div></div></div>';
     
@@ -590,12 +602,12 @@ function createDialog(){
     var array = [];
     var exit = false;
     if ($('#description').val().trim() === "" ) {
-        alert("description을 입력해야 합니다.");
+        alert(language.Description_must_be_entered);
         return false;
     }
     $('.insertForm input[name=dialogTitle]').each(function(index) {
         if ($(this).val().trim() === "") {
-            alert("Dialog Title을 입력해야 합니다.");
+            alert();
             exit = true;
             return false;
         }
@@ -603,7 +615,7 @@ function createDialog(){
     if(exit) return;
     $('.insertForm textarea[name=dialogText]').each(function(index) {
         if ($(this).val().trim() === "") {
-            alert("Dialog Text을 입력해야 합니다.");
+            alert(language.You_must_enter_a_Dialog_Title);
             exit = true;
             return false;
         }
@@ -611,7 +623,7 @@ function createDialog(){
     if(exit) return;
     $('.insertForm input[name=imgUrl]').each(function(index) {
         if ($(this).val().trim() === "") {
-            alert("Image URL을 입력해야 합니다.");
+            alert(language.ImageURL_must_be_entered);
             exit = true;
             return false;
         }
@@ -686,13 +698,13 @@ $(document).on('click', '#searchDlgBtn', function() {
 
     if(searchText == '' || searchText == null ) {
         
-        alert("검색어를 입력해주세요");
+        alert(language.Enter_search_word);
         return;
     } else {
 
        if(group.searchGroupL == 'default' || group.searchGroupM == 'default' || group.searchGroupS == 'default') {
            
-            alert("그룹을 재설정 해주세요");
+            alert(language.Please_reset_the_group);
        } else {
 
             $('#currentPage').val(1);
@@ -832,7 +844,7 @@ function searchGroup(groupName, group, type, groupL) {
 
                 if(group == 'searchMedium') {
 
-                    var item = '<option value="default">중그룹</option>';
+                    var item = '<option value="default">' + language.Middle_group + '</option>';
 
                     for(var i = 0; i <data.groupList.length; i++) {
 
@@ -841,10 +853,10 @@ function searchGroup(groupName, group, type, groupL) {
 
                     $('#searchGroupM').html('');
                     $('#searchGroupS').html('');
-                    $('#searchGroupS').html('<option value="default">소그룹</option>');
+                    $('#searchGroupS').html('<option value="default">' + language.Small_group + '</option>');
                     $('#searchGroupM').append(item);
                 } else if(group == 'searchSmall') {
-                    var item = '<option value="default">소그룹</option>';
+                    var item = '<option value="default">' + language.Small_group + '</option>';
 
                     for(var i = 0; i <data.groupList.length; i++) {
                         item += '<option>' + data.groupList[i].smallGroup + '</option>';
