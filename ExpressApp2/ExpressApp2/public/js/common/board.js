@@ -410,10 +410,10 @@ function drawStatusOverview() {
 
                     //declare the columns
                     inputData.addColumn('string', 'INTENT');
-                    inputData.addColumn('number', '갯수');
-                    inputData.addColumn('number', '평균');
-                    inputData.addColumn('number', '최소 ');
-                    inputData.addColumn('number', '최대 ');
+                    inputData.addColumn('number', language.Number);
+                    inputData.addColumn('number', language.average);
+                    inputData.addColumn('number', language.minimum);
+                    inputData.addColumn('number', language.maximum);
 
                     //insert data here
                     //don't forget to set the classname TotalCell to the last datarow!!!
@@ -428,7 +428,7 @@ function drawStatusOverview() {
                     }
                     inputData.addRow(
                         [{
-                            v: '합계',
+                            v: language.Sum,
                             p: {
                                 className: 'TotalCell'
                             }
@@ -543,7 +543,7 @@ function getOftQuestion() {
             
             if (tableList.length === 0) {
                 var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
-                           + '<td class="google-visualization-table-td" colspan="5" style="padding: 10% 40%;"><div style="width:120px;">데이터가 없습니다.</div></td></tr>'
+                           + '<td class="google-visualization-table-td" colspan="5" style="padding: 10% 40%;"><div style="width:120px;">' + language.noData + '</div></td></tr>'
                 $('#oftQuestion').find('tbody').append(tdHtml);
             }
         }
@@ -573,9 +573,9 @@ function drawNoneQuerylist() {
 
                     //declare the columns
                     inputData3.addColumn('string', 'INTENT');
-                    inputData3.addColumn('string', '한글질문');
-                    inputData3.addColumn('number', '질문수');
-                    inputData3.addColumn('string', '날짜');
+                    inputData3.addColumn('string', language.HangulQuestion);
+                    inputData3.addColumn('number', language.QuestionCount);
+                    inputData3.addColumn('string', language.Date);
                     inputData3.addColumn('string', '채널');
                     inputData3.addColumn('string', '결과');
                     inputData3.addColumn('string', 'TEXT답변');
@@ -654,7 +654,7 @@ function drawNoneQuerylist() {
                    
                    if (noneList.length === 0) {
                     var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
-                               + '<td class="google-visualization-table-td" colspan="11" style="padding: 10% 45%;"><div style="width:120px;">데이터가 없습니다.</div></td></tr>'
+                               + '<td class="google-visualization-table-td" colspan="11" style="padding: 10% 45%;"><div style="width:120px;">' + language.noData + '</div></td></tr>'
                     $('#noneQueryDiv').find('tbody').append(tdHtml);
                     }
                     
@@ -778,7 +778,7 @@ function drawFirstQueryTable() {
 
             if (data.list.length === 0) {
                 var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
-                            + '<td class="google-visualization-table-td" colspan="13" style="padding: 10% 42%;"><div style="width:120px;">데이터가 없습니다.</div></td></tr>'
+                            + '<td class="google-visualization-table-td" colspan="13" style="padding: 10% 42%;"><div style="width:120px;">' + language.noData + '</div></td></tr>'
                 $('#table_div').find('tbody').append(tdHtml);
                 }
                
