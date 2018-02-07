@@ -96,6 +96,14 @@ app.use(function(req, res, next) {
     } else { 
         res.locals.subKey = null;
     }
+
+    if (!res.locals.en) {
+        res.locals.en = i18n.getCatalog()['en'];
+    }
+
+    if (!res.locals.ko) {
+        res.locals.ko = i18n.getCatalog()['ko'];
+    }
     
     next();
 });

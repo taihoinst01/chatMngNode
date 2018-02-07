@@ -5,6 +5,7 @@ var sql = require('mssql');
 var dbConfig = require('../config/dbConfig');
 var dbConnect = require('../config/dbConnect');
 var luisConfig = require('../config/luisConfig');
+var i18n = require("i18n");
 var router = express.Router();
 
 const HOST = 'https://westus.api.cognitive.microsoft.com'; // Luis api host
@@ -275,6 +276,15 @@ router.get('/index/lang', function (req, res) {
     }
 
     res.redirect('back');
+});
+
+router.post('/jsLang', function (req, res) {
+
+    if(req.cookies.i18n == "en") {
+        res.send({ lang: res.locals.en});
+    } else if (req.cookies.i18n == "ko") {
+        res.send({lang: res.locals.ko});
+    }
 });
 
 module.exports = router;

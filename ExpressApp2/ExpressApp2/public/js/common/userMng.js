@@ -1,11 +1,12 @@
 
 
+var language;
 $(document).ready(function() {
+
+    getLanguage();
 
 
     makGrid(); 
-    
-    
  /*
     $('#searchEmpNm,#searchUserId').on('keypress', function(e) {
         if (e.keyCode == 13) doSearchParam();
@@ -45,6 +46,17 @@ $(document).on('keypress','.edit-cell > input',function(e){
         }
     }
 });
+
+function getLanguage() {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language= data.lang;
+        }
+    });
+}
 
 var editableCells = ['EMP_NM'];
 function makGrid() {
