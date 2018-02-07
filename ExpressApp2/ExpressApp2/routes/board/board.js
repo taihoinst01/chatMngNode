@@ -8,7 +8,8 @@ var paging = require('../../config/paging');
 var util = require('../../config/util');
 var luisConfig = require('../../config/luisConfig');
 var router = express.Router();
-
+var ko = require("../../public/locales/ko.json");
+var en = require("../../public/locales/en.json");
 /* GET users listing. */
 router.get('/', function (req, res) {
     req.session.menu = 'm2';
@@ -53,7 +54,7 @@ router.post('/intentScore', function (req, res) {
     var endDate = req.body.endDate;
     var selDate = req.body.selDate;
     var selChannel = req.body.selChannel;
-
+    
     var selectQuery = "";
     selectQuery += "SELECT	LOWER(LUIS_INTENT) AS intentName, \n";
     selectQuery += "AVG(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreAVG, \n";
@@ -80,7 +81,15 @@ router.post('/intentScore', function (req, res) {
         return pool.request().query(selectQuery)
     }).then(result => {
         let rows = result.recordset
-        res.send({list : rows});
+
+        var lang;
+        if(req.cookies.i18n == "en") {
+            lang = en;
+        } else if (req.cookies.i18n == "ko") {
+            lang = ko
+        }
+
+        res.send({list : rows, lang : lang});
         sql.close();
     }).catch(err => {
         res.status(500).send({ message: "${err}"})
