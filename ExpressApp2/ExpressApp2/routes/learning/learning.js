@@ -448,14 +448,13 @@ router.post('/dialogs', function (req, res) {
         try {
             var sourceType = req.body.sourceType;
             var groupType = req.body.groupType;
-            
             var dlg_desQueryString = "select tbp.* from " +
                                      "(select ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC) AS NUM, " +
                                      "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
                                      "CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
                                      "DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, GroupS " +
                                      "from TBL_DLG a, TBL_DLG_RELATION_LUIS b where a.DLG_ID = b.DLG_ID ";
-            if(groupType != '모두보기') {
+            if(groupType != 'View all') {
 
                 dlg_desQueryString += "and GroupS = '" + groupType + "' ";
             }      

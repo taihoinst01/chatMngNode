@@ -362,7 +362,11 @@ $(document).ready(function(){
         $('#apiLayout').css('display', 'none');
         $('#commonLayout').css('display', 'block');
         $('#commonLayout div:first').prepend(insertForm);
-        $('#btnCreateLgroup').click();
+        
+        if($('#btnCreateLgroup').html() == 'cancel') {
+
+            $('#btnCreateLgroup').click();
+        }
         $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>입력해주세요...</p></div></div></div></div></div></div></div>');
 
     });
@@ -933,7 +937,6 @@ function dialogsAjax(groupType, sourceType){
         data : params,
         isloading: true,
         success: function(data) {
-
             $('#dialogTbltbody').html('');
             var item = '';
             if(data.list.length > 0){
@@ -953,7 +956,7 @@ function dialogsAjax(groupType, sourceType){
                 if(data.groupList.length > 0) {
                     var item2 = '';
                     var item3 = '';
-                    item2 = '<label for="all" class="allGroup selectArea">모두보기</label>';
+                    item2 = '<label for="all" class="allGroup selectArea">View all</label>';
                     for(var i = 0; i <data.groupList.length; i++) {
                         item2 += '<ul class="checkouter selectArea">' +
                                 '<li class="selectArea">' +

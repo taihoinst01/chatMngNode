@@ -24,13 +24,13 @@
     <!-- css는 recommend.css 에 만들었습니다 -->
     <div id="wrap4Luis">
         <div id="container" class="main">
-            <h1>추가학습 추천 문장</h1>
+            <h1><%= __('Additional learning recommendation') %></h1>
             <div id="headerDiv1">
                 <select id="recommendPeriod" class="timeSelect">
-                    <option value="all">전체</option>
-                    <option value="yesterday" selected>어제</option>
-                    <option value="lastWeek">저번주</option>
-                    <option value="lastMonth">저번달</option>
+                    <option value="all"><%= __('All') %></option>
+                    <option value="yesterday" selected><%= __('Yesterday') %></option>
+                    <option value="lastWeek"><%= __('Last week') %></option>
+                    <option value="lastMonth"><%= __('Last month') %></option>
                 </select>
                 <button class="btn_delete" onclick="deleteRecommend()" disabled>
                     <span class="span_delete">Delete</span>
@@ -41,8 +41,8 @@
                 <thead>
                     <tr>
                         <th class="txt_left" style="width: 3%;"><input type="checkbox" class="tweak-input" id="recommendAll" name="recommendAll"/></th>
-                        <th class="txt_left" colspan="3">학습 추천 문장<span></span></th>
-                        <th class="txt_center">등록 날짜<span></span> </th>
+                        <th class="txt_left" colspan="3"><%= __('Learning recommendation sentence') %><span></span></th>
+                        <th class="txt_center"><%= __('Registration Date') %><span></span> </th>
                        <!-- <th class="txt_right02"></th> -->
                     </tr>
                 </thead>
