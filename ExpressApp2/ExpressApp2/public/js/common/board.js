@@ -1,6 +1,7 @@
 
 
 var entityHash = {};
+var language;
 /*
 //var entityList = [];
 //실행 순서 1
@@ -38,6 +39,7 @@ var slider;
 var startDate;
 var endDate;
 $(document).ready(function () {
+    getLanguage();
     slider = $('#slider').slider({range: true, max: daysDiff(minDate, maxDate),
             slide: function(event, ui) { resync(ui.values); }});
     startDate = $('#startDate').datepicker({minDate: minDate, maxDate: maxDate,
@@ -54,7 +56,7 @@ $(document).ready(function () {
     google.charts.load('visualization', {'packages':['corechart', 'table']} );
     google.charts.load('current', {packages: ['corechart', 'bar']});
 
-    
+
     //google.charts.setOnLoadCallback(drawStatusOverview);
     setTimeout("google.charts.setOnLoadCallback(drawStatusOverview);", 10);
     //google.charts.setOnLoadCallback(getScorePanel);
@@ -82,6 +84,17 @@ $(document).ready(function () {
         setTimeout("google.charts.setOnLoadCallback(drawNoneQuerylist);", 70);
     });
 });
+
+function getLanguage() {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language = data.lang;
+        }
+    });
+}
 
 function resync(values) {
     if (values) {
@@ -393,7 +406,7 @@ function drawStatusOverview() {
 
                     var inputData = new google.visualization.DataTable();
 
-                    console.log(data.lang.viewsperiods);
+                    console.log(language.viewsperiods);
 
                     //declare the columns
                     inputData.addColumn('string', 'INTENT');
