@@ -8,8 +8,7 @@ var paging = require('../../config/paging');
 var util = require('../../config/util');
 var luisConfig = require('../../config/luisConfig');
 var router = express.Router();
-var ko = require("../../public/locales/ko.json");
-var en = require("../../public/locales/en.json");
+
 /* GET users listing. */
 router.get('/', function (req, res) {
     req.session.menu = 'm2';
@@ -81,15 +80,7 @@ router.post('/intentScore', function (req, res) {
         return pool.request().query(selectQuery)
     }).then(result => {
         let rows = result.recordset
-
-        var lang;
-        if(req.cookies.i18n == "en") {
-            lang = en;
-        } else if (req.cookies.i18n == "ko") {
-            lang = ko
-        }
-
-        res.send({list : rows, lang : lang});
+        res.send({list : rows});
         sql.close();
     }).catch(err => {
         res.status(500).send({ message: "${err}"})
