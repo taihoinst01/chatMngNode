@@ -23,7 +23,6 @@
 	"HangulQuestion": "Hangul question",
 	"QuestionCount": "QuestionCount",
 	"Date": "Date",
-
 	"============= Learning > RECOMMEND =============": "",
 	"Additional learning recommendation": "Additional learning recommendation",
 	"All": "All",
@@ -43,15 +42,12 @@
 	"Entity value": "Entity value",
 	"abcabc": "abcabc",
 	"Input sentence": "Input sentence",
-
 	"============= Learning > DIALOG =============": "",
 	"Enter Connection utterance": "Enter Connection utterance",
 	"explanation": "explanation",
 	"Connection utterance": "Connection utterance",
-
 	"============= Learning > ENTITIEs =============": "",
 	"Description 2": "The Entity description or Entity value to search Enter and click on Enter Key or search button",
-	
 	"============= setting  =============": "",
 	"NO_DATA": "There is no data.",
 	"ASK_INIT": "Are you sure you want to reset?",
@@ -64,6 +60,8 @@
 	"EMPTY_CELL_EXISTS": "There is an empty cell.",
 	"SAME_ID_EXISTS": "SAME ID EXISTS.",
 	"ID_NAME_BE_FILLED": "USER ID and USER NAME must be filled.",
+	"INPUT_API_ID": "API ID must be filled.",
+	"INPUT_API_URL": "API URL must be filled.",
 	"ADD": "ADD",
 	"DELETE": "DELETE",
 	"SAVE": "SAVE",
@@ -83,11 +81,14 @@
 	"LAST_LOGIN_DATE": "LAST LOGIN DATE",
 	"LOGIN_FAIL_CNT": "LOGIN FAIL CNT",
 	"USER_AUTH_MNG": "USER AUTH MNG",
+	"USER_AUTH": "USER AUTH",
 	"NAME": "NAME",
 	"EMAIL": "EMAIL",
 	"APP_ID": "APP ID",
 	"OWNER": "OWNER",
 	"API_MNG": "API MNG",
+	"API_LIST": "API LIST",
 	"URL": "URL",
-	"DESC": "DESCRIPTION"
+	"DESC": "DESCRIPTION",
+	"i18n": "i18n"
 }

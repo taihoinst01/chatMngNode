@@ -15,7 +15,6 @@ var language;
         }
     });
 })(jQuery);
-var lastRowId = -1;
 $(document).ready(function() {
     $('#searchUserId').focus();
     

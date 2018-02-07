@@ -1,21 +1,21 @@
 
-
-$(document).ready(function() {
-
-
-    makGrid(); 
-    
-    
- /*
-    $('#searchEmpNm,#searchApiId').on('keypress', function(e) {
-        if (e.keyCode == 13) doSearchParam();
+//가장 먼저 실행.
+var language;
+;(function($) {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language= data.lang;
+            
+            makGrid(); 
+            gridResize("gridList");
+        }
     });
-*/
+})(jQuery);
+$(document).ready(function() {
     $('#searchApiId').focus();
-
-    //jqgrid resize
-    gridResize("gridList");
-
 });
 
 window.onresize = function() {
@@ -59,16 +59,16 @@ function makGrid() {
         
         colModel: [
           {name:'sel', label:'' , width:30, editable:false, align:'center', sortable:false, hidden:false, formatter:selCell},
-          {name:'statusFlag', label:'상태', width:40, align:'center', sortable:false},
-          {name:'API_ID_HIDDEN' , label:'API_ID_HIDDEN' , hidden:true},
-          {name:'API_ID'    , label:'API_ID'            , width:80, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'API_URL'    , label:'URL'            , width:90, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'API_DESC'    , label:'DESC'            , width:200, editable:false, align:'left', sortable:true, hidden:false}
+          {name:'statusFlag', label:language['STATUS'], width:40, align:'center', sortable:false},
+          {name:'API_ID_HIDDEN' , label:language['APP_ID'], hidden:true},
+          {name:'API_ID'    , label:language['APP_ID'], width:80, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'API_URL'    , label:language['URL'], width:90, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'API_DESC'    , label:language['DESC'], width:200, editable:false, align:'left', sortable:true, hidden:false}
         ],
         width: $("#gridList").width(),
         height: 650,
         pager: '#pager',
-        emptyrecords: "데이터가 없습니다.",
+        emptyrecords: language['NO_DATA'],
         rowNum: 20, // 한페이지에 보여줄 데이터 수
         rowList: [ 20, 30], // 페이징 옵션
         rownumbers: true, // show row numbers
@@ -228,9 +228,9 @@ function doSearchParam(postData) {
 //var editableCells = ['USER_ID', 'EMP_NM'];
 function insertAction() {
     if ($('#gridList').find("#addRow").length !== 0) {
-        alert("추가중인 사용자가 있습니다.");
+        alert(language['ADDED_USER_EXISTS']);
     } else if ($('#gridList').find('input[type=text]').length >0) {
-        alert('수정중인 cell이 있습니다.');
+        alert(language['MODIFIED_USER_EXISTS']);
     }else {
         var grid = $('#gridList');
         grid.jqGrid('addRowData', "addRow", {  statusFlag : "NEW"}, "first");
@@ -251,16 +251,16 @@ function saveAction() {
     // true : select 된 데이터, false : transaction 일으킨 데이터
     var checkedLen = $('input[name=cell_checkbox]:checked').length;
     if (checkedLen < 1) {
-        alert('체크된 데이터가 없습니다.');
+        alert(language['NO_SELECTED_CELL']);
         return;
     } else {
         for (var i=0; i< checkedLen; i++) {
             var checkedId = $('input[name=cell_checkbox]:checked').eq(i).parents('tr').attr('id');
             if($('#gridList').jqGrid().getRowData(checkedId).API_ID === "") {
-                alert('API ID를 입력해야 합니다')
+                alert(language['INPUT_API_ID']);
                 return;
             } else if($('#gridList').jqGrid().getRowData(checkedId).API_URL === "") {
-                alert('API URL을 입력해야 합니다')
+                alert(language['INPUT_API_URL']);
                 return;
             } 
         }
@@ -314,7 +314,7 @@ function saveAction() {
 function deleteAction() {
     //var selRow = $('#gridList').jqGrid('getGridParam', 'selrow');
     if ($('input[name=cell_checkbox]:checked').length > 0) {
-        if ( confirm('삭제하시겠습니까?')) {
+        if ( confirm(language['ASK_DELETE'])) {
             $('input[name=cell_checkbox]:checked').each(function() {
                 //$(this).parent().parent().removeNode();
                 //$('#gridList').jqGrid('delRowData', $(this).parent().parent().attr("id"));
@@ -324,6 +324,6 @@ function deleteAction() {
             });
         }
     } else {
-        alert('선택된 행이 없습니다.');
+        alert(language['NO_SELECTED_CELL']);
     }
 }

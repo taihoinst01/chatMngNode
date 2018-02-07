@@ -100,6 +100,10 @@ app.use(function(req, res, next) {
         res.locals.subKey = null;
     }
 
+    if (!res.locals.languageNow) {
+        res.locals.languageNow = req.cookies.i18n;
+    }
+
     if (!res.locals.en) {
         res.locals.en = i18n.getCatalog()['en'];
     }
