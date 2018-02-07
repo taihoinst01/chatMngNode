@@ -88,6 +88,11 @@
 	"ASK_PW_INIT": "비밀번호를 초기화 하시겠습니까?",
 	"ASK_DELETE": "삭제하시겠습니까?",
 	"NO_SELECTED_CELL": "선택된 행이 없습니다.",
+	"EMPTY_CELL_EXISTS": "공백 셀이 있습니다.",
+	"SAME_ID_EXISTS": "아이디는 중복될 수 없습니다.",
+	"ID_NAME_BE_FILLED": "유저 아이디와 이름을 입력해야합니다.",
+	"INPUT_API_ID": "API ID를 입력해야 합니다.",
+	"INPUT_API_URL": "API URL을 입력해야 합니다.",
 	"ADD": "추가",
 	"DELETE": "삭제",
 	"SAVE": "저장",
@@ -107,12 +112,15 @@
 	"LAST_LOGIN_DATE": "마지막 로그인 날짜",
 	"LOGIN_FAIL_CNT": "로그인 실패 횟수",
 	"USER_AUTH_MNG": "사용자권한관리",
+	"USER_AUTH": "사용자권한",
 	"NAME": "이름",
 	"EMAIL": "이메일",
 	"APP_ID": "앱 아이디",
 	"OWNER": "사용 아이디",
 	"API_MNG": "API 관리",
+	"API_LIST": "API 목록",
 	"URL": "URL",
 	"DESC": "설명",
-	"Mean-stay-time": "Mean-stay-time"
+	"Mean-stay-time": "Mean-stay-time",
+	"i18n": "i18n"
 }

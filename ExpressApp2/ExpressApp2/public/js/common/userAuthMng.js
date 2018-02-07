@@ -1,22 +1,24 @@
 
+//가장 먼저 실행.
+var language;
+;(function($) {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language= data.lang;
+            
+            makeUserGrid(); 
+            makeAppGrid();
+            gridResize("gridList");
+            gridResize("gridUserAuthList");
+        }
+    });
+})(jQuery);
 
 $(document).ready(function() {
-
-
-    makeUserGrid(); 
-    makeAppGrid();
-    
- /*
-    $('#searchEmpNm,#searchUserId').on('keypress', function(e) {
-        if (e.keyCode == 13) doSearchParam();
-    });
-*/
     $('#searchUserId').focus();
-
-    //jqgrid resize
-    gridResize("gridList");
-    gridResize("gridUserAuthList");
-
 });
 
 window.onresize = function() {
@@ -25,11 +27,6 @@ window.onresize = function() {
 }
 
 $(document).ready(function() {
-    /*
-    $('#searchGrpDiv').on('change', function(e) {
-        doSearchParam();
-    });
-    */
     $('#searchEmpNm, #searchUserId').on('keypress', function(e) {
         if (e.keyCode == 13) doSearchParam();
     });
@@ -61,14 +58,14 @@ function makeUserGrid() {
           
         colModel: [
           {name:'USER_ID_HIDDEN' , label:'USER_ID_HIDDEN' , hidden:true},
-          {name:'USER_ID'    , label:'ID'            , width:70, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'EMP_NM'    , label:'NAME'            , width:80, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'EMAIL'    , label:'EMAIL'            , width:120, editable:false, align:'left', sortable:true, hidden:false}
+          {name:'USER_ID'    , label:language['ID'], width:70, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'EMP_NM'    , label:language['NAME'] , width:80, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'EMAIL'    , label:language['EMAIL'] , width:120, editable:false, align:'left', sortable:true, hidden:false}
         ],
         width: $("#gridList").width(),
         height: 650,
         pager: '#pager',
-        emptyrecords: "데이터가 없습니다.",
+        emptyrecords: language['NO_DATA'],
         rowNum: 20, // 한페이지에 보여줄 데이터 수
         rowList: [ 20, 30], // 페이징 옵션
         rownumbers: true, // show row numbers
@@ -100,14 +97,14 @@ function makeAppGrid() {
           
         colModel: [
           {name:'sel', label:'' , width:20, editable:false, align:'center', sortable:false, hidden:false, formatter:selCell},
-          {name:'APP_NAME'    , label:'APP NAME'            , width:70, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'APP_ID'    , label:'APP ID'            , width:150, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'OWNER_EMAIL'    , label:'OWNER'            , width:60, editable:false, align:'right', sortable:true, hidden:false}
+          {name:'APP_NAME'    , label:language['APP'], width:70, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'APP_ID'    , label:language['APP_ID'], width:150, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'OWNER_EMAIL'    , label:language['OWNER'], width:60, editable:false, align:'right', sortable:true, hidden:false}
         ],
         width: $("#gridUserAuthList").width(),
         height: 650,
         pager: '#pagerAuth',
-        emptyrecords: "데이터가 없습니다.",
+        emptyrecords: language['NO_DATA'],
         rowNum: 20, // 한페이지에 보여줄 데이터 수
         rowList: [ 20, 30], // 페이징 옵션
         rownumbers: true, // show row numbers
@@ -168,7 +165,7 @@ function setGridResize(gridId) {
 
 //초기화
 function restoreGridAction() {
-    if(confirm('초기화 하시곘습니까?')) {
+    if(confirm(language['ASK_INIT'])) {
         mkAppRow(initAppList, initAppCheck);
     }
 }

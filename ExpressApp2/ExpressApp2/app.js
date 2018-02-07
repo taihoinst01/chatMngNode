@@ -38,7 +38,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: '@#@$MYSIGN#@$#$',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 24000 * 60 * 60
+    }
    }));
 
 i18n.configure({
@@ -95,6 +98,10 @@ app.use(function(req, res, next) {
         res.locals.subKey = req.session.subKey;
     } else { 
         res.locals.subKey = null;
+    }
+
+    if (!res.locals.languageNow) {
+        res.locals.languageNow = req.cookies.i18n;
     }
 
     if (!res.locals.en) {

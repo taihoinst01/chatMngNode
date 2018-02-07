@@ -74,7 +74,11 @@ router.get('/logout', function (req, res) {
 
 router.get('/userMng', function (req, res) {  
     res.locals.selMenu = req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '사용자관리';
+    if(req.cookies.i18n == "en") {
+        res.locals.selLeftMenu = res.locals.en['USER_MNG'];
+    } else if (req.cookies.i18n == "ko") {
+        res.locals.selLeftMenu = res.locals.ko['USER_MNG'];
+    }
     res.render('userMng');
 });
 
@@ -279,7 +283,11 @@ router.post('/inItPassword', function (req, res) {
 
 router.get('/userAuthMng', function (req, res) {  
     res.locals.selMenu = req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = '사용자권한관리';
+    if(req.cookies.i18n == "en") {
+        res.locals.selLeftMenu = res.locals.en['USER_AUTH_MNG'];
+    } else if (req.cookies.i18n == "ko") {
+        res.locals.selLeftMenu = res.locals.ko['USER_AUTH_MNG'];
+    }
     res.render('userAuthMng');
 });
 
@@ -384,7 +392,11 @@ router.post('/updateUserAppList', function (req, res) {
 
 router.get('/apiSetting', function (req, res) {
     res.locals.selMenu = req.session.selMenu = 'm1';
-    res.locals.selLeftMenu = 'API 관리';
+    if(req.cookies.i18n == "en") {
+        res.locals.selLeftMenu = res.locals.en['API_MNG'];
+    } else if (req.cookies.i18n == "ko") {
+        res.locals.selLeftMenu = res.locals.ko['API_MNG'];
+    }
     res.render('apiSetting');
 })
 

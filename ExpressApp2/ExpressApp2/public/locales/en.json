@@ -67,6 +67,7 @@
 	"ImageURL_must_be_entered": "ImageURL must be entered",
 	"Please_select_a_dialogue": "Please select a dialogue",
 	"Select_search_word_or_group": "Select search word or group",
+	
 	"============= Learning > DIALOG =============": "",
 	"Enter Connection utterance": "Enter Connection utterance",
 	"explanation": "explanation",
@@ -87,6 +88,11 @@
 	"ASK_PW_INIT": "Are you sure you want to reset password?",
 	"ASK_DELETE": "Are you sure to delete?",
 	"NO_SELECTED_CELL": "There is no selected cell.",
+	"EMPTY_CELL_EXISTS": "There is an empty cell.",
+	"SAME_ID_EXISTS": "SAME ID EXISTS.",
+	"ID_NAME_BE_FILLED": "USER ID and USER NAME must be filled.",
+	"INPUT_API_ID": "API ID must be filled.",
+	"INPUT_API_URL": "API URL must be filled.",
 	"ADD": "ADD",
 	"DELETE": "DELETE",
 	"SAVE": "SAVE",
@@ -106,12 +112,15 @@
 	"LAST_LOGIN_DATE": "LAST LOGIN DATE",
 	"LOGIN_FAIL_CNT": "LOGIN FAIL CNT",
 	"USER_AUTH_MNG": "USER AUTH MNG",
+	"USER_AUTH": "USER AUTH",
 	"NAME": "NAME",
 	"EMAIL": "EMAIL",
 	"APP_ID": "APP ID",
 	"OWNER": "OWNER",
 	"API_MNG": "API MNG",
+	"API_LIST": "API LIST",
 	"URL": "URL",
 	"DESC": "DESCRIPTION",
-	"Mean-stay-time": "Mean-stay-time"
+	"Mean-stay-time": "Mean-stay-time",
+	"i18n": "i18n"
 }
