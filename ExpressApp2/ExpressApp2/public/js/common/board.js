@@ -516,17 +516,10 @@ function getOftQuestion() {
 
               //declare the columns
               inputData.addColumn('string', 'INTENT');
-<<<<<<< HEAD
-              inputData.addColumn('string', '한글질문');
-              inputData.addColumn('string', '채널');
-              inputData.addColumn('number', '질문수');
-              inputData.addColumn('string', '날짜');
-=======
               inputData.addColumn('string', language.HangulQuestion);
               inputData.addColumn('string', language.channel);
-              inputData.addColumn('string', language.QuestionCount);
+              inputData.addColumn('number', language.QuestionCount);
               inputData.addColumn('string', language.Date);
->>>>>>> f3e1ffb94ec2caf4263ab1f5b7bae45f616166fd
 
               //insert data here
               //don't forget to set the classname TotalCell to the last datarow!!!
