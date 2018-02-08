@@ -56,7 +56,7 @@ function entitiesAjax(){
                     item += '<img src="../images/plus_icon.png" class="openAddInput" style="height:17px; width: 17px; margin-left: 10px;">';
                     item += '<img src="../images/minus_icon.png" class="closeAddInput" style="height:17px; width: 17px; margin-left: 10px; display: none;">';
                     item += '<div style="display: none;"><input type="text" name="addEntityValue"/>';
-                    item += '<button class="btn addEntityValueBtn">'+ language.SAVE +'</button>';
+                    item += '<button class="btn addEntityValueBtn">' + language.SAVE + '</button>';
                     item += '</div>';
                     item += '<input type="hidden" name="entityDefine" value="' + data.list[i].ENTITY + '">';
                     item += '<input type="hidden" name="apiGroup" value="' + data.list[i].API_GROUP + '">';

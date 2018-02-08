@@ -113,7 +113,6 @@ router.get('/utterances', function (req, res) {
     req.session.selMenus = 'ms2';
     res.render('utterances', {
         selMenus: req.session.selMenus,
-        title: 'learning utterances page',
 		utterance: utterance
     } );
 });
@@ -123,7 +122,6 @@ router.get('/dialog', function (req, res) {
     req.session.selMenus = 'ms3';
     res.render('dialog', {
         selMenus: req.session.selMenus,
-        title: 'learning dialog page'
     } );
 });
 
@@ -724,7 +722,6 @@ router.get('/entities', function (req, res) {
     req.session.selMenus = 'ms4';
     res.render('entities', {
         selMenus: req.session.selMenus,
-        title: 'learning Entities page'
     } );
 });
 
