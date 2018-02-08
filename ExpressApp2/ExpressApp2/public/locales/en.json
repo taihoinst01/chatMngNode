@@ -1,5 +1,4 @@
 {
-
 	"Korean": "Korean",
 	"English": "English",
 	"datetype": "Datetype",
@@ -70,7 +69,6 @@
 	"ImageURL_must_be_entered": "ImageURL must be entered",
 	"Please_select_a_dialogue": "Please select a dialogue",
 	"Select_search_word_or_group": "Select search word or group",
-	
 	"============= Learning > DIALOG =============": "",
 	"Enter Connection utterance": "Enter Connection utterance",
 	"explanation": "explanation",
@@ -125,5 +123,6 @@
 	"URL": "URL",
 	"DESC": "DESCRIPTION",
 	"Mean-stay-time": "Mean-stay-time",
-	"i18n": "i18n"
+	"i18n": "i18n",
+	"Please enter ...": "Please enter ..."
 }
