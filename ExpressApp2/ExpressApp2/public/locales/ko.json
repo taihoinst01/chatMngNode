@@ -84,6 +84,7 @@
 	"LEARN": "배우기",
 	"Add_Button": "버튼추가",
 	"Add_Carousel": "캐러절 추가",
+	"UTTERANCE": "어터런스",
 	"============= Learning > DIALOG =============": "",
 	"Enter Connection utterance": "연결 어터런스 입력",
 	"explanation": "설명",
@@ -146,5 +147,6 @@
 	"Search": "검색",
 	"Add_dialog": "다이얼로그 추가",
 	"SELECT": "선택",
-	"Please enter ...": "Please enter ..."
+	"Please enter ...": "Please enter ...",
+	"SEARCH": "검색"
 }

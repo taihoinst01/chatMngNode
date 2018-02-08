@@ -9,7 +9,6 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>
-        <!--<%= title %>title-->
         TIIS Manager
     </title>
 
@@ -28,10 +27,9 @@
 
 
             <div class="subt_wrap">
-                <div id="subtitDiv" style="float:left;"><h2><%= title %></h2></div>
                 <div id="subtitDiv" style="float:right; margin: 0 30px 0 0;">
-                    <button class="btn" id="entities" onclick="openModalEntity('#create_entity')">Add Entity</button>
-                    <button class="btn disable" id="utterLearn"  disabled="disabled">learn</button>
+                    <button class="btn" id="entities" onclick="openModalEntity('#create_entity')"><%= __('Add_Entity') %></button>
+                    <button class="btn disable" id="utterLearn"  disabled="disabled"><%= __('LEARN') %></button>
                 </div>
             </div>
 
@@ -59,7 +57,7 @@
                                 <thead>
                                     <tr>
                                         <th><input name="ch1All" class="tweak-input" id="allCheck" type="checkbox"/></th>
-                                        <th class="txt_left">Utterance</th>
+                                        <th class="txt_left"><%= __('UTTERANCE') %></th>
                                         <th class="txt_right"></th>
                                     </tr>
                                 </thead>
@@ -97,8 +95,8 @@
                 <div class="utterRight" >
                     <div style="width:100%">
                         <h3 style="float:left;"><%= __('Dialogue') %></h3>
-                        <button class="btn" style="float:right;" id="recommandDlgBtn" onclick="openModalBox('#create_dlg')">new</button>  <!-- disabled="disabled" -->
-                        <button class="btn" style="float:right;" id="searchDlgBtn" onclick="openModalBox('#search_dlg')">search</button>  <!-- disabled="disabled" -->
+                        <button class="btn" style="float:right;" id="recommandDlgBtn" onclick="openModalBox('#create_dlg')"><%= __('CREAT') %></button>  <!-- disabled="disabled" -->
+                        <button class="btn" style="float:right;" id="searchDlgBtn" onclick="openModalBox('#search_dlg')"><%= __('Search') %></button>  <!-- disabled="disabled" -->
                     </div>
                     <!-- 추천 다이얼로그 list 출력 div -->
                     <div class="utterList">
@@ -422,7 +420,7 @@
             </form>
                 <div class="searchGroup-float-left">
                     <p class="texcon03">&nbsp;</p>
-                    <p><button class="btn margin0 w82" id="searchDialogBtn">search</button></p>
+                    <p><button class="btn margin0 w82" id="searchDialogBtn"><%= __('SEARCH') %></button></p>
                 </div>
             
         </div>
@@ -438,8 +436,8 @@
         </div>
         <div class="clear-both"></div>
         <footer>
-            <button class="btn" id="btnSearchSaveDlg" onclick="selectDialog()"/>Select</button><!-- 혹시 몰라서 searchSaveDialog() 함수는 주석처리 해서 살려두었습니다.-->
-            <a href="#" class="btn b02  btn-small js-modal-close" id="searchDialogCancel">Cancel</a>
+            <button class="btn" id="btnSearchSaveDlg" onclick="selectDialog()"/><%= __('SELECT') %></button><!-- 혹시 몰라서 searchSaveDialog() 함수는 주석처리 해서 살려두었습니다.-->
+            <a href="#" class="btn b02  btn-small js-modal-close" id="searchDialogCancel"><%= __('CANCEL') %></a>
         </footer>
     </div>
 
@@ -476,8 +474,8 @@
             <!-- form end -->
         
             <footer>
-                <button class="btn disable" disabled="disabled" id="btnAddEntity" onclick="insertEntity()">Save</button>
-                <a href="#" class="btn b02  btn-small js-modal-close" id="addEntityCancel">Cancel</a>
+                <button class="btn disable" disabled="disabled" id="btnAddEntity" onclick="insertEntity()"><%= __('SAVE') %></button>
+                <a href="#" class="btn b02  btn-small js-modal-close" id="addEntityCancel"><%= __('CANCEL') %></a>
             </footer>
         
         </div>
