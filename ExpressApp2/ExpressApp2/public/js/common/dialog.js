@@ -833,7 +833,6 @@ $(document).on('click', '.smallGroup', function(){
 
     $('#currentPage').val(1);
     dialogsAjax2(group);
-    $('#iptDialog').val('');
 });
 
 /** 대그룹 혹은 중그룹 클릭시 하위 그룹 검색  */
