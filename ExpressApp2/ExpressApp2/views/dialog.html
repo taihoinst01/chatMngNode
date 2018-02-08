@@ -46,20 +46,21 @@
             <div id="dialogDiv">
                 <div class="dialogLeft">     
                     <div class="in-line">
-                        <input name="iptDialog" id="iptDialog" type="text" class="inbox02" style="width:35%; margin: 3px;" placeholder="<%= __('Enter Connection utterance') %>" >
+                        <input name="iptDialog" id="iptDialog" type="text" class="inbox02" style="width:25%; margin: 3px;" placeholder="<%= __('Enter Connection utterance') %>" >
+                        <button class="btn disable" disabled="disabled" onclick="searchIptDlg(1);" style="margin-right: 5%;"><%= __('Search') %></button>
                         <select id="sourceType2" name="sourceType" style="width:12%;">
                             <option value="D" selected="selected">Common</option>
                             <option value="api quot">Api Quot</option>
                             <option value="api testdrive">Api Testdrive</option>    
                         </select>
                         <select id="searchGroupL" class="searchGroup" name="searchGroupL" style="width:12%;">
-                            <option value="default"><%= __('A big group') %></option>     
+                            <option value=""><%= __('A big group') %></option>     
                         </select>
                         <select id="searchGroupM" class="searchGroup" name="searchGroupM" style="width:12%;">
-                            <option value="default"><%= __('Middle group') %></option>
+                            <option value=""><%= __('Middle group') %></option>
                         </select>
                         <select id="searchGroupS" class="searchGroup" name="searchGroupS" style="width:12%;">
-                            <option value="default"><%= __('Small group') %></option>
+                            <option value=""><%= __('Small group') %></option>
                         </select>
                         <button class="btn" id="searchDlgBtn">search</button>
                         <button class="btn" id="dialog" onclick="openModalBox('#create_dlg')">new</button>
@@ -111,7 +112,7 @@
     <!--신규 다이얼로그 등록 -->
     <div id="create_dlg" class="modal_box w900" style="height: auto !important">
             <header> <a href="#" id="addDialogClose" class="js-modal-close close">×</a>
-              <h3>Create new Dialogue Set</h3><!-- 신규 다이얼로그 등록 -->
+              <h3>Creat new Dialogue Set</h3><!-- 신규 다이얼로그 등록 -->
             </header>
         
             <!-- form start -->
@@ -124,7 +125,7 @@
                         <p class="texcon03"><%= __('A big group') %></p>
                     </div>
                     <div class="group-float-left-last">
-                        <a href="#" class="btn b02  btn-small" id="btnCreateLgroup" style="padding:0 5px 0 5px; height:20px; line-height:15px; margin:6px 0 0 65px;">new</a>
+                        <a href="#" class="btn b02  btn-small" id="btnCreatLgroup" style="padding:0 5px 0 5px; height:20px; line-height:15px; margin:6px 0 0 65px;">new</a>
                     </div>
                     <p>
                         <select name="largeGroup" class="inbox02" id="largeGroup" style="width:100%;">
@@ -340,8 +341,8 @@
             <!-- form end -->
         
             <footer>
-              <a href="#" class="btn" id="btnAddDlg" onclick="createDialog();">Create</a>
-              <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel">Cancel</a>
+              <a href="#" class="btn" id="btnAddDlg" onclick="createDialog();"><%= __('CREAT') %></a>
+              <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel"><%= __('CANCEL') %></a>
             </footer>
         
         </div>

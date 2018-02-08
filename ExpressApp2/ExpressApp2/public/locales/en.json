@@ -1,5 +1,4 @@
 {
-
 	"Korean": "Korean",
 	"English": "English",
 	"datetype": "Datetype",
@@ -70,7 +69,12 @@
 	"ImageURL_must_be_entered": "ImageURL must be entered",
 	"Please_select_a_dialogue": "Please select a dialogue",
 	"Select_search_word_or_group": "Select search word or group",
-	
+	"SELECT": "SELECT",
+	"Add_dialog": "Add dialog",
+	"Add_Entity": "Add Entity",
+	"LEARN": "LEARN",
+	"Add_Button": "Add Button",
+	"Add_Carousel": "Add Carousel",
 	"============= Learning > DIALOG =============": "",
 	"Enter Connection utterance": "Enter Connection utterance",
 	"explanation": "explanation",
@@ -79,9 +83,12 @@
 	"Please_reset_the_group": "Please reset the group",
 	"Middle_group": "Middle group",
 	"Small_group": "Small group",
+	"CREAT": "CREAT",
 	"============= Learning > ENTITIES =============": "",
 	"Description 2": "The Entity description or Entity value to search Enter and click on Enter Key or search button",
 	"Enter_entity_value_to_save": "Enter entity value to save",
+	"Enter_entity_deifne_to_save": "Enter entity deifne to save",
+	"CANCEL": "CANCEL",
 	"============= setting  =============": "",
 	"NO_DATA": "There is no data.",
 	"ASK_INIT": "Are you sure you want to reset?",
@@ -125,5 +132,6 @@
 	"URL": "URL",
 	"DESC": "DESCRIPTION",
 	"Mean-stay-time": "Mean-stay-time",
-	"i18n": "i18n"
+	"i18n": "i18n",
+	"Search": "Search"
 }
