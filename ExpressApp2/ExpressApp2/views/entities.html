@@ -24,7 +24,7 @@
 <div id="wrap4Luis">
     <div id="container" class="main">
         <div class="subt_wrap">
-            <div id="subtitDiv"><h2><%= title %></h2></div>
+
         </div>
 
         <div id="entitesrDiv">
@@ -33,8 +33,8 @@
                     <input name="iptentites" id="iptentites" type="text" class="inbox02" 
                             style="width:72.5%; margin: 3px;" placeholder="<%= __('Description 2') %>" 
                             onkeypress="if(event.keyCode==13) {searchEntities(); return false;}" >
-                    <button class="btn" id="searchEntites" onclick="searchEntities();">search</button>
-                    <button class="btn" id="entites" onclick="openModalBox('#create_dlg')">new</button>
+                    <button class="btn" id="searchEntites" onclick="searchEntities();"><%= __('SEARCH') %></button>
+                    <button class="btn" id="entites" onclick="openModalBox('#create_dlg')"><%= __('CREAT') %></button>
                 </div>                                         
             </div>
             <table class="Tbl" id="entitesTbl">
@@ -88,8 +88,8 @@
         <!-- form end -->
     
         <footer>
-            <button class="btn disable" disabled="disabled" id="btnAddDlg" onclick="insertEntity()">save</button>
-            <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel">cancel</a>
+            <button class="btn disable" disabled="disabled" id="btnAddDlg" onclick="insertEntity()"><%= __('SAVE') %></button>
+            <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel"><%= __('CANCEL') %></a>
         </footer>
     
     </div>

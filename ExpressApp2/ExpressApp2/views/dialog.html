@@ -40,14 +40,14 @@
     <div id="wrap4Luis">
         <div id="container" class="main">
             <div class="subt_wrap">
-                <div id="subtitDiv"><h2><%= title %></h2></div>
+
             </div>
 
             <div id="dialogDiv">
                 <div class="dialogLeft">     
                     <div class="in-line">
                         <input name="iptDialog" id="iptDialog" type="text" class="inbox02" style="width:25%; margin: 3px;" placeholder="<%= __('Enter Connection utterance') %>" >
-                        <button class="btn disable" disabled="disabled" onclick="searchIptDlg(1);" style="margin-right: 5%;"><%= __('Search') %></button>
+                        <button class="btn disable" disabled="disabled" onclick="searchIptDlg(1);" style="margin-right: 3%;"><%= __('Search') %></button>
                         <select id="sourceType2" name="sourceType" style="width:12%;">
                             <option value="D" selected="selected">Common</option>
                             <option value="api quot">Api Quot</option>
@@ -62,8 +62,8 @@
                         <select id="searchGroupS" class="searchGroup" name="searchGroupS" style="width:12%;">
                             <option value=""><%= __('Small group') %></option>
                         </select>
-                        <button class="btn" id="searchDlgBtn">search</button>
-                        <button class="btn" id="dialog" onclick="openModalBox('#create_dlg')">new</button>
+                        <button class="btn" id="searchDlgBtn"><%= __('SEARCH') %></button>
+                        <button class="btn" id="dialog" onclick="openModalBox('#create_dlg')"><%= __('CREAT') %></button>
                     </div>                                         
                 </div>
                 <table class="Tbl" id="dialogTbl" style="margin-top: 2%;">
