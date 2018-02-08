@@ -1,23 +1,23 @@
 var language;
 ;(function($) {
+    console.log("utterance test");
     $.ajax({
         url: '/jsLang',
         dataType: 'json',
         type: 'POST',
         success: function(data) {
             language= data.lang;
-
-            // recommend에서 넘어온 문장 insert
-            var recommendParam = $('#utterence').val();
-            if(recommendParam){
-                utterInput(recommendParam);
-            }
         }
     });
 })(jQuery);
 
-
-
+$(document).ready(function(){
+    // recommend에서 넘어온 문장 insert
+    var recommendParam = $('#utterence').val();
+    if(recommendParam){
+        utterInput(recommendParam);
+    }
+});
 
 // Utterance 삭제
 $(document).on('click', '#utterDelete', function() {
