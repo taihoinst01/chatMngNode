@@ -72,17 +72,19 @@ function appValidation(type){
 
 //Luis app delete
 function deleteApp(){
-    var deleteAppId = $('#deleteAppId').val();
-    var params = {'deleteAppId': deleteAppId};
-    $.tiAjax({
-        type: 'POST',
-        data: params,
-        url: '/admin/deleteApp',
-        isloading: true,
-        success: function(data) {
-            movePage();
-        }
-    });
+    if ( confirm(  '[' + $('#currentAppName').val()  + ']\n' + $('#deleteAsk').val())) {
+        var deleteAppId = $('#deleteAppId').val();
+        var params = {'deleteAppId': deleteAppId};
+        $.tiAjax({
+            type: 'POST',
+            data: params,
+            url: '/admin/deleteApp',
+            isloading: true,
+            success: function(data) {
+                movePage();
+            }
+        });
+    }
 }
 
 //Luis app rename
