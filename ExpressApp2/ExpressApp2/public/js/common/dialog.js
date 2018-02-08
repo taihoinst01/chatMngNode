@@ -500,9 +500,12 @@ function searchIptDlg(page){
 
                 searchIptText = params.searchText;
                 currentSearchNum = 0;
+            } else {
+                item += '<tr style="height: 175px;">' +
+                            '<td colspan="4">' + language.NO_DATA + '</td>' +
+                        '</tr>';
             }
-
-            
+  
             $('#dialogTbltbody').append(item);
 
             $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
@@ -794,9 +797,12 @@ function dialogsAjax2(group){
                 }
 
                 
+            } else {
+                item += '<tr style="height: 175px;">' +
+                            '<td colspan="4">' + language.NO_DATA + '</td>' +
+                        '</tr>';
             }
-
-            
+        
             $('#dialogTbltbody').append(item);
 
             $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
@@ -1035,9 +1041,12 @@ function dialogsAjax(groupType, sourceType){
                     $('#searchGroupL').append(item3);
                     $('.checklist').hide();
                 }
+            } else {
+                item += '<tr style="height: 175px;">' +
+                            '<td colspan="4">' + language.NO_DATA + '</td>' +
+                        '</tr>';
             }
-
-            
+        
             $('#dialogTbltbody').append(item);
 
             $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
