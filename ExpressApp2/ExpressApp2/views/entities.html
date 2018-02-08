@@ -68,12 +68,12 @@
         <div id="dialogSet" class="modal-body" style="margin: 10%;">
             <p class="texcon03"><%= __('Entity definition') %><span>(required) </span></p>
             <p style="margin-bottom: 5%;">
-                <input type="text" name="entityDefine" style="width:100%;" onkeyup="dialogValidation();"/>
+                <input type="text" name="entityDefine" id="entityDefine" style="width:100%;" onkeyup="dialogValidation();"/>
             </p>
 
             <p class="texcon03"><%= __('Entity value') %><span>(required) </span></p>
             <p style="margin-bottom: 5%;">
-                <input type="text" name="entityValue" style="width:100%;" onkeyup="dialogValidation();"/>
+                <input type="text" name="entityValue" id="entityValue" style="width:100%;" onkeyup="dialogValidation();"/>
             </p>
 
             <p class="texcon03">API_Group <span>(required) </span></p>
@@ -88,8 +88,8 @@
         <!-- form end -->
     
         <footer>
-            <button class="btn disable" id="btnAddDlg" onclick="insertEntity()">Save</button>
-            <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel">Cancel</a>
+            <button class="btn disable" disabled="disabled" id="btnAddDlg" onclick="insertEntity()">save</button>
+            <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel">cancel</a>
         </footer>
     
     </div>

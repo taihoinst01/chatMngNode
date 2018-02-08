@@ -357,13 +357,9 @@ router.post('/searchMidGroup', function (req, res) {
 });
 */
 
-router.post('/dialogs2', function (req, res) {
+router.post('/searchIptDlg', function (req, res) {
     
     var currentPage = req.body.currentPage;
-    var sourceType2 = req.body.sourceType2;
-    var searchGroupL = req.body.searchGroupL;
-    var searchGroupM = req.body.searchGroupM;
-    var searchGroupS = req.body.searchGroupS;
     var searchText = req.body.searchText;
 
     (async () => {
@@ -375,13 +371,97 @@ router.post('/dialogs2', function (req, res) {
                                      "CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
                                      "DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, GroupS " +
                                      "from TBL_DLG a, TBL_DLG_RELATION_LUIS b where a.DLG_ID = b.DLG_ID ";
-
-                dlg_desQueryString += "and GroupL = '" + searchGroupL + "' and GroupM = '" + searchGroupM + "' and GroupS = '" + searchGroupS + "' ";
                   
+                dlg_desQueryString+= "and LUIS_ENTITIES like '%" + searchText + "%' ";
+                dlg_desQueryString += ") tbp WHERE PAGEIDX = @currentPage";
+            let pool = await dbConnect.getConnection(sql);
+            let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(dlg_desQueryString);
+            let rows = result1.recordset;
+            
+            var result = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+
+                var description = rows[i].DLG_DESCRIPTION;
+                var apidefine = rows[i].DLG_API_DEFINE;
+                var luisentties = rows[i].LUIS_ENTITIES;
+                var luisentent = rows[i].LUIS_INTENT;
+                var smallGroup = rows[i].GroupS;
+
+                item.DLG_DESCRIPTION = description;
+                item.DLG_API_DEFINE = apidefine;
+                item.LUIS_ENTITIES = luisentties;
+                item.LUIS_INTENT = luisentent;
+                item.GroupS = smallGroup;
+
+                result.push(item);
+            }
+
+            var group_query = "select distinct GroupL from TBL_DLG where GroupL is not null";
+            let result2 = await pool.request().query(group_query);
+            let rows2 = result2.recordset;
+            
+            var groupList = [];
+            for(var i = 0; i < rows2.length; i++){
+                var item2 = {};
+
+                var largeGroup = rows2[i].GroupL;
+
+                item2.largeGroup = largeGroup;
+
+                groupList.push(item2);
+            }
+
+            if(rows.length > 0){
+                res.send({list : result, pageList : paging.pagination(currentPage,rows[0].TOTCNT), groupList: groupList});
+            }else{
+                res.send({list : result});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+});
+
+router.post('/dialogs2', function (req, res) {
+    
+    var currentPage = req.body.currentPage;
+    var sourceType2 = req.body.sourceType2;
+    var searchGroupL = req.body.searchGroupL;
+    var searchGroupM = req.body.searchGroupM;
+    var searchGroupS = req.body.searchGroupS;
+
+    (async () => {
+        try {
+                    
+            var dlg_desQueryString = "select tbp.* from " +
+                                     "(select ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC) AS NUM, " +
+                                     "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
+                                     "CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
+                                     "DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, GroupS " +
+                                     "from TBL_DLG a, TBL_DLG_RELATION_LUIS b where a.DLG_ID = b.DLG_ID ";
+                
                 dlg_desQueryString += "and DLG_API_DEFINE like '%" + sourceType2 + "%' ";
-                if(searchText != "") {
-                    dlg_desQueryString+= "and LUIS_ENTITIES like '%" + searchText + "%' ";
+                
+                if(searchGroupL) {
+                    dlg_desQueryString += "and GroupL = '" + searchGroupL + "'";
                 }
+
+                if(searchGroupM) {
+                    dlg_desQueryString += "and GroupM = '" + searchGroupM + "'";
+                }
+
+                if(searchGroupS) {
+                    dlg_desQueryString += "and GroupS = '" + searchGroupS + "'";
+                }                  
+
                 dlg_desQueryString += ") tbp WHERE PAGEIDX = @currentPage";
             let pool = await dbConnect.getAppConnection(sql, req.session.appName);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(dlg_desQueryString);
@@ -440,7 +520,6 @@ router.post('/dialogs2', function (req, res) {
 });
 
 router.post('/dialogs', function (req, res) {
-    
     
     var currentPage = req.body.currentPage;
 

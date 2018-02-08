@@ -30,6 +30,8 @@ $(document).ready(function(){
         $('#appInsertForm')[0].reset();
     });
     //** 모달창 끝 */
+
+
 })
 
 function entitiesAjax(){
@@ -230,8 +232,8 @@ function wrapWindowByMask(){ //화면의 높이와 너비를 구한다.
 //모달창 입력값에 따른 save 버튼 활성화 처리
 function dialogValidation(){
     
-    var defineText = $('input[name=entityDefine]').val();
-    var valueText = $('input[name=entityValue]').val();
+    var defineText = $('#entityDefine').val();
+    var valueText = $('#entityValue').val();
     
     if(defineText != "" && valueText != "") {
         $('#btnAddDlg').removeClass("disable");

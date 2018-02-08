@@ -375,9 +375,9 @@ $(document).ready(function(){
         $('#commonLayout').css('display', 'block');
         $('#commonLayout div:first').prepend(insertForm);
         
-        if($('#btnCreateLgroup').html() == 'cancel') {
+        if($('#btnCreatLgroup').html() == 'cancel') {
 
-            $('#btnCreateLgroup').click();
+            $('#btnCreatLgroup').click();
         }
         $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>입력해주세요...</p></div></div></div></div></div></div></div>');
 
@@ -433,7 +433,7 @@ $(document).ready(function(){
     });
 
     // create LargeGroup
-    $('#btnCreateLgroup').on('click',function(){
+    $('#btnCreatLgroup').on('click',function(){
         if($(this).html() == "new") {
             $(this).html('cancel');
             $(this).css('margin','6px 0 0 55px');
@@ -447,7 +447,68 @@ $(document).ready(function(){
         }
         return;
     });
+    
+    $('#iptDialog').on('input',function(e){
+
+        if($(this).val() !== "") {
+            $(this).next().removeClass('disable');
+            $(this).next().prop("disabled", false);
+        } else {
+            $(this).next().addClass('disable');
+            $(this).next().prop("disabled", true);
+        }   
+    });
 });
+
+
+//검색어로 검색
+var searchIptText; //페이징시 필요한 검색어 담아두는 변수
+function searchIptDlg(page){
+
+    if(page) {
+        $('#currentPage').val(1);
+        searchIptText = $('#iptDialog').val();
+    }
+
+    params = {
+        'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
+        'searchText': searchIptText
+    };
+
+    $.tiAjax({
+        type: 'POST',
+        url: '/learning/searchIptDlg',
+        data : params,
+        isloading: true,
+        success: function(data) {
+
+            $('#dialogTbltbody').html('');
+            var item = '';
+            if(data.list.length > 0){
+                
+                for(var i = 0; i < data.list.length; i++){
+                    if(data.list[i].DLG_API_DEFINE == 'D'){
+                        data.list[i].DLG_API_DEFINE = 'Common';
+                    }
+                    item += '<tr>' +
+                            '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
+                            '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
+                            '<td class="txt_left">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                            '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '</tr>';
+                }
+
+                searchIptText = params.searchText;
+                currentSearchNum = 0;
+            }
+
+            
+            $('#dialogTbltbody').append(item);
+
+            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+        }
+    });
+}
 
 //다이얼로그 생성 유효성 검사
 function dialogValidation(type){
@@ -463,8 +524,6 @@ function dialogValidation(type){
         }
     }
 }
-
-
 
 function writeDialogTitle(e) {
 
@@ -688,40 +747,27 @@ $(document).on('change', '.searchGroup', function(){
 //search버튼 클릭시 다이얼로그 검색
 $(document).on('click', '#searchDlgBtn', function() {
 
-    var searchText = $('#iptDialog').val();
-    var sourceType2 = $('#sourceType2').val();
     var group  = {
+        sourceType2: $('#sourceType2').val(),
         searchGroupL: $('#searchGroupL').val(),
         searchGroupM: $('#searchGroupM').val(),
         searchGroupS: $('#searchGroupS').val()
     }
 
-    if(searchText == '' || searchText == null ) {
-        
-        alert(language.Enter_search_word);
-        return;
-    } else {
+    $('#currentPage').val(1);
+    dialogsAjax2(group);
 
-       if(group.searchGroupL == 'default' || group.searchGroupM == 'default' || group.searchGroupS == 'default') {
-           
-            alert(language.Please_reset_the_group);
-       } else {
-
-            $('#currentPage').val(1);
-            dialogsAjax2(group, sourceType2, searchText);
-       }
-    }
 });
 
-function dialogsAjax2(group, sourceType2, searchText){
-
+var searchGroups; // 페이징을 위해서 검색 후 그룹들을 담아둘 변수
+function dialogsAjax2(group){
+  
     params = {
         'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
         'searchGroupL': group.searchGroupL,
         'searchGroupM': group.searchGroupM,
         'searchGroupS': group.searchGroupS,
-        'sourceType2': sourceType2,
-        'searchText': searchText
+        'sourceType2': group.sourceType2
     };
 
     $.tiAjax({
@@ -754,6 +800,8 @@ function dialogsAjax2(group, sourceType2, searchText){
             $('#dialogTbltbody').append(item);
 
             $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+            currentSearchNum = 1;
+            searchGroups = group;
         }
     });
 
@@ -775,16 +823,16 @@ $(document).on('click', '.smallGroup', function(){
     var group  = {
         searchGroupL: $('.currentGroupL').text(),
         searchGroupM: $('.currentGroupM').text(),
-        searchGroupS: $(this).children().text()
+        searchGroupS: $(this).children().text(),
+        sourceType2: $('#tblSourceType').val()
     }
 
     $('.selected').text($(this).find('.menuName').text());
     $('.selectOptionsbox').removeClass('active');
 
-    var groupType =  $('.selected').text();
-    var sourceType = $('#tblSourceType').val();
+
     $('#currentPage').val(1);
-    dialogsAjax2(group, sourceType, "");
+    dialogsAjax2(group);
 });
 
 /** 대그룹 혹은 중그룹 클릭시 하위 그룹 검색  */
@@ -844,7 +892,7 @@ function searchGroup(groupName, group, type, groupL) {
 
                 if(group == 'searchMedium') {
 
-                    var item = '<option value="default">' + language.Middle_group + '</option>';
+                    var item = '<option value="">' + language.Middle_group + '</option>';
 
                     for(var i = 0; i <data.groupList.length; i++) {
 
@@ -853,10 +901,10 @@ function searchGroup(groupName, group, type, groupL) {
 
                     $('#searchGroupM').html('');
                     $('#searchGroupS').html('');
-                    $('#searchGroupS').html('<option value="default">' + language.Small_group + '</option>');
+                    $('#searchGroupS').html('<option value="">' + language.Small_group + '</option>');
                     $('#searchGroupM').append(item);
                 } else if(group == 'searchSmall') {
-                    var item = '<option value="default">' + language.Small_group + '</option>';
+                    var item = '<option value="">' + language.Small_group + '</option>';
 
                     for(var i = 0; i <data.groupList.length; i++) {
                         item += '<option>' + data.groupList[i].smallGroup + '</option>';
@@ -998,12 +1046,26 @@ function dialogsAjax(groupType, sourceType){
 
 }
 
+var currentSearchNum; // 0: 검색어로 검색한 경우, 1: 테이블 위 그룹으로 검색한 경우, 2: 테이블에 있는 그룹으로 검색한 경우
 $(document).on('click','.li_paging',function(e){
+    
     if($(e.target).val() != $('#currentPage').val()){
+        $('#currentPage').val($(e.target).val());
+        if(currentSearchNum == 0) {
+
+            searchIptDlg(); 
+        } else if(currentSearchNum == 1) {
+
+            dialogsAjax2(searchGroups);
+        } else if(currentSearchNum == 2) {
+            dialogsAjax2();
+        }
+        /*
         $('#currentPage').val($(e.target).val())
         var groupType =  $('.selected').text();
         var sourceType = $('#tblSourceType').val();
         dialogsAjax(groupType, sourceType);
+        */
     }
 });
 
