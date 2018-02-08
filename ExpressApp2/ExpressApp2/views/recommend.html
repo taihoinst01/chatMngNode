@@ -27,10 +27,10 @@
             <h1><%= __('Additional learning recommendation') %></h1>
             <div id="headerDiv1">
                 <select id="recommendPeriod" class="timeSelect">
-                    <option value="all"><%= __('All') %></option>
                     <option value="yesterday" selected><%= __('Yesterday') %></option>
                     <option value="lastWeek"><%= __('Last week') %></option>
                     <option value="lastMonth"><%= __('Last month') %></option>
+                    <option value="all"><%= __('All') %></option>
                 </select>
                 <button class="btn_delete" onclick="deleteRecommend()" disabled>
                     <span class="span_delete" style="white-space : nowrap;">delete</span>

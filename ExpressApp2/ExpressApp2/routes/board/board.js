@@ -3,6 +3,7 @@
 var express = require('express');
 var sql = require('mssql');
 var dbConfig = require('../../config/dbConfig');
+var autowayDbConfig = require('../../config/dbConfig').autowayDbConfig;
 var dbConnect = require('../../config/dbConnect');
 var paging = require('../../config/paging');
 var util = require('../../config/util');
@@ -24,7 +25,7 @@ router.get('/', function (req, res) {
     //selectChannel += "           BETWEEN	 CONVERT(DATE,CONVERT(DATETIME,'" + startDate + "'), 112) ";
     //selectChannel += "           AND		 CONVERT(DATE,CONVERT(DATETIME,'" + endDate + "'), 112) \n";
     selectChannel += "GROUP BY CHANNEL \n";
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectChannel)
         }).then(result => {
@@ -75,7 +76,7 @@ router.post('/intentScore', function (req, res) {
     }
 
     selectQuery += "GROUP BY LUIS_INTENT \n";
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
     }).then(result => {
@@ -95,10 +96,36 @@ router.post('/getScorePanel', function (req, res) {
     var selChannel = req.body.selChannel;
 
     var selectQuery = "";
-        selectQuery += "SELECT   COUNT(*) AS CUSOMER_CNT \n";
+        selectQuery += "SELECT   COUNT( DISTINCT USER_NUMBER) AS CUSOMER_CNT \n";
         selectQuery += "    , ISNULL(SUM(RESPONSE_TIME)/COUNT(RESPONSE_TIME), 0) AS REPLY_SPEED \n";
         selectQuery += "    , CASE WHEN COUNT(*) != 0 THEN COUNT(*)/COUNT(DISTINCT USER_NUMBER) ELSE 0 END AS USER_QRY_AVG \n";
-        selectQuery += "    , CASE WHEN COUNT(*) != 0 THEN ROUND(CONVERT(FLOAT, (SELECT COUNT(*) FROM TBL_QUERY_ANALYSIS_RESULT))/COUNT(*) * 100, 2) * 100 ELSE 0 END AS CORRECT_QRY \n";
+        
+        selectQuery += "    ,  (SELECT CASE WHEN COUNT(*) != 0 THEN SUM(C.답변율)/ COUNT(*) ELSE 0 END    \n";
+        selectQuery += "        FROM ( \n"; 
+        selectQuery += "SELECT  ROUND(CAST(B.REPONSECNT AS FLOAT) / CAST(A.TOTALCNT AS FLOAT) * 100,2) AS 답변율, A.CHANNEL AS 채널, A.Dimdate AS REG_DATE \n";
+        selectQuery += "FROM (";
+        selectQuery += "    SELECT COUNT(*) AS TOTALCNT, CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS Dimdate \n";
+        selectQuery += "    FROM TBL_HISTORY_QUERY A, TBL_QUERY_ANALYSIS_RESULT B \n";
+        selectQuery += "    WHERE REPLACE(REPLACE(lower(A.CUSTOMER_COMMENT_KR),'.',''),'?','') = B.QUERY \n";
+        selectQuery += "    GROUP BY CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120)  ) A, \n";
+        selectQuery += "( \n";
+        selectQuery += "    SELECT COUNT(*) AS REPONSECNT, CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS Dimdate \n";
+        selectQuery += "    FROM TBL_HISTORY_QUERY A, TBL_QUERY_ANALYSIS_RESULT B \n";
+        selectQuery += "    WHERE REPLACE(REPLACE(lower(A.CUSTOMER_COMMENT_KR),'.',''),'?','') = B.QUERY  \n";
+        selectQuery += "    AND RESULT IN ('H')  \n";
+        selectQuery += "    GROUP BY CHANNEL, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) ) B \n";
+        selectQuery += "    WHERE  A.CHANNEL = B.CHANNEL \n";
+        selectQuery += "    AND                A.Dimdate = B.Dimdate \n";
+        selectQuery += ") C \n";
+        selectQuery += "WHERE 1=1 \n";
+        selectQuery += "AND CONVERT(date, '" + startDate + "') <= C.REG_DATE AND C.REG_DATE  <= CONVERT(date, '" + endDate + "') \n";
+        if (selDate !== 'allDay') {
+            selectQuery += "AND CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), 112)) = CONVERT(VARCHAR, GETDATE(), 112) \n";
+        }
+        if (selChannel !== 'all') {
+            selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
+        }
+        selectQuery += ") AS CORRECT_QRY \n";
         selectQuery += "    , CASE WHEN COUNT(*) != 0 THEN (SELECT (ROUND((SELECT CAST(COUNT(RESULT) AS FLOAT) FROM TBL_QUERY_ANALYSIS_RESULT WHERE RESULT='H')  ";
         selectQuery += "      / (SELECT CAST(COUNT(RESULT) AS FLOAT) FROM TBL_QUERY_ANALYSIS_RESULT WHERE RESULT='D') * 100, 2) * 100) ) ELSE 0 END AS SEARCH_AVG \n";
         selectQuery += "    , ISNULL((SELECT MAX(B.CNT) FROM (SELECT COUNT(*) AS CNT FROM TBL_HISTORY_QUERY WHERE 1=1 ";
@@ -121,7 +148,7 @@ router.post('/getScorePanel', function (req, res) {
     if (selChannel !== 'all') {
         selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
     }
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -189,7 +216,7 @@ if (selChannel !== 'all') {
     selectQuery += ") AA\n";
     selectQuery += "WHERE RESULT <> '' AND RESULT IN ('H','S')\n";
     selectQuery += "ORDER BY 질문수 DESC, 날짜 DESC\n";
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -256,7 +283,7 @@ router.post('/nodeQuery', function (req, res) {
         selectQuery += "ORDER BY queryCnt DESC, queryDate DESC \n";
         selectQuery += ") AA;";
     
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -316,7 +343,7 @@ router.post('/firstQueryBar', function (req, res) {
         selectQuery += ") A \n";
         selectQuery += "GROUP BY INTENT \n";
     
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -384,7 +411,7 @@ router.post('/firstQueryTable', function (req, res) {
         selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_MEDIA) ME \n";
         selectQuery += "    ON DL.DLG_ID = ME.DLG_ID \n";
     
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -443,7 +470,7 @@ router.post('/getResponseScore', function (req, res) {
         selectQuery += "GROUP BY USER_NUMBER \n";
         selectQuery += ") A \n";
     
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -487,7 +514,7 @@ router.post('/getQueryByEachTime', function (req, res) {
         selectQuery += "ORDER BY TIME; \n";
 
 
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {

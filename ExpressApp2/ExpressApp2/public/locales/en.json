@@ -1,6 +1,20 @@
 {
+<<<<<<< HEAD
+=======
+	"Culture": "Culture",
+>>>>>>> 9af84c71f9dd38791e5d7123c9803d3b175a70bb
 	"Korean": "Korean",
 	"English": "English",
+	"required": "required",
+	"optional": "optional",
+	"edit": "edit",
+	"create_app": "Create app",
+	"create_date": "Created date",
+	"rename_app": "Rename app",
+	"delete_app": "Delete app",
+	"app_name": "App name",
+	"service": "Service",
+	"Select_service": "Select Service",
 	"datetype": "Datetype",
 	"allDates": "AllDates",
 	"day": "Day",
@@ -69,12 +83,15 @@
 	"ImageURL_must_be_entered": "ImageURL must be entered",
 	"Please_select_a_dialogue": "Please select a dialogue",
 	"Select_search_word_or_group": "Select search word or group",
+<<<<<<< HEAD
 	"SELECT": "SELECT",
 	"Add_dialog": "Add dialog",
 	"Add_Entity": "Add Entity",
 	"LEARN": "LEARN",
 	"Add_Button": "Add Button",
 	"Add_Carousel": "Add Carousel",
+=======
+>>>>>>> 9af84c71f9dd38791e5d7123c9803d3b175a70bb
 	"============= Learning > DIALOG =============": "",
 	"Enter Connection utterance": "Enter Connection utterance",
 	"explanation": "explanation",
@@ -107,6 +124,7 @@
 	"DELETE": "DELETE",
 	"SAVE": "SAVE",
 	"INIT": "RESET",
+	"CANCEL": "CANCEL",
 	"USER_MNG": "USER MNG",
 	"USER_NAME": "USER NAME",
 	"USER_ID": "USER ID",
@@ -133,5 +151,9 @@
 	"DESC": "DESCRIPTION",
 	"Mean-stay-time": "Mean-stay-time",
 	"i18n": "i18n",
+<<<<<<< HEAD
 	"Search": "Search"
+=======
+	"Please enter ...": "Please enter ..."
+>>>>>>> 9af84c71f9dd38791e5d7123c9803d3b175a70bb
 }
