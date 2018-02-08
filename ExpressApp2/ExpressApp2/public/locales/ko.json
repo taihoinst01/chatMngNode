@@ -145,5 +145,6 @@
 	"i18n": "i18n",
 	"Search": "검색",
 	"Add_dialog": "다이얼로그 추가",
-	"SELECT": "선택"
+	"SELECT": "선택",
+	"Please enter ...": "Please enter ..."
 }
