@@ -25,7 +25,7 @@ router.get('/', function (req, res) {
     //selectChannel += "           BETWEEN	 CONVERT(DATE,CONVERT(DATETIME,'" + startDate + "'), 112) ";
     //selectChannel += "           AND		 CONVERT(DATE,CONVERT(DATETIME,'" + endDate + "'), 112) \n";
     selectChannel += "GROUP BY CHANNEL \n";
-    dbConnect.getAppConnection(sql,autowayDbConfig).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectChannel)
         }).then(result => {
@@ -76,7 +76,7 @@ router.post('/intentScore', function (req, res) {
     }
 
     selectQuery += "GROUP BY LUIS_INTENT \n";
-    dbConnect.getAppConnection(sql,autowayDbConfig).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
     }).then(result => {
@@ -122,7 +122,7 @@ router.post('/getScorePanel', function (req, res) {
     if (selChannel !== 'all') {
         selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
     }
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -190,7 +190,7 @@ if (selChannel !== 'all') {
     selectQuery += ") AA\n";
     selectQuery += "WHERE RESULT <> '' AND RESULT IN ('H','S')\n";
     selectQuery += "ORDER BY 질문수 DESC, 날짜 DESC\n";
-    dbConnect.getAppConnection(sql,autowayDbConfig).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -257,7 +257,7 @@ router.post('/nodeQuery', function (req, res) {
         selectQuery += "ORDER BY queryCnt DESC, queryDate DESC \n";
         selectQuery += ") AA;";
     
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -317,7 +317,7 @@ router.post('/firstQueryBar', function (req, res) {
         selectQuery += ") A \n";
         selectQuery += "GROUP BY INTENT \n";
     
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -385,7 +385,7 @@ router.post('/firstQueryTable', function (req, res) {
         selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_MEDIA) ME \n";
         selectQuery += "    ON DL.DLG_ID = ME.DLG_ID \n";
     
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -444,7 +444,7 @@ router.post('/getResponseScore', function (req, res) {
         selectQuery += "GROUP BY USER_NUMBER \n";
         selectQuery += ") A \n";
     
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -488,7 +488,7 @@ router.post('/getQueryByEachTime', function (req, res) {
         selectQuery += "ORDER BY TIME; \n";
 
 
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
