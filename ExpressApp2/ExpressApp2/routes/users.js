@@ -2,7 +2,7 @@
 var express = require('express');
 var crypto = require('crypto');
 var sql = require('mssql');
-var dbConfig = require('../config/dbConfig');
+var dbConfig = require('../config/dbConfig').dbConfig;
 var dbConnect = require('../config/dbConnect');
 var router = express.Router();
 
