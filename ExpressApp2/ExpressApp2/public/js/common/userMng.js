@@ -9,20 +9,15 @@ var language;
         type: 'POST',
         success: function(data) {
             language= data.lang;
+            makGrid();
+            //jqgrid resize
+            gridResize("gridList");
         }
     });
 })(jQuery);
-window.onload = function() {
-    makGrid(); 
-    //jqgrid resize
-    gridResize("gridList");
-}
 $(document).ready(function() {
-
-    
     $('#searchUserId').focus();
-
-
+    
 });
 
 window.onresize = function() {
@@ -54,6 +49,7 @@ $(document).on('keypress','.edit-cell > input',function(e){
 });
 
 
+
 var editableCells = ['EMP_NM'];
 function makGrid() {
     $("#gridList").jqGrid({
@@ -72,7 +68,7 @@ function makGrid() {
           {name:'USER_ID_HIDDEN' , label:language['USER_ID'], hidden:true},
           {name:'USER_ID'    , label:language['USER_ID'], width:80, editable:false, align:'left', sortable:true, hidden:false},
           {name:'초기화'     , label:language['INIT']  , width:70, editable:false, align:'center', sortable:false, hidden:false, formatter:linkInitPwd},
-          {name:'EMP_NM'    , label:language['APP'] , width:90, editable:false, align:'left', sortable:true, hidden:false},
+          {name:'EMP_NM'    , label:language['APP'] , width:90, editable:true, align:'left', sortable:true, hidden:false},
           {name:'REG_DT'    , label:language['REGIST_DATE'] , width:100, editable:false, align:'left', sortable:true, hidden:false},
           {name:'REG_ID'    , label:language['REGIST_ID'] , width:100, editable:false, align:'left', sortable:true, hidden:false},
           {name:'MOD_DT'    , label:language['MODIFIED_DATE'],  width:100, editable:false, align:'left', sortable:false, hidden:false},
@@ -105,6 +101,7 @@ function makGrid() {
                 beforVal = $(this).getCell(iRow, iCol);
                 $(this).setColProp(colName, { editable: true }); 
                 $(this).editCell(iRow, iCol, true); 
+                lastRowId = iRow;
             } 
         },/*
         editCellValid: function(rowid, cellname) {
@@ -114,6 +111,10 @@ function makGrid() {
             return true;
         },*/
         afterEditCell: function (rowid, cellname, value, iRow, iCol) { 
+            $('.edit-cell > input').blur(function(){
+                $("#gridList").jqGrid("saveCell",iRow,iCol);
+            });
+        
             $('tbody').find('tr').each(function () {
                 if ($(this).hasClass('ui-state-highlight')) {
                     $(this).removeClass('ui-state-highlight')
@@ -121,10 +122,12 @@ function makGrid() {
             });
             $('tbody').find('#' + rowid).children().eq(iCol).removeClass('ui-state-highlight');
             $('tbody').find('#' + rowid).addClass('ui-state-highlight');
+            
         },
 
         beforeSubmitCell : function(rowid, cellName, cellValue) {   // submit 전
           //console.log(  "@@@@@@ rowid = " +rowid + " , cellName = " + cellName + " , cellValue = " + cellValue );
+          lastRowId=-1;
           if ( $(this).val() !== beforVal) {
               var statusVal = $('#gridList').jqGrid().getRowData(rowid).statusFlag;
               if (statusVal === 'NEW' || statusVal === 'DEL') {
@@ -138,7 +141,6 @@ function makGrid() {
                 
               }
           }
-          //return {"id":rowid, "cellName":cellName, "cellValue": cellValue}
         },
   
         
@@ -282,14 +284,46 @@ function saveAction() {
             //$('#gridList').jqGrid().getRowData(rowId);
             var data = new Object() ;
 
-            data.statusFlag = $('#gridList').jqGrid().getRowData(rowId).statusFlag;
-            data.USER_ID = $('#gridList').jqGrid().getRowData(rowId).USER_ID;
-            data.EMP_NM = $('#gridList').jqGrid().getRowData(rowId).EMP_NM;
+            data.statusFlag = $.trim($('#gridList').jqGrid().getRowData(rowId).statusFlag);
+            data.USER_ID = $.trim($('#gridList').jqGrid().getRowData(rowId).USER_ID);
+            data.EMP_NM = $.trim($('#gridList').jqGrid().getRowData(rowId).EMP_NM);
             saveArr.push(data);
             //변경된 전체 row값
             //saveArr2.push($('#gridList').jqGrid().getChangedCells());
-        });    
-
+        });
+        var chkReturn = false;
+        if ($('#gridList input[name=EMP_NM]').length > 0 ) {
+            alert(language['MODIFIED_USER_EXISTS']);
+            chkReturn=true;
+        } else if ($('#gridList input[name=USER_ID]').length > 0) {
+            alert(language['MODIFIED_USER_EXISTS']);
+            chkReturn=true;
+        }
+        if (chkReturn) {
+            return;
+        }
+        
+        for (var i=0; i<saveArr.length; i++) {
+            if (saveArr[i].USER_ID ==="" || saveArr[i].EMP_NM==="") {
+                alert(language['ID_NAME_BE_FILLED']);
+                chkReturn=true;
+                break;
+            } else {
+                if (saveArr[i].statusFlag === 'NEW') {
+                    for (var j=1; j<$('input[type=checkbox]').length+1; j++) {
+                        var tmpID = $('#gridList').jqGrid().getRowData(j).USER_ID;
+                        if (tmpID === saveArr[i].USER_ID) {
+                            alert(language['SAME_ID_EXISTS']);
+                            chkReturn=true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (chkReturn) {
+            return;
+        }
         //save
         var jsonData = JSON.stringify(saveArr);
         var params = {

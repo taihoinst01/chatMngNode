@@ -1,7 +1,39 @@
 
 
 var entityHash = {};
+
+//가장 먼저 실행.
 var language;
+;(function($) {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language= data.lang;
+            console.log(language);
+            //google.charts.load('current', {'packages':['corechart']});
+            google.charts.load('visualization', {'packages':['corechart', 'table']} );
+            google.charts.load('current', {packages: ['corechart', 'bar']});
+
+
+            //google.charts.setOnLoadCallback(drawStatusOverview);
+            google.charts.setOnLoadCallback(drawStatusOverview);
+            //google.charts.setOnLoadCallback(getScorePanel);
+            
+            //google.charts.setOnLoadCallback(getOftQuestion);
+            google.charts.setOnLoadCallback(getOftQuestion);
+            //google.charts.setOnLoadCallback(getQueryByEachTime);
+            //google.charts.setOnLoadCallback(drawNoneQuerylist);
+            
+            //google.charts.setOnLoadCallback(getResponseScores);
+            google.charts.setOnLoadCallback(getResponseScores);
+            //google.charts.setOnLoadCallback(drawFirstQueryTable);
+            //google.charts.setOnLoadCallback(drawStuff);
+            google.charts.setOnLoadCallback(drawNoneQuerylist);
+                }
+    });
+})(jQuery);
 /*
 //var entityList = [];
 //실행 순서 1
@@ -39,7 +71,7 @@ var slider;
 var startDate;
 var endDate;
 $(document).ready(function () {
-    getLanguage();
+    //getLanguage();
     slider = $('#slider').slider({range: true, max: daysDiff(minDate, maxDate),
             slide: function(event, ui) { resync(ui.values); }});
     startDate = $('#startDate').datepicker({minDate: minDate, maxDate: maxDate,
@@ -52,25 +84,7 @@ $(document).ready(function () {
     $('#slider div:eq(0)').css('left','0%').css('width','100%');
     $('#slider span:eq(1)').css('left','100%');
 
-    //google.charts.load('current', {'packages':['corechart']});
-    google.charts.load('visualization', {'packages':['corechart', 'table']} );
-    google.charts.load('current', {packages: ['corechart', 'bar']});
-
-
-    //google.charts.setOnLoadCallback(drawStatusOverview);
-    setTimeout("google.charts.setOnLoadCallback(drawStatusOverview);", 10);
-    //google.charts.setOnLoadCallback(getScorePanel);
     
-    //google.charts.setOnLoadCallback(getOftQuestion);
-    setTimeout("google.charts.setOnLoadCallback(getOftQuestion);", 30);
-    //google.charts.setOnLoadCallback(getQueryByEachTime);
-    //google.charts.setOnLoadCallback(drawNoneQuerylist);
-    
-    //google.charts.setOnLoadCallback(getResponseScores);
-    setTimeout("google.charts.setOnLoadCallback(getResponseScores);", 50);
-    //google.charts.setOnLoadCallback(drawFirstQueryTable);
-    //google.charts.setOnLoadCallback(drawStuff);
-    setTimeout("google.charts.setOnLoadCallback(drawNoneQuerylist);", 70);
     
     //안쓰는 차트
     //getEndpointHistory();
@@ -85,6 +99,7 @@ $(document).ready(function () {
     });
 });
 
+
 function getLanguage() {
     $.ajax({
         url: '/jsLang',
@@ -92,6 +107,7 @@ function getLanguage() {
         type: 'POST',
         success: function(data) {
             language = data.lang;
+            console.log(language);
         }
     });
 }
@@ -406,7 +422,7 @@ function drawStatusOverview() {
 
                     var inputData = new google.visualization.DataTable();
 
-                    console.log(language.viewsperiods);
+                    console.log(language);
 
                     //declare the columns
                     inputData.addColumn('string', 'INTENT');
@@ -500,10 +516,17 @@ function getOftQuestion() {
 
               //declare the columns
               inputData.addColumn('string', 'INTENT');
+<<<<<<< HEAD
               inputData.addColumn('string', '한글질문');
               inputData.addColumn('string', '채널');
               inputData.addColumn('number', '질문수');
               inputData.addColumn('string', '날짜');
+=======
+              inputData.addColumn('string', language.HangulQuestion);
+              inputData.addColumn('string', language.channel);
+              inputData.addColumn('string', language.QuestionCount);
+              inputData.addColumn('string', language.Date);
+>>>>>>> f3e1ffb94ec2caf4263ab1f5b7bae45f616166fd
 
               //insert data here
               //don't forget to set the classname TotalCell to the last datarow!!!
@@ -543,7 +566,7 @@ function getOftQuestion() {
             
             if (tableList.length === 0) {
                 var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
-                           + '<td class="google-visualization-table-td" colspan="5" style="padding: 10% 40%;"><div style="width:120px;">' + language.noData + '</div></td></tr>'
+                           + '<td class="google-visualization-table-td" colspan="5" style="padding: 10% 40%;"><div style="width:150px;">' + language.noData + '</div></td></tr>'
                 $('#oftQuestion').find('tbody').append(tdHtml);
             }
         }
@@ -576,13 +599,13 @@ function drawNoneQuerylist() {
                     inputData3.addColumn('string', language.HangulQuestion);
                     inputData3.addColumn('number', language.QuestionCount);
                     inputData3.addColumn('string', language.Date);
-                    inputData3.addColumn('string', '채널');
-                    inputData3.addColumn('string', '결과');
-                    inputData3.addColumn('string', 'TEXT답변');
-                    inputData3.addColumn('string', 'CARD답변');
-                    inputData3.addColumn('string', 'CARDBTN답변');
-                    inputData3.addColumn('string', 'MEDIA답변');
-                    inputData3.addColumn('string', 'MEDIABTN답변');
+                    inputData3.addColumn('string', language.channel);
+                    inputData3.addColumn('string', language.Result);
+                    inputData3.addColumn('string', language.TEXT_response);
+                    inputData3.addColumn('string', language.CARD_response);
+                    inputData3.addColumn('string', language.CARDBTN_response);
+                    inputData3.addColumn('string', language.MEDIA_response);
+                    inputData3.addColumn('string', language.MEDIABTN_response);
 
                     //insert data here
                     //don't forget to set the classname TotalCell to the last datarow!!!
@@ -654,7 +677,7 @@ function drawNoneQuerylist() {
                    
                    if (noneList.length === 0) {
                     var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
-                               + '<td class="google-visualization-table-td" colspan="11" style="padding: 10% 45%;"><div style="width:120px;">' + language.noData + '</div></td></tr>'
+                               + '<td class="google-visualization-table-td" colspan="11" style="padding: 10% 45%;"><div style="width:150px;">' + language.noData + '</div></td></tr>'
                     $('#noneQueryDiv').find('tbody').append(tdHtml);
                     }
                     
@@ -696,11 +719,11 @@ function drawStuff() {
                 }
             }
             var options = {
-            title: '고객별 첫 질문',
+            title: language.Customer_First_Questions,
             width: '90%',
             height: '90%',
             legend: { position: 'none' },
-            chart: { title: '고객별 첫 질문' },
+            chart: { title: language.Customer_First_Questions },
             bars: 'horizontal', // Required for Material Bar Charts.
             bar: { groupWidth: "20%" }
             };
@@ -739,18 +762,18 @@ function drawFirstQueryTable() {
         success: function(data) {
             var inputData = new google.visualization.DataTable();
             inputData.addRows(data.list.length);
-            inputData.addColumn('string', '한글 질문');
-            inputData.addColumn('string', '날짜');
-            inputData.addColumn('string', '채널');
-            inputData.addColumn('number', '질문 수');
-            inputData.addColumn('number', '인텐트 점수');
-            inputData.addColumn('string', '인텐트 명');
-            inputData.addColumn('string', '텍스트 답변');
-            inputData.addColumn('string', '카드 답변');
-            inputData.addColumn('string', '카드 버튼');
-            inputData.addColumn('string', '미디어 답변');
-            inputData.addColumn('string', '미디어 버튼');
-            inputData.addColumn('string', '타입');
+            inputData.addColumn('string', language.HangulQuestion);
+            inputData.addColumn('string', language.Date);
+            inputData.addColumn('string', language.channel);
+            inputData.addColumn('number', language.QuestionCount);
+            inputData.addColumn('number', language.Intent_score);
+            inputData.addColumn('string', language.Intent_name);
+            inputData.addColumn('string', language.TEXT_response);
+            inputData.addColumn('string', language.CARD_response);
+            inputData.addColumn('string', language.CARDBTN_response);
+            inputData.addColumn('string', language.MEDIA_response);
+            inputData.addColumn('string', language.MEDIABTN_response);
+            inputData.addColumn('string', language.Type);
             for (var i=0;i<data.list.length; i++) {
                 inputData.setCell(i,0,data.list[i].koQuestion);
                 inputData.setCell(i,1,data.list[i].query_date);
@@ -778,7 +801,7 @@ function drawFirstQueryTable() {
 
             if (data.list.length === 0) {
                 var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
-                            + '<td class="google-visualization-table-td" colspan="13" style="padding: 10% 42%;"><div style="width:120px;">' + language.noData + '</div></td></tr>'
+                            + '<td class="google-visualization-table-td" colspan="13" style="padding: 10% 42%;"><div style="width:150px;">' + language.noData + '</div></td></tr>'
                 $('#table_div').find('tbody').append(tdHtml);
                 }
                
@@ -837,10 +860,10 @@ function getResponseScores() {
             
             var arrTmp = [];
             var arr0 = ['NAME', 'second'];
-            var arr1 = ['평균 답변율', data.list[0].REPLY_AVG];
-            var arr2 = ['최대 답변율', data.list[0].MAX_REPLY];
-            var arr3 = ['최소 답변율', data.list[0].MIN_REPLY];
-            var arr4 = ['평균 머무르는 시간', data.list[0].REPLY_SUM];
+            var arr1 = [language.Average_response_rate, data.list[0].REPLY_AVG];
+            var arr2 = [language.Maximum_response_rate, data.list[0].MAX_REPLY];
+            var arr3 = [language.Minimum_response_rate, data.list[0].MIN_REPLY];
+            var arr4 = [language.Mean_stay_time, data.list[0].REPLY_SUM];
             arrTmp.push(arr0);
             arrTmp.push(arr1);
             arrTmp.push(arr2);

@@ -1,4 +1,10 @@
 $(document).ready(function () {
+
+    $('#selectLang').change(function() {
+        location.href="/index/lang"
+    });
+
+
     $('.ajaxsend').click(function(){
         // content-type을 설정하고 데이터 송신
         var xhr = new XMLHttpRequest();
@@ -19,26 +25,26 @@ $(document).ready(function () {
 
     $(document).mousedown(function(e){
         $('.userappLayout').each(function(){
-                if( $(this).css('display') == 'block' )
+            if( $(this).css('display') == 'block' )
+            {
+                var l_position = $(this).offset();
+                l_position.right = parseInt(l_position.left) + ($(this).innerWidth());//($(this).width() + $(this).css('padding'));
+                l_position.bottom = parseInt(l_position.top) + parseInt($(this).height());
+    
+    
+                if( ( l_position.left <= e.pageX && e.pageX <= l_position.right )
+                    && ( l_position.top <= e.pageY && e.pageY <= l_position.bottom ) )
                 {
-                    var l_position = $(this).offset();
-                    l_position.right = parseInt(l_position.left) + ($(this).innerWidth());//($(this).width() + $(this).css('padding'));
-                    l_position.bottom = parseInt(l_position.top) + parseInt($(this).height());
-        
-        
-                    if( ( l_position.left <= e.pageX && e.pageX <= l_position.right )
-                        && ( l_position.top <= e.pageY && e.pageY <= l_position.bottom ) )
-                    {
-                        //alert( 'popup in click' );
-                    }
-                    else
-                    {
-                        //alert( 'popup out click' );
-                        $(this).hide();
-                    }
+                    //alert( 'popup in click' );
                 }
-            });
+                else
+                {
+                    //alert( 'popup out click' );
+                    $(this).hide();
+                }
+            }
         });
+    });
 
 });
 
