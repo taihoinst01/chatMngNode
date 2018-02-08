@@ -15,7 +15,7 @@ var autowayDbConfig = {
     user: 'taihoinst',
     password: 'taiho9788!',
     server: 'taiholab.database.windows.net',
-    database: 'taiholab_2',
+    database: 'autoway_1',
     connectionTimeout : 30000,
     requestTimeout : 30000,
     options: {
