@@ -2,7 +2,7 @@
 var express = require('express');
 var crypto = require('crypto');
 var sql = require('mssql');
-var dbConfig = require('../config/dbConfig');
+var dbConfig = require('../config/dbConfig').dbConfig;
 var dbConnect = require('../config/dbConnect');
 var router = express.Router();
 
@@ -137,7 +137,7 @@ router.post('/selectUserList', function (req, res) {
                             "ORDER BY " + sortIdx + " ";
             
             
-            let pool = await sql.connect(dbConfig)
+            let pool = await dbConnect.getConnection(sql);
             let result1 = await pool.request().query(QueryStr);
 
             let rows = result1.recordset;
@@ -230,7 +230,7 @@ router.post('/saveUserInfo', function (req, res) {
 
     (async () => {
         try {
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
             if (saveStr !== "") {
                 let insertUser = await pool.request().query(saveStr);
             }
@@ -262,7 +262,7 @@ router.post('/inItPassword', function (req, res) {
     //basePW
     (async () => {
         try {
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
             let initPwStr = await pool.request().query(initStr);
 
             res.send({status:200 , message:'Init Success'});
@@ -303,7 +303,7 @@ router.post('/selectUserAppList', function (req, res) {
                         "    AND USER_ID = '" + userId + "'; ";                    
     (async () => {
         try {
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
             let appList = await pool.request().query(selectAppListStr);
             let rows = appList.recordset;
 
@@ -365,7 +365,7 @@ router.post('/updateUserAppList', function (req, res) {
                    
     (async () => {
         try {
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
             if (saveData.length > 0) {
                 let appList = await pool.request().query(saveDataStr);
             }
@@ -418,7 +418,7 @@ router.post('/selectApiList', function (req, res) {
     selectAppListStr +=  "ORDER BY API_SEQ ASC, API_ID ASC; ";
     (async () => {
         try {
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
             let appList = await pool.request().query(selectAppListStr);
             let rows = appList.recordset;
 
@@ -470,7 +470,7 @@ router.post('/saveApiInfo', function(req, res){
 
     (async () => {
         try {
-            let pool = await sql.connect(dbConfig);
+            let pool = await dbConnect.getConnection(sql);
             if (saveStr !== "") {
                 let insertUser = await pool.request().query(saveStr);
             }
