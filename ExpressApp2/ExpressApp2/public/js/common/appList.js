@@ -128,6 +128,8 @@ function GetAbsPosition(object) {
   
 function itemClick(e, object, deleteAppId, appName){
     //var ex_obj = $('.appLayout');
+    $('#deleteAppId').val(deleteAppId);
+
     var ex_obj = document.getElementById('lay');
     if(!e) e = window.Event;
     pos = GetAbsPosition(object);//abspos(e, object);
