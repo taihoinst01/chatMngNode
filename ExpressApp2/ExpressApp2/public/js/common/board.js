@@ -482,7 +482,7 @@ function drawStatusOverview() {
                     StatusTable.draw(inputData, {
                         showRowNumber: false,
                         width: '100%',
-                        height: 'fit-content'
+                        height: '90%'
                     });
               }
           }
@@ -518,7 +518,7 @@ function getOftQuestion() {
               inputData.addColumn('string', 'INTENT');
               inputData.addColumn('string', language.HangulQuestion);
               inputData.addColumn('string', language.channel);
-              inputData.addColumn('string', language.QuestionCount);
+              inputData.addColumn('number', language.QuestionCount);
               inputData.addColumn('string', language.Date);
 
               //insert data here

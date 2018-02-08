@@ -3,6 +3,7 @@
 var express = require('express');
 var sql = require('mssql');
 var dbConfig = require('../../config/dbConfig');
+var autowayDbConfig = require('../../config/dbConfig').autowayDbConfig;
 var dbConnect = require('../../config/dbConnect');
 var paging = require('../../config/paging');
 var util = require('../../config/util');
@@ -24,7 +25,7 @@ router.get('/', function (req, res) {
     //selectChannel += "           BETWEEN	 CONVERT(DATE,CONVERT(DATETIME,'" + startDate + "'), 112) ";
     //selectChannel += "           AND		 CONVERT(DATE,CONVERT(DATETIME,'" + endDate + "'), 112) \n";
     selectChannel += "GROUP BY CHANNEL \n";
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql,autowayDbConfig).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectChannel)
         }).then(result => {
@@ -75,7 +76,7 @@ router.post('/intentScore', function (req, res) {
     }
 
     selectQuery += "GROUP BY LUIS_INTENT \n";
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql,autowayDbConfig).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
     }).then(result => {
@@ -189,7 +190,7 @@ if (selChannel !== 'all') {
     selectQuery += ") AA\n";
     selectQuery += "WHERE RESULT <> '' AND RESULT IN ('H','S')\n";
     selectQuery += "ORDER BY 질문수 DESC, 날짜 DESC\n";
-    dbConnect.getConnection(sql).then(pool => {
+    dbConnect.getAppConnection(sql,autowayDbConfig).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
