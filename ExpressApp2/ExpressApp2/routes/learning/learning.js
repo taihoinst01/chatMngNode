@@ -16,7 +16,7 @@ router.get('/', function (req, res) {
 
 router.get('/recommend', function (req, res) {
     req.session.selMenus = 'ms1';
-    res.render('recommend', {selMenus: 'ms1'});
+    res.render('recommend', {appName: req.session.appName, selMenus: 'ms1'});
 });
 
 router.post('/recommend', function (req, res) {
@@ -113,6 +113,7 @@ router.get('/utterances', function (req, res) {
     req.session.selMenus = 'ms2';
     res.render('utterances', {
         selMenus: req.session.selMenus,
+        appName: req.session.appName,
         title: 'learning utterances page',
 		utterance: utterance
     } );
@@ -122,6 +123,7 @@ router.get('/dialog', function (req, res) {
 
     req.session.selMenus = 'ms3';
     res.render('dialog', {
+        appName: req.session.appName,
         selMenus: req.session.selMenus,
         title: 'learning dialog page'
     } );
@@ -723,6 +725,7 @@ router.get('/entities', function (req, res) {
 
     req.session.selMenus = 'ms4';
     res.render('entities', {
+        appName: req.session.appName,
         selMenus: req.session.selMenus,
         title: 'learning Entities page'
     } );
