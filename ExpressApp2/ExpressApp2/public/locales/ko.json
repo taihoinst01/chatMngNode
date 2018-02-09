@@ -85,6 +85,7 @@
 	"Add_Button": "버튼추가",
 	"Add_Carousel": "캐러절 추가",
 	"UTTERANCE": "어터런스",
+	"Create_new_Entity_Set": "새로운 엔티티 세트 생성",
 	"============= Learning > DIALOG =============": "",
 	"Enter Connection utterance": "연결 어터런스 입력",
 	"explanation": "설명",
@@ -95,6 +96,7 @@
 	"Small_group": "소그룹",
 	"CREAT": "생성",
 	"Add_Entity": "엔티티 추가",
+	"Search_Dialogue": "다이얼로그 검색",
 	"============= Learning > ENTITIES =============": "",
 	"Description 2": "검색 할 Entity definition 혹은 Entity value를 입력 후 엔터키 혹은 search 버튼 클릭",
 	"Enter_entity_value_to_save": "저장하실 엔티티 밸류를 입력해주세요",
@@ -149,4 +151,5 @@
 	"SELECT": "선택",
 	"Please enter ...": "Please enter ...",
 	"SEARCH": "검색"
+	
 }

@@ -1,5 +1,18 @@
+var language;
+;(function($) {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language= data.lang;
+            recommendAjax();
+        }
+    });
+})(jQuery);
+
 $(document).ready(function () {
-    recommendAjax();
+
     $('.btn_delete').attr("disabled","disabled").css('background','url(../images/btn_delete_dis.png)')
     $('.span_delete').css('color','#465361c4');
 
@@ -50,6 +63,10 @@ function recommendAjax(){
                     //'<td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick();"></a></td>' +
                     '</tr>';
                 }
+            } else {
+                item += '<tr style="height: 175px;">' +
+                            '<td colspan="5">' + language.NO_DATA + '</td>' +
+                        '</tr>';
             }
             $('#recommendContents').append(item);
             $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
