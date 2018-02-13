@@ -6,6 +6,12 @@ var language;
         type: 'POST',
         success: function(data) {
             language= data.lang;
+
+            // groupType 사양및 장단점 역할
+            // sourceType 구분 역할
+            var groupType =  $('.selected').text();
+            var sourceType = $('#tblSourceType').val();
+            dialogsAjax(groupType, sourceType);
         }
     });
 })(jQuery);
@@ -26,12 +32,6 @@ $(document).ready(function(){
             $('.selectOptionsbox').removeClass('active');
         }
     });
-
-    // groupType 사양및 장단점 역할
-    // sourceType 구분 역할
-    var groupType =  $('.selected').text();
-    var sourceType = $('#tblSourceType').val();
-    dialogsAjax(groupType, sourceType);
 
     $('#tblSourceType').change(function(){
         groupType = $('.selected').text();
@@ -1047,15 +1047,16 @@ function dialogsAjax(groupType, sourceType){
                         '</tr>';
             }
         
+            currentSearchNum = 2;
             $('#dialogTbltbody').append(item);
-
             $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
         }
     });
 
 }
-
-var currentSearchNum; // 0: 검색어로 검색한 경우, 1: 테이블 위 그룹으로 검색한 경우, 2: 테이블에 있는 그룹으로 검색한 경우
+// 0: 검색어로 검색한 경우, 1: 테이블 위 그룹으로 검색한 경우, 테이블에 있는 그룹으로 검색한 경우, 
+//2: 다이얼로그 초기 로드하고 나서 페이징 경우
+var currentSearchNum; 
 $(document).on('click','.li_paging',function(e){
     
     if($(e.target).val() != $('#currentPage').val()){
@@ -1067,7 +1068,10 @@ $(document).on('click','.li_paging',function(e){
 
             dialogsAjax2(searchGroups);
         } else if(currentSearchNum == 2) {
-            dialogsAjax2();
+
+            var groupType =  $('.selected').text();
+            var sourceType = $('#tblSourceType').val();
+            dialogsAjax(groupType, sourceType);
         }
         /*
         $('#currentPage').val($(e.target).val())
