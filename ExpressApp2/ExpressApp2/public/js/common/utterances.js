@@ -237,7 +237,7 @@ $(document).ready(function(){
 
             $('#btnCreateLgroup').click();
         }
-        $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>입력해주세요...</p></div></div></div></div></div></div></div>');
+        $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>' + language.Please_enter + '</p></div></div></div></div></div></div></div>');
     });
 
     //dlg 체크박스 전체선택 
