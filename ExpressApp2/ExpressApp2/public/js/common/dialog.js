@@ -207,7 +207,7 @@ $(document).ready(function(){
         
     });
 
-        var carouselDivHtml = 
+    
     $(document).on('click', 'a[name=carouseBtn]',function(e){
         //e.stopPropagation();
         //e.preventDefault();
@@ -1055,7 +1055,7 @@ function dialogsAjax(groupType, sourceType){
 
 }
 
-var currentSearchNum; // 0: 검색어로 검색한 경우, 1: 테이블 위 그룹으로 검색한 경우, 2: 테이블에 있는 그룹으로 검색한 경우
+var currentSearchNum = 2; // 0: 검색어로 검색한 경우, 1: 테이블 위 그룹으로 검색한 경우, 2: 테이블에 있는 그룹으로 검색한 경우
 $(document).on('click','.li_paging',function(e){
     
     if($(e.target).val() != $('#currentPage').val()){

@@ -1,5 +1,5 @@
 var language;
-;(function($) {
+(function($) {
     $.ajax({
         url: '/jsLang',
         dataType: 'json',
@@ -128,19 +128,20 @@ function checkBoxHandler(e){
 
 //delete 버튼 클릭 이벤트
 function deleteRecommend(){
-    
-    var arry = [];
-    for(var i = 0; i < $('#recommendContents div[type=checkbox][checked]').size(); i++)
-    {
-        arry.push($('#recommendContents div[type=checkbox][checked] .seq')[i].value);
+    if ( confirm( language.ASK_DELETE)) {
+        var arry = [];
+        for(var i = 0; i < $('#recommendContents div[type=checkbox][checked]').size(); i++)
+        {
+            arry.push($('#recommendContents div[type=checkbox][checked] .seq')[i].value);
+        }
+        $.ajax({
+                type: 'POST',
+                data : {'seq' : arry+''},
+                url : '/learning/deleteRecommend',
+                isloading : true,
+                success: function(data){
+                    recommendAjax('all');
+                }
+            });
     }
-     $.ajax({
-            type: 'POST',
-            data : {'seq' : arry+''},
-            url : '/learning/deleteRecommend',
-            isloading : true,
-            success: function(data){
-                recommendAjax('all');
-            }
-         });
 }
