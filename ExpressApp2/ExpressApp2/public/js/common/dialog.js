@@ -1054,14 +1054,9 @@ function dialogsAjax(groupType, sourceType){
     });
 
 }
-<<<<<<< HEAD
 // 0: 검색어로 검색한 경우, 1: 테이블 위 그룹으로 검색한 경우, 테이블에 있는 그룹으로 검색한 경우, 
 //2: 다이얼로그 초기 로드하고 나서 페이징 경우
 var currentSearchNum; 
-=======
-
-var currentSearchNum = 2; // 0: 검색어로 검색한 경우, 1: 테이블 위 그룹으로 검색한 경우, 2: 테이블에 있는 그룹으로 검색한 경우
->>>>>>> 4edd313db24253a3a2020e222db091437292e7ae
 $(document).on('click','.li_paging',function(e){
     
     if($(e.target).val() != $('#currentPage').val()){
