@@ -23,7 +23,7 @@
     
     
     <style type="text/css">
-        a#MOVE_TOP_BTN {
+        .goTop {
             position: fixed;
             right: 0.5%;
             bottom: 60px;
@@ -39,7 +39,7 @@
 </head>
 
 <body class="main">
-    <a id="MOVE_TOP_BTN" href="#">[TOP]</a>
+    <button type="button" id="MOVE_TOP_BTN" class="goTop" onclick="$('html, body').stop().animate( { scrollTop : '0' }, 1000, 'easeOutBack' );return false;">[TOP]</button>
     <input type="hidden" name="subKey" id="subKey" value='<%=subKey%>'/>
     <input type="hidden" name="appId" id="appId" value='<%=appId%>'/>
     <input type="hidden" name="appId" id="appId" value='<%=appName%>'/>

@@ -1277,10 +1277,10 @@ function openModalBox(target){
 
     // 레이어 팝업을 가운데로 띄우기 위해 화면의 높이와 너비의 가운데 값과 스크롤 값을 더하여 변수로 만듭니다.
     var left = ( $(window).scrollLeft() + ( $(window).width() - $(target).width()) / 2 );
-    //var top = ( $(window).scrollTop() + ( $(window).height() - $(target).height()) / 2 );
+    var top = ( $(window).scrollTop() + ( $(window).height() - $(target).height()) / 2 );
 
     // css 스타일을 변경합니다.
-    $(target).css({'left':left,'top':'25px', 'position':'absolute'});
+    $(target).css({'left':left,'top':top, 'position':'absolute'});
 
     // 레이어 팝업을 띄웁니다.
     $(target).show();

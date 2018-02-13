@@ -46,19 +46,20 @@ $(document).ready(function () {
 //top버튼
 $(window).scroll(function() {
     if ($(this).scrollTop() > 400) {
-        $('#MOVE_TOP_BTN').fadeIn();
+        $('.goTop').fadeIn();
     } else {
-        $('#MOVE_TOP_BTN').fadeOut();
+        $('.goTop').fadeOut();
     }
 });
-
-$("#MOVE_TOP_BTN").click(function() {
+/*html button tag onclick에 적용.
+$(".goTop").click(function() {
+    alert("ddddddddddMOVE_TOP_BTN")
    $('html, body').animate({
-       scrollTop : 0
-   }, 400);
+       scrollTop : '300'
+   }, 3000, 'easeOutBack');
    return false;
 });
-
+*/
 //slider 시작
 var today = new Date();
 var dd = today.getDate();
