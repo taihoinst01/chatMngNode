@@ -45,7 +45,7 @@ $(document).ready(function () {
 */
 //top버튼
 $(window).scroll(function() {
-    if ($(this).scrollTop() > 400) {
+    if ($(this).scrollTop() > 350) {
         $('.goTop').fadeIn();
     } else {
         $('.goTop').fadeOut();
