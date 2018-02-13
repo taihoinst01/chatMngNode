@@ -25,14 +25,20 @@ $(document).on('click', '#utterDelete', function() {
     $(this).parent().parent().next().remove();
     $(this).parent().parent().remove();
     
-
+    /*
     if ($('#entityUtteranceTextTable tbody').find('.off-screen').length > 0) {
-        $('#entityUtteranceTextTable tbody').find('.off-screen').eq(0).animate({opacity: 1}, 300);
+        //$('#entityUtteranceTextTable tbody').find('.off-screen').eq(0).animate({opacity: 1}, 300);
         $('#entityUtteranceTextTable tbody').find('.off-screen').eq(0).removeClass('off-screen');
-        $('#entityUtteranceTextTable tbody').find('.off-screen').eq(0).animate({opacity: 1}, 300);
+        //$('#entityUtteranceTextTable tbody').find('.off-screen').eq(0).animate({opacity: 1}, 300);
         $('#entityUtteranceTextTable tbody').find('.off-screen').eq(0).removeClass('off-screen');
     }
-    
+    */
+    var $tr = $('#entityUtteranceTextTable tbody').children('tr');
+    $tr.css('opacity', '0.0')
+            .addClass('off-screen')
+            .slice(0, 5)
+            .removeClass('off-screen')
+            .animate({opacity: 1}, 300);
     
 
 
