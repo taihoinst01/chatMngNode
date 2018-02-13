@@ -87,6 +87,8 @@
 	"Add_Button": "ADD BUTTON",
 	"Add_Carousel": "Add Carousel",
 	"UTTERANCE": "UTTERANCE",
+	"Create_new_Entity_Set": "Create new Entity Set",
+	"Search_Dialogue": "Search Dialogue",
 	"============= Learning > DIALOG =============": "",
 	"Enter Connection utterance": "Enter Connection utterance",
 	"explanation": "EXPLANATION",
@@ -146,5 +148,6 @@
 	"Mean-stay-time": "Mean-stay-time",
 	"i18n": "i18n",
 	"Search": "SEARCH",
-	"SEARCH": "SEARCH"
+	"SEARCH": "SEARCH",
+	"Please enter ...": "Please enter ..."
 }

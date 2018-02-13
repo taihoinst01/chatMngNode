@@ -66,7 +66,12 @@ function entitiesAjax(){
                     item += '</tr>';
                 }
                 
+            } else {
+                item += '<tr style="height: 175px;">' +
+                            '<td colspan="4">' + language.NO_DATA + '</td>' +
+                        '</tr>';
             }
+            
             $('#entitesTbltbody').append(item);
             $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
         }
@@ -181,6 +186,10 @@ function searchEntities() {
                         item += '</tr>';
                     }
                     
+                } else {
+                    item += '<tr style="height: 175px;">' +
+                                '<td colspan="4">' + language.NO_DATA + '</td>' +
+                            '</tr>';
                 }
                 $('#entitesTbltbody').append(item);
                 $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
