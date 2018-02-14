@@ -145,7 +145,7 @@
 
     <!--신규 다이얼로그 등록 -->
     <div id="create_dlg" class="modal_box w900" style="height: auto !important">
-        <header> <a href="#" id="addDialogClose" class="js-modal-close close">×</a>
+        <header> <a href="#" id="addDialogClose" class="js-modal-close close" onclick="return false;">×</a>
           <h3>Create new Dialogue Set</h3><!-- 신규 다이얼로그 등록 -->
         </header>
     
@@ -375,8 +375,8 @@
         <!-- form end -->
     
         <footer>
-          <a href="#" class="btn" id="btnAddDlg" onclick="createDialog();">Create</a>
-          <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel">Cancel</a>
+          <a href="#" class="btn" id="btnAddDlg" onclick="createDialog(); return false;">Create</a>
+          <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel" onclick="return false;">Cancel</a>
         </footer>
     
     </div>
@@ -390,7 +390,7 @@
 
     <!-- Search 다이얼로그 -->
     <div id="search_dlg" class="modal_box w900" style="height: auto !important">
-        <header> <a href="#" id="searchDialogClose" class="js-modal-close close">×</a>
+        <header> <a href="#" id="searchDialogClose" class="js-modal-close close" onclick="return false;">×</a>
           <h3><%= __('Search_Dialogue') %></h3>
         </header>
         <div class="modal-body" style="float:left; width:100%;">
@@ -435,14 +435,14 @@
         <div class="clear-both"></div>
         <footer>
             <button class="btn" id="btnSearchSaveDlg" onclick="selectDialog()"/><%= __('SELECT') %></button><!-- 혹시 몰라서 searchSaveDialog() 함수는 주석처리 해서 살려두었습니다.-->
-            <a href="#" class="btn b02  btn-small js-modal-close" id="searchDialogCancel"><%= __('CANCEL') %></a>
+            <a href="#" class="btn b02  btn-small js-modal-close" id="searchDialogCancel" onclick="return false;"><%= __('CANCEL') %></a>
         </footer>
     </div>
 
 
     <!--신규 엔티티 등록 -->
     <div id="create_entity" class="modal_box w900" style="height: auto !important; width: 30%;">
-            <header> <a href="#" id="addEntityClose" class="js-modal-close close">×</a>
+            <header> <a href="#" id="addEntityClose" class="js-modal-close close" onclick="return false;">×</a>
               <h3><%= __('Create_new_Entity_Set') %></h3><!-- 신규 엔티티 등록 -->
             </header>
         
@@ -473,7 +473,7 @@
         
             <footer>
                 <button class="btn disable" disabled="disabled" id="btnAddEntity" onclick="insertEntity()"><%= __('SAVE') %></button>
-                <a href="#" class="btn b02  btn-small js-modal-close" id="addEntityCancel"><%= __('CANCEL') %></a>
+                <a href="#" class="btn b02  btn-small js-modal-close" id="addEntityCancel" onclick="return false;"><%= __('CANCEL') %></a>
             </footer>
         
         </div>

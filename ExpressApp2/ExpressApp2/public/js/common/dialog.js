@@ -493,7 +493,7 @@ function searchIptDlg(page){
                     item += '<tr>' +
                             '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
                             '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                            '<td class="txt_left dlgCardMordal" style="padding:0 0 0 2px;"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
                             '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
@@ -791,7 +791,7 @@ function dialogsAjax2(group){
                     item += '<tr>' +
                             '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
                             '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                            '<td class="txt_left dlgCardMordal" style="padding:0 0 0 2px;"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
                             '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
@@ -1014,7 +1014,7 @@ function dialogsAjax(groupType, sourceType){
                     item += '<tr>' +
                             '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
                             '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                            '<td class="txt_left dlgCardMordal" style="padding:0 0 0 2px;"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
                             '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
@@ -1049,11 +1049,11 @@ function dialogsAjax(groupType, sourceType){
         
             $('#dialogTbltbody').append(item);
 
-            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+            //$('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
         }
     });
-
 }
+
 
 var currentSearchNum = 2; // 0: 검색어로 검색한 경우, 1: 테이블 위 그룹으로 검색한 경우, 2: 테이블에 있는 그룹으로 검색한 경우
 $(document).on('click','.li_paging',function(e){
@@ -1079,7 +1079,7 @@ $(document).on('click','.li_paging',function(e){
 });
 
 function openModalBox(target){
-
+    
     /*
     if ($('div[checked=checked]').length !== 1) {
         alert('Utterance를 1개 선택해야 합니다.');
@@ -1103,14 +1103,16 @@ function openModalBox(target){
 
     // 레이어 팝업을 가운데로 띄우기 위해 화면의 높이와 너비의 가운데 값과 스크롤 값을 더하여 변수로 만듭니다.
     var left = ( $(window).scrollLeft() + ( $(window).width() - $(target).width()) / 2 );
-    //var top = ( $(window).scrollTop() + ( $(window).height() - $(target).height()) / 2 );
+    var top = ( $(window).scrollTop() + ( $(window).height() - $(target).height()) / 2 );
 
     // css 스타일을 변경합니다.
-    $(target).css({'left':left,'top':'25px', 'position':'absolute'});
+    $(target).css({'left':left,'top':top, 'position':'absolute'});
 
     // 레이어 팝업을 띄웁니다.
-    $(target).show();
-    $('#dialogPreview').css({'height':$('#dialogSet').height()});
+    setTimeout(function() {
+        $(target).fadeIn( );
+        $('#dialogPreview').css({'height':$('#dialogSet').height()});
+      }, 250);
 
     $('html').css({'overflow': 'hidden', 'height': '100%'});
         $('#element').on('scroll touchmove mousewheel', function(event) { // 터치무브와 마우스휠 스크롤 방지
@@ -1124,6 +1126,7 @@ function openModalBox(target){
         $(".insertForm form").append($("#textLayout").clone(true));
         $(".insertForm #textLayout").css("display","block");
     }
+
 
 }
 
@@ -1195,4 +1198,166 @@ function insertDialog(){
     });
 }
 /** 모달 끝 */
+
+
+
+
+
+
+var botChatNum4Desc = 1; 
+//dlg 저장
+var dlgMap = new Object();
+function searchDialog(dlgID) {
+    $.ajax({
+        url: '/learning/getDlgAjax',                //주소
+        dataType: 'json',                  //데이터 형식
+        type: 'POST',                      //전송 타입
+        data: {'dlgID':dlgID},      //데이터를 json 형식, 객체형식으로 전송
+
+        success: function(result) {          //성공했을 때 함수 인자 값으로 결과 값 나옴
+            var inputUttrHtml = '';
+
+            if(result['list'].length == 0) {
+                inputUttrHtml += '<div style="display:table-cell;vertical-align:middle; height:400px; width:900px; text-align:center;">' +
+                                    language.NO_DATA +
+                                 '</div>';
+            } else {
+
+                var row = result['list'];
+                /*
+                var arrayNum = 0;
+                for (var k = 0; k < result['list'].length; k++) {
+                    if(k != 0 && result['list'][k].RNUM == result['list'][k-1].RNUM) {
+                        var num = result['list'][k].DLG_ORDER_NO - 1;
+                        arrayNum--;
+                        row[arrayNum][num] = result['list'][k];
+                        arrayNum++;
+                    } else{
+                        row[arrayNum] = [];
+                        row[arrayNum][0] = result['list'][k];
+                        arrayNum++;
+                    }
+                }
+                */
+
+                for (var i = 0; i < row.length; i++) {
+                    botChatNum4Desc++;
+                    var val = row[i];
+
+                    inputUttrHtml += '<div style="width: 405px; height: 85%; float:left; margin: 15px 20px;">';
+                    //inputUttrHtml += '<div style="height: 10%; width: 100%; z-index:5; background-color: #6f6c6c;">';
+                    //inputUttrHtml += '<div class="check-radio-tweak-wrapper2 searchDlgChk" type="checkbox">';
+                    //inputUttrHtml += '<input name="chksearch" class="tweak-input" type="checkbox"/>';
+                    //inputUttrHtml += '</div>';
+                    //inputUttrHtml += '</div>';
+                    inputUttrHtml += '<div style="height: 90%; overflow: scroll; overflow-x: hidden; background-color: rgb(241, 243, 246);; padding:10px;">';
+
+                    //for(var l = 0; l < val.length; l++){
+                        var tmp = val;//val[l];
+
+                        for(var j = 0; j < tmp.dlg.length; j++) {
+
+                            if(tmp.dlg[j].DLG_TYPE == 2) {
+    
+                                inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="width:200px">';
+                                inputUttrHtml += '<div class="wc-message-content">';
+                                inputUttrHtml += '<svg class="wc-message-callout"></svg>';
+                                inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
+                                inputUttrHtml += '<p>';
+                                inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                                inputUttrHtml += tmp.dlg[j].CARD_TEXT;
+                                inputUttrHtml += '</p>';
+                                inputUttrHtml += '</div></div></div></div></div>';
+
+                            } else if(tmp.dlg[j].DLG_TYPE == 3) {
+
+                                if(j == 0) {
+                                    inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
+                                    inputUttrHtml += '<div class="wc-message-content">';
+                                    inputUttrHtml += '<svg class="wc-message-callout"></svg>';
+                                    inputUttrHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
+                                    inputUttrHtml += '<div>';
+                                    inputUttrHtml += '<button class="scroll previous" id="prevBtn' + (botChatNum4Desc) + '" style="display: none;" onclick="prevBtn(' + botChatNum4Desc + ')">';
+                                    inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
+                                    inputUttrHtml += '</button>';
+                                    inputUttrHtml += '<div class="wc-hscroll-outer" >';
+                                    inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum4Desc) + '">';
+                                    inputUttrHtml += '<ul>';
+                                    inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                                }
+                                inputUttrHtml += '<li class="wc-carousel-item">';
+                                inputUttrHtml += '<div class="wc-card hero">';
+                                inputUttrHtml += '<div class="wc-container imgContainer" >';
+                                inputUttrHtml += '<img src="' + tmp.dlg[j].IMG_URL +'">';
+                                inputUttrHtml += '</div>';
+                                if(tmp.dlg[j].CARD_TITLE != null) {
+                                    inputUttrHtml += '<h1>' + /*cardtitle*/ tmp.dlg[j].CARD_TITLE + '</h1>';
+                                }
+                                if(tmp.dlg[j].CARD_TEXT != null) {
+
+                                    inputUttrHtml += '<p class="carousel" style="height:20px;min-height:20px;">' + /*cardtext*/ tmp.dlg[j].CARD_TEXT + '</p>';
+                                }
+                                if(tmp.dlg[j].BTN_1_TITLE != null) {
+                                    inputUttrHtml += '<ul class="wc-card-buttons"><li><button>' + /*btntitle*/ tmp.dlg[j].BTN_1_TITLE + '</button></li></ul>';
+                                }
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '</li>';
+                                
+                                //다이얼로그가 한개일때에는 오른쪽 버튼 x
+                                if((tmp.dlg.length == 2 && j == 1) || (tmp.dlg.length == 1 && j == 0)) {
+                                    inputUttrHtml += '</ul>';
+                                    inputUttrHtml += '</div>';
+                                    inputUttrHtml += '</div>';
+                                    inputUttrHtml += '</div></div></div></div>';
+                                } else if((tmp.dlg.length-1) == j) {
+                                    inputUttrHtml += '</ul>';
+                                    inputUttrHtml += '</div>';
+                                    inputUttrHtml += '</div>';
+                                    inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum4Desc) + '" onclick="nextBtn(' + botChatNum4Desc + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                                    inputUttrHtml += '</div></div></div></div>';
+                                }
+                            } else if(tmp.dlg[j].DLG_TYPE == 4) {
+                                inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
+                                inputUttrHtml += '<div class="wc-message-content">';
+                                inputUttrHtml += '<svg class="wc-message-callout"></svg>';
+                                inputUttrHtml += '<div>';
+                                inputUttrHtml += '<div class="wc-carousel">';
+                                inputUttrHtml += '<div>';
+                                inputUttrHtml += '<button class="scroll previous" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png"></button>';
+                                inputUttrHtml += '<div class="wc-hscroll-outer">';
+                                inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
+                                inputUttrHtml += '<ul style="min-width:0px">';
+                                inputUttrHtml += '<li class="wc-carousel-item wc-carousel-play">';
+                                inputUttrHtml += '<div class="wc-card hero" style="width:70%">';
+                                inputUttrHtml += '<div class="wc-card-div imgContainer">';
+                                inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                                inputUttrHtml += '<img src="' + /* 이미지 url */ tmp.dlg[j].MEDIA_URL + '">';
+                                inputUttrHtml += '<div class="playImg"></div>';
+                                inputUttrHtml += '<div class="hidden" alt="' + tmp.dlg[j].CARD_TITLE + '"></div>';
+                                inputUttrHtml += '<div class="hidden" alt="' + /* media url */ tmp.dlg[j].CARD_VALUE + '"></div>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '<h1>' + /* title */ tmp.dlg[j].CARD_TITLE + '</h1>';
+                                inputUttrHtml += '<ul class="wc-card-buttons">';
+                                inputUttrHtml += '</ul>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '</li></ul></div></div>';
+                                inputUttrHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                                inputUttrHtml += '</div></div></div></div></div>';
+                            }
+                        }
+                    //}
+                
+
+                inputUttrHtml += '</div>';
+                inputUttrHtml += '</div>';
+                }
+            }
+            $('#dialogShow').html(inputUttrHtml);
+            //$('#dialogShow').prepend(inputUttrHtml);
+            openModalBox('#dialogShowMordal');
+        } 
+        
+
+    }); // ------      ajax 끝-----------------
+}
 
