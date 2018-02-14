@@ -6,6 +6,12 @@ var language;
         type: 'POST',
         success: function(data) {
             language= data.lang;
+
+            // groupType 사양및 장단점 역할
+            // sourceType 구분 역할
+            var groupType =  $('.selected').text();
+            var sourceType = $('#tblSourceType').val();
+            dialogsAjax(groupType, sourceType);
         }
     });
 })(jQuery);
@@ -26,12 +32,6 @@ $(document).ready(function(){
             $('.selectOptionsbox').removeClass('active');
         }
     });
-
-    // groupType 사양및 장단점 역할
-    // sourceType 구분 역할
-    var groupType =  $('.selected').text();
-    var sourceType = $('#tblSourceType').val();
-    dialogsAjax(groupType, sourceType);
 
     $('#tblSourceType').change(function(){
         groupType = $('.selected').text();
@@ -1047,6 +1047,7 @@ function dialogsAjax(groupType, sourceType){
                         '</tr>';
             }
         
+            currentSearchNum = 2;
             $('#dialogTbltbody').append(item);
 
             //$('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
@@ -1067,7 +1068,10 @@ $(document).on('click','.li_paging',function(e){
 
             dialogsAjax2(searchGroups);
         } else if(currentSearchNum == 2) {
-            dialogsAjax2();
+
+            var groupType =  $('.selected').text();
+            var sourceType = $('#tblSourceType').val();
+            dialogsAjax(groupType, sourceType);
         }
         /*
         $('#currentPage').val($(e.target).val())
