@@ -1050,7 +1050,7 @@ function dialogsAjax(groupType, sourceType){
             currentSearchNum = 2;
             $('#dialogTbltbody').append(item);
 
-            //$('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
         }
     });
 }
