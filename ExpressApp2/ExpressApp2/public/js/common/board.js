@@ -17,21 +17,14 @@ var language;
             google.charts.load('current', {packages: ['corechart', 'bar']});
 
 
-            //google.charts.setOnLoadCallback(drawStatusOverview);
-            google.charts.setOnLoadCallback(drawStatusOverview);
-            //google.charts.setOnLoadCallback(getScorePanel);
             
-            //google.charts.setOnLoadCallback(getOftQuestion);
-            google.charts.setOnLoadCallback(getOftQuestion);
-            //google.charts.setOnLoadCallback(getQueryByEachTime);
-            //google.charts.setOnLoadCallback(drawNoneQuerylist);
             
             //google.charts.setOnLoadCallback(getResponseScores);
             google.charts.setOnLoadCallback(getResponseScores);
             //google.charts.setOnLoadCallback(drawFirstQueryTable);
             //google.charts.setOnLoadCallback(drawStuff);
             google.charts.setOnLoadCallback(drawNoneQuerylist);
-                }
+        }
     });
 })(jQuery);
 /*
@@ -604,7 +597,6 @@ function drawNoneQuerylist() {
                     //insert data here
                     //don't forget to set the classname TotalCell to the last datarow!!!
 
-
                     for (var i=0; i< noneList.length; i++) {
                         inputData3.addRow([   noneList[i].intent
                                             , noneList[i].korQuery
@@ -618,18 +610,6 @@ function drawNoneQuerylist() {
                                             , noneList[i].mediaResult
                                             , noneList[i].mediaBtnResult]);
                     }
-                    /* inputData2.addRow(
-                        [{
-                            v: '합계',
-                            p: {
-                                className: 'TotalCell'
-                            }
-                          },
-                          '',
-                          '',
-                          '',
-                        ]
-                    ); */
 
                     StatusTable3 = new google.visualization.Table(document.getElementById('noneQueryDiv'));
                     /*
@@ -713,7 +693,7 @@ function drawStuff() {
                 }
             }
             var options = {
-            title: language.Customer_First_Questions,
+            //title: language.Customer_First_Questions,
             width: '90%',
             height: '90%',
             legend: { position: 'none' },
@@ -755,7 +735,7 @@ function drawFirstQueryTable() {
         data: $('#filterForm').serializeObject(),
         success: function(data) {
             var inputData = new google.visualization.DataTable();
-            inputData.addRows(data.list.length);
+            //inputData.addRows(data.list.length);
             inputData.addColumn('string', language.HangulQuestion);
             inputData.addColumn('string', language.Date);
             inputData.addColumn('string', language.channel);
@@ -768,7 +748,24 @@ function drawFirstQueryTable() {
             inputData.addColumn('string', language.MEDIA_response);
             inputData.addColumn('string', language.MEDIABTN_response);
             inputData.addColumn('string', language.Type);
+
+
             for (var i=0;i<data.list.length; i++) {
+                inputData.addRow([   
+                      data.list[i].koQuestion
+                    , data.list[i].query_date
+                    , data.list[i].channel
+                    , data.list[i].query_cnt
+                    , data.list[i].intent_score
+                    , data.list[i].intent_name
+                    , data.list[i].txt_answer
+                    , data.list[i].card_answer
+                    , data.list[i].cardBtn_answer
+                    , data.list[i].media_answer
+                    , data.list[i].mediaBtn_answer
+                    , data.list[i].message_type
+                ]);
+                /*
                 inputData.setCell(i,0,data.list[i].koQuestion);
                 inputData.setCell(i,1,data.list[i].query_date);
                 inputData.setCell(i,2,data.list[i].channel);
@@ -781,24 +778,42 @@ function drawFirstQueryTable() {
                 inputData.setCell(i,9,data.list[i].media_answer);
                 inputData.setCell(i,10,data.list[i].mediaBtn_answer);
                 inputData.setCell(i,11,data.list[i].message_type);
+                */
             }
-
-
+            
+            
             var table = new google.visualization.Table(document.getElementById('table_div'));
             table.draw(inputData, 
-                       { page: 'enable',
+                       { 
+                        page: 'enable',
                         pageSize: 500,
-                        //scrollLeftStartPosition: 100,
-                        showRowNumber: true, 
-                        width: '100%', 
-                        height: '340px'});
+                        scrollLeftStartPosition: -100,
+                        showRowNumber: false, 
+                        width: '100%',
+                        height: '340px',
+                        allowHtml: true,
+                        explorer: {axis: 'horizontal'}
+                    });
+            
+            $('#table_div').find('.google-visualization-table-th:contains(' + language.HangulQuestion + ')').css('width', '300px');
+            $('#table_div').find('.google-visualization-table-th:contains(' + language.query_date + ')').css('width', '150px');
+            $('#table_div').find('.google-visualization-table-th:contains(' + language.channel + ')').css('width', '100px');
+            $('#table_div').find('.google-visualization-table-th:contains(' + language.query_cnt + ')').css('width', '50px');
+            $('#table_div').find('.google-visualization-table-th:contains(' + language.intent_score + ')').css('width', '80px');
+            $('#table_div').find('.google-visualization-table-th:contains(' + language.intent_name + ')').css('width', '100px');
+            $('#table_div').find('.google-visualization-table-th:contains(' + language.txt_answer + ')').css('width', '100px');
+            $('#table_div').find('.google-visualization-table-th:contains(' + language.card_answer + ')').css('width', '100px');
+            $('#table_div').find('.google-visualization-table-th:contains(' + language.cardBtn_answer + ')').css('width', '100px');
+            $('#table_div').find('.google-visualization-table-th:contains(' + language.media_answer + ')').css('width', '100px');
+            $('#table_div').find('.google-visualization-table-th:contains(' + language.mediaBtn_answer + ')').css('width', '100px');
+            $('#table_div').find('.google-visualization-table-th:contains(' + language.message_type + ')').css('width', '80px');
 
             if (data.list.length === 0) {
                 var tdHtml = '<tr class="google-visualization-table-tr-even google-visualization-table-tr-odd"> ' 
                             + '<td class="google-visualization-table-td" colspan="13" style="padding: 10% 42%;"><div style="width:150px;">' + language.noData + '</div></td></tr>'
                 $('#table_div').find('tbody').append(tdHtml);
                 }
-               
+            /* 
             google.visualization.events.addListener(table, 'select', selectHandler);
                 function selectHandler() {
                     var selection = table.getSelection();
@@ -815,6 +830,7 @@ function drawFirstQueryTable() {
                     }
                     filterSearch(5);
               }
+            */
         }
     })
   }
