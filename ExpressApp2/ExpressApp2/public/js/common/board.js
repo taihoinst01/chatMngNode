@@ -17,8 +17,15 @@ var language;
             google.charts.load('current', {packages: ['corechart', 'bar']});
 
 
+            //google.charts.setOnLoadCallback(drawStatusOverview);
+            google.charts.setOnLoadCallback(drawStatusOverview);
+            //google.charts.setOnLoadCallback(getScorePanel);
             
-            
+            //google.charts.setOnLoadCallback(getOftQuestion);
+            google.charts.setOnLoadCallback(getOftQuestion);
+            //google.charts.setOnLoadCallback(getQueryByEachTime);
+            //google.charts.setOnLoadCallback(drawNoneQuerylist);
+			
             //google.charts.setOnLoadCallback(getResponseScores);
             google.charts.setOnLoadCallback(getResponseScores);
             //google.charts.setOnLoadCallback(drawFirstQueryTable);
@@ -781,7 +788,7 @@ function drawFirstQueryTable() {
                 */
             }
             
-            
+
             var table = new google.visualization.Table(document.getElementById('table_div'));
             table.draw(inputData, 
                        { 
