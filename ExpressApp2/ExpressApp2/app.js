@@ -100,8 +100,10 @@ app.use(function(req, res, next) {
         res.locals.subKey = null;
     }
 
-    if (!res.locals.languageNow) {
-        res.locals.languageNow = req.cookies.i18n;
+    if (!res.locals.languageNow ) {
+        if (typeof req.cookies.i18n !='undefined') {
+            res.locals.languageNow = req.cookies.i18n;
+        }
     }
 
     if (!res.locals.en) {
