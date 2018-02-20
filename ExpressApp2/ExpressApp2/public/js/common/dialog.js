@@ -16,7 +16,17 @@ var language;
     });
 })(jQuery);
 
+var rememberSelBoxHtml = '';
+
 $(document).ready(function(){
+
+    //검색 enter
+    $('#iptDialog').keyup(function(e){
+        if(e.keyCode == 13) {
+            searchIptDlg(1);
+        }
+    });
+
 
     //그룹박스
     $('.selectbox .selected').click(function(e){
@@ -37,6 +47,7 @@ $(document).ready(function(){
         groupType = $('.selected').text();
         sourceType = $('#tblSourceType').val();
         $('#currentPage').val(1);
+        rememberSelBoxHtml = $('#selBoxBody').html();
         dialogsAjax(groupType, sourceType);
     });
 
@@ -1051,6 +1062,11 @@ function dialogsAjax(groupType, sourceType){
             $('#dialogTbltbody').append(item);
 
             $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+
+            if (rememberSelBoxHtml !== '') {
+                $('#selBoxBody').html(rememberSelBoxHtml);
+            }
+
         }
     });
 }

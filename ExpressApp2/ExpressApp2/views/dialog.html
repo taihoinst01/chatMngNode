@@ -85,7 +85,7 @@
                                         <div class="selectbox selectArea">
                                             <div class="selected selectArea">View all</div>
                                             <i class="selectarrow selectArea">&nbsp;</i>
-                                            <div class="selectOptionsbox selectArea">                                                   
+                                            <div id="selBoxBody" class="selectOptionsbox selectArea">                                                   
                                             </div>
                                         </div>
                                     </div>
@@ -355,6 +355,7 @@
         
         <div class="modal-body" style="float:left; width:100%;">
             <h3><%= __('CARD_LIST') %></h3>
+            <a href="#" id="selectDlgClose" class="js-modal-close close" onclick="return false;">×</a>
         </div>
         <div class="clear-both"></div>
         <div style="border: 1px solid #858483 !important; height : 400px; margin:15px 0 0 0;">        
