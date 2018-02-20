@@ -920,10 +920,10 @@ function getResponseScores() {
               var options = {
                 //title: 'Population of Largest U.S. Cities',
                 chartArea: {
-                    left: "18%",
+                    left: "24%",
                     //top: "13%",
                     height: "85%",
-                    width: "65%"
+                    width: "62%"
                 }
                 /*
                 hAxis: {
