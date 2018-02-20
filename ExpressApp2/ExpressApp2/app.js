@@ -103,6 +103,8 @@ app.use(function(req, res, next) {
     if (!res.locals.languageNow ) {
         if (typeof req.cookies.i18n !='undefined') {
             res.locals.languageNow = req.cookies.i18n;
+        } else {
+            res.locals.languageNow = i18n.getLocale(req);
         }
     }
 
