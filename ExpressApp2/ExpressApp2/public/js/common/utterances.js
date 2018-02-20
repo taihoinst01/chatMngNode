@@ -74,69 +74,125 @@ $(document).on('click', '#utterDelete', function() {
 });
 
 function pagingFnc() {
-    var rowPerPage = $('[name="dlgRowPerPage"]').val() * 1;// 1 을  곱하여 문자열을 숫자형로 변환
+         var rowPerPage = $('[name="dlgRowPerPage"]').val() * 1;// 1 을  곱하여 문자열을 숫자형로 변환
     
    //		console.log(typeof rowPerPage);
    
-       var zeroWarning = 'Sorry, but we cat\'t display "0" rows page. + \nPlease try again.'
-       if (!rowPerPage) {
-           alert(zeroWarning);
-           return;
-       }
-       $('#nav').remove();
-       var $products = $('#entityUtteranceTextTable');
+        var zeroWarning = 'Sorry, but we cat\'t display "0" rows page. + \nPlease try again.'
+        if (!rowPerPage) {
+            alert(zeroWarning);
+            return;
+        }
+        $('#nav').remove();
+        var $products = $('#entityUtteranceTextTable');
    
-       $products.after('<div id="nav" style="text-align:center">');
+        $products.after('<div id="nav" style="text-align:center">');
    
    
-       var $tr = $($products).children('tbody').children('tr');
-       var rowTotals = $tr.length;
+        var $tr = $($products).children('tbody').children('tr');
+        var rowTotals = $tr.length;
    //	console.log(rowTotals);
    
-       var pageTotal = Math.ceil(rowTotals/ rowPerPage);
-       var i = 0;
+        var pageTotal = Math.ceil(rowTotals/ rowPerPage);
+        var i = 0;
    
-       for (; i < pageTotal; i++) {
+        for (; i < pageTotal; i++) {
            $('<a href="#"></a>')
                    .attr('rel', i)
                    .html(i + 1)
                    .appendTo('#nav');
-       }
+        }
    
-       $tr.addClass('off-screen')
+        $tr.addClass('off-screen')
                .slice(0, rowPerPage)
                .removeClass('off-screen');
    
-       var $pagingLink = $('#nav a');
-       $pagingLink.on('click', function (evt) {
-           evt.preventDefault();
-           var $this = $(this);
-           if ($this.hasClass('active')) {
-               return;
-           }
-           $pagingLink.removeClass('active');
-           $this.addClass('active');
-   
+        var $pagingLink = $('#nav a');
+        $pagingLink.on('click', function (evt) {
+            evt.preventDefault();
+            var $this = $(this);
+            if ($this.hasClass('active')) {
+                return;
+            }
+            $pagingLink.removeClass('active');
+            $this.addClass('active');
            // 0 => 0(0*4), 4(0*4+4)
            // 1 => 4(1*4), 8(1*4+4)
            // 2 => 8(2*4), 12(2*4+4)
            // 시작 행 = 페이지 번호 * 페이지당 행수
            // 끝 행 = 시작 행 + 페이지당 행수
    
-           var currPage = $this.attr('rel');
-           var startItem = currPage * rowPerPage;
-           var endItem = startItem + rowPerPage;
+            var currPage = $this.attr('rel');
+            var startItem = currPage * rowPerPage;
+            var endItem = startItem + rowPerPage;
    
-           $tr.css('opacity', '0.0')
-                   .addClass('off-screen')
-                   .slice(startItem, endItem)
-                   .removeClass('off-screen')
-                   .animate({opacity: 1}, 300);
+            $tr.css('opacity', '0.0')
+                    .addClass('off-screen')
+                    .slice(startItem, endItem)
+                    .removeClass('off-screen')
+                    .animate({opacity: 1}, 300);
+            pagingSkip();
    
        });
-   
        $pagingLink.filter(':first').addClass('active');
+       pagingSkip();
+       
 }
+
+function pagingSkip() {
+
+    $('#preBtn').remove();
+    $('#nextBtn').remove();
+    $('#firstBtn').remove();
+    $('#lastBtn').remove();
+    $('#nav').children('a').show();
+
+    var activeIndex = $('#nav').children('a').index($('.active'));
+    if (activeIndex-4 > 0) {
+        $('#nav').children('a')
+                .slice(0, activeIndex-4)
+                .hide();
+        $('<a href="#"></a>')
+                .attr('id', "firstBtn")
+                .html("[1]")
+                .prependTo('#nav');
+        $('<a href="#"></a>')
+                .attr('id', "preBtn")
+                .html("[<]")
+                .prependTo('#nav');
+        
+    }
+    if (activeIndex+5 < $('#nav').children('a').length) {
+        var rightLen = $('#nav').children('a').length;
+        if ( $('#preBtn').length > 0) { 
+            activeIndex += 2;
+        }
+        $('#nav').children('a')
+                .slice(activeIndex+5, rightLen)
+                .hide();
+        $('<a href="#"></a>')
+                .attr('id', "lastBtn")
+                .html('[' + $('#nav').children('a').eq($('#nav').children('a').length-1).html() + ']')
+                .appendTo('#nav');
+        $('<a href="#"></a>')
+                .attr('id', "nextBtn")
+                .html("[>]")
+                .appendTo('#nav');
+    }
+}
+
+$(document).on('click', '#preBtn', function() {
+    $('.active').prev().trigger('click');
+});
+$(document).on('click', '#nextBtn', function() {
+    $('.active').next().trigger('click');
+});
+$(document).on('click', '#firstBtn', function() {
+    $('#nav').children('a').eq(2).trigger('click');
+});
+$(document).on('click', '#lastBtn', function() {
+    $('#nav').children('a').eq($('#nav').children('a').length-3).trigger('click');
+});
 
 $(document).ready(function(){
 
@@ -1276,13 +1332,6 @@ var $carouselForm;
 var $mediaForm;
 function openModalBox(target){
 
-    /*
-    if ($('div[checked=checked]').length !== 1) {
-        alert('Utterance를 1개 선택해야 합니다.');
-        return;
-    }
-    */
-
     //carousel clone 초기값 저장
     $insertForm = $('#commonLayout .insertForm').eq(0).clone();
     $dlgForm = $('#commonLayout #textLayout').eq(0).clone();
@@ -1305,14 +1354,17 @@ function openModalBox(target){
     $(target).css({'left':left,'top':top, 'position':'absolute'});
 
     // 레이어 팝업을 띄웁니다.
-    $(target).show();
-    $('#dialogPreview').css({'height':$('#dialogSet').height()});
+    setTimeout(function() {
+        $(target).fadeIn( );
+        $('#dialogPreview').css({'height':$('#dialogSet').height()});
+      }, 250);
+    
 
     $('html').css({'overflow': 'hidden', 'height': '100%'});
         $('#element').on('scroll touchmove mousewheel', function(event) { // 터치무브와 마우스휠 스크롤 방지
             event.preventDefault();
             event.stopPropagation();
-            return false;
+            //return false;
     });
     wrapWindowByMask();
 
@@ -1322,9 +1374,10 @@ function openModalBox(target){
     }
 
     if(target == "#search_dlg") {
-        
         selectGroup('searchLargeGroup');
     }
+
+    
 }
 
 function wrapWindowByMask(){ //화면의 높이와 너비를 구한다. 
@@ -1675,17 +1728,21 @@ function openModalEntity(target){
     $(target).css({'left':left,'top':top, 'position':'absolute'});
 
     // 레이어 팝업을 띄웁니다.
-    $(target).show();
+    setTimeout(function() {
+        $(target).fadeIn( );
+        $('#dialogPreview').css({'height':$('#dialogSet').height()});
+      }, 250);
 
-    $('#dialogPreview').css({'height':$('#dialogSet').height()});
 
     $('html').css({'overflow': 'hidden', 'height': '100%'});
     $('#element').on('scroll touchmove mousewheel', function(event) { // 터치무브와 마우스휠 스크롤 방지
         event.preventDefault();
         event.stopPropagation();
-        return false;
+        //return false;
     });
     wrapWindowByMask();
+
+    
 }
 
 //엔티티 추가

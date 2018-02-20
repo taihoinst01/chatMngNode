@@ -20,12 +20,15 @@
     <link rel="stylesheet" type="text/css" href="/css/paging.css" />
     <link rel="stylesheet" type="text/css" href="/css/dialog.css" />
     <link rel='stylesheet' href='/css/botchat.css' />
-    <!--    
+    
     <style type="text/css">
-        .appLayout { position:absolute; display:none; background-color:#ffffff; border:solid 2px gray; width:150px; height:120px; padding:10px; } 
+        .dlgCardMordal a:link, .dlgCardMordal a:visited, .dlgCardMordal a:hover, .dlgCardMordal a:active, .dlgCardMordal a:focus { 
+            font-weight: bold !important;
+            color: #6d6161 !important;
+        } 
 
     </style>
-    -->
+    
 
     
 	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> test-->
@@ -111,7 +114,7 @@
         <hr>
     <!--신규 다이얼로그 등록 -->
     <div id="create_dlg" class="modal_box w900" style="height: auto !important">
-            <header> <a href="#" id="addDialogClose" class="js-modal-close close">×</a>
+            <header> <a href="#" id="addDialogClose" class="js-modal-close close" onclick="return false;">×</a>
               <h3>Creat new Dialogue Set</h3><!-- 신규 다이얼로그 등록 -->
             </header>
         
@@ -341,11 +344,36 @@
             <!-- form end -->
         
             <footer>
-              <a href="#" class="btn" id="btnAddDlg" onclick="createDialog();"><%= __('CREAT') %></a>
-              <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel"><%= __('CANCEL') %></a>
+              <a href="#" class="btn" id="btnAddDlg" onclick="createDialog();return false;"><%= __('CREAT') %></a>
+              <a href="#" class="btn b02  btn-small js-modal-close" id="addDialogCancel" onclick="return false;"><%= __('CANCEL') %></a>
             </footer>
         
         </div>
+
+    <!-- dlg클릭 다이얼로그 -->
+    <div id="dialogShowMordal" class="modal_box w900" style="width: max-content !important; height: auto !important">
+        
+        <div class="modal-body" style="float:left; width:100%;">
+            <h3><%= __('CARD_LIST') %></h3>
+        </div>
+        <div class="clear-both"></div>
+        <div style="border: 1px solid #858483 !important; height : 400px; margin:15px 0 0 0;">        
+            <div class="Tbl_wrap" style="width: max-content !important; height: 100%; overflow: hidden; ">
+                <div id="dialogShow" style="width: max-content; height: 100%;">
+                    
+                </div>
+            </div>     
+        </div>
+        <div class="clear-both"></div>
+        <footer>
+            <a href="#" class="btn b02  btn-small js-modal-close" id="searchDialogCancel" onclick="return false;"><%= __('OK') %></a>
+        </footer>
+    </div>
+
+
+
+
+
         <!--//신규 다이얼로그 등록 -->    
 
     <div id="layoutBackground" ></div>

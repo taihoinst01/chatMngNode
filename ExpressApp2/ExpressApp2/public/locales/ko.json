@@ -150,6 +150,8 @@
 	"Add_dialog": "다이얼로그 추가",
 	"SELECT": "선택",
 	"Please enter ...": "Please enter ...",
-	"SEARCH": "검색"
+	"SEARCH": "검색",
+	"OK": "확인",
+	"CARD_LIST": "카드 상세"
 	
 }

@@ -363,14 +363,15 @@ router.post('/searchIptDlg', function (req, res) {
     (async () => {
         try {
                     
-            var dlg_desQueryString = "select tbp.* from " +
-                                     "(select ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC) AS NUM, " +
-                                     "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
-                                     "CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
-                                     "DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, GroupS " +
-                                     "from TBL_DLG a, TBL_DLG_RELATION_LUIS b where a.DLG_ID = b.DLG_ID ";
+            var dlg_desQueryString = "SELECT tbp.* FROM " +
+                                     "  (SELECT ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC) AS NUM, " +
+                                     "      a.DLG_ID AS DLG_ID, " +
+                                     "      COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
+                                     "      CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
+                                     "      DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, GroupS " +
+                                     "  FROM TBL_DLG a, TBL_DLG_RELATION_LUIS b where a.DLG_ID = b.DLG_ID ";
                   
-                dlg_desQueryString+= "and LUIS_ENTITIES like '%" + searchText + "%' ";
+                dlg_desQueryString+= "  and LUIS_ENTITIES like '%" + searchText + "%' ";
                 dlg_desQueryString += ") tbp WHERE PAGEIDX = @currentPage";
             let pool = await dbConnect.getConnection(sql);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(dlg_desQueryString);
@@ -385,7 +386,9 @@ router.post('/searchIptDlg', function (req, res) {
                 var luisentties = rows[i].LUIS_ENTITIES;
                 var luisentent = rows[i].LUIS_INTENT;
                 var smallGroup = rows[i].GroupS;
-
+                var dialogueId = rows[i].DLG_ID;
+                
+                item.DLG_ID = dialogueId;
                 item.DLG_DESCRIPTION = description;
                 item.DLG_API_DEFINE = apidefine;
                 item.LUIS_ENTITIES = luisentties;
@@ -441,10 +444,11 @@ router.post('/dialogs2', function (req, res) {
                     
             var dlg_desQueryString = "select tbp.* from " +
                                      "(select ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC) AS NUM, " +
-                                     "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
-                                     "CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
-                                     "DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, GroupS " +
-                                     "from TBL_DLG a, TBL_DLG_RELATION_LUIS b where a.DLG_ID = b.DLG_ID ";
+                                     "  a.DLG_ID AS DLG_ID, " +
+                                     "  COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
+                                     "  CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
+                                     "  DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, GroupS " +
+                                     "  from TBL_DLG a, TBL_DLG_RELATION_LUIS b where a.DLG_ID = b.DLG_ID ";
                 
                 dlg_desQueryString += "and DLG_API_DEFINE like '%" + sourceType2 + "%' ";
                 
@@ -474,7 +478,9 @@ router.post('/dialogs2', function (req, res) {
                 var luisentties = rows[i].LUIS_ENTITIES;
                 var luisentent = rows[i].LUIS_INTENT;
                 var smallGroup = rows[i].GroupS;
-
+                var dialogueId = rows[i].DLG_ID;
+                
+                item.DLG_ID = dialogueId;
                 item.DLG_DESCRIPTION = description;
                 item.DLG_API_DEFINE = apidefine;
                 item.LUIS_ENTITIES = luisentties;
@@ -527,6 +533,7 @@ router.post('/dialogs', function (req, res) {
             var groupType = req.body.groupType;
             var dlg_desQueryString = "select tbp.* from " +
                                      "(select ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC) AS NUM, " +
+                                     "      a.DLG_ID AS DLG_ID, " +
                                      "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "  +
                                      "CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_ENTITIES DESC))/ convert(numeric ,10)) PAGEIDX, " +
                                      "DLG_DESCRIPTION, DLG_API_DEFINE ,LUIS_ENTITIES, GroupS " +
@@ -545,12 +552,15 @@ router.post('/dialogs', function (req, res) {
             for(var i = 0; i < rows.length; i++){
                 var item = {};
 
+                
                 var description = rows[i].DLG_DESCRIPTION;
                 var apidefine = rows[i].DLG_API_DEFINE;
                 var luisentties = rows[i].LUIS_ENTITIES;
                 var luisentent = rows[i].LUIS_INTENT;
                 var smallGroup = rows[i].GroupS;
+                var dialogueId = rows[i].DLG_ID;
 
+                item.DLG_ID = dialogueId;
                 item.DLG_DESCRIPTION = description;
                 item.DLG_API_DEFINE = apidefine;
                 item.LUIS_ENTITIES = luisentties;
@@ -1682,4 +1692,131 @@ router.post('/addDialog',function(req,res){
     })
 
 });
+
+
+
+
+router.post('/getDlgAjax', function (req, res) {
+
+    var entity = [];
+    var dlgID = req.body.dlgID;
+    var selectDlgType = "SELECT DLG_TYPE \n" +
+                        "  FROM TBL_DLG \n" +
+                        " WHERE DLG_ID=" + dlgID + " \n";
+
+    /*
+    var relationText = "SELECT RNUM, LUIS_ENTITIES, A.DLG_ID DLG_ID, B.DLG_TYPE, DLG_ORDER_NO \n";
+        relationText += "FROM (\n";
+        relationText += "SELECT RANK() OVER(ORDER BY LUIS_ENTITIES) AS RNUM, LUIS_ENTITIES, DLG_ID \n";
+        relationText += "FROM TBL_DLG_RELATION_LUIS \n";
+        relationText += "WHERE 1=1\n";
+        relationText += "AND  DLG_ID=" + dlgID + " \n";
+        relationText += "GROUP BY LUIS_ENTITIES, DLG_ID \n";
+        relationText += ") A LEFT OUTER JOIN TBL_DLG B\n";
+        relationText += "ON A.DLG_ID = B.DLG_ID \n";
+        relationText += "ORDER BY LUIS_ENTITIES, DLG_ORDER_NO";
+    */
+    var dlgText = "SELECT DLG_ID, CARD_TITLE, CARD_TEXT, USE_YN, '2' AS DLG_TYPE \n"
+                  + "FROM TBL_DLG_TEXT\n"
+                  + "WHERE 1=1 \n"
+                  + "AND USE_YN = 'Y'\n"
+                  + "AND DLG_ID = " + dlgID + " \n";
+                  + "ORDER BY DLG_ID";
+
+    var dlgCard = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, IMG_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n"
+                  + "BTN_2_TYPE, BTN_2_TITLE, BTN_2_CONTEXT,\n"
+                  + "BTN_3_TYPE, BTN_3_TITLE, BTN_3_CONTEXT,\n"
+                  + "BTN_4_TYPE, BTN_4_TITLE, BTN_4_CONTEXT,\n"
+                  + "CARD_ORDER_NO, CARD_VALUE,\n"
+                  + "USE_YN, '3' AS DLG_TYPE \n"
+                  + "FROM TBL_DLG_CARD\n"
+                  + "WHERE 1=1\n"
+                  + "AND USE_YN = 'Y'\n"
+                  + "AND DLG_ID = " + dlgID + " \n";
+                  + "ORDER BY DLG_ID";
+    
+    var dlgMedia = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, MEDIA_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n"
+                  + "BTN_2_TYPE, BTN_2_TITLE, BTN_2_CONTEXT,\n"
+                  + "BTN_3_TYPE, BTN_3_TITLE, BTN_3_CONTEXT,\n"
+                  + "BTN_4_TYPE, BTN_4_TITLE, BTN_4_CONTEXT,\n"
+                  + "CARD_VALUE,\n"
+                  + "USE_YN, '4' AS DLG_TYPE \n"
+                  + "FROM TBL_DLG_MEDIA\n"
+                  + "WHERE 1=1\n"
+                  + "AND USE_YN = 'Y'\n"
+                  + "AND DLG_ID = " + dlgID + " \n";
+                  + "ORDER BY DLG_ID";
+    
+
+    (async () => {
+        try {
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+
+            let dlgTextResult = await pool.request()
+                .query(dlgText);
+            let rowsText = dlgTextResult.recordset;
+
+            let dlgCardResult = await pool.request()
+                .query(dlgCard);
+            let rowsCard = dlgCardResult.recordset;
+
+            let dlgMediaResult = await pool.request()
+                .query(dlgMedia);
+            let rowsMedia = dlgMediaResult.recordset;
+            
+            let result1 = await pool.request()
+                .query(selectDlgType)
+            let rows = result1.recordset;
+            var result = [];
+            for(var i = 0; i < rows.length; i++){
+                var row = {};
+                row.DLG_TYPE = rows[i].DLG_TYPE;
+                row.DLG_ID = dlgID;
+                row.dlg = [];
+
+                let dlg_type = rows[i].DLG_TYPE;
+                if(dlg_type == 2){
+                    for(var j = 0; j < rowsText.length; j++){
+                        let textDlgId = rowsText[j].DLG_ID;
+                        if(row.DLG_ID == textDlgId){
+                            row.dlg.push(rowsText[j]);
+                        }
+                    }
+                }else if(dlg_type == 3){
+                    for(var j = 0; j < rowsCard.length; j++){
+                        var cardDlgId = rowsCard[j].DLG_ID;
+                        if(row.DLG_ID == cardDlgId){
+                            row.dlg.push(rowsCard[j]);
+                        }
+                    }
+                }else if(dlg_type == 4){
+                    for(var j = 0; j < rowsMedia.length; j++){
+                        var mediaDlgId = rowsMedia[j].DLG_ID;
+                        if(row.DLG_ID == mediaDlgId){
+                            row.dlg.push(rowsMedia[j]);
+                        }
+                    }
+                }
+                result.push(row);
+            }
+
+            res.send({list : result});
+        
+        } catch (err) {
+            console.log(err);
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        console.log(err);
+    })
+});
+
+
+
+
+
+
 module.exports = router;

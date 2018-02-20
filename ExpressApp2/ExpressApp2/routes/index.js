@@ -285,9 +285,9 @@ router.get('/index/lang', function (req, res) {
 
 router.post('/jsLang', function (req, res) {
 
-    if(req.cookies.i18n == "en") {
+    if(res.locals.languageNow == "en") {
         res.send({ lang: res.locals.en});
-    } else if (req.cookies.i18n == "ko") {
+    } else if (res.locals.languageNow == "ko") {
         res.send({lang: res.locals.ko});
     }
 });
