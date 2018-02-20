@@ -152,48 +152,65 @@ function pagingSkip() {
         $('#nav').children('a')
                 .slice(0, activeIndex-4)
                 .hide();
+
         $('<a href="#"></a>')
                 .attr('id', "firstBtn")
                 .html("[1]")
                 .prependTo('#nav');
+        /*
         $('<a href="#"></a>')
                 .attr('id', "preBtn")
                 .html("[<]")
                 .prependTo('#nav');
+        */
         
     }
-    if (activeIndex+5 < $('#nav').children('a').length) {
+    var activeRightIndex;
+    if ($('#firstBtn').length>0) {
+        activeRightIndex = activeIndex +6;
+    } else {
+        activeRightIndex = activeIndex +5;
+    }
+    if (activeRightIndex < $('#nav').children('a').length) {
         var rightLen = $('#nav').children('a').length;
         if ( $('#preBtn').length > 0) { 
-            activeIndex += 2;
+            activeRightIndex += 2;
         }
         $('#nav').children('a')
-                .slice(activeIndex+5, rightLen)
+                .slice(activeRightIndex, rightLen)
                 .hide();
         $('<a href="#"></a>')
                 .attr('id', "lastBtn")
                 .html('[' + $('#nav').children('a').eq($('#nav').children('a').length-1).html() + ']')
                 .appendTo('#nav');
+        /*
         $('<a href="#"></a>')
                 .attr('id', "nextBtn")
                 .html("[>]")
                 .appendTo('#nav');
+        */
     }
 }
-
+/*
 $(document).on('click', '#preBtn', function() {
     $('.active').prev().trigger('click');
+    return false;
 });
+*/
+/*
 $(document).on('click', '#nextBtn', function() {
     $('.active').next().trigger('click');
+    return false;
 });
+*/
 $(document).on('click', '#firstBtn', function() {
     $('#nav').children('a').eq(2).trigger('click');
+    return false;
 });
 $(document).on('click', '#lastBtn', function() {
     $('#nav').children('a').eq($('#nav').children('a').length-3).trigger('click');
+    return false;
 });
-
 $(document).ready(function(){
 
     //add eneity mordal save btn check
