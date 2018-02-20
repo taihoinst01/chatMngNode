@@ -197,7 +197,7 @@ router.post('/getOftQuestion', function (req, res) {
     var selChannel = req.body.selChannel;
 
     var selectQuery = "";
-    selectQuery += "SELECT TOP 100 PERCENT 한글질문 AS KORQ, 영어질문 AS ENGQ, 질문수 AS QNUM, 날짜 AS DATE, 채널 AS CHANNEL, RESULT, INTENT_SCORE, INTENT, ENTITIES, TEXT답변 AS TEXT, CARD답변 AS CARD, CARDBTN답변 AS CARDBTN, MEDIA답변 AS MEDIA, MEDIABTN답변 AS MEDIABTN\n";
+    selectQuery += "SELECT TOP 10 PERCENT 한글질문 AS KORQ, 영어질문 AS ENGQ, 질문수 AS QNUM, 날짜 AS DATE, 채널 AS CHANNEL, RESULT, INTENT_SCORE, INTENT, ENTITIES, TEXT답변 AS TEXT, CARD답변 AS CARD, CARDBTN답변 AS CARDBTN, MEDIA답변 AS MEDIA, MEDIABTN답변 AS MEDIABTN\n";
     selectQuery += "FROM\n";
     selectQuery += "(";
     selectQuery += "SELECT CUSTOMER_COMMENT_KR AS 한글질문\n";

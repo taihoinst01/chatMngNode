@@ -16,21 +16,21 @@ var language;
             google.charts.load('visualization', {'packages':['corechart', 'table']} );
             google.charts.load('current', {packages: ['corechart', 'bar']});
 
-
             //google.charts.setOnLoadCallback(drawStatusOverview);
             google.charts.setOnLoadCallback(drawStatusOverview);
             //google.charts.setOnLoadCallback(getScorePanel);
-            
+
             //google.charts.setOnLoadCallback(getOftQuestion);
             google.charts.setOnLoadCallback(getOftQuestion);
             //google.charts.setOnLoadCallback(getQueryByEachTime);
             //google.charts.setOnLoadCallback(drawNoneQuerylist);
-			
+
             //google.charts.setOnLoadCallback(getResponseScores);
             google.charts.setOnLoadCallback(getResponseScores);
             //google.charts.setOnLoadCallback(drawFirstQueryTable);
             //google.charts.setOnLoadCallback(drawStuff);
             google.charts.setOnLoadCallback(drawNoneQuerylist);
+
         }
     });
 })(jQuery);
@@ -479,11 +479,19 @@ function drawStatusOverview() {
                         resetStyling('score');
                     });
 
+                    var heightVal;
+                    if (tableList.length < 10) {
+                        heightVal = 'auto';
+                    } else {
+                        heightVal = '90%';
+                    }
+
+
                     //draw the table
                     StatusTable.draw(inputData, {
                         showRowNumber: false,
                         width: '100%',
-                        height: '90%'
+                        height: heightVal
                     });
               }
           }
@@ -550,12 +558,18 @@ function getOftQuestion() {
                 //reset the styling of the table
                 //resetStyling('score');
             });
+            var heightVal;
+            if (tableList.length < 10) {
+                heightVal = "100%"
+            } else {
+                heightVal = "330px"
+            }
 
             //draw the table
             StatusTable.draw(inputData, {
                 showRowNumber: false,
                 width: '100%',
-                height: '330px'
+                height: heightVal
             });
             
             if (tableList.length === 0) {
@@ -687,9 +701,22 @@ function drawStuff() {
         data: $('#filterForm').serializeObject(),
         success: function(data) {
             inputDataforBar = new google.visualization.DataTable();
-            inputDataforBar.addRows(data.list.length);
-            inputDataforBar.addColumn('string','INTENT');
-            inputDataforBar.addColumn('number','CNT');
+            if (data.list.length < 3) {
+                inputDataforBar.addRows(3);
+                inputDataforBar.addColumn('string','INTENT');
+                inputDataforBar.addColumn('number','CNT');
+                for (var i=data.list.length; i < 3; i++) {
+                    inputDataforBar.setCell(i, 0, ' ');
+                    inputDataforBar.setCell(i, 1, 0);
+                }
+            } else {
+                inputDataforBar.addRows(data.list.length);
+                inputDataforBar.addColumn('string','INTENT');
+                inputDataforBar.addColumn('number','CNT');
+            }
+            
+            //inputDataforBar.addRows(data.list.length);
+            
             //inputData.addColumn({type:'string', role: 'style' });
             //inputData.addColumn({type:'string', role: 'annotation' });
             if (data.list != null && data.list.length >0) {
@@ -699,10 +726,11 @@ function drawStuff() {
                     //inputData.setCell(i, 2, 'adsfdsfadsfads');
                 }
             }
+
             var options = {
             //title: language.Customer_First_Questions,
-            width: '90%',
-            height: '90%',
+            width: '85%',
+            height: '85%',
             legend: { position: 'none' },
             chart: { title: language.Customer_First_Questions },
             bars: 'horizontal', // Required for Material Bar Charts.
@@ -859,8 +887,8 @@ function getScorePanel() {
             $('#avgQueryCnt').html(scores.USER_QRY_AVG);
 
             var CORRECT_QRY = scores.CORRECT_QRY.toString();
-            $('#avgCorrectAnswer').html(  (CORRECT_QRY.length>4? CORRECT_QRY.substr(0,4) : CORRECT_QRY )+ '%'  );
-            $('#avgReply').html(scores.SEARCH_AVG);
+            $('#avgCorrectAnswer').html(  (CORRECT_QRY.length>4? CORRECT_QRY.substr(0,4) : CORRECT_QRY ) + '%'  );
+            $('#avgReply').html(scores.SEARCH_AVG + '%');
             $('#maxQueryCnt').html(scores.MAX_QRY);
         }
     })
@@ -876,7 +904,7 @@ function getResponseScores() {
         success: function(data) {
             
             var arrTmp = [];
-            var arr0 = ['NAME', 'second'];
+            var arr0 = ['NAME', 'ms'];
             var arr1 = [language.Average_response_rate, data.list[0].REPLY_AVG];
             var arr2 = [language.Maximum_response_rate, data.list[0].MAX_REPLY];
             var arr3 = [language.Minimum_response_rate, data.list[0].MIN_REPLY];
@@ -935,7 +963,7 @@ function getQueryByEachTime() {
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'Time of Day');
             //data.addColumn({type: 'string', role: 'annotation'});
-            data.addColumn('number', 'query hits');
+            data.addColumn('number', language.QuestionCount); //QuestionCount
             data.addColumn({type: 'number', role: 'annotation'});
             
             for (var i=0; i<arrList.length; i++) {
@@ -953,10 +981,10 @@ function getQueryByEachTime() {
                 width: "100%",
                 legend: { position: "none" },
                 chartArea: {
-                    left: "10%",
+                    left: "5%",
                     //top: "13%",
                     height: "85%",
-                    width: "85%"
+                    width: "95%"
                 }
             };
             var chart_div = document.getElementById('timeOfDay_div');
