@@ -11,7 +11,7 @@ var language;
             // sourceType 구분 역할
             var groupType =  $('.selected').text();
             var sourceType = $('#tblSourceType').val();
-            dialogsAjax(groupType, sourceType);
+            selectDlgByTxt(groupType, sourceType);
         }
     });
 })(jQuery);
@@ -23,7 +23,8 @@ $(document).ready(function(){
     //검색 enter
     $('#iptDialog').keyup(function(e){
         if(e.keyCode == 13) {
-            searchIptDlg(1);
+            //searchIptDlg(1);
+            selectDlgByTxt('selectDlgByTxt', 'search');
         }
     });
 
@@ -44,11 +45,24 @@ $(document).ready(function(){
     });
 
     $('#tblSourceType').change(function(){
+        
         groupType = $('.selected').text();
         sourceType = $('#tblSourceType').val();
         $('#currentPage').val(1);
         rememberSelBoxHtml = $('#selBoxBody').html();
-        dialogsAjax(groupType, sourceType);
+        selectDlgByTxt(groupType, sourceType);
+        
+        /*
+        var selTypeVal = $('#tblSourceType :selected').text();
+        $('#dialogTbltbody tr').show();
+        $('#dialogTbltbody tr').each(function () {
+            if ($(this).children().eq(0).text() === selTypeVal) {
+            } else {
+                $(this).hide();
+            }
+        });
+        */
+
     });
 
     /**모달 */
@@ -473,6 +487,7 @@ $(document).ready(function(){
 
 
 //검색어로 검색
+var saveSelectDivHtml;
 var searchIptText; //페이징시 필요한 검색어 담아두는 변수
 function searchIptDlg(page){
 
@@ -482,6 +497,10 @@ function searchIptDlg(page){
     }
 
     params = {
+        'sourceType2': sourceType2,
+        'searchGroupL': searchGroupL,
+        'searchGroupM': searchGroupM,
+        'searchGroupS': searchGroupS,
         'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
         'searchText': searchIptText
     };
@@ -511,6 +530,32 @@ function searchIptDlg(page){
 
                 searchIptText = params.searchText;
                 currentSearchNum = 0;
+
+                if(data.groupList.length > 0) {
+                    var item2 = '';
+                    var item3 = '';
+                    item2 = '<label for="all" class="allGroup selectArea">View all</label>';
+                    for(var i = 0; i <data.groupList.length; i++) {
+                        item2 += '<ul class="checkouter selectArea">' +
+                                '<li class="selectArea">' +
+                                '<div class="heading selectArea">' +
+                                '<label class="groupL selectArea" for="' + data.groupList[i].largeGroup + '">' + data.groupList[i].largeGroup + '</label>' +
+                                '<span class="checktoggle largeGroup selectArea"></span></div>' +
+                                '<ul class="checklist selectArea" id="' + data.groupList[i].largeGroup + '">' +
+                                '</ul>' +
+                                '</li>' +
+                                '</ul>';
+                        
+                        item3 += '<option>' + data.groupList[i].largeGroup + '</option>'
+                    }
+                    $('.selectOptionsbox').html("");
+                    $('.selectOptionsbox').append(item2);
+                    //$('#searchGroupL').append(item3);
+                    $('.checklist').hide();
+                    saveSelectDivHtml = item2;
+                } else {
+                    $('.selectOptionsbox').html("");
+                }
             } else {
                 item += '<tr style="height: 175px;">' +
                             '<td colspan="4">' + language.NO_DATA + '</td>' +
@@ -769,21 +814,39 @@ $(document).on('click', '#searchDlgBtn', function() {
     }
 
     $('#currentPage').val(1);
-    dialogsAjax2(group);
+    selectDlgByFilter(group);
 
 });
 
 var searchGroups; // 페이징을 위해서 검색 후 그룹들을 담아둘 변수
-function dialogsAjax2(group){
-  
+function selectDlgByFilter(group){
+    
+    sourceType2 = $('#sourceType2').val();
+    searchGroupL = $('#searchGroupL').val();
+    searchGroupM = $('#searchGroupM').val();
+    searchGroupS = $('#searchGroupS').val();
+    
     params = {
+        //'searchTxt':$('#iptDialog').val(),
         'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
         'searchGroupL': group.searchGroupL,
         'searchGroupM': group.searchGroupM,
         'searchGroupS': group.searchGroupS,
         'sourceType2': group.sourceType2
     };
-
+    if (searchText !== '') {
+        params.searchText = searchText;
+    }
+    if (searchGroupL !== '') {
+        params.upperGroupL = searchGroupL;
+    }
+    if (searchGroupM !== '') {
+        params.upperGroupM =searchGroupM;
+    }
+    if (searchGroupS !== '') {
+        params.upperGroupS = searchGroupS;
+    }
+    
     $.tiAjax({
         type: 'POST',
         url: '/learning/dialogs2',
@@ -808,6 +871,14 @@ function dialogsAjax2(group){
                 }
 
                 
+                
+                if (searchGroupL !== '') {
+                    if (!$('#selBoxBody').find('label[for=' + searchGroupL + ']').parent().hasClass('active')) {
+                        $('#selBoxBody').find('label[for=' + searchGroupL + ']').next().trigger('click');
+                    }
+                }
+                
+
             } else {
                 item += '<tr style="height: 175px;">' +
                             '<td colspan="4">' + language.NO_DATA + '</td>' +
@@ -831,7 +902,7 @@ $(document).on('click', '.allGroup', function(){
     $('#currentPage').val(1);
     $('.selected').text($(this).text());
     $('.selectOptionsbox').removeClass('active');
-    dialogsAjax(groupType, sourceType);
+    selectDlgByTxt(groupType, sourceType);
 }) 
 
 // 소그룹 클릭시 리스트 출력
@@ -849,7 +920,7 @@ $(document).on('click', '.smallGroup', function(){
 
 
     $('#currentPage').val(1);
-    dialogsAjax2(group);
+    selectDlgByFilter(group);
 });
 
 /** 대그룹 혹은 중그룹 클릭시 하위 그룹 검색  */
@@ -859,8 +930,10 @@ $(document).on('click', '.checktoggle', function (e) {
     if($(this).hasClass('largeGroup')){
 
         if($(this).parent().hasClass('active')) {
+
             $(this).parent().next().slideToggle(200);
             $(this).parent().toggleClass('active').toggleClass('bgcolor');
+            
         } else {
             if($(this).parent().next().children().size() == 0) {
                 searchGroup($(this).prev().text(), 'searchMedium');       
@@ -873,6 +946,17 @@ $(document).on('click', '.checktoggle', function (e) {
             $(this).prev().addClass('currentGroupL');
             $(this).parent().addClass('active').addClass('bgcolor');
             $(this).parent().next().slideDown(200);
+
+            if (searchGroupM !== '') {
+                if ($('#selBoxBody').find('label[for=' + searchGroupL + ']').parents('li')
+                                .find('label[for=' + searchGroupM + ']').parent().next().css('display') !== 'block' ) {
+                if (searchGroupM !== '') {
+                    $('#selBoxBody').find('label[for=' + searchGroupL + ']').parents('li')
+                                    .find('label[for=' + searchGroupM + ']').next().trigger('click');
+                }
+            }
+            }
+            
         }
     }
 
@@ -902,7 +986,7 @@ function searchGroup(groupName, group, type, groupL) {
     $.tiAjax({
         type: 'POST',
         url: '/learning/searchGroup',
-        data : {'groupName' : groupName, 'group' : group, 'groupL': groupL},
+        data : {'groupName' : groupName, 'group' : group, 'searchType' : type, 'groupL': groupL, 'searchTxt':$('#iptDialog').val()},
         isloading: true,
         success: function(data) {
             if(type == 1) {
@@ -912,22 +996,72 @@ function searchGroup(groupName, group, type, groupL) {
                     var item = '<option value="">' + language.Middle_group + '</option>';
 
                     for(var i = 0; i <data.groupList.length; i++) {
-
-                        item += '<option>' + data.groupList[i].mediumGroup + '</option>';
+                        if (searchGroupL !== '') {
+                            //if (groupName === searchGroupL) {
+                                item += '<option>' + data.groupList[i].mediumGroup + '</option>';
+                            //}
+                        } else {
+                            item += '<option>' + data.groupList[i].mediumGroup + '</option>';
+                        }
                     }
-
                     $('#searchGroupM').html('');
                     $('#searchGroupS').html('');
                     $('#searchGroupS').html('<option value="">' + language.Small_group + '</option>');
                     $('#searchGroupM').append(item);
+                    
+                    //$('#selBoxBody').find('label[for=' + groupName + ']').next().trigger('click');
+
+                    if(data.groupList.length > 0) {
+                        var item2 = '';
+        
+                        for(var i = 0; i <data.groupList.length; i++) {
+                            item2 += '<li class="selectArea">' +
+                                     '<div class="heading selectArea">' +
+                                     '<label class="selectArea groupM" for="' + data.groupList[i].mediumGroup + '">' + data.groupList[i].mediumGroup + '</label>' +
+                                     '<span class="checktoggle mediumGroup selectArea"></span></div>' +
+                                     '<ul class="checklist2 selectArea ' + data.groupList[i].mediumGroup + ' ' + groupName + '">' +
+                                     '</ul>' +
+                                     '</li>';
+                            
+                        }
+                    }
+                    $('#' + groupName).empty();
+                    $('#' + groupName).append(item2);
+                    $('.checklist2').hide();
+                    
+
                 } else if(group == 'searchSmall') {
                     var item = '<option value="">' + language.Small_group + '</option>';
 
                     for(var i = 0; i <data.groupList.length; i++) {
-                        item += '<option>' + data.groupList[i].smallGroup + '</option>';
+                        if (searchGroupM !== '') {
+                            //if (data.groupList[i].smallGroup === searchGroupM) {
+                                item += '<option>' + data.groupList[i].smallGroup + '</option>';
+                            //}
+                        } else {
+                            item += '<option>' + data.groupList[i].smallGroup + '</option>';
+                        }
                     }
+
                     $('#searchGroupS').html('');
                     $('#searchGroupS').append(item);
+
+                    //$('#selBoxBody').find('label[for=' + $('#searchGroupL').val() + ']').parents('li')
+                    //                .find('label[for=' + groupName + ']').next().trigger('click');
+
+                    if(data.groupList.length > 0) {
+                        var item2 = '';
+        
+                        for(var i = 0; i <data.groupList.length; i++) {
+
+                            item2 += '<li class="smallGroup">' +
+                                     '<label for="check2 groupS" class="menuName">' + data.groupList[i].smallGroup + '</label>' + 
+                                     '</li>';
+                        }
+                    }
+                    $('.' + groupName + '.' + groupL).empty();
+                    $('.' + groupName + '.' + groupL).append(item2);
+
 
                 }
             } else {
@@ -1000,12 +1134,25 @@ function searchMidGroup(groupName) {
     });
 }*/
 
-function dialogsAjax(groupType, sourceType){
-
+//dialog 페이지 첫 로딩때도 실행
+var sourceType2 = $('#sourceType2').val();
+var searchGroupL = '';
+var searchGroupM = '';
+var searchGroupS = '';
+var searchText = '';
+function selectDlgByTxt(groupType, sourceType){
+    if (sourceType === 'search') {
+        sourceType = $('#sourceType2').val();
+    }
     params = {
+        'sourceType2': sourceType2,
+        'searchGroupL': searchGroupL,
+        'searchGroupM': searchGroupM,
+        'searchGroupS': searchGroupS,
         'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
         'groupType':groupType,
-        'sourceType' : sourceType
+        'sourceType' : sourceType,
+        'searchTxt':$('#iptDialog').val()
     };
 
     $.tiAjax({
@@ -1014,6 +1161,7 @@ function dialogsAjax(groupType, sourceType){
         data : params,
         isloading: true,
         success: function(data) {
+            searchText = $('#iptDialog').val();
             $('#dialogTbltbody').html('');
             var item = '';
             if(data.list.length > 0){
@@ -1032,7 +1180,6 @@ function dialogsAjax(groupType, sourceType){
 
                 if(data.groupList.length > 0) {
                     var item2 = '';
-                    var item3 = '';
                     item2 = '<label for="all" class="allGroup selectArea">View all</label>';
                     for(var i = 0; i <data.groupList.length; i++) {
                         item2 += '<ul class="checkouter selectArea">' +
@@ -1044,13 +1191,11 @@ function dialogsAjax(groupType, sourceType){
                                 '</ul>' +
                                 '</li>' +
                                 '</ul>';
-                        
-                        item3 += '<option>' + data.groupList[i].largeGroup + '</option>'
                     }
                     $('.selectOptionsbox').html("");
                     $('.selectOptionsbox').append(item2);
-                    $('#searchGroupL').append(item3);
                     $('.checklist').hide();
+                    saveSelectDivHtml = item2;
                 }
             } else {
                 item += '<tr style="height: 175px;">' +
@@ -1082,18 +1227,18 @@ $(document).on('click','.li_paging',function(e){
             searchIptDlg(); 
         } else if(currentSearchNum == 1) {
 
-            dialogsAjax2(searchGroups);
+            selectDlgByFilter(searchGroups);
         } else if(currentSearchNum == 2) {
 
             var groupType =  $('.selected').text();
             var sourceType = $('#tblSourceType').val();
-            dialogsAjax(groupType, sourceType);
+            selectDlgByTxt(groupType, sourceType);
         }
         /*
         $('#currentPage').val($(e.target).val())
         var groupType =  $('.selected').text();
         var sourceType = $('#tblSourceType').val();
-        dialogsAjax(groupType, sourceType);
+        selectDlgByTxt(groupType, sourceType);
         */
     }
 });

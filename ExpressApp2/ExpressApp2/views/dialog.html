@@ -47,10 +47,10 @@
             </div>
 
             <div id="dialogDiv">
-                <div class="dialogLeft">     
+                <div class="dialogLeft">    
                     <div class="in-line">
                         <input name="iptDialog" id="iptDialog" type="text" class="inbox02" style="width:23%; margin: 3px;" placeholder="<%= __('Enter Connection utterance') %>" >
-                        <button class="btn disable" disabled="disabled" onclick="searchIptDlg(1);" style="margin-right: 3%;"><%= __('Search') %></button>
+                        <button class="btn disable" disabled="disabled" onclick="selectDlgByTxt('selectDlgByTxt', 'search');" style="margin-right: 3%;"><%= __('Search') %></button>
                         <select id="sourceType2" name="sourceType" style="width:12%;">
                             <option value="D" selected="selected">Common</option>
                             <option value="api quot">Api Quot</option>
@@ -58,6 +58,13 @@
                         </select>
                         <select id="searchGroupL" class="searchGroup" name="searchGroupL" style="width:12%;">
                             <option value=""><%= __('A big group') %></option>     
+                        <%
+                            for(var i=0; i<groupList.length; i++) {
+                        %>
+                            <option value="<%=groupList[i].GroupL%>"><%=groupList[i].GroupL%></option>             
+                        <%
+                            }
+                        %>
                         </select>
                         <select id="searchGroupM" class="searchGroup" name="searchGroupM" style="width:12%;">
                             <option value=""><%= __('Middle group') %></option>
@@ -75,8 +82,8 @@
                             <th class="txt_center" style="width: 15%">
                                 <select name="sourceType" id="tblSourceType">
                                     <option value="D" selected="selected">Common</option>
-                                    <option value="api quot">Api Quot</option>
-                                    <option value="api testdrive">Api Testdrive</option>
+                                    <option value="Api Quot">Api Quot</option>
+                                    <option value="Api Testdrive">Api Testdrive</option>
                                 </select>
                             </th>
                             <th class="txt_left" style="width: 25%">
