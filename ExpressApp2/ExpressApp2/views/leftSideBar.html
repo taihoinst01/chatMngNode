@@ -1,7 +1,8 @@
 <!-- Left Menu Side -->
+
 <aside class="main-sidebar">
     <section class="sidebar">
-                           <div class="sidebar-form">ChatBot <a href="#"  class="left_set"><span class="sr-only">관리자설정바로가기</span></a></div>
+                           <div class="sidebar-form">ChatBot <a href="/users/userMng"  class="left_set"><span class="sr-only">관리자설정바로가기</span></a></div>
                            <!-- chat bot list -->
                            <div class="sidebar-form se02">
                                           <div class="pull-left image img-circle color_01"> </div>
@@ -71,12 +72,12 @@
                                     </span>
                                   </a>
                                   <ul class="treeview-menu" >
-                                    <li class="active"><a href="#"><i class="fa  fa-circle-o"></i>	</a></li>
-                                    <li><a href="#"><i class="fa fa-circle-o"></i> 발언설정</a></li>
-                                    <li><a href="#"><i class="fa fa-circle-o"></i> 대화상자설정</a></li>
-                                    <li><a href="#"><i class="fa fa-circle-o"></i> 단어설정</a></li>
-                                    <li><a href="#" class="spmenu">학습 진행</a></li>
-                                    <li><a href="#" class="spmenu">시뮬레이션</a></li>
+                                    <li class="active"><a href="/learning/recommend"><i class="fa  fa-circle-o"></i>학습추천</a></li>
+                                    <li><a href="/learning/utterances"><i class="fa fa-circle-o"></i> 발언설정</a></li>
+                                    <li><a href="/learning/dialog"><i class="fa fa-circle-o"></i> 대화상자설정</a></li>
+                                    <li><a href="/learning/entities"><i class="fa fa-circle-o"></i> 단어설정</a></li>
+                                    <li><a href="#" class="spmenu" data-toggle="modal" data-target="#myModal">학습 진행</a></li>
+                                    <li class="active"><a href="#" class="spmenu"  data-toggle="control-sidebar" >시뮬레이션</a></li>
                                   </ul>
                                 </li>
                                 
@@ -96,7 +97,48 @@
   </aside>
   <!--// Left Menu Side -->
 
+
+
+
+ <!--  Footer -->
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+                <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">학습 진행</h4>
+                        </div>
+                        <div class="modal-body"><p class="txt_center mt20">챗봇 학습이 완료 되었습니다.</p></div>
+                        <div class="modal-footer">
+                            <div class="btn_wrap">
+                                            <button type="button" class="btn btn-default"  data-dismiss="modal">확인</button>
+                            </div>
+                        </div>
+                </div>
+    </div>
+</div>
+      
+<!-- Control Sidebar -->
+<aside class="control-sidebar control-sidebar-dark">
+        <div  class="hd_top " >
+            <h4>챗봇 시뮬레이션</h4>
+            <div class="btn_wrap04">
+                <button  type="button" class="btn btn_02"><span class="fa fa-rotate-right  "></span></button>
+                <button  type="button" class="btn btn_02"  data-toggle="control-sidebar" ><span class="fa fa-close"></span></button>
+            </div>
+        </div>
+        <div class="chat_con">
+        챗봇 넣기
+        <!-- 챗팅창-->
+        </div>
+</aside>
+<!-- /.control-sidebar -->
+
+<div class="control-sidebar-bg"></div>
+
+
   <script>
+    /*
     $(window).load(function () {
         $('.settingBtn').each(function () {
             if ( $(this).text() === $('#selLeftMenu').val()) {
@@ -106,6 +148,16 @@
             }
         });
     });
-
-  
+    */
+    $(document).ready(function(){
+        $('.more').click(function(){
+            if($('.more').hasClass('more')){
+                $('.more').addClass('close').removeClass('more');
+                $('.board').css('visibility', 'visible');
+            }else if($('.close').hasClass('close')){
+                $('.close').addClass('more').removeClass('close');  
+                $('.board').css('visibility', 'hidden');
+            }
+        });
+    });
   </script>
