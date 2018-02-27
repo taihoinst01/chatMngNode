@@ -14,17 +14,17 @@
                                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=appName %><span></span></a>
                                                 <%
                                                     } else {
-                                                        if(leftList.length > 0) {
+                                                        if(leftList) {
                                                 %>
                                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=leftList[0].APP_NAME %><span></span></a>
                                                 <%
-                                                    } 
-                                                        }
+                                                        } 
+                                                    }
                                                 %>
 
                                                 <ul class="dropdown-menu">
                                                     <%
-                                                        if(leftList.length > 0) {
+                                                        if(leftList) {
                                                     %>
                         
                                                         <%

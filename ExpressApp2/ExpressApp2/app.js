@@ -82,10 +82,10 @@ app.use(function(req, res, next) {
 });
 app.use(function(req, res, next) {
     
-    if (!req.session.appList)  {
-        res.locals.appList = req.session.appList;
+    if (!req.session.leftList)  {
+        res.locals.leftList = req.session.leftList;
     } else { 
-        res.locals.appList = null;
+        res.locals.leftList = null;
     }
 
     if (!req.session.appName)  {

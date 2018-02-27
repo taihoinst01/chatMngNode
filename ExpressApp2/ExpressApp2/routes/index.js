@@ -150,7 +150,7 @@ router.get('/list', function (req, res) {
         return pool.request().query(userListStr)
         }).then(result => {
             let rows = result.recordset
-            req.session.appList = rows;
+            req.session.leftList = rows;
 
             res.render('appList_new',
             {
@@ -158,7 +158,7 @@ router.get('/list', function (req, res) {
                 appName: req.session.appName,
                 selMenu: req.session.selMenu,
                 list: rows,
-                leftList: req.session.appList
+                leftList: req.session.leftList
             });
             sql.close();
         }).catch(err => {

@@ -50,7 +50,7 @@ router.post('/login', function (req, res) {
                     req.session.sid = req.body.mLoginId;
                     req.session.save(function(){
                         res.redirect("/");
-                     });
+                    });
                 } else {
                     res.send('<script>alert("비밀번호가 일치하지 않습니다.");location.href="/";</script>');
                 }
