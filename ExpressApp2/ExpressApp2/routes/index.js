@@ -65,8 +65,7 @@ router.get('/', function (req, res) {
                                 });
                             }
 
-                            //res.redirect("/list");
-                            res.redirect("/appList_new");
+                            res.redirect("/list");
                             
                           sql.close();
                         }).catch(err => {
@@ -152,7 +151,7 @@ router.get('/list', function (req, res) {
         }).then(result => {
             let rows = result.recordset
             
-            res.render('index',
+            res.render('appList_new',
             {
                 title: 'Express',
                 selMenu: req.session.selMenu,
