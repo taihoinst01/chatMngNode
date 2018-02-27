@@ -1,0 +1,111 @@
+<!-- Left Menu Side -->
+<aside class="main-sidebar">
+    <section class="sidebar">
+                           <div class="sidebar-form">ChatBot <a href="#"  class="left_set"><span class="sr-only">관리자설정바로가기</span></a></div>
+                           <!-- chat bot list -->
+                           <div class="sidebar-form se02">
+                                          <div class="pull-left image img-circle color_01"> </div>
+                                          <ul class="dropdown">
+                                              <li class="dropdown tasks-menu" >
+
+                                                <%
+                                                    if(appName) {
+                                                %>
+                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=appName %><span></span></a>
+                                                <%
+                                                    } else {
+                                                        if(leftList.length > 0) {
+                                                %>
+                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=leftList[0].APP_NAME %><span></span></a>
+                                                <%
+                                                    } 
+                                                        }
+                                                %>
+
+                                                <ul class="dropdown-menu">
+                                                    <%
+                                                        if(leftList.length > 0) {
+                                                    %>
+                        
+                                                        <%
+                                                            for(var i=0; i<leftList.length; i++) {
+                                                        %>
+                                                             <!--row -->
+                                                             <a href="/board?appName=<%= leftList[i].APP_NAME %>&appId=<%= leftList[i].APP_ID %>" class="circle_col"><li><span class="pull-left image img-circle_s color_0<%=((i%15)+1)%>"> </span><span class="tex01"><%= leftList[i].APP_NAME %></span> </li></a>
+                                                        <%
+                                                            }   
+                                                        %>
+                        
+                        
+                                                    <%
+                                                        } else {
+                                                    %>
+                                    
+                        
+                                                    <%
+                                                        }
+                                                    %>
+                                                  
+                                                  <li class="tline"></li>
+                                                  <a href="#" class="fa fa-plus" id="btn_crte_botCrte" onclick="openModalBox('#new_chatbot')"></a>>  Add ChatBot</a>
+                                                  <a href="/list" class="fa fa-list"> ChatBot List</a>
+                                                </ul>
+                                              </li>
+                                          </ul>
+                          </div> 
+                          <!-- //chat bot list -->  
+
+
+                        <%
+                            if(appName) {
+                        %>
+
+                         <!--left Menu-->
+                          <ul class="sidebar-menu" data-widget="tree">
+                                <li class="header">Menu</li>
+                                <li class=" treeview"><!--<li class="active treeview">-->  
+                                  <a href="#">
+                                    <i class="fa fa-desktop"></i> <span>챗봇학습</span>
+                                    <span class="pull-right-container">
+                                      <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                  </a>
+                                  <ul class="treeview-menu" >
+                                    <li class="active"><a href="#"><i class="fa  fa-circle-o"></i>	</a></li>
+                                    <li><a href="#"><i class="fa fa-circle-o"></i> 발언설정</a></li>
+                                    <li><a href="#"><i class="fa fa-circle-o"></i> 대화상자설정</a></li>
+                                    <li><a href="#"><i class="fa fa-circle-o"></i> 단어설정</a></li>
+                                    <li><a href="#" class="spmenu">학습 진행</a></li>
+                                    <li><a href="#" class="spmenu">시뮬레이션</a></li>
+                                  </ul>
+                                </li>
+                                
+                                <li class="treeview"> 
+                                  <a href="/board">
+                                    <i class="fa fa-dashboard"></i> <span>대시보드</span>
+                                    <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i> </span>
+                                  </a>
+                                </li>
+                          </ul>
+                          <!--// left Menu-->
+                        <%
+                            }
+                        %>
+                          
+    </section>
+  </aside>
+  <!--// Left Menu Side -->
+
+  <script>
+    $(window).load(function () {
+        $('.settingBtn').each(function () {
+            if ( $(this).text() === $('#selLeftMenu').val()) {
+                $(this).addClass('now');
+            } else {
+                $(this).removeClass('now');
+            }
+        });
+    });
+
+  
+  </script>

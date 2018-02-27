@@ -15,6 +15,7 @@ router.get('/', function (req, res) {
     req.session.menu = 'm2';
     if (typeof req.query.appName !== 'undefined') {
         req.session.appName = req.query.appName;
+
         req.session.appId = req.query.appId;
         req.session.subKey = luisConfig.subKey;
     }

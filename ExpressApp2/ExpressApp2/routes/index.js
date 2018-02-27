@@ -150,12 +150,15 @@ router.get('/list', function (req, res) {
         return pool.request().query(userListStr)
         }).then(result => {
             let rows = result.recordset
-            
+            req.session.appList = rows;
+
             res.render('appList_new',
             {
                 title: 'Express',
+                appName: req.session.appName,
                 selMenu: req.session.selMenu,
-                list: rows
+                list: rows,
+                leftList: req.session.appList
             });
             sql.close();
         }).catch(err => {

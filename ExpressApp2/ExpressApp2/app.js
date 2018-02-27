@@ -81,6 +81,12 @@ app.use(function(req, res, next) {
     next();
 });
 app.use(function(req, res, next) {
+    
+    if (!req.session.appList)  {
+        res.locals.appList = req.session.appList;
+    } else { 
+        res.locals.appList = null;
+    }
 
     if (!req.session.appName)  {
         res.locals.appName = req.session.appName;
