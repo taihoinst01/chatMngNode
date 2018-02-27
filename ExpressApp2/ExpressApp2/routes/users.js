@@ -79,7 +79,7 @@ router.get('/userMng', function (req, res) {
     } else if (req.cookies.i18n == "ko") {
         res.locals.selLeftMenu = res.locals.ko['USER_MNG'];
     }
-    res.render('userMng');
+    res.render('userMng_new');
 });
 
 router.post('/selectUserList', function (req, res) {
@@ -94,47 +94,46 @@ router.post('/selectUserList', function (req, res) {
     (async () => {
         try {
          
-            var QueryStr =  "SELECT TBZ.* ,(TOT_CNT - SEQ + 1) AS NO " +
-                            "  FROM (SELECT TBY.* " +
-                            "          FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX." + sortIdx + ") AS SEQ, " +
-                            "                       COUNT('1') OVER(PARTITION BY '1') AS TOT_CNT, " +
-                            "                       CEILING(ROW_NUMBER() OVER(ORDER BY TBX." + sortIdx + ") / CONVERT( NUMERIC, " + pageSize + " ) ) PAGEIDX, " +
-                            "                       TBX.*" +
-                            "                  FROM ( " +
-                            "                         SELECT " +
-                            "                              A.EMP_NUM      AS EMP_NUM " +
-                            "                            , A.USER_ID      AS USER_ID_HIDDEN " +
-                            "                            , A.USER_ID      AS USER_ID " +
-                            "                            , A.SCRT_NUM     AS SCRT_NUM " +
-                            "                            , A.EMP_NM       AS EMP_NM " +
-                            "                            , A.EMP_ENGNM    AS EMP_ENGNM " +
-                            "                            , A.EMAIL        AS EMAIL " +
-                            "                            , A.M_P_NUM_1    AS M_P_NUM_1 " +
-                            "                            , A.M_P_NUM_2    AS M_P_NUM_2 " +
-                            "                            , A.M_P_NUM_3    AS M_P_NUM_3 " +
-                            "                            , A.USE_YN       AS USE_YN " +
-                            "                            , CONVERT(NVARCHAR(10), A.REG_DT, 120) AS REG_DT " +
-                            "                            , A.REG_ID       AS REG_ID " +
-                            "                            , CONVERT(NVARCHAR(10), A.MOD_DT, 120) AS MOD_DT " +
-                            "                            , A.MOD_ID       AS MOD_ID " +
-                            "                            , A.LOGIN_FAIL_CNT      AS LOGIN_FAIL_CNT " +
-                            "                            , CONVERT(NVARCHAR, A.LAST_LOGIN_DT, 120)  AS LAST_LOGIN_DT " +
-                            "                            , CONVERT(NVARCHAR, A.LOGIN_FAIL_DT, 120)  AS LOGIN_FAIL_DT " +
-                            "                         FROM TB_USER_M A " +
-                            "                         WHERE 1 = 1 " +
-                            "					      AND A.USE_YN = 'Y' "; 
+            var QueryStr =  "SELECT TBZ.* ,(TOT_CNT - SEQ + 1) AS NO \n" +
+                            "  FROM (SELECT TBY.* \n" +
+                            "          FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX." + sortIdx + ") AS SEQ, \n" +
+                            "                       COUNT('1') OVER(PARTITION BY '1') AS TOT_CNT, \n" +
+                            "                       CEILING(ROW_NUMBER() OVER(ORDER BY TBX." + sortIdx + ") / CONVERT( NUMERIC, " + pageSize + " ) ) PAGEIDX, \n" +
+                            "                       TBX.* \n" +
+                            "                  FROM ( \n" +
+                            "                         SELECT \n" +
+                            "                              A.EMP_NUM      AS EMP_NUM \n" +
+                            "                            , ISNULL(A.USER_ID, ' ')      AS USER_ID \n" +
+                            //"                            , ISNULL(A.SCRT_NUM, ' ')     AS SCRT_NUM " +
+                            "                            , ISNULL(A.EMP_NM, ' ')       AS EMP_NM \n" +
+                            "                            , ISNULL(A.EMP_ENGNM, ' ')    AS EMP_ENGNM \n" +
+                            "                            , ISNULL(A.EMAIL, ' ')        AS EMAIL \n" +
+                            "                            , ISNULL(A.M_P_NUM_1, ' ')    AS M_P_NUM_1 \n" +
+                            "                            , ISNULL(A.M_P_NUM_2, ' ')    AS M_P_NUM_2 \n" +
+                            "                            , ISNULL(A.M_P_NUM_3, ' ')    AS M_P_NUM_3 \n" +
+                            "                            , ISNULL(A.USE_YN, ' ')       AS USE_YN \n" +
+                            "                            , ISNULL(CONVERT(NVARCHAR(10), A.REG_DT, 120), ' ') AS REG_DT \n" +
+                            "                            , ISNULL(A.REG_ID, ' ')       AS REG_ID " +
+                            "                            , ISNULL(CONVERT(NVARCHAR(10), A.MOD_DT, 120), ' ') AS MOD_DT \n" +
+                            "                            , ISNULL(A.MOD_ID, ' ')       AS MOD_ID \n" +
+                            "                            , ISNULL(A.LOGIN_FAIL_CNT, 0)      AS LOGIN_FAIL_CNT \n" +
+                            "                            , ISNULL(CONVERT(NVARCHAR, A.LAST_LOGIN_DT, 120), ' ')  AS LAST_LOGIN_DT \n" +
+                            "                            , ISNULL(CONVERT(NVARCHAR, A.LOGIN_FAIL_DT, 120), ' ')  AS LOGIN_FAIL_DT \n" +
+                            "                         FROM TB_USER_M A \n" +
+                            "                         WHERE 1 = 1 \n" +
+                            "					      AND A.USE_YN = 'Y' \n"; 
 
             if (searchName) {
-                QueryStr += "					      AND A.EMP_NM like '%" + searchName + "%' ";
+                QueryStr += "					      AND A.EMP_NM like '%" + searchName + "%' \n";
             }
             if (searchId) {
-                QueryStr += "					      AND A.USER_ID like '%" + searchId + "%' ";
+                QueryStr += "					      AND A.USER_ID like '%" + searchId + "%' \n";
             }
-            QueryStr +=     "                       ) TBX " +
-                            "               ) TBY " +
-                            "       ) TBZ" +
-                            " WHERE PAGEIDX = " + currentPageNo + " " +
-                            "ORDER BY " + sortIdx + " ";
+            QueryStr +=     "                       ) TBX \n" +
+                            "               ) TBY \n" +
+                            "       ) TBZ \n" +
+                            " WHERE PAGEIDX = " + currentPageNo + " \n" +
+                            "ORDER BY " + sortIdx + " \n";
             
             
             let pool = await dbConnect.getConnection(sql);
@@ -288,7 +287,7 @@ router.get('/userAuthMng', function (req, res) {
     } else if (req.cookies.i18n == "ko") {
         res.locals.selLeftMenu = res.locals.ko['USER_AUTH_MNG'];
     }
-    res.render('userAuthMng');
+    res.render('userAuthMng_new');
 });
 
 router.post('/selectUserAppList', function (req, res) {

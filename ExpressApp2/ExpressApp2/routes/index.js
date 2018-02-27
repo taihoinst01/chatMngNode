@@ -152,7 +152,7 @@ router.get('/list', function (req, res) {
             let rows = result.recordset
             req.session.leftList = rows;
 
-            res.render('appList_new',
+            res.render('appList',
             {
                 title: 'Express',
                 appName: req.session.appName,

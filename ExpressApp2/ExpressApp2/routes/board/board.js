@@ -32,7 +32,7 @@ router.get('/', function (req, res) {
         }).then(result => {
             let rows = result.recordset
             
-            res.render('board', {   
+            res.render('board_new', {   
                 selMenu: req.session.menu,
                 appName: req.session.appName,
                 appId: req.session.appId,
