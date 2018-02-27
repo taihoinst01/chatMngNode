@@ -65,7 +65,8 @@ router.get('/', function (req, res) {
                                 });
                             }
 
-                            res.redirect("/list");
+                            //res.redirect("/list");
+                            res.redirect("/appList_new");
                             
                           sql.close();
                         }).catch(err => {
