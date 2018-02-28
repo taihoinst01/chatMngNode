@@ -153,7 +153,7 @@ function gridResize(gridId) {
 
 function setGridResize(gridId) {
 
-    var windowWidth = $(window).width(); // 창크기
+    var windowWidth = $(window).width(); // 창크기ㄹ
     var newGridWidth = windowWidth - 2; // 그리드의 새로운 width
 
     // 그리드에 적용할 width가 최대크기보다 작고 and 그리드에 적용할 width가 최소 크기보다 크고

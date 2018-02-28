@@ -4,6 +4,7 @@ var crypto = require('crypto');
 var sql = require('mssql');
 var dbConfig = require('../config/dbConfig').dbConfig;
 var dbConnect = require('../config/dbConnect');
+var paging = require('../config/paging');
 var router = express.Router();
 
 var key = 'taiho123!@#$';
@@ -177,7 +178,7 @@ router.post('/selectUserList', function (req, res) {
                 res.send({
                     records : recordList.length,
                     total : getTotalPageCount,
-                    page : checkNull(currentPageNo, 1),
+                    pageList : paging.pagination(currentPageNo,rows[0].TOT_CNT), //page : checkNull(currentPageNo, 1),
                     rows : recordList
                 });
 
@@ -223,7 +224,7 @@ router.post('/saveUserInfo', function (req, res) {
         } else if (userArr[i].statusFlag === 'EDIT') {
             updateStr += "UPDATE TB_USER_M SET EMP_NM = '" + userArr[i].EMP_NM  + "' WHERE USER_ID = '" + userArr[i].USER_ID + "'; ";
         } else { //DEL
-            deleteStr += "UPDATE TB_USER_M SET USE_YN = 'N' WHERE USER_ID = '" + userArr[i].USER_ID + "'; ";
+            deleteStr += "UPDATE TB_USER_M SET USE_YN = 'N' WHERE USER_ID = '" + userArr[i].USER_ID + "' AND EMP_NM = '" + userArr[i].EMP_NM + "'; ";
         }
     }
 
@@ -293,13 +294,27 @@ router.get('/userAuthMng', function (req, res) {
 router.post('/selectUserAppList', function (req, res) {
     
     let userId = checkNull(req.body.userId, '');
-    var selectAppListStr = "SELECT APP_NAME, APP_ID,  LEFT(OWNER_EMAIL, CHARINDEX('@', OWNER_EMAIL)-1) OWNER_EMAIL " +
-                           "  FROM TBL_LUIS_APP " +
-                           " WHERE 1=1;";
-    var UserAppListStr = "SELECT distinct APP_ID" +
-                        "   FROM TBL_USER_RELATION_APP " +
-                        "  WHERE 1=1 " +
-                        "    AND USER_ID = '" + userId + "'; ";                    
+    var currentPage = checkNull(req.body.currentPage, 1);
+    var currentPageUser = checkNull(req.body.currentPageUser, 1);
+    var selectAppListStr = "SELECT tbp.* from \n" +
+                            " (SELECT ROW_NUMBER() OVER(ORDER BY APP_NAME DESC) AS NUM, \n" +
+                            "         COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
+                            "         CEILING((ROW_NUMBER() OVER(ORDER BY APP_NAME DESC))/ convert(numeric ,10)) PAGEIDX, \n" +
+                            "         APP_NAME, APP_ID,  LEFT(OWNER_EMAIL, CHARINDEX('@', OWNER_EMAIL)-1) OWNER_EMAIL \n" +
+                           "          FROM TBL_LUIS_APP ) tbp \n" +
+                           " WHERE 1=1 \n" +
+                           "   AND PAGEIDX = " + currentPage + "; \n";
+
+    var UserAppListStr = "SELECT tbp.* from \n" +
+                         "   (SELECT ROW_NUMBER() OVER(ORDER BY USER_ID DESC) AS NUM, \n" +
+                         "           COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
+                         "           CEILING((ROW_NUMBER() OVER(ORDER BY USER_ID DESC))/ convert(numeric ,10)) PAGEIDX, \n" +
+                        "            APP_ID \n" +
+                        "       FROM TBL_USER_RELATION_APP \n" +
+                        "      WHERE 1=1 \n" +
+                        "        AND USER_ID = '" + userId + "') tbp  \n" + 
+                        " WHERE 1=1;  \n";
+                        //"   AND PAGEIDX = " + currentPage + "; \n";                  
     (async () => {
         try {
             let pool = await dbConnect.getConnection(sql);
@@ -318,15 +333,22 @@ router.post('/selectUserAppList', function (req, res) {
 
             var checkedApp = [];
             for(var i = 0; i < rows2.length; i++){
-                var item = {};
-                item = rows2[i];
-                checkedApp.push(item);
+                for (var j=0; j < recordList.length; j++) {
+                    if (rows2[i].APP_ID === recordList[j].APP_ID) {
+                        var item = {};
+                        item = rows2[i];
+                        checkedApp.push(item);
+                        break;
+                    }
+                }
+                
             }
 
             res.send({
                 records : recordList.length,
                 rows : recordList,
                 checkedApp : checkedApp,
+                pageList : paging.pagination(currentPage,rows[0].TOTCNT)
             });
             
         } catch (err) {
@@ -408,13 +430,17 @@ router.post('/selectApiList', function (req, res) {
     
     let searchId = checkNull(req.body.searchId, null);
 
-    var selectAppListStr = "SELECT API_SEQ, API_ID AS API_ID_HIDDEN, API_ID,  API_URL, API_DESC " +
-                           "  FROM TBL_URL " +
-                           " WHERE 1=1 ";
+    var selectAppListStr = "SELECT tbp.* from \n" +
+                            " (SELECT ROW_NUMBER() OVER(ORDER BY API_ID DESC) AS NUM, \n" +
+                            "         COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
+                            "         CEILING((ROW_NUMBER() OVER(ORDER BY API_ID DESC))/ convert(numeric ,10)) PAGEIDX, \n" +
+                            "         API_SEQ, API_ID AS API_ID_HIDDEN, API_ID,  API_URL, API_DESC \n" +
+                           "     FROM TBL_URL ) tbp \n" +
+                           " WHERE 1=1 \n";
     if (searchId) {
-        selectAppListStr +="   AND API_ID like '%" + searchId + "%' ";
+        selectAppListStr +="   AND API_ID like '%" + searchId + "%' \n";
     }          
-    selectAppListStr +=  "ORDER BY API_SEQ ASC, API_ID ASC; ";
+    selectAppListStr +=  "ORDER BY API_SEQ ASC, API_ID ASC; \n";
     (async () => {
         try {
             let pool = await dbConnect.getConnection(sql);
@@ -431,7 +457,8 @@ router.post('/selectApiList', function (req, res) {
 
             res.send({
                 records : recordList.length,
-                rows : recordList
+                rows : recordList,
+                pageList : paging.pagination(currentPage,rows[0].TOTCNT)
             });
             
         } catch (err) {

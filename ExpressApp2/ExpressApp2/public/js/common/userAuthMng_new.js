@@ -16,12 +16,38 @@ $(document).ready(function() {
     $('#searchName, #searchId').on('keypress', function(e) {
         if (e.keyCode == 13) makeUserTable();
     });
+
+    //저장
+    $('#saveBtn').click(function() {
+        saveUserApp();
+    });
+
+    //앱리스트 초기화
+    $('#initBtn').click(function() {
+        fnc_initAppList();
+    });
     
 });
-$(document).on('click', 'tr[name=userTr]', function() {
+
+
+//유저 테이블 페이지 버튼 클릭
+$(document).on('click','#userTablePaging .li_paging',function(e){
+    if(!$(this).hasClass('active')){
+        makeUserTable($(this).text());
+    }
+});
+
+//앱 테이블 페이지 버튼 클릭
+$(document).on('click','#appTablePaging .li_paging',function(e){
+    if(!$(this).hasClass('active')){
+        makeAppTable($('#selectUserHiddenId').val(), $(this).text());
+    }
+});
+
+$(document).on('click', '#userTableBodyId tr[name=userTr]', function() {
     $('tr[name=userTr]').css("background", '');
     var clickUserId = $(this).children().eq(1).text();
-
+    $('#selectUserHiddenId').val(clickUserId);
     makeAppTable(clickUserId);
 
     $(this).css("background", "aliceblue");
@@ -30,12 +56,12 @@ $(document).on('click', 'tr[name=userTr]', function() {
 
 var initAppList;
 var initAppCheck;
-function makeUserTable() {
+function makeUserTable(newPage) {
     
     var params = {
         'searchName' : $('#searchName').val(),
         'searchId' : $('#searchId').val(),
-        'page' : $('td[dir=ltr]').find('input').val(),
+        'currentPage' : newPage,
         'rows' : $('td[dir=ltr]').find('select').val()
     };
     
@@ -62,6 +88,7 @@ function makeUserTable() {
                 //사용자의 appList 출력
                 $('#userTableBodyId').find('tr').eq(0).children().eq(0).trigger('click');
 
+                $('#userTablePaging .pagination').html('').append(data.pageList);
 
             } else {
                 $('#userTableBodyId').html('');
@@ -72,10 +99,12 @@ function makeUserTable() {
     });
 }
 
-function makeAppTable(userId) {
+function makeAppTable(userId, newPage) {
     
     var params = {
-        'userId' : userId
+        'userId' : userId,
+        'currentPage' : newPage,
+        'currentPageUser' : $('#userTablePaging .active').val()
     };
     
     $.ajax({
@@ -86,6 +115,8 @@ function makeAppTable(userId) {
             initAppList = data.rows;
             initAppCheck = data.checkedApp;
             mkAppRow(data.rows, data.checkedApp);
+            
+            $('#appTablePaging .pagination').html('').append(data.pageList);
         }
     });
 }
@@ -117,20 +148,107 @@ function mkAppRow(rows, checkedApp) {
     }
 
     $('#appTableBodyId').html(appHtml);
+
+    iCheckBoxTrans();
+
 }
 
 
 //초기화
-function restoreGridAction() {
+function fnc_initAppList() {
     if(confirm('초기화 하시겠습니까?')) {
         mkAppRow(initAppList, initAppCheck);
     }
 }
 
+//저장
+function saveUserApp() {
+
+    if (confirm('저장 하시겠습니까?')) {
+        var saveArr = new Array();
+        $('tr div[class*=checked]').each(function() {
+            //var rowId = $(this).parent().parent().attr("id");
+            var appId = $(this).parent().next().next().text();
+            //추가로 체크한 app, 체크 취소한 app 구분
+            var rememberLen = initAppCheck.length;
+            for (var i=0; i<rememberLen; i++) {
+                if (appId === initAppCheck[i].APP_ID) {
+                    initAppCheck.splice(i,1);
+                    break;
+                }
+            }
+            if (rememberLen === initAppCheck.length) {
+                saveArr.push(appId);
+            }
+        });    
+        
+        var rowUser;			
+        var userId = $("#selectUserHiddenId").val();
+    
+        for (var i=0; i<$('#userTableBodyId').find('tr').length; i++) {
+            if ($('#userTableBodyId').find('tr').eq(i).children().eq(1).text() === userId) {
+                rowUser = i;
+                break;
+            }
+        }
+    
+        //save
+        var jsonsaveArr = JSON.stringify(saveArr);
+        var jsoninitAppCheck = JSON.stringify(initAppCheck);
+        var params = {
+            'userId' : userId,
+            'saveData' : jsonsaveArr,
+            'removeData' : jsoninitAppCheck,
+        };
+        $.ajax({
+            type: 'POST',
+            datatype: "JSON",
+            data: params,
+            url: '/users/updateUserAppList',
+            success: function(data) {
+                if (data.status === 200) {
+                    //window.location.reload();
+                    alert(data.message);
+    
+                    $('#userTableBodyId').find('tr').eq(rowUser).children().eq(1).trigger('click');
+                } else {
+                    alert(data.message);
+                }
+            }
+        });
+    }
+    
+
+}
 
 
+function iCheckBoxTrans() {
+    $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+        checkboxClass: 'icheckbox_minimal-blue',
+        radioClass   : 'iradio_minimal-blue'
+    })
+    //Red color scheme for iCheck
+    $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+        checkboxClass: 'icheckbox_minimal-red',
+        radioClass   : 'iradio_minimal-red'
+    })
+    //Flat red color scheme for iCheck
+    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+        checkboxClass: 'icheckbox_flat-green',
+        radioClass   : 'iradio_flat-green'
+    })
 
-
+    $('#check-all').iCheck({
+        checkboxClass: 'icheckbox_flat-green',
+        radioClass   : 'iradio_flat-green'
+    }).on('ifChecked', function(event) {
+        $('input[name=tableCheckBox]').parent().iCheck('check');
+        
+    }).on('ifUnchecked', function() {
+        $('input[name=tableCheckBox]').parent().iCheck('uncheck');
+        
+    });
+}
 
 
 

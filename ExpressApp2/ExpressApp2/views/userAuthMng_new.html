@@ -37,7 +37,7 @@
       <!-- Content Wrapper -->
       <div class="content-wrapper">
                         <section class="content-header"><h1>사용자 관리 </h1>  </section>
-    
+            <input type="hidden" id="selectUserHiddenId" value=""/>
                         <!-- Main content -->
                         <section class="content">
                                 <div class="box  color-palette-box">
@@ -78,12 +78,17 @@
                                                                                 </tbody>
                                                                             </table>
                                                                         </div> 
+                                                                <div class="pagination_wrap" id="userTablePaging">
+                                                                    <ul class="pagination pagination-sm no-margin">
+                                        
+                                                                    </ul>
+                                                                </div>
                                                         </div>
                                                         <div class="col-lg-6" style="padding:0px !important">
                                                                          <h4 class=" col-lg-6">사용자 권한</h4>
                                                                          <div class=" col-lg-6" style="text-align:right; padding:0px !important"> 
-                                                                                 <button type="button" class="btn btn-default">저장</button>
-                                                                                 <button type="button" class="btn btn-default">초기화</button>
+                                                                            <button type="button" class="btn btn-default" id="saveBtn">저장</button>
+                                                                            <button type="button" class="btn btn-default" id="initBtn">초기화</button>
                                                                          </div>                                                
                                                                         <div class="Tbl_wrap">
                                                                             <table class="Tbl" summary="사용자 권한관리">
@@ -92,7 +97,7 @@
                                                                                 <thead>
                                                                                       <tr>
                                                                                           <th></th>
-                                                                                          <th><input type="checkbox" class="flat-red" ></th>                                                                  
+                                                                                          <th><input type="checkbox" class="flat-red" id="check-all"></th>                                                                  
                                                                                           <th>앱</th>
                                                                                           <th>앱 아이디</th>                                                                   
                                                                                           <th>사용 아이디</th>
@@ -104,7 +109,13 @@
                                                                                 </tbody>
                                                                             </table>
                                                                         </div> 
-                                                        </div>                                                
+                                                                <div class="pagination_wrap" id="appTablePaging">
+                                                                    <ul class="pagination pagination-sm no-margin">
+                                        
+                                                                    </ul>
+                                                                </div>
+                                                        </div>   
+                                                    
                                                 </div>
                                         </div>
                                 </div>

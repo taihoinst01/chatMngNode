@@ -251,8 +251,10 @@ function mkAppRow(rows, checkedApp) {
 function saveAction() {
     // true : select 된 데이터, false : transaction 일으킨 데이터
     var saveArr = new Array();
+
+    
     $('input[name=cell_checkbox]:checked').each(function() {
-        var rowId = $(this).parent().parent().attr("id");
+        
         var appId = $("#gridUserAuthList").jqGrid("getRowData", rowId).APP_ID;
         //추가로 체크한 app, 체크 취소한 app 구분
         var rememberLen = initAppCheck.length;

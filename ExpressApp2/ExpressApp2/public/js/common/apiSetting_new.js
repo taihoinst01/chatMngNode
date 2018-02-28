@@ -69,7 +69,7 @@ $(document).on('click','.editable-cell',function(e){
 $(document).ready(function() {
     $('html').click(function(e) { 
         if ($('.edit-cell').length > 0) {
-            if ( !$('.edit-cell, #editCell').has(e.target).length ) { 
+            if ( !$('#editCell').parent().has(e.target).length ) { 
                 //영역 밖
                 var changeVal = $('#editCell').val();
                 $('.edit-cell').html(editCellText);
@@ -113,7 +113,7 @@ function makeUserTable() {
     $.ajax({
         type: 'POST',
         data: params,
-        url: '/users/selectUserList',
+        url: '/users/selectApiList',
         success: function(data) {
            
             if (data.rows) {
@@ -121,16 +121,11 @@ function makeUserTable() {
                 var tableHtml = "";
     
                 for (var i=0;i<data.rows.length;i++) { 
-                    tableHtml += '<tr><td>' + data.rows[i].SEQ + '</td>';
+                    tableHtml += '<tr><td>' + data.rows[i].API_SEQ + '</td>';
                     tableHtml += '<td><input type="checkbox" class="flat-red" name="tableCheckBox"></td>';
-                    tableHtml += '<td>' + data.rows[i].USER_ID + '</td>'
-                    tableHtml += '<td class="editable-cell">' + data.rows[i].EMP_NM + '</td>'
-                    tableHtml += '<td>' + '<a href="javascript://" class="" onclick="initPassword(\''+ data.rows[i].USER_ID +'\');">' + '초기화'+ '</a>' + '</td>'
-                    tableHtml += '<td>' + data.rows[i].REG_DT + '</td>'
-                    tableHtml += '<td>' + data.rows[i].REG_ID + '</td>'
-                    tableHtml += '<td>' + data.rows[i].MOD_DT + '</td>'
-                    tableHtml += '<td>' + data.rows[i].LAST_LOGIN_DT + '</td>'
-                    tableHtml += '<td>' + data.rows[i].LOGIN_FAIL_CNT + '</td></tr>'
+                    tableHtml += '<td class="editable-cell">' + data.rows[i].API_ID + '</td>'
+                    tableHtml += '<td class="editable-cell">' + data.rows[i].API_URL + '</td>'
+                    tableHtml += '<td class="editable-cell">' + data.rows[i].API_DESC + '</td></tr>'
                 }
     
                 saveTableHtml = tableHtml;
