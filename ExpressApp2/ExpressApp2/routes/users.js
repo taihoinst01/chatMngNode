@@ -68,6 +68,10 @@ router.post('/login', function (req, res) {
 
 router.get('/logout', function (req, res) {  
     delete req.session.sid;
+    delete req.session.appName;
+    delete req.session.appId;
+    delete req.session.leftList;
+    delete req.session.subKey;
 	req.session.save(function(){
 		res.redirect('/');
 	});
@@ -434,7 +438,7 @@ router.post('/selectApiList', function (req, res) {
                             " (SELECT ROW_NUMBER() OVER(ORDER BY API_ID DESC) AS NUM, \n" +
                             "         COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
                             "         CEILING((ROW_NUMBER() OVER(ORDER BY API_ID DESC))/ convert(numeric ,10)) PAGEIDX, \n" +
-                            "         API_SEQ, API_ID AS API_ID_HIDDEN, API_ID,  API_URL, API_DESC \n" +
+                            "         API_SEQ, API_ID AS API_ID_HIDDEN, API_ID,  API_URL, API_DESC, USE_YN \n" +
                             "     FROM TBL_URL ) tbp \n" +
                             " WHERE 1=1 \n" +
                             " AND   USE_YN='Y' \n";

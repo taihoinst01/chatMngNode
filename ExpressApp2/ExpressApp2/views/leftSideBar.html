@@ -8,7 +8,9 @@
                                           <div class="pull-left image img-circle color_01"> </div>
                                           <ul class="dropdown">
                                               <li class="dropdown tasks-menu" >
-
+                                            <% 
+                                                if(sid) { 
+                                            %>
                                                 <%
                                                     if(appName) {
                                                 %>
@@ -53,10 +55,15 @@
                                                 </ul>
                                               </li>
                                           </ul>
+                                          <%                  
+                                            }
+                                          %>
                           </div> 
                           <!-- //chat bot list -->  
 
-
+                    <% 
+                        if(sid) { 
+                    %>
                         <%
                             if(appName) {
                         %>
@@ -81,7 +88,7 @@
                                   </ul>
                                 </li>
                                 
-                                <li class="treeview"> 
+                                <li class="treeview" id="dashboardClick"> 
                                   <a href="/board">
                                     <i class="fa fa-dashboard"></i> <span>대시보드</span>
                                     <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i> </span>
@@ -91,6 +98,7 @@
                           <!--// left Menu-->
                         <%
                             }
+                        }
                         %>
                           
     </section>
@@ -158,6 +166,11 @@
                 $('.close').addClass('more').removeClass('close');  
                 $('.board').css('visibility', 'hidden');
             }
+        });
+
+        $('#dashboardClick').click(function() {
+            var url = "/board"; 
+            $(location).attr('href',url);
         });
     });
   </script>
