@@ -418,7 +418,7 @@ router.get('/apiSetting', function (req, res) {
     } else if (req.cookies.i18n == "ko") {
         res.locals.selLeftMenu = res.locals.ko['API_MNG'];
     }
-    res.render('apiSetting');
+    res.render('apiSetting_new');
 })
 
 router.post('/selectApiList', function (req, res) {
@@ -435,8 +435,9 @@ router.post('/selectApiList', function (req, res) {
                             "         COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
                             "         CEILING((ROW_NUMBER() OVER(ORDER BY API_ID DESC))/ convert(numeric ,10)) PAGEIDX, \n" +
                             "         API_SEQ, API_ID AS API_ID_HIDDEN, API_ID,  API_URL, API_DESC \n" +
-                           "     FROM TBL_URL ) tbp \n" +
-                           " WHERE 1=1 \n";
+                            "     FROM TBL_URL ) tbp \n" +
+                            " WHERE 1=1 \n" +
+                            " AND   USE_YN='Y' \n";
     if (searchId) {
         selectAppListStr +="   AND API_ID like '%" + searchId + "%' \n";
     }          
@@ -458,7 +459,7 @@ router.post('/selectApiList', function (req, res) {
             res.send({
                 records : recordList.length,
                 rows : recordList,
-                pageList : paging.pagination(currentPage,rows[0].TOTCNT)
+                pageList : paging.pagination(currentPageNo,rows[0].TOTCNT)
             });
             
         } catch (err) {
@@ -488,9 +489,9 @@ router.post('/saveApiInfo', function(req, res){
             updateStr += "UPDATE TBL_URL SET API_ID = '" + apiArr[i].API_ID  + "', "
                                         +  " API_URL = '" + apiArr[i].API_URL  + "', "
                                         +  " API_DESC = '" + apiArr[i].API_DESC   + "' "
-                      +  "WHERE API_ID = '" + apiArr[i].API_ID_HIDDEN + "'; ";
+                      +  "WHERE API_SEQ = '" + apiArr[i].API_SEQ + "'; ";
         } else { //DEL
-            deleteStr += "UPDATE TBL_URL SET USE_YN = 'N' WHERE API_ID = '" + apiArr[i].API_ID_HIDDEN + "'; ";
+            deleteStr += "UPDATE TBL_URL SET USE_YN = 'N' WHERE API_SEQ = '" + apiArr[i].API_SEQ + "'; ";
         }
     }
 

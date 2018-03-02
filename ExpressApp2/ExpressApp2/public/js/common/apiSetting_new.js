@@ -3,39 +3,39 @@
 
 
 $(document).ready(function() {
-    makeUserTable();
+    makeApiTable();
 });
 
 $(document).ready(function() {
 
     //검색
     $('#searchBtn').click(function() {
-        makeUserTable();
+        makeApiTable();
     });
 
     //엔터로 검색
-    $('#searchName, #searchId').on('keypress', function(e) {
-        if (e.keyCode == 13) makeUserTable();
+    $('#searchInput, #searchId').on('keypress', function(e) {
+        if (e.keyCode == 13) makeApiTable();
     });
 
     //추가 버튼
     $('#addBtn').click(function() {
-        addUser();
+        addApi();
     });
 
     //삭제 버튼
     $('#deleteBtn').click(function() {
-        deleteUser();
+        deleteApi();
     });
 
     //저장 버튼
     $('#saveBtn').click(function() {
-        saveUser();
+        saveApi();
     });
     
     //초기화 버튼
     $('#initBtn').click(function() {
-        initUserList();
+        initApiList();
     });
 
 });
@@ -45,7 +45,7 @@ $(document).ready(function() {
 //페이지 버튼 클릭
 $(document).on('click','.li_paging',function(e){
     if(!$(this).hasClass('active')){
-        makeUserTable();
+        makeApiTable();
     }
 });
 
@@ -57,7 +57,7 @@ $(document).on('click','.editable-cell',function(e){
         
     } else {
         editCellText = $(this).text();
-        var inputHtml = '<input type="text" id="editCell" spellcheck="false" value="' + $(this).text() + '"/>';
+        var inputHtml = '<input type="text" id="editCell" spellcheck="false" value="' + $(this).text() + '" style="width:80%"/>';
         $(this).html(inputHtml);
         $(this).attr('class', 'edit-cell');     
 
@@ -100,12 +100,12 @@ $(document).on('keyup','#editCell',function(e){
         $('.edit-cell').attr('class', 'editable-cell');
     }
 });
+
 var saveTableHtml = "";
-function makeUserTable() {
+function makeApiTable() {
     
     var params = {
-        'searchName' : $('#searchName').val(),
-        'searchId' : $('#searchId').val(),
+        'searchId' : $('#searchInput').val(),
         'page' : $('.pagination_wrap').find('.active').val(),
         'rows' : $('td[dir=ltr]').find('select').val()
     };
@@ -125,7 +125,8 @@ function makeUserTable() {
                     tableHtml += '<td><input type="checkbox" class="flat-red" name="tableCheckBox"></td>';
                     tableHtml += '<td class="editable-cell">' + data.rows[i].API_ID + '</td>'
                     tableHtml += '<td class="editable-cell">' + data.rows[i].API_URL + '</td>'
-                    tableHtml += '<td class="editable-cell">' + data.rows[i].API_DESC + '</td></tr>'
+                    tableHtml += '<td class="editable-cell">' + data.rows[i].API_DESC + '</td>'
+                    tableHtml += '<td><input type="hidden" value="' + data.rows[i].API_SEQ + '" /></td></tr>';
                 }
     
                 saveTableHtml = tableHtml;
@@ -162,13 +163,14 @@ function initPassword(userId) {
 }
 
 //사용자 추가
-function addUser() {
+function addApi() {
     var addHtml = "";
-    addHtml = '<tr><td>NEW</td><td><input type="checkbox" class="flat-red" name="tableCheckBox"></td>'
-    addHtml += '<td><input type="text" name="new_user_id" value="" /></td>';
-    addHtml += '<td><input type="text" name="new_user_name" value="" /></td> ';
-    addHtml += '<td></td>   <td></td>  <td></td>  <td></td>  <td></td>  <td></td></tr>'
-
+    addHtml += '<tr><td>NEW</td>';
+    addHtml += '<td><input type="checkbox" class="flat-red" name="tableCheckBox" ></td>'
+    addHtml += '<td><input type="text" name="new_Api_id" value="" style="width:80%"/></td>';
+    addHtml += '<td><input type="text" name="new_Api_url" value="" style="width:80%"/></td> ';
+    addHtml += '<td><input type="text" name="new_Api_desc" value="" style="width:80%"/></td> '
+    addHtml += '<td></td></tr>';
     $('#tableBodyId').prepend(addHtml);
 
     iCheckBoxTrans();
@@ -177,14 +179,14 @@ function addUser() {
 }
 
 //사용자 리스트 초기화
-function initUserList() {
+function initApiList() {
 
     $('#tableBodyId').html(saveTableHtml);
     iCheckBoxTrans();
     
 }
 
-function deleteUser() {
+function deleteApi() {
     if ($('tr div[class*=checked]').length < 1) {
         alert('체크한 셀이 없습니다.');
     } else {
@@ -195,22 +197,23 @@ function deleteUser() {
     
 }
 
-function saveUser() {
+function saveApi() {
 
     if ($('td>div[class*=checked]').length < 1) {
-        alert("저장할 사용자를 선택하세요.");
+        alert("저장할 API를 선택하세요.");
         return;
     }
 
     var chkEmptyInput = false;
-    for (var i=0; i<$('input[name=new_user_id]').length; i++) {
-        if ( ($.trim($('input[name=new_user_id]').eq(i).val()) === "") || ($.trim($('input[name=new_user_name]').eq(i).val()) === "") ) {
+    for (var i=0; i<$('input[name=new_Api_id]').length; i++) {
+        if ( ($.trim($('input[name=new_user_id]').eq(i).val()) === "") || ($.trim($('input[name=new_Api_url]').eq(i).val()) === "") 
+                || ($.trim($('input[name=new_Api_desc]').eq(i).val()) === "")) {
             chkEmptyInput = true;
             break;
         }
     }
     if (chkEmptyInput) {
-        alert("추가 할 유저의 정보를 입력해주세요.");
+        alert("추가 할 api의 정보를 입력해주세요.");
         return;
     }
 
@@ -225,6 +228,7 @@ function saveUser() {
     }
 
     var saveArr = new Array();
+
     $('#tableBodyId tr').each(function() {
         if ( $(this).find('div').hasClass('checked') ) {
             
@@ -234,29 +238,35 @@ function saveUser() {
                 
                 var data = new Object() ;
                 data.statusFlag = statusFlag;
-                data.USER_ID = $(this).children().eq(2).text();
-                data.EMP_NM = $(this).children().eq(3).text();
+                data.API_ID = $(this).children().eq(2).text();
+                data.API_URL = $(this).children().eq(3).text();
+                data.API_DESC = $(this).children().eq(4).text();
+                data.API_SEQ = $(this).children().eq(5).children().val();
                 saveArr.push(data);
 
             } else if (statusFlag === 'NEW' ) {
 
                 var data = new Object() ;
                 data.statusFlag = statusFlag;
-                data.USER_ID = $(this).find('input[name=new_user_id]').val();
-                data.EMP_NM = $(this).find('input[name=new_user_name]').val();
+                data.API_ID = $(this).children().eq(2).text();
+                data.API_URL = $(this).children().eq(3).text();
+                data.API_DESC = $(this).children().eq(4).text();
                 saveArr.push(data);
             } else if (statusFlag === 'DEL') {
 
                 var data = new Object() ;
                 data.statusFlag = statusFlag;
-                data.USER_ID = $(this).children().eq(2).text();
-                data.EMP_NM = $(this).children().eq(3).text();
+                data.API_ID = $(this).children().eq(2).text();
+                data.API_URL = $(this).children().eq(3).text();
+                data.API_DESC = $(this).children().eq(4).text();
+                data.API_SEQ = $(this).children().eq(5).children().val();
                 saveArr.push(data);
             }
         }
         
     });
-    
+
+    //save
     var jsonData = JSON.stringify(saveArr);
     var params = {
         'saveArr' : jsonData
@@ -265,7 +275,7 @@ function saveUser() {
         type: 'POST',
         datatype: "JSON",
         data: params,
-        url: '/users/saveUserInfo',
+        url: '/users/saveApiInfo',
         success: function(data) {
             console.log(data);
             if (data.status === 200) {
@@ -274,7 +284,7 @@ function saveUser() {
                 alert(data.message);
             }
         }
-    });    
+    });  
 }
 
 
