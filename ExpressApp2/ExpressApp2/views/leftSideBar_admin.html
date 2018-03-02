@@ -15,12 +15,33 @@
       <!-- left Menu -->
       <ul class="sidebar-menu" data-widget="tree">
             <li class="header">Menu</li>
-            <li class="treeview"> <a href="/users/userMng"><i class="fa fa-edit"></i> <span>사용자관리</span></a> </li>
-            <li class="treeview"> <a href="/users/userAuthMng"><i class="fa fa-lock"></i> <span>사용자권한관리</span></a> </li>
-            <li class="treeview"> <a href="/users/apiSetting"><i class="fa  fa-file-text-o"></i> <span>API관리</span></a> </li>
+            <li class="treeview" id="userMngClick"> <a href="/users/userMng"><i class="fa fa-edit"></i> <span>사용자관리</span></a> </li>
+            <li class="treeview" id="userAugthClick"> <a href="/users/userAuthMng"><i class="fa fa-lock"></i> <span>사용자권한관리</span></a> </li>
+            <li class="treeview" id="apiMngClick"> <a href="/users/apiSetting"><i class="fa  fa-file-text-o"></i> <span>API관리</span></a> </li>
       </ul>
       <!-- // left Menu -->
                               
     </section>
 </aside>
 
+<script>
+
+    $(document).ready(function(){
+
+        $('#userMngClick').click(function() {
+            var url = "/users/userMng"; 
+            $(location).attr('href',url);
+        });
+
+        $('#userAugthClick').click(function() {
+            var url = "/users/userAuthMng"; 
+            $(location).attr('href',url);
+        });
+
+        $('#apiMngClick').click(function() {
+            var url = "/users/apiSetting"; 
+            $(location).attr('href',url);
+        });
+    });
+
+  </script>

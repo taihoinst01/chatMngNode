@@ -892,7 +892,7 @@ function getScorePanel() {
             $('#maxQueryCnt').html(scores.MAX_QRY);
         }
     })
-  }
+}
 
 //누적 상담자, 평균답변속도 등등 
 function getResponseScores() {

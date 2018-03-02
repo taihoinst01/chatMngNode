@@ -5,34 +5,34 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title></title>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-<link rel="stylesheet" href="common/css/bootstrap.min.css">
-<link rel="stylesheet" href="common/css/font-awesome.min.css">
-<link rel="stylesheet" href="common/css/AdminLTE.min.css">
-<link rel="stylesheet" href="common/css/skin-blue.min.css">
-<link rel="stylesheet" href="common/css/default.css">
-<link rel="stylesheet" href="common/css/daterangepicker.css">
-<link rel="stylesheet" href="common/css/bootstrap-datepicker.min.css">
-<link rel="stylesheet" href="common/css/morris.css">
-<link rel="stylesheet" href="common/css/slider.css">
+<link rel="stylesheet" href="/common/css/bootstrap.min.css">
+<link rel="stylesheet" href="/common/css/font-awesome.min.css">
+<link rel="stylesheet" href="/common/css/AdminLTE.min.css">
+<link rel="stylesheet" href="/common/css/skin-blue.min.css">
+<link rel="stylesheet" href="/common/css/default.css">
+<link rel="stylesheet" href="/common/css/daterangepicker.css">
+<link rel="stylesheet" href="/common/css/bootstrap-datepicker.min.css">
+<link rel="stylesheet" href="/common/css/morris.css">
+<link rel="stylesheet" href="/common/css/slider.css">
 <!--[if lt IE 9]>
 <script src="common/js/html5shiv.min.js"></script>
 <script src="common/js/1.4.2/respond.min.js"></script>
 <![endif]-->
-<script src="common/js/jquery.min.js"></script>
-<script src="common/js/bootstrap.min.js"></script>
-<script src="common/js/select2.full.min.js"></script>
-<script src="common/js/jquery.inputmask.js"></script>
-<script src="common/js/jquery.inputmask.date.extensions.js"></script>
-<script src="common/js/jquery.inputmask.extensions.js"></script>
-<script src="common/js/moment.min.js"></script>
-<script src="common/js/daterangepicker.js"></script>
-<script src="common/js/bootstrap-datepicker.min.js"></script>
-<script src="common/js/adminlte.min.js"></script>
-<script src="common/js/jquery-2.2.4.min.js"  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-<script src="common/js/icheck.min.js"></script>
-<script src="common/js/raphael.min.js"></script>
-<script src="common/js/morris.min.js"></script>
-<script src="common/js/bootstrap-slider.js"></script>
+<script src="/common/js/jquery.min.js"></script>
+<script src="/common/js/bootstrap.min.js"></script>
+<script src="/common/js/select2.full.min.js"></script>
+<script src="/common/js/jquery.inputmask.js"></script>
+<script src="/common/js/jquery.inputmask.date.extensions.js"></script>
+<script src="/common/js/jquery.inputmask.extensions.js"></script>
+<script src="/common/js/moment.min.js"></script>
+<script src="/common/js/daterangepicker.js"></script>
+<script src="/common/js/bootstrap-datepicker.min.js"></script>
+<script src="/common/js/adminlte.min.js"></script>
+<script src="/common/js/jquery-2.2.4.min.js"  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="/common/js/icheck.min.js"></script>
+<script src="/common/js/raphael.min.js"></script>
+<script src="/common/js/morris.min.js"></script>
+<script src="/common/js/bootstrap-slider.js"></script>
 
 <script type="text/javascript" src="/js/common/board_new.js"></script>
 <script>
@@ -101,37 +101,37 @@
                                 <div class="row">
                                                  <div  class="col-lg-2">
                                                              <div class="small-box color_01">
-                                                                    <div class="inner"><h3>1166</h3></div>
+                                                                    <div class="inner"><h3 id="allCustomer">Loading..</h3></div>
                                                                     <a href="#" class="small-box-footer">누적상담자수 </a>
                                                              </div>
                                                  </div>
                                                  <div  class="col-lg-2">
                                                              <div class="small-box color_02">
-                                                                    <div class="inner"><h3>1166</h3></div>
+                                                                    <div class="inner"><h3 id="avgReplySpeed">Loading..</h3></div>
                                                                     <a href="#" class="small-box-footer">평균 응답 속도(ms) </a>
                                                              </div>
                                                  </div>  
                                                  <div  class="col-lg-2">
                                                              <div class="small-box color_03">
-                                                                    <div class="inner"><h3>1166</h3></div>
+                                                                    <div class="inner"><h3 id="avgQueryCnt">Loading..</h3></div>
                                                                     <a href="#" class="small-box-footer">평균 고객 질문 수 </a>
                                                              </div>
                                                  </div>
                                                  <div  class="col-lg-2">
                                                              <div class="small-box color_04">
-                                                                    <div class="inner"><h3>1166</h3></div>
+                                                                    <div class="inner"><h3 id="avgCorrectAnswer">Loading..</h3></div>
                                                                     <a href="#" class="small-box-footer">평균 정상 답변율 </a>
                                                              </div>
                                                  </div> 
                                                  <div  class="col-lg-2">
                                                              <div class="small-box color_05">
-                                                                    <div class="inner"><h3>1166</h3></div>
+                                                                    <div class="inner"><h3 id="avgReply">Loading..</h3></div>
                                                                     <a href="#" class="small-box-footer">검색 응답률 </a>
                                                              </div>
                                                  </div>
                                                  <div  class="col-lg-2">
                                                              <div class="small-box color_06">
-                                                                    <div class="inner"><h3>1166</h3></div>
+                                                                    <div class="inner"><h3 id="maxQueryCnt">Loading..</h3></div>
                                                                     <a href="#" class="small-box-footer">최대 고객 질문 수 </a>
                                                              </div>
                                                  </div>                                      
@@ -145,7 +145,8 @@
                                                                <div class="Tbl_wrap">
                                                                     <table class="Tbl" summary="INTENT SCORE 평균/최소/최대">
                                                                         <colgroup><col width="20%"/><col width="20%"/><col width="20%"/><col width="20%"/><col width="20%"/></colgroup>
-                                                                        <tbody id="scoreTableBody">
+                                                                        
+                                                                        <thead>
                                                                               <tr>
                                                                                   <th>INTENT </th>
                                                                                   <th>개수</th>
@@ -153,11 +154,16 @@
                                                                                   <th>최소</th>
                                                                                   <th>최대</th>
                                                                               </tr>
-                                                                              <tr>
-                                                                             </tr>
+                                                                        </thead>
+                                                                        <tbody id="scoreTableBody">
                                                                                                                                                     
                                                                         </tbody>
                                                                     </table>
+                                                                    <div class="pagination_wrap" id="scoreTablePaging">
+                                                                        <ul class="pagination pagination-sm no-margin">
+                                            
+                                                                        </ul>
+                                                                    </div>
                                                                 </div>                                                 
                                                 </div>
                                            </div>
@@ -169,7 +175,7 @@
                                                                <div class="Tbl_wrap">
                                                                     <table class="Tbl" summary="자주 묻는 질문에 대한 답변 top 10">
                                                                         <colgroup><col width="20%"/><col width="20%"/><col width="20%"/><col width="20%"/><col width="20%"/></colgroup>
-                                                                        <tbody>
+                                                                        <thead>
                                                                               <tr>
                                                                                   <th>INTENT </th>
                                                                                   <th>한글질문</th>
@@ -177,13 +183,8 @@
                                                                                   <th>질문수</th>
                                                                                   <th>날짜</th>
                                                                               </tr>
-                                                                              <tr>
-                                                                                 <td>intent1</td>
-                                                                                 <td>43</td>
-                                                                                 <td>45</td>
-                                                                                 <td>23</td>
-                                                                                 <td>55</td>
-                                                                             </tr>
+                                                                        </thead>
+                                                                        <tbody id="OftQuestionTableBody">
                                                                                                                                                     
                                                                         </tbody>
                                                                     </table>
@@ -198,7 +199,7 @@
                                                 <div class="box-body">
                                                                <div class="box-header with-border dashb"><h3 class="box-title02">응답(평균/최대/최소)/평균 머무르는 시간</h3></div> 
                                                                 <div class="chart-responsive">
-                                                                  <div class="chart" id="bar-chart" style="height: 300px;"></div>
+                                                                  <div class="chart" id="responseTimeDiv" style="height: 300px;"></div>
                                                                 </div>                                                
                                                 </div>
                                                 
@@ -209,7 +210,7 @@
                                                 <div class="box-body">
                                                                <div class="box-header with-border dashb"><h3 class="box-title02">시간대 별 질문수</h3></div>                                                 
                                                                 <div class="chart-responsive">
-                                                                  <div class="chart" id="bar-chart2" style="height: 300px;"></div>
+                                                                  <div class="chart" id="timeOfDay_div" style="height: 300px;"></div>
                                                                 </div>                                                 
                                                 </div>
                                 </div>                                 
@@ -219,37 +220,31 @@
                                                                <div class="box-header with-border dashb"><h3 class="box-title02">미답변 질문</h3></div> 
                                                                <div class="Tbl_wrap">
                                                                     <table class="Tbl" summary="자주 묻는 질문에 대한 답변 top 10">
-                                                                        <colgroup><col width="10%"/><col width="10%"/><col width="10%"/><col width="10%"/>
-                                                                                  <col width="10%"/><col width="10%"/><col width="10%"/><col width="10%"/><col width="10%"/><col width="10%"/>
+                                                                        <colgroup><col width="10%"/><col width="25%"/><col width="5%"/><col width="3%"/>
+                                                                                  <col width="15%"/><col width="5%"/><col width="10%"/><col width="10%"/><col width="10%"/>
                                                                         </colgroup>
-                                                                        <tbody>
+                                                                        <thead>
                                                                               <tr>
                                                                                   <th>INTENT </th>
                                                                                   <th>한글질문</th>
                                                                                   <th>채널</th>
                                                                                   <th>질문수</th>
                                                                                   <th>날짜</th>
-                                                                                  <th>채널 </th>
                                                                                   <th>결과</th>
                                                                                   <th>TEXT답변</th>
                                                                                   <th>CARD답변</th>
                                                                                   <th>CARDBTN답변	</th>                                                                                  
-                                                                              </tr>
-                                                                              <tr>
-                                                                                 <td>intent1</td>
-                                                                                 <td>43</td>
-                                                                                 <td>45</td>
-                                                                                 <td>23</td>
-                                                                                 <td>55</td>
-                                                                                 <td>intent1</td>
-                                                                                 <td>43</td>
-                                                                                 <td>45</td>
-                                                                                 <td>23</td>
-                                                                                 <td>55</td>                                                                                 
-                                                                             </tr>
-                                                                                                                                                    
+                                                                              </tr>                                                             
+                                                                        </thead>
+                                                                        <tbody id="noneQueryDiv">
+
                                                                         </tbody>
                                                                     </table>
+                                                                    <div class="pagination_wrap" id="noneQueryDivTablePaging">
+                                                                        <ul class="pagination pagination-sm no-margin">
+                                            
+                                                                        </ul>
+                                                                    </div>
                                                                 </div>                                                  
                                                 </div>
                                 </div>                                                                 
@@ -260,7 +255,7 @@
                                                 <div class="box-body">
                                                                <div class="box-header with-border dashb"><h3 class="box-title02">고객 별 첫 질문</h3></div>                                                 
                                                                 <div class="chart-responsive">
-                                                                  <div class="chart" id="bar-chart3" style="height:300px;" ></div>
+                                                                  <div class="chart" id="fistQueryDiv" style="height:300px;" ></div>
                                                                 </div>                                                  
                                                 </div>
                                            </div>
@@ -270,82 +265,27 @@
                                                 <div class="box-body">
                                                                <div class="Tbl_wrap">
                                                                     <table class="Tbl" summary="">
-                                                                        <colgroup><col width="20%"/><col width="20%"/><col width="10%"/><col width="10%"/><col width="10%"/><col width="10%"/><col width="20%"/></colgroup>
-                                                                        <tbody>
-                                                                              <tr>
-                                                                                  <th>INTENT </th>
-                                                                                  <th>한글질문</th>
-                                                                                  <th>채널</th>
-                                                                                  <th>질문수</th>
-                                                                                  <th>날짜</th>
-                                                                                  <th>채널</th>
-                                                                                  <th>결과</th>
-                                                                              </tr>
-                                                                              <tr>
-                                                                                 <td>intent1</td>
-                                                                                 <td>43</td>
-                                                                                 <td>45</td>
-                                                                                 <td>23</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                             </tr>
-                                                                              <tr>
-                                                                                 <td>intent1</td>
-                                                                                 <td>43</td>
-                                                                                 <td>45</td>
-                                                                                 <td>23</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                             </tr>
-                                                                              <tr>
-                                                                                 <td>intent1</td>
-                                                                                 <td>43</td>
-                                                                                 <td>45</td>
-                                                                                 <td>23</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                             </tr> 
-                                                                              <tr>
-                                                                                 <td>intent1</td>
-                                                                                 <td>43</td>
-                                                                                 <td>45</td>
-                                                                                 <td>23</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                             </tr>
-                                                                              <tr>
-                                                                                 <td>intent1</td>
-                                                                                 <td>43</td>
-                                                                                 <td>45</td>
-                                                                                 <td>23</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                             </tr>
-                                                                              <tr>
-                                                                                 <td>intent1</td>
-                                                                                 <td>43</td>
-                                                                                 <td>45</td>
-                                                                                 <td>23</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                             </tr>                                                                             
-                                                                              <tr>
-                                                                                 <td>intent1</td>
-                                                                                 <td>43</td>
-                                                                                 <td>45</td>
-                                                                                 <td>23</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                                 <td>55</td>
-                                                                             </tr>
+                                                                        <colgroup><col width="10%"/><col width="30%"/><col width="5%"/><col width="3%"/><col width="15%"/><col width="5%"/><col width="5%"/></colgroup>
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>INTENT </th>
+                                                                                <th>한글질문</th>
+                                                                                <th>채널</th>
+                                                                                <th>질문수</th>
+                                                                                <th>날짜</th>
+                                                                                <th>타입</th>
+                                                                                <th>결과</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="fistQueryTable">
+                                                                              
                                                                         </tbody>
                                                                     </table>
+                                                                    <div class="pagination_wrap" id="fistQueryTablePaging">
+                                                                        <ul class="pagination pagination-sm no-margin">
+                                            
+                                                                        </ul>
+                                                                    </div>
                                                                 </div>                                                   
                                               </div>
                                        </section>                                       
@@ -363,7 +303,9 @@
     <!--  Footer -->
      <footer class="main-footer">Copyright &copy; <strong> TAIHOINST. </strong> All rights reserved.</footer>
     <!-- // Footer -->
+
 <script>
+  /*
   $(function () {
     "use strict";
 
@@ -427,10 +369,7 @@
       labels: ['CPU', 'DISK'],
       hideHover: 'auto'
     });	
-	
-
-  
-  
+    */
 </script>
     
 <script>
