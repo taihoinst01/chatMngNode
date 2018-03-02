@@ -10,6 +10,9 @@ module.exports = {
                 startPage = ((curSet-1)*maxPageInSet)+1, // 현재 세트내 출력될 시작 페이지
                 endPage = (startPage+maxPageInSet)-1; // 현재 세트내 출력될 마지막 페이지
             
+            paging_result += '<ul class="pagination pagination-sm no-margin ">';
+            //paging_result += '<li><a href="#"><i class="fa fa-angle-double-left"></i></a></li>';
+            //paging_result += '<li><a href="#"><i class="fa fa-angle-left"></i></a></li>';
             /** 1개 세트내 Previous 페이지 출력여부 설정(PreviousPage=StartPage-1) **/
             if(curSet > 1){
                 paging_result += '<li class="li_paging" value="'+ (startPage-1) +'"><a href="#"><i class="fa fa-angle-left"></i></a></li>';
@@ -23,6 +26,9 @@ module.exports = {
             if(curSet<totalSet){
                 paging_result += '<li class="li_paging" value="'+ (endPage+1) +'"><a href="#"><i class="fa  fa-angle-right"></i></a></li>';
             }
+            //paging_result += '<li><a href="#"><i class="fa  fa-angle-right"></i></a></li>';
+            //paging_result += '<li><a href="#"><i class="fa  fa-angle-double-right"></i></a></li>';
+            paging_result += '</ul>';
             return paging_result;
         }
     }
