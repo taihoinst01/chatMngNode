@@ -7,19 +7,17 @@
                            <div class="sidebar-form se02">
                                           <div class="pull-left image img-circle color_01"> </div>
                                           <ul class="dropdown">
-                                              <li class="dropdown tasks-menu" >
+                                              <li class="dropdown tasks-menu" > 
                                             <% 
                                                 if(sid) { 
-                                            %>
-                                                <%
                                                     if(appName) {
-                                                %>
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=appName %><span></span></a>
+                                            %>
+                                                    aaa<a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=appName %><span></span></a>
                                                 <%
                                                     } else {
                                                         if(leftList) {
                                                 %>
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=leftList[0].APP_NAME %><span></span></a>
+                                                    bbb<a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=leftList[0].APP_NAME %><span></span></a>
                                                 <%
                                                         } 
                                                     }
@@ -28,22 +26,15 @@
                                                 <ul class="dropdown-menu">
                                                     <%
                                                         if(leftList) {
-                                                    %>
-                        
-                                                        <%
                                                             for(var i=0; i<leftList.length; i++) {
                                                         %>
                                                              <!--row -->
                                                              <a href="/board?appName=<%= leftList[i].APP_NAME %>&appId=<%= leftList[i].APP_ID %>" class="circle_col"><li><span class="pull-left image img-circle_s color_0<%=((i%15)+1)%>"> </span><span class="tex01"><%= leftList[i].APP_NAME %></span> </li></a>
                                                         <%
                                                             }   
-                                                        %>
-                        
-                        
-                                                    <%
                                                         } else {
                                                     %>
-                                    
+                                                            bbb
                         
                                                     <%
                                                         }
@@ -63,8 +54,6 @@
 
                     <% 
                         if(sid) { 
-                    %>
-                        <%
                             if(appName) {
                         %>
 

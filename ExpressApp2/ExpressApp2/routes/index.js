@@ -151,15 +151,17 @@ router.get('/list', function (req, res) {
         }).then(result => {
             let rows = result.recordset
             req.session.leftList = rows;
-
-            res.render('appList',
-            {
-                title: 'Express',
-                appName: req.session.appName,
-                selMenu: req.session.selMenu,
-                list: rows,
-                leftList: req.session.leftList
+            req.session.save(function(){
+                res.render('appList',
+                {
+                    title: 'Express',
+                    appName: req.session.appName,
+                    selMenu: req.session.selMenu,
+                    list: rows,
+                    leftList: req.session.leftList
+                });
             });
+            
             sql.close();
         }).catch(err => {
             res.status(500).send({ message: "${err}"})
