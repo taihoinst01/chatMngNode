@@ -82,25 +82,25 @@ app.use(function(req, res, next) {
 });
 app.use(function(req, res, next) {
     
-    if (!req.session.leftList)  {
+    if (req.session.leftList)  {
         res.locals.leftList = req.session.leftList;
     } else { 
         res.locals.leftList = null;
     }
 
-    if (!req.session.appName)  {
+    if (req.session.appName)  {
         res.locals.appName = req.session.appName;
     } else { 
         res.locals.appName = null;
     }
 
-    if (!req.session.appId)  {
+    if (req.session.appId)  {
         res.locals.appId = req.session.appId;
     } else { 
         res.locals.appId = null;
     }
 
-    if (!req.session.subKey)  {
+    if (req.session.subKey)  {
         res.locals.subKey = req.session.subKey;
     } else { 
         res.locals.subKey = null;
