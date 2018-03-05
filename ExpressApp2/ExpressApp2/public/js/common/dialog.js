@@ -521,10 +521,10 @@ function searchIptDlg(page){
                         data.list[i].DLG_API_DEFINE = 'Common';
                     }
                     item += '<tr>' +
-                            '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
-                            '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left dlgCardMordal" style="padding:0 0 0 2px;"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
-                            '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
+                            '<td>' + data.list[i].GroupS +'</td>' +
+                            '<td class="txt_left tex01"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                            '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
 
@@ -564,7 +564,7 @@ function searchIptDlg(page){
   
             $('#dialogTbltbody').append(item);
 
-            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+            $('#pagination').html('').append(data.pageList);
         }
     });
 }
@@ -863,10 +863,10 @@ function selectDlgByFilter(group){
                         data.list[i].DLG_API_DEFINE = 'Common';
                     }
                     item += '<tr>' +
-                            '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
-                            '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left dlgCardMordal" style="padding:0 0 0 2px;"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
-                            '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
+                            '<td>' + data.list[i].GroupS +'</td>' +
+                            '<td class="txt_left tex01"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                            '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
 
@@ -887,7 +887,7 @@ function selectDlgByFilter(group){
         
             $('#dialogTbltbody').append(item);
 
-            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+            $('#pagination').html('').append(data.pageList);
             currentSearchNum = 1;
             searchGroups = group;
         }
@@ -1171,10 +1171,10 @@ function selectDlgByTxt(groupType, sourceType){
                         data.list[i].DLG_API_DEFINE = 'Common';
                     }
                     item += '<tr>' +
-                            '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
-                            '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left dlgCardMordal" style="padding:0 0 0 2px;"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
-                            '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
+                            '<td>' + data.list[i].GroupS +'</td>' +
+                            '<td class="txt_left tex01"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                            '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
 
@@ -1206,7 +1206,7 @@ function selectDlgByTxt(groupType, sourceType){
             currentSearchNum = 2;
             $('#dialogTbltbody').append(item);
 
-            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+            $('#pagination').html('').append(data.pageList);
 
             if (rememberSelBoxHtml !== '') {
                 $('#selBoxBody').html(rememberSelBoxHtml);
