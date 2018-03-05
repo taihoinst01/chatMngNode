@@ -7,13 +7,11 @@
                            <div class="sidebar-form se02">
                                           <div class="pull-left image img-circle color_01"> </div>
                                           <ul class="dropdown">
-                                              <li class="dropdown tasks-menu" >
+                                              <li class="dropdown tasks-menu" > 
                                             <% 
                                                 if(sid) { 
-                                            %>
-                                                <%
                                                     if(appName) {
-                                                %>
+                                            %>
                                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=appName %><span></span></a>
                                                 <%
                                                     } else {
@@ -28,22 +26,15 @@
                                                 <ul class="dropdown-menu">
                                                     <%
                                                         if(leftList) {
-                                                    %>
-                        
-                                                        <%
                                                             for(var i=0; i<leftList.length; i++) {
                                                         %>
                                                              <!--row -->
                                                              <a href="/board?appName=<%= leftList[i].APP_NAME %>&appId=<%= leftList[i].APP_ID %>" class="circle_col"><li><span class="pull-left image img-circle_s color_0<%=((i%15)+1)%>"> </span><span class="tex01"><%= leftList[i].APP_NAME %></span> </li></a>
                                                         <%
                                                             }   
-                                                        %>
-                        
-                        
-                                                    <%
                                                         } else {
                                                     %>
-                                    
+                                                            
                         
                                                     <%
                                                         }
@@ -63,8 +54,6 @@
 
                     <% 
                         if(sid) { 
-                    %>
-                        <%
                             if(appName) {
                         %>
 
@@ -79,7 +68,7 @@
                                     </span>
                                   </a>
                                   <ul class="treeview-menu" >
-                                    <li class="active"><a href="/learning/recommend"><i class="fa  fa-circle-o"></i>학습추천</a></li>
+                                    <li><a href="/learning/recommend"><i class="fa  fa-circle-o"></i>학습추천</a></li>
                                     <li><a href="/learning/utterances"><i class="fa fa-circle-o"></i> 발언설정</a></li>
                                     <li><a href="/learning/dialog"><i class="fa fa-circle-o"></i> 대화상자설정</a></li>
                                     <li><a href="/learning/entities"><i class="fa fa-circle-o"></i> 단어설정</a></li>
@@ -146,8 +135,10 @@
 
 
   <script>
-    /*
-    $(window).load(function () {
+    
+    $(window).on('load', function() {
+
+        /*
         $('.settingBtn').each(function () {
             if ( $(this).text() === $('#selLeftMenu').val()) {
                 $(this).addClass('now');
@@ -155,8 +146,26 @@
                 $(this).removeClass('now');
             }
         });
+        */
+        //learningg menu active
+        $('.treeview-menu').find('i').each(function() {
+            var menuName = $.trim($(this).parent().text()).replace(/\s/gi, ""); 
+            var pageTitle = $.trim($('.content-header').text()).replace(/\s/gi, ""); 
+            if (menuName === pageTitle) {
+                $(this).parents('li').addClass('active');
+            }
+        });
+        
+        //대시보드 active
+        $('.treeview').find('i').each(function() {
+            var menuName = $.trim( $(this).next().text() ).replace(/ /gi, ""); 
+            var pageTitle = $.trim( $('.content-header').text() ).replace(/ /gi, ""); 
+            if (menuName === pageTitle) {
+                $(this).parents('li').addClass('active');
+            }
+        });
     });
-    */
+    
     $(document).ready(function(){
         $('.more').click(function(){
             if($('.more').hasClass('more')){
@@ -172,5 +181,7 @@
             var url = "/board"; 
             $(location).attr('href',url);
         });
+
+
     });
   </script>

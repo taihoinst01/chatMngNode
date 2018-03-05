@@ -66,15 +66,30 @@ router.post('/login', function (req, res) {
 
 });
 
-router.get('/logout', function (req, res) {  
+router.get('/logout', function (req, res) { 
+    
+    req.session.destroy(function (err) { 
+        if (err) { 
+            console.log(err); 
+        } else { 
+            res.clearCookie('sid');
+            res.redirect('/'); 
+        }
+    });
+    
+
+    /*
     delete req.session.sid;
     delete req.session.appName;
     delete req.session.appId;
     delete req.session.leftList;
     delete req.session.subKey;
-	req.session.save(function(){
+
+    req.session.save(function(){
 		res.redirect('/');
 	});
+    */
+	
 });
 
 router.get('/userMng', function (req, res) {  

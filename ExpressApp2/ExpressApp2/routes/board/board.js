@@ -31,14 +31,14 @@ router.get('/', function (req, res) {
         return pool.request().query(selectChannel)
         }).then(result => {
             let rows = result.recordset
-            
-            res.render('board_new', {   
-                selMenu: req.session.menu,
-                appName: req.session.appName,
-                appId: req.session.appId,
-                subKey: req.session.subKey,
-                channelList : rows
-            } );   
+            req.session.save(function(){
+                res.render('board_new', {   
+                    selMenu: req.session.menu,
+                    appId: req.session.appId,
+                    subKey: req.session.subKey,
+                    channelList : rows
+                });   
+            });
             sql.close();
         }).catch(err => {
             res.status(500).send({ message: "${err}"})
