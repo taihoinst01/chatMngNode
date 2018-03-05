@@ -63,7 +63,7 @@ router.post('/intentScore', function (req, res) {
             "         COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
             "         CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_INTENT DESC))/ convert(numeric ,10)) PAGEIDX, \n";
     selectQuery += "	LOWER(LUIS_INTENT) AS intentName, \n";
-    selectQuery += "AVG(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreAVG, \n";
+    selectQuery += "ROUND(AVG(CAST(LUIS_INTENT_SCORE AS FLOAT)), 2) AS intentScoreAVG,  \n";
     selectQuery += "MAX(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreMAX , \n";
     selectQuery += "MIN(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreMIN, \n";
     //selectQuery += "CHANNEL AS channel, \n";
@@ -205,7 +205,7 @@ router.post('/getOftQuestion', function (req, res) {
     var selChannel = req.body.selChannel;
 
     var selectQuery = "";
-    selectQuery += "SELECT TOP 10 PERCENT 한글질문 AS KORQ, 영어질문 AS ENGQ, 질문수 AS QNUM, 날짜 AS DATE, 채널 AS CHANNEL, RESULT, INTENT_SCORE, INTENT, ENTITIES, TEXT답변 AS TEXT, CARD답변 AS CARD, CARDBTN답변 AS CARDBTN, MEDIA답변 AS MEDIA, MEDIABTN답변 AS MEDIABTN\n";
+    selectQuery += "SELECT TOP 10 한글질문 AS KORQ, 영어질문 AS ENGQ, 질문수 AS QNUM, 날짜 AS DATE, 채널 AS CHANNEL, RESULT, INTENT_SCORE, INTENT, ENTITIES, TEXT답변 AS TEXT, CARD답변 AS CARD, CARDBTN답변 AS CARDBTN, MEDIA답변 AS MEDIA, MEDIABTN답변 AS MEDIABTN\n";
     selectQuery += "FROM\n";
     selectQuery += "(";
     selectQuery += "SELECT CUSTOMER_COMMENT_KR AS 한글질문\n";
@@ -224,10 +224,10 @@ router.post('/getOftQuestion', function (req, res) {
     selectQuery += ", ISNULL(ME.BTN_1_CONTEXT,'') AS MEDIABTN답변\n";
     selectQuery += "FROM\n";
     selectQuery += "(\n";
-    selectQuery += "SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS '영어질문', COUNT(*) AS '질문수', CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS Dimdate, CHANNEL\n";
+    selectQuery += "SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS '영어질문', COUNT(*) AS '질문수', REG_DATE AS Dimdate, CHANNEL\n";
     selectQuery += "FROM TBL_HISTORY_QUERY\n";
     selectQuery += "WHERE 1=1 \n";
-    selectQuery += "AND CONVERT(date, '" + startDate + "') <= CONVERT(date, REG_DATE)  AND  CONVERT(date, REG_DATE)   <= CONVERT(date, '" + endDate + "') ";
+    selectQuery += "AND CONVERT(date, '" + startDate + "') <= CONVERT(date, REG_DATE)  AND  CONVERT(date, REG_DATE)   <= CONVERT(date, '" + endDate + "') \n";
 
 if (selDate !== 'allDay') {
     selectQuery += "AND CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), 112)) = CONVERT(VARCHAR, GETDATE(), 112) \n";
@@ -235,7 +235,7 @@ if (selDate !== 'allDay') {
 if (selChannel !== 'all') {
     selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
 }
-    selectQuery += "GROUP BY CUSTOMER_COMMENT_KR, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), CHANNEL\n";
+    selectQuery += "GROUP BY CUSTOMER_COMMENT_KR, REG_DATE, CHANNEL\n";
     selectQuery += ") HI\n";
     selectQuery += "LEFT OUTER JOIN TBL_QUERY_ANALYSIS_RESULT AN\n";
     selectQuery += "ON REPLACE(REPLACE(LOWER(HI.CUSTOMER_COMMENT_KR),'.',''),'?','') = LOWER(AN.QUERY)\n";

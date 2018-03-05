@@ -1,28 +1,118 @@
 
-;(function($) {
 
+
+
+
+
+;(function($) {
+    $(function () {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+    
+        //Datemask dd/mm/yyyy
+        $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+        //Datemask2 mm/dd/yyyy
+        $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+        //Money Euro
+        $('[data-mask]').inputmask()
+    
+        //Date range picker
+        $('#reservation').daterangepicker()
+        //Date range picker with time picker
+        $('#reservationtime').daterangepicker({ timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A' })
+        //Date range as a button
+        $('#daterange-btn').daterangepicker(
+          {
+            ranges   : {
+              'Today'       : [moment(), moment()],
+              'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+              'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+              'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+              'This Month'  : [moment().startOf('month'), moment().endOf('month')],
+              'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate  : moment()
+          },
+          function (start, end) {
+            $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+          }
+        )
+    
+        //Date picker
+        $('#datepicker').datepicker({
+          autoclose: true
+        })
+    
+        //iCheck for checkbox and radio inputs
+        $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+          checkboxClass: 'icheckbox_minimal-blue',
+          radioClass   : 'iradio_minimal-blue'
+        })
+        //Red color scheme for iCheck
+        $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+          checkboxClass: 'icheckbox_minimal-red',
+          radioClass   : 'iradio_minimal-red'
+        })
+        //Flat red color scheme for iCheck
+        $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+          checkboxClass: 'icheckbox_flat-green',
+          radioClass   : 'iradio_flat-green'
+        })
+    
+        //Colorpicker
+        $('.my-colorpicker1').colorpicker()
+        //color picker with addon
+        $('.my-colorpicker2').colorpicker()
+    
+        //Timepicker
+        $('.timepicker').timepicker({
+          showInputs: false
+        })
+        
+      })
 })(jQuery);
 
-
+        
 $(document).ready(function () {
     
     "use strict";
+    
+    //달력 초기값 설정
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+    var minDate = mm.toString() + "/" + dd.toString() + "/" + (yyyy.toString()-1);  //new Date(yyyy.toString()-1, mm.toString(), dd.toString());
+    var maxDate = mm.toString() + "/" + dd.toString() + "/" + yyyy.toString();  //new Date(yyyy.toString(), mm.toString(), dd.toString());
+    $('#reservation').val(minDate + " - " + maxDate);
+
+    selectAll();
+
+    $('#searchBoardBtn').click(function() {
+        selectAll();
+    });
+});
+
+function selectAll() {
+    
     getScorePanel();
 
+    //INTENT SCORE 평균/최소/최대
     drawScoreList();
-
+    //자주 묻는 질문에 대한 답변 top 10
     getOftQuestion();
-    
+    //응답(평균/최대/최소)/평균 머무르는 시간
     getResponseTime();
-
+    //시간대 별 질문수
     getQueryByEachTime();
-
+    //미답변 질문
     drawNoneQuerytable();
-
+    //고객 별 첫 질문 bar
     drawFirstQuery();
-
-    drawfirstQuerytable();
-});
+    //고객 별 첫 질문 table
+    drawfirstQuerytable();  
+}
 
 
 //INTENT SCORE 평균/최소/최대 테이블 페이지 버튼 클릭
@@ -48,19 +138,24 @@ $(document).on('click','#fistQueryTablePaging .li_paging',function(e){
 
 
 function getFilterVal(page) {
+
+    var dateArr = $('#reservation').val().split('-');
+    var startDate = $.trim(dateArr[0]);
+    var endDate = $.trim(dateArr[1]);
+
     var filterVal;
     if(page) {
         filterVal = {
-            startDate : '02/27/2017', //$('input[name=daterangepicker_start]').val(),
-            endDate : '02/27/2018', //$('input[name=daterangepicker_end]').val(),
+            startDate : startDate, //$('input[name=daterangepicker_start]').val(),
+            endDate : endDate, //$('input[name=daterangepicker_end]').val(),
             selDate  : $('#selDate').val(),
             selChannel  : $('#selChannel').val(),
             page : page
         };
     } else {
         filterVal = {
-            startDate : '02/27/2017', //$('input[name=daterangepicker_start]').val(),
-            endDate : '02/27/2018', //$('input[name=daterangepicker_end]').val(),
+            startDate : startDate, //$('input[name=daterangepicker_start]').val(),
+            endDate : endDate, //$('input[name=daterangepicker_end]').val(),
             selDate  : $('#selDate').val(),
             selChannel  : $('#selChannel').val()
         };
@@ -137,7 +232,8 @@ function getOftQuestion() {
             var scoreList = "";
 
             for (var i=0; i< tableList.length; i++) {
-                scoreList += "<tr><td>" + tableList[i].INTENT + "</td>";
+                scoreList += "<tr><td>" + Number(i+1) + "</td>";
+                scoreList += "<td>" + tableList[i].INTENT + "</td>";
                 scoreList += "<td>" + tableList[i].KORQ + "</td>";
                 scoreList += "<td>" + tableList[i].CHANNEL + "</td>";
                 scoreList += "<td>" + tableList[i].QNUM + "</td>";
