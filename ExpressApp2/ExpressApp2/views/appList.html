@@ -36,7 +36,7 @@
 
       <!-- Content Wrapper -->
       <div class="content-wrapper">
-                        <section class="content-header"><h1>챗봇 목록 </h1>  </section>
+                        <section class="content-header"><h1><%= __('CHAT_LIST') %></h1>  </section>
     
                         <!-- Main content -->
                         <section class="content">
@@ -66,8 +66,8 @@
                                                                      </a>
                                                                </div>
                                                                <div class="chatlis_result">
-                                                                   <div class="re01">의도 <span>12</span></div>
-                                                                   <div class="re02">답변 <span>09</span></div>
+                                                                   <div class="re01"><%= __('INTENT') %> <span><%= list[i].INTENT_CNT %></span></div>
+                                                                   <div class="re02"><%= __('REPLY') %> <span><%= list[i].DLG_CNT %></span></div>
                                                                </div>
                                                         </div>
                                                  </div>

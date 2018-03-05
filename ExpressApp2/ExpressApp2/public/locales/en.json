@@ -151,5 +151,21 @@
 	"SEARCH": "SEARCH",
 	"Please enter ...": "Please enter ...",
 	"OK": "OK",
-	"CARD_LIST": "CARD DETAIL"
+	"CARD_LIST": "CARD DETAIL",
+	"============= app_list  =============": "",
+	"CHAT_LIST": "CHATBOT LIST",
+	"INTENT": "INTENT",
+	"ANSWER": "REPLY",
+	"============= left_side_bar  =============": "",
+	"CHATBOT": "ChatBot",
+	"MENU": "Menu",
+	"ADD_CHAT": "ADD CHATBOT",
+	"LEARNING": "CHAT LEARNING",
+	"RECOMMENDATION": "RECOMMENDATION",
+	"UTTERANCE_SETTING": "UTTERANCE SETTING",
+	"DIALOG_SETTING": "DIALOG SETTING",
+	"ENTITY_SETTING": "ENTITY SETTING",
+	"TRAIN": "TRAIN",
+	"SIMULATION": "SIMULATION",
+	"DASHBOARD": "DASHBOARD"
 }

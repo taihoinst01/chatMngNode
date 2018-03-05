@@ -138,31 +138,57 @@ router.get('/', function (req, res) {
 router.get('/list', function (req, res) {
     req.session.selMenu = 'm1';
     var loginId = req.session.sid;
-    var userListStr = "SELECT A.APP_ID, A.VERSION, A.APP_NAME, FORMAT(A.REG_DT,'yyyy-MM-dd') REG_DT, A.CULTURE, A.DESCRIPTION" +
-                      "  FROM TBL_LUIS_APP A, TBL_USER_RELATION_APP B " +
-                      " WHERE 1=1 " +
-                      "   AND A.APP_ID = B.APP_ID " +
-                      "   AND B.USER_ID = '" + loginId + "'; ";
+    var userListStr = "SELECT A.APP_ID, A.VERSION, A.APP_NAME, FORMAT(A.REG_DT,'yyyy-MM-dd') REG_DT, A.CULTURE, A.DESCRIPTION \n" +
+                      "  FROM TBL_LUIS_APP A, TBL_USER_RELATION_APP B \n" +
+                      " WHERE 1=1 \n" +
+                      "   AND A.APP_ID = B.APP_ID \n" +
+                      "   AND B.USER_ID = '" + loginId + "'; \n";
 
-
+    var rows;
+    var cnt_query;
     dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(userListStr)
         }).then(result => {
-            let rows = result.recordset
+            rows = result.recordset
             req.session.leftList = rows;
-            req.session.save(function(){
-                res.render('appList',
-                {
-                    title: 'Express',
-                    appName: req.session.appName,
-                    selMenu: req.session.selMenu,
-                    list: rows,
-                    leftList: req.session.leftList
+            if (rows.length > 0) {
+                cnt_query = " SELECT ( SELECT COUNT( DISTINCT LUIS_INTENT ) FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ID ='" + rows[0].APP_NAME + "')  AS INTENT_CNT, \n" +
+                                    "( SELECT COUNT( GroupL )    FROM TBL_DLG  WHERE GroupL ='" + rows[0].APP_NAME + "') AS DLG_CNT \n";
+                for (var i=1; i<rows.length; i++) {
+                    cnt_query += "UNION ALL \n";
+                    cnt_query += " SELECT ( SELECT COUNT( DISTINCT LUIS_INTENT ) FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ID ='" + rows[i].APP_NAME + "')  AS INTENT_CNT, \n" +
+                                     "( SELECT COUNT( GroupL )    FROM TBL_DLG  WHERE GroupL ='" + rows[i].APP_NAME + "') AS DLG_CNT \n";
+                }
+            }
+
+            dbConnect.getConnection(sql).then(pool => {
+                return pool.request().query(cnt_query)
+            }).then(result => {
+                let rows2 = result.recordset;
+    
+                for (var i=0; i<rows.length; i++) {
+                    rows[i].INTENT_CNT = rows2[i].INTENT_CNT;
+                    rows[i].DLG_CNT = rows2[i].DLG_CNT;
+                }
+    
+                req.session.save(function(){
+                    res.render('appList',
+                    {
+                        title: 'Express',
+                        appName: req.session.appName,
+                        selMenu: req.session.selMenu,
+                        list: rows,
+                        leftList: req.session.leftList
+                    });
                 });
+                
+                sql.close();
+            }).catch(err => {
+                res.status(500).send({ message: "${err}"})
+                sql.close();
             });
-            
-            sql.close();
+
         }).catch(err => {
             res.status(500).send({ message: "${err}"})
             sql.close();
@@ -171,12 +197,11 @@ router.get('/list', function (req, res) {
     sql.on('error', err => {
         sql.close();
     })
-                        
+});
 
-
-
-
-
+router.get('/addChatbot', function (req, res) {
+    req.session.selMenus = 'ms1';
+    res.render('addChatbot');
 });
 
 //Luis app insert
@@ -204,6 +229,16 @@ router.post('/admin/putAddApps', function (req, res){
             //console.log(data); // app id값
             var responseData;
             if(response.statusCode == 201){ // 등록 성공
+
+                //색상 등록
+                
+
+
+
+
+
+
+
                 responseData = {'appId': data};
             }else{
                 responseData = data;

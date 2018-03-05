@@ -2,7 +2,7 @@
 
 <aside class="main-sidebar">
     <section class="sidebar">
-                           <div class="sidebar-form">ChatBot <a href="/users/userMng"  class="left_set"><span class="sr-only">관리자설정바로가기</span></a></div>
+                           <div class="sidebar-form"><%= __('CHATBOT') %> <a href="/users/userMng"  class="left_set"><span class="sr-only">관리자설정바로가기</span></a></div>
                            <!-- chat bot list -->
                            <div class="sidebar-form se02">
                                           <div class="pull-left image img-circle color_01"> </div>
@@ -41,8 +41,8 @@
                                                     %>
                                                   
                                                   <li class="tline"></li>
-                                                  <a href="#" class="fa fa-plus" id="btn_crte_botCrte" onclick="openModalBox('#new_chatbot')"></a>>  Add ChatBot</a>
-                                                  <a href="/list" class="fa fa-list"> ChatBot List</a>
+                                                  <a href="/addChatbot" class="fa fa-plus" id="btn_crte_botCrte" > <%= __('ADD_CHAT') %></a>
+                                                  <a href="/list" class="fa fa-list"> <%= __('CHAT_LIST') %></a>
                                                 </ul>
                                               </li>
                                           </ul>
@@ -59,27 +59,27 @@
 
                          <!--left Menu-->
                           <ul class="sidebar-menu" data-widget="tree">
-                                <li class="header">Menu</li>
+                                <li class="header"><%= __('MENU') %></li>
                                 <li class=" treeview"><!--<li class="active treeview">-->  
                                   <a href="#">
-                                    <i class="fa fa-desktop"></i> <span>챗봇학습</span>
+                                    <i class="fa fa-desktop"></i> <span><%= __('LEARNING') %></span>
                                     <span class="pull-right-container">
                                       <i class="fa fa-angle-left pull-right"></i>
                                     </span>
                                   </a>
                                   <ul class="treeview-menu" >
-                                    <li><a href="/learning/recommend"><i class="fa  fa-circle-o"></i>학습추천</a></li>
-                                    <li><a href="/learning/utterances"><i class="fa fa-circle-o"></i> 발언설정</a></li>
-                                    <li><a href="/learning/dialog"><i class="fa fa-circle-o"></i> 대화상자설정</a></li>
-                                    <li><a href="/learning/entities"><i class="fa fa-circle-o"></i> 단어설정</a></li>
-                                    <li><a href="#" class="spmenu" data-toggle="modal" data-target="#myModal">학습 진행</a></li>
-                                    <li class="active"><a href="#" class="spmenu"  data-toggle="control-sidebar" >시뮬레이션</a></li>
+                                    <li><a href="/learning/recommend"><i class="fa  fa-circle-o"></i><%= __('RECOMMENDATION') %></a></li>
+                                    <li><a href="/learning/utterances"><i class="fa fa-circle-o"></i> <%= __('UTTERANCE_SETTING') %></a></li>
+                                    <li><a href="/learning/dialog"><i class="fa fa-circle-o"></i> <%= __('DIALOG_SETTING') %></a></li>
+                                    <li><a href="/learning/entities"><i class="fa fa-circle-o"></i> <%= __('ENTITY_SETTING') %></a></li>
+                                    <li><a href="#" class="spmenu" data-toggle="modal" data-target="#myModal"><%= __('TRAIN') %></a></li>
+                                    <li class="active"><a href="#" class="spmenu"  data-toggle="control-sidebar" ><%= __('SIMULATION') %></a></li>
                                   </ul>
                                 </li>
                                 
                                 <li class="treeview" id="dashboardClick"> 
                                   <a href="/board">
-                                    <i class="fa fa-dashboard"></i> <span>대시보드</span>
+                                    <i class="fa fa-dashboard"></i> <span><%= __('DASHBOARD') %></span>
                                     <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i> </span>
                                   </a>
                                 </li>

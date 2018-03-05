@@ -152,6 +152,22 @@
 	"Please enter ...": "Please enter ...",
 	"SEARCH": "검색",
 	"OK": "확인",
-	"CARD_LIST": "카드 상세"
-	
+	"CARD_LIST": "카드 상세",
+	"============= app_list  =============": "",
+	"CHAT_LIST": "챗봇 목록",
+	"INTENT": "의도",
+	"ANSWER": "답변",
+	"============= left_side_bar  =============": "",
+	"CHATBOT": "챗봇",
+	"MENU": "메뉴",
+	"ADD_CHAT": "챗봇 추가",
+	"LEARNING": "챗봇학습",
+	"RECOMMENDATION": "학습추천",
+	"UTTERANCE_SETTING": "발언설정",
+	"DIALOG_SETTING": "대화상자설정",
+	"ENTITY_SETTING": "단어설정",
+	"TRAIN": "학습진행",
+	"SIMULATION": "시물레이션",
+	"DASHBOARD": "대시보드",
+	"REPLY": "REPLY"
 }
