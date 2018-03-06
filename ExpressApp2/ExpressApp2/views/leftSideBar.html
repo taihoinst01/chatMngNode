@@ -29,7 +29,7 @@
                                                             for(var i=0; i<leftList.length; i++) {
                                                         %>
                                                              <!--row -->
-                                                             <a href="/board?appName=<%= leftList[i].APP_NAME %>&appId=<%= leftList[i].APP_ID %>" class="circle_col"><li><span class="pull-left image img-circle_s color_0<%=((i%15)+1)%>"> </span><span class="tex01"><%= leftList[i].APP_NAME %></span> </li></a>
+                                                             <a href="/board?appName=<%= leftList[i].APP_NAME %>&appId=<%= leftList[i].APP_ID %>" class="circle_col"><li><span class="pull-left image img-circle_s <%=leftList[i].APP_COLOR %>"> </span><span class="tex01"><%= leftList[i].APP_NAME %></span> </li></a>
                                                         <%
                                                             }   
                                                         } else {
@@ -103,12 +103,12 @@
                 <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                        <h4 class="modal-title" id="myModalLabel">학습 진행</h4>
+                        <h4 class="modal-title" id="myModalLabel"><%= __('TRAIN') %></h4>
                         </div>
-                        <div class="modal-body"><p class="txt_center mt20">챗봇 학습이 완료 되었습니다.</p></div>
+                        <div class="modal-body"><p class="txt_center mt20"><%= __('TRAIN_COMPLETE') %></p></div>
                         <div class="modal-footer">
                             <div class="btn_wrap">
-                                            <button type="button" class="btn btn-default"  data-dismiss="modal">확인</button>
+                                            <button type="button" class="btn btn-default"  data-dismiss="modal"><%= __('OK') %></button>
                             </div>
                         </div>
                 </div>
@@ -118,7 +118,7 @@
 <!-- Control Sidebar -->
 <aside class="control-sidebar control-sidebar-dark">
         <div  class="hd_top " >
-            <h4>챗봇 시뮬레이션</h4>
+            <h4><%= __('CHATBOT_SIMUL') %></h4>
             <div class="btn_wrap04">
                 <button  type="button" class="btn btn_02"><span class="fa fa-rotate-right  "></span></button>
                 <button  type="button" class="btn btn_02"  data-toggle="control-sidebar" ><span class="fa fa-close"></span></button>

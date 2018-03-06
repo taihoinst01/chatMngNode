@@ -1,87 +1,119 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-        <link rel='stylesheet' href='/stylesheets/style.css' />
-        <link rel='stylesheet' href='/css/setting.css' />
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>
-        TIIS Manager
-        </title>
-        <%include  ./common/commonUse.html%>
-        <%
-            if(languageNow == 'ko') {
-        %>
-        <script type="text/javascript" src="/js/import/freejqgrid/js/i18n/grid.locale-kr.js" charset="utf-8"></script>
-        <%
-            } else {
-        %>
-        <script type="text/javascript" src="/js/import/freejqgrid/js/i18n/grid.locale-en.js" charset="utf-8"></script>
-        <%
-            }
-        %>
-        
-        <script type="text/javascript" src="/js/import/freejqgrid/js/jquery.jqgrid2016.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="/js/common/userMng.js"></script>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+<%include  ./common/commonLib.html%>
+
+<script type="text/javascript" src="/js/common/userMng.js"></script>
+
 </head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
 
-<body class="main">
-    <%include  ./header.html%>
-    <div id="setting-wrap">
-        <%include  ./settingLeftMenu.html%>
-        <div class="setting-contents blue">
-            <div class="title">
-                <%= __('USER_MNG') %>
-            </div>
-            <div class="settingSearch">
-                <form id="frm" name="frm" method="post">
-                    <input type="text" name="dummy" id="dummy" value="" style="display:none;"/>
-                    <div class="tbl_area_l"  style="width:62%; " >
-                        <span class="optit ml15"> <%= __('USER_NAME') %>:</span>
-                        <div class="search_inbox" style="width:30%;" >
-                            <input type="text" name="searchName" id="searchEmpNm" class="inbox_search" style="width:90%;" title="검색어입력" alt="<%= __('Please enter ...') %>" value="">
-                        </div>
-                        <span class="optit ml15"> <%= __('USER_ID') %>:</span>
-                        <div class="search_inbox" style="width:30%;">
-                            <input type="text" name="searchId" id="searchUserId" class="inbox_search" style="width:88%;" title="검색어입력" alt="<%= __('Please enter ...') %>" value="">
-                            <a href="#" id="btn_Inq_search" name="btn_Inq_search" alt="검색" value="검색" style="float:right;" class="btn_insearch"><span class="hc"><%= __('Search word') %></span></a>
-                        </div>
-                    </div>
-                </form>
-            </div>
+      <!-- Header -->
+      <%include  ./header.html%>
+      <!-- //Header -->
 
-            <div class="tbl_area" id="tbl_div1">
-                <div class="tbl_area_l" >
-                    <p class="grid_tit"><%= __('USER_LIST') %></p>
-                </div>
-                <div class="tbl_area_r" >
-                    <a href="javascript://" class="btn" id="btn_crte_insert1" name="btn_crte_insert1" style="margin:0 5px 0 0;" alt="추가" onclick="insertAction();"><%= __('ADD') %></a>
-                    <a href="javascript://" class="btn" id="btn_crte_delete1" name="btn_crte_delete1" style="margin:0 5px 0 0;" alt="삭제" onclick="deleteAction();"><%= __('DELETE') %></a>
-                    <a href="javascript://" class="btn" id="btn_crte_save1" name="btn_crte_save1" style="margin:0 5px 0 0;" alt="저장" onclick="saveAction();"><%= __('SAVE') %></a>
-                    <a href="javascript://" class="btn" id="btn_crte_init1" name="btn_crte_init1" style="margin:0 5px 0 0;" alt="초기화" onclick="restoreGridAction();"><%= __('INIT') %></a>
-                </div>
-            </div>
+      <!-- Left Menu Side -->
+      <%include  ./leftSideBar_admin.html%>
+      <!--// Left Menu Side -->
 
-            <div class="grid_wrap" style=" height:200px;">
-                    <!-- 공통코드 마스터 목록 그리드 -->
-                <table id="gridList" class="scroll"></table>
-                <div id="pager" style="text-align:center;"></div>
-            </div>
-            <!-- //공통코드 마스터 목록 -->
 
+      <!-- Content Wrapper -->
+      <div class="content-wrapper">
+                        <section class="content-header"><h1><%= __('USER_MNG') %></h1>  </section>
+    
+                        <!-- Main content -->
+                        <section class="content">
+                                <div class="box  color-palette-box">
+                                        <div class="box-body">
+                                                <div class="row search_op">
+                                                    <div class="form-group col-lg-5"  >
+                                                        <label class="fl mr10"><%= __('USER_NAME') %></label>
+                                                        <input type="text" class="form-control" name="searchName" id="searchName" placeholder="<%= __('Please_enter') %>" style="width:80%">
+                                                    </div>  
+                                                    <div class="form-group col-lg-5"  >
+                                                        <label  class="fl mr10"><%= __('USER_ID') %></label>
+                                                        <input type="text" class="form-control" name="searchId" id="searchId" placeholder="<%= __('Please_enter') %>"   style="width:80%">
+                                                    </div> 
+                                                    <div class="form-group col-lg-2" style="text-align:right"  >
+                                                        <button type="button" class="btn btn_01" id="searchBtn"><%= __('SEARCH') %></button>
+                                                    </div>                                                     
+                                                </div>
+                                                <div class="row mt20">
+                                                     <h4 class=" col-lg-6"><%= __('USER_LIST') %></h4>
+                                                     <div class=" col-lg-6" style="text-align:right"> 
+                                                             <button type="button" class="btn btn-default" id="addBtn"><%= __('ADD') %></button>
+                                                             <button type="button" class="btn btn-default" id="deleteBtn"><%= __('DELETE') %></button>
+                                                             <button type="button" class="btn btn-default" id="saveBtn"><%= __('SAVE') %></button>
+                                                             <button type="button" class="btn btn-default" id="initBtn"><%= __('INIT') %></button>
+                                                     </div>
+                                                </div>
+                                                
+                                                <!-- 사용자관리 테이블 --> 
+                                                <div class="Tbl_wrap">
+                                                    <table class="Tbl" summary="사용자관리">
+                                                        <colgroup><col width="5%"/><col width="5%"/><col width="10%"/><col width="10%"/><col width="5%"/>
+                                                                  <col width="13%"/><col width="10%"/><col width="13%"/><col width="13%"/><col width="10%"/>
+                                                        </colgroup>
+                                                        <thead><tr>
+                                                                <th></th>
+                                                                <th><input type="checkbox" class="flat-red" id="check-all"></th>   <!-- <th><input type="checkbox" class="flat-red" checked id="check-all"></th> -->
+                                                                <th><%= __('USER_ID') %></th>
+                                                                <th><%= __('USER_NAME') %></th>
+                                                                <th><%= __('PASSWOARD') %></th>
+                                                                <th><%= __('REGIST_DATE') %></th>
+                                                                <th><%= __('REGIST_ID') %></th>
+                                                                <th><%= __('MODIFIED_DATE') %></th>                                                                  
+                                                                <th><%= __('LAST_LOGIN_DATE') %></th>
+                                                                <th><%= __('LOGIN_FAIL_CNT') %></th>    
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tableBodyId">
+                                                              
+                                                        </tbody>
+                                                    </table>
+                                                </div> 
+                                        </div>
+                                        <!-- 페이징 --> 
+                                    <div class="pagination_wrap" >
+                                        <ul class="pagination pagination-sm no-margin">
             
-            <hr>
-            <footer>
-                <p>&copy; Company 2014</p>
-            </footer>
-        </div>
+                                        </ul>
+                                    </div>
+                                </div>
+                        </section>
+                        <!-- //Main content -->
+        
     </div>
+    <!--// Content Wrapper -->
     
+              
+    <!--  Footer -->
+     <footer class="main-footer">Copyright &copy; <strong> TAIHOINST. </strong> All rights reserved.</footer>
+    <!-- // Footer -->
     
-</body>
+<script>
+  //iCheck for checkbox and radio inputs
+    $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+      checkboxClass: 'icheckbox_minimal-blue',
+      radioClass   : 'iradio_minimal-blue'
+    })
+    //Red color scheme for iCheck
+    $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+      checkboxClass: 'icheckbox_minimal-red',
+      radioClass   : 'iradio_minimal-red'
+    })
+    //Flat red color scheme for iCheck
+    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+      checkboxClass: 'icheckbox_flat-green',
+      radioClass   : 'iradio_flat-green'
+    })
 
-    
-    
+</script>
+</body>
 </html>

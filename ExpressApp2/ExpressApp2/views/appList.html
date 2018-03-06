@@ -59,7 +59,7 @@
                                     %>
                                                 <div class="col-md-3 col-sm-6 col-xs-12">
                                                          <div class="box">
-                                                               <div class=" box_chatlist_h color_0<%=((i%15)+1)%>"><span class="lan"> <%= list[i].CULTURE %></span></div>
+                                                               <div class=" box_chatlist_h <%=list[i].APP_COLOR %>"><span class="lan"> <%= list[i].CULTURE %></span></div>
                                                                <div class="box-body tc">
                                                                      <a href="/board?appName=<%= list[i].APP_NAME %>&appId=<%= list[i].APP_ID %>" class="title"><%= list[i].APP_NAME %>
                                                                          <span><%= list[i].DESCRIPTION %></span>
