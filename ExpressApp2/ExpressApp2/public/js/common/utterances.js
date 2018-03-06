@@ -20,10 +20,10 @@ $(document).ready(function(){
 });
 
 // Utterance 삭제
-$(document).on('click', '#utterDelete', function() {
+$(document).on('click', '.utterDelete', function() {
 
-    $(this).parent().parent().next().remove();
-    $(this).parent().parent().remove();
+    $(this).parents('tr').next().remove();
+    $(this).parents('tr').remove();
     
     /*
     if ($('#entityUtteranceTextTable tbody').find('.off-screen').length > 0) {
@@ -33,17 +33,17 @@ $(document).on('click', '#utterDelete', function() {
         $('#entityUtteranceTextTable tbody').find('.off-screen').eq(0).removeClass('off-screen');
     }
     */
-    var $tr = $('#entityUtteranceTextTable tbody').children('tr');
+    var $tr = $('.recommendTbl tbody').children('tr');
     $tr.css('opacity', '0.0')
             .addClass('off-screen')
-            .slice(0, 5)
+            .slice(0, 6)
             .removeClass('off-screen')
             .animate({opacity: 1}, 300);
     
 
 
-    $('#dialogRecommand').html("");
-    $('input[name=ch1All]').parent().attr('checked', false);
+    $('.dialog_box').html("");
+    $('input[name=tableAllChk]').parent().iCheck('uncheck');
 
     
     changeBtnAble(false);
@@ -74,68 +74,67 @@ $(document).on('click', '#utterDelete', function() {
 });
 
 function pagingFnc() {
-         var rowPerPage = $('[name="dlgRowPerPage"]').val() * 1;// 1 을  곱하여 문자열을 숫자형로 변환
-    
-   //		console.log(typeof rowPerPage);
-   
-        var zeroWarning = 'Sorry, but we cat\'t display "0" rows page. + \nPlease try again.'
-        if (!rowPerPage) {
-            alert(zeroWarning);
+    var rowPerPage = $('[name="dlgRowPerPage"]').val() * 1;// 1 을  곱하여 문자열을 숫자형로 변환
+
+//		console.log(typeof rowPerPage);
+
+    var zeroWarning = 'Sorry, but we cat\'t display "0" rows page. + \nPlease try again.'
+    if (!rowPerPage) {
+        alert(zeroWarning);
+        return;
+    }
+    $('.pagination').html('');
+    var $products = $('.recommendTbl');
+
+    //$products.after('<div id="nav" style="text-align:center">');
+
+
+    var $tr = $($products).children('tbody').children('tr');
+    var rowTotals = $tr.length;
+//	console.log(rowTotals);
+
+    var pageTotal = Math.ceil(rowTotals/ rowPerPage);
+    var i = 0;
+
+    for (; i < pageTotal; i++) {
+        $('<li><a href="#" rel="' + i + '">'+ (i + 1) +'</a></li>')
+                .appendTo('.pagination');
+    }
+
+    $tr.addClass('off-screen')
+            .slice(0, rowPerPage)
+            .removeClass('off-screen');
+
+
+    var $pagingLink = $('.pagination a');
+    $pagingLink.on('click', function (evt) {
+        evt.preventDefault();
+        var $this = $(this);
+        if ($this.hasClass('active')) {
             return;
         }
-        $('#nav').remove();
-        var $products = $('#entityUtteranceTextTable');
-   
-        $products.after('<div id="nav" style="text-align:center">');
-   
-   
-        var $tr = $($products).children('tbody').children('tr');
-        var rowTotals = $tr.length;
-   //	console.log(rowTotals);
-   
-        var pageTotal = Math.ceil(rowTotals/ rowPerPage);
-        var i = 0;
-   
-        for (; i < pageTotal; i++) {
-           $('<a href="#"></a>')
-                   .attr('rel', i)
-                   .html(i + 1)
-                   .appendTo('#nav');
-        }
-   
-        $tr.addClass('off-screen')
-               .slice(0, rowPerPage)
-               .removeClass('off-screen');
-   
-        var $pagingLink = $('#nav a');
-        $pagingLink.on('click', function (evt) {
-            evt.preventDefault();
-            var $this = $(this);
-            if ($this.hasClass('active')) {
-                return;
-            }
-            $pagingLink.removeClass('active');
-            $this.addClass('active');
-           // 0 => 0(0*4), 4(0*4+4)
-           // 1 => 4(1*4), 8(1*4+4)
-           // 2 => 8(2*4), 12(2*4+4)
-           // 시작 행 = 페이지 번호 * 페이지당 행수
-           // 끝 행 = 시작 행 + 페이지당 행수
-   
-            var currPage = $this.attr('rel');
-            var startItem = currPage * rowPerPage;
-            var endItem = startItem + rowPerPage;
-   
-            $tr.css('opacity', '0.0')
-                    .addClass('off-screen')
-                    .slice(startItem, endItem)
-                    .removeClass('off-screen')
-                    .animate({opacity: 1}, 300);
-            pagingSkip();
-   
-       });
-       $pagingLink.filter(':first').addClass('active');
-       pagingSkip();
+        $pagingLink.removeClass('active');
+        $this.addClass('active');
+        // 0 => 0(0*4), 4(0*4+4)
+        // 1 => 4(1*4), 8(1*4+4)
+        // 2 => 8(2*4), 12(2*4+4)
+        // 시작 행 = 페이지 번호 * 페이지당 행수
+        // 끝 행 = 시작 행 + 페이지당 행수
+
+        var currPage = $this.attr('rel');
+        var startItem = currPage * rowPerPage;
+        var endItem = startItem + rowPerPage;
+
+        $tr.css('opacity', '0.0')
+                .addClass('off-screen')
+                .slice(startItem, endItem)
+                .removeClass('off-screen')
+                .animate({opacity: 1}, 300);
+        //pagingSkip();
+
+    });
+    $pagingLink.filter(':first').addClass('active');
+    //pagingSkip();
        
 }
 
@@ -145,18 +144,21 @@ function pagingSkip() {
     $('#nextBtn').remove();
     $('#firstBtn').remove();
     $('#lastBtn').remove();
-    $('#nav').children('a').show();
+    $('.pagination').children('a').show();
 
-    var activeIndex = $('#nav').children('a').index($('.active'));
+    var activeIndex = $('.pagination').children('a').index($('.active'));
     if (activeIndex-4 > 0) {
-        $('#nav').children('a')
+        $('.pagination').children('a')
                 .slice(0, activeIndex-4)
                 .hide();
 
         $('<a href="#"></a>')
                 .attr('id', "firstBtn")
                 .html("[1]")
-                .prependTo('#nav');
+                .prependTo('.pagination');
+
+
+                
         /*
         $('<a href="#"></a>')
                 .attr('id', "preBtn")
@@ -171,18 +173,18 @@ function pagingSkip() {
     } else {
         activeRightIndex = activeIndex +5;
     }
-    if (activeRightIndex < $('#nav').children('a').length) {
-        var rightLen = $('#nav').children('a').length;
+    if (activeRightIndex < $('.pagination').children('a').length) {
+        var rightLen = $('.pagination').children('a').length;
         if ( $('#preBtn').length > 0) { 
             activeRightIndex += 2;
         }
-        $('#nav').children('a')
+        $('.pagination').children('a')
                 .slice(activeRightIndex, rightLen)
                 .hide();
         $('<a href="#"></a>')
                 .attr('id', "lastBtn")
-                .html('[' + $('#nav').children('a').eq($('#nav').children('a').length-1).html() + ']')
-                .appendTo('#nav');
+                .html('[' + $('.pagination').children('a').eq($('.pagination').children('a').length-1).html() + ']')
+                .appendTo('.pagination');
         /*
         $('<a href="#"></a>')
                 .attr('id', "nextBtn")
@@ -204,18 +206,18 @@ $(document).on('click', '#nextBtn', function() {
 });
 */
 $(document).on('click', '#firstBtn', function() {
-    $('#nav').children('a').eq(2).trigger('click');
+    $('.pagination').children('a').eq(2).trigger('click');
     return false;
 });
 $(document).on('click', '#lastBtn', function() {
-    $('#nav').children('a').eq($('#nav').children('a').length-3).trigger('click');
+    $('.pagination').children('a').eq($('.pagination').children('a').length-3).trigger('click');
     return false;
 });
 $(document).ready(function(){
 
     //add eneity mordal save btn check
-    $('#entityDefine, #entityValue').on('input',function(e){
-        if( $('#entityDefine').val() !== "" &&  $('#entityValue').val() !== "") {
+    $('input[name=entityDefine], input[name=entityValue]').on('input',function(e){
+        if( $('input[name=entityDefine]').val() !== "" &&  $('input[name=entityValue]').val() !== "") {
             $('#btnAddEntity').removeClass('disable');
             $('#btnAddEntity').prop("disabled", false);
         } else {
@@ -265,29 +267,29 @@ $(document).ready(function(){
     })
 
     // Utterance 입력
-    $("#iptUtterance").keypress(function(e) {
+    $('input[name=iptUtterance]').keypress(function(e) {
 
         if (e.keyCode == 13){	//	Enter Key
 
             //$("#entityUtteranceTextTable tbody").html("");
-            $("#dialogRecommand").html("");
+            $('.dialog_box').html('');
 
-            $("#iptUtterance").attr("readonly",true);
+            $('input[name=iptUtterance]').attr('readonly',true);
             var queryText = $(this).val();
             if(queryText.trim() == "" || queryText.trim() == null) {
-                $("#iptUtterance").attr("readonly",false);
+                $('input[name=iptUtterance]').attr('readonly',false);
                 return false;
             }
             utterInput(queryText);
 
-            $("#iptUtterance").attr("readonly",false);
+            $("input[name=iptUtterance]").attr("readonly",false);
         }
     });
 
     // Utterance Learn
     $('#utterLearn').click(function(){
 
-        var entity = $('input[name=entity').val();
+        var entity = $('input[name=entity]').val();
         
         var inputDlgId = $('input[name=dlgId]');
         var dlgId = new Array();
@@ -305,17 +307,17 @@ $(document).ready(function(){
                 if(result['result'] == true) {
                     alert(language.Added);
                     
-                    $('input[name=ch1All]').parent().attr('checked', false);
+                    $('input[name=tableAllChk]').parent().iCheck('uncheck');
                     changeBtnAble(false);
 
-                    $("#entityUtteranceTextTable tbody").html("");
-                    $("#dialogRecommand").html("");
+                    $('.recommendTbl tbody').html('');
+                    $('.dialog_box').html('');
 
-                    $('#utterLearn').attr("disabled", "disabled");
-                    $('#utterLearn').addClass("disable");
+                    $('#utterLearn').attr('disabled', 'disabled');
+                    $('#utterLearn').addClass('disable');
 
-                    $('.utterList div[type=checkbox]').removeAttr('checked');
-                    $('#nav').remove();
+                    $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
+                    $('.pagination').html('');
                 }else{
                     alert(language.It_failed);
                 }
@@ -341,12 +343,12 @@ $(document).ready(function(){
         //$('#dlgLang').find('option:first').attr('selected', 'selected');
         //$('#dlgOrder').find('option:first').attr('selected', 'selected');
     });
+
     //add entity mordal close event
-    $('#addEntityClose , #addEntityCancel').click(function(){
-        $('#layoutBackground').css('display','none');
-        $('#entityDefine').val("");  
-        $('#entityValue').val("");
+    $('.addEntityModalClose').click(function(){
+        $('form[name=entityInsertForm]')[0].reset();
     });
+    
     //utter 체크박스 전체선택 
     $('#allCheck').parent().click(function() {
         var checkedVal = false;
@@ -367,33 +369,52 @@ $(document).ready(function(){
         }
         //changeBtnAble('delete', checkedVal);
     });
-
-	$('#addDialogClose , #addDialogCancel').click(function(){
+    
+	$('.createDlgModalClose').click(function(){
         $('#mediaCarouselLayout').css('display','none');
         $('#cardLayout').css('display','none');
         $('#appInsertForm')[0].reset();
         $('.insertForm').remove();
+        
         var insertForm = '';
-        insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
+        insertForm += '<div class="insertForm">';
+        insertForm += '<div class="form-group" >';
         insertForm += '<form name="dialogLayout" id="dialogLayout">';
-        insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
-        insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
-        insertForm += '<option value="2" selected>Text</option>';
-        insertForm += '<option value="3">Carousel</option>';
-        insertForm += '<option value="4">Media</option>';
-        insertForm += '</select></p>';
+        insertForm += '<label>대화상자 타입<span class="nec_ico">*</span> </label>';
+        insertForm += '<select class="form-control" name="dlgType">';
+        insertForm += '<option value="2">텍스트 타입</option>';
+        insertForm += '<option value="3">카드 타입</option>';
+        insertForm += '<option value="4">미디어 타입</option>';
+        insertForm += '</select>';
         insertForm += '<div class="clear-both"></div>';
         insertForm += '</form>';
+        insertForm += '</div>';
         insertForm += '</div>';
         
         $('#apiLayout').css('display', 'none');
         $('#commonLayout').css('display', 'block');
-        $('#commonLayout div:first').prepend(insertForm);
-        if($('#btnCreateLgroup').html() == 'cancel') {
+        $('#commonLayout').prepend(insertForm);
+        
+        if($('#btnCreateLgroup').html() == '취소') {
 
             $('#btnCreateLgroup').click();
         }
-        $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>' + language.Please_enter + '</p></div></div></div></div></div></div></div>');
+        var dialogView = '';
+        dialogView += '<div class="dialogView" >';
+        dialogView += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
+        dialogView += '<div class="wc-message-content">';
+        dialogView += '<svg class="wc-message-callout"></svg>';
+        dialogView += '<div>';
+        dialogView += '<div class="format-markdown">';
+        dialogView += '<div class="textMent">';
+        dialogView += '<p>' + language. Please_enter + '</p>';
+        dialogView += '</div>';
+        dialogView += '</div>';
+        dialogView += '</div>';
+        dialogView += '</div>';
+        dialogView += '</div>';
+        dialogView += '</div>';
+        $('#dialogViewWrap').html(dialogView);
     });
 
     //dlg 체크박스 전체선택 
@@ -420,33 +441,49 @@ $(document).ready(function(){
     // 소스 타입 변경
     $('#sourceType').change(function(e){
         if($(e.target).val() == "API") {
-            $('#dialogPreview').html('');
+            $('.dialogView').html('');
             $('#commonLayout').css('display','none');
             $('#apiLayout').css('display','block');
         } else {
 
             $('.insertForm').remove();
-
             var insertForm = '';
-            insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
+            insertForm += '<div class="insertForm">';
+            insertForm += '<div class="form-group" >';
             insertForm += '<form name="dialogLayout" id="dialogLayout">';
-            insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
-            insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
-            insertForm += '<option value="2" selected>Text</option>';
-            insertForm += '<option value="3">Carousel</option>';
-            insertForm += '<option value="4">Media</option>';
-            insertForm += '</select></p>';
+            insertForm += '<label>대화상자 타입<span class="nec_ico">*</span> </label>';
+            insertForm += '<select class="form-control" name="dlgType">';
+            insertForm += '<option value="2">텍스트 타입</option>';
+            insertForm += '<option value="3">카드 타입</option>';
+            insertForm += '<option value="4">미디어 타입</option>';
+            insertForm += '</select>';
             insertForm += '<div class="clear-both"></div>';
             insertForm += '</form>';
             insertForm += '</div>';
-    
+            insertForm += '</div>';
+            
             $('#commonLayout').css('display','block');
-            $('#commonLayout div:first').prepend(insertForm);
-            $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>입력해주세요...</p></div></div></div></div></div></div></div>');
+            $('#commonLayout').prepend(insertForm);
+            var dialogView = '';
+            dialogView += '<div class="dialog_box03 dialogView" >';
+            dialogView += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
+            dialogView += '<div class="wc-message-content">';
+            dialogView += '<svg class="wc-message-callout"></svg>';
+            dialogView += '<div>';
+            dialogView += '<div class="format-markdown">';
+            dialogView += '<div class="textMent">';
+            dialogView += '<p>' + language. Please_enter + '</p>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            $('#dialogViewWrap').html(dialogView);
             
             $('#apiLayout').css('display','none');
-            $(".insertForm form").append($("#textLayout").clone(true));
-            $('.insertForm #textLayout').css('display','block');
+            $(".insertForm form").append($(".textLayout").clone(true));
+            $('.insertForm .textLayout').css('display','block');
         }
     });
     
@@ -472,19 +509,18 @@ $(document).ready(function(){
 */
 
     // create LargeGroup
-    $('#btnCreateLgroup').on('click',function(){
-        if($(this).html() == "new") {
-            $(this).html('cancel');
-            $(this).css('margin','6px 0 0 55px');
+    $('#btnCreateLgroup').on('click',function(e){
+        if($(this).html() == "신규") {
+            $(this).html('취소');
             $('#largeGroupEdit').css('display','block');
             $('#largeGroup').css('display','none');
         } else {
-            $(this).html('new');
-            $(this).css('margin','6px 0 0 65px');
+            $(this).html('신규');
             $('#largeGroupEdit').css('display','none');
             $('#largeGroup').css('display','block');
         }
-        return;
+
+        e.de
     });
     
     //다이얼로그 Add From
@@ -493,39 +529,49 @@ $(document).ready(function(){
         //$(".copyForm textarea[name=dialogText]:last").val('');
 
         var insertForm = '';
-        insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
-        insertForm += '<form name="dialogLayout" id="dialogLayout">';
-        insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
-        insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
-        insertForm += '<option value="2" selected>Text</option>';
-        insertForm += '<option value="3">Carousel</option>';
-        insertForm += '<option value="4">Media</option>';
-        insertForm += '</select></p>';
-        insertForm += '<div class="clear-both"></div>';
-        insertForm += '<div id="textLayout" style="display:block;">';
-        insertForm += '<p class="texcon03">Dialogue Title <span>(required) </span></p>';
-        insertForm += '<p><input name="dialogTitle" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." onkeyup="writeDialogTitle(this);" /></p>';
-        insertForm += '<p class="texcon03">Dialogue Text  <span>(required) </span></p>';
-        insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
-        insertForm += '</div>';
-        insertForm += '</form>';
-        insertForm += '</div>';
+            insertForm += '<hr>';
+            insertForm += '<div class="insertForm">';
+            insertForm += '<div class="form-group" >';
+            insertForm += '<form name="dialogLayout" id="dialogLayout">';
+            insertForm += '<label>대화상자 타입<span class="nec_ico">*</span> </label>';
+            insertForm += '<select class="form-control" name="dlgType">';
+            insertForm += '<option value="2">텍스트 타입</option>';
+            insertForm += '<option value="3">카드 타입</option>';
+            insertForm += '<option value="4">미디어 타입</option>';
+            insertForm += '</select>';
+            insertForm += '<div class="clear-both"></div>';
+
+            insertForm += '<div class="textLayout" style="display: block;">';
+            insertForm += '<div class="form-group">';
+            insertForm += '<label>대화상자 제목<span class="nec_ico">*</span></label>';
+            insertForm += '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder=" 제목을 입력하세요.">';
+            insertForm += '</div>';
+            insertForm += '<div class="form-group">';
+            insertForm += '<label>대화상자 내용<span class="nec_ico">*</span></label>';
+            insertForm += '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder=" 내용을 입력하세요.">';
+            insertForm += '</div>';
+            insertForm += '</div>';
+            insertForm += '</form>';
+            insertForm += '</div>';
+            insertForm += '</div>';
 
         $(".insertForm:last").after(insertForm);
         //$(".insertFormWrap").append(insertForm);
-        var insertHtml = '';
-        insertHtml += '<div class="dialogView">';
-        insertHtml += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
-        insertHtml += '<div class="wc-message-content">';
-        insertHtml += '<svg class="wc-message-callout"></svg>';
-        insertHtml += '<div><div class="format-markdown"><div class="textMent">';
-        insertHtml += '<p>';
-        insertHtml += language.Please_enter
-        insertHtml += '</p>';
-        insertHtml += '</div></div></div></div></div>';
-        insertHtml += '</div>';
-
-        $("#dialogPreview").append(insertHtml);
+        var dialogView = '';
+            dialogView += '<div class="dialogView" >';
+            dialogView += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
+            dialogView += '<div class="wc-message-content">';
+            dialogView += '<svg class="wc-message-callout"></svg>';
+            dialogView += '<div>';
+            dialogView += '<div class="format-markdown">';
+            dialogView += '<div class="textMent">';
+            dialogView += '<p>' + language. Please_enter + '</p>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            
+        $('#dialogViewWrap').append(dialogView);
         e.stopPropagation();
         e.preventDefault();
         
@@ -550,7 +596,7 @@ $(document).ready(function(){
                 dlgHtml += '</div></div></div></div></div>';
             }
 
-            $('#dialogPreview').append(dlgHtml);
+            $('.dialogView').append(dlgHtml);
         }else if(dlgType == '3'){ //carousel
             if($('#add-carousel').length == 0){ //초기 append
                 dlgHtml += '<div id="add-carousel">';
@@ -591,7 +637,7 @@ $(document).ready(function(){
                 dlgHtml += '</div>';
                 dlgHtml += '</div>';
 
-                $('#dialogPreview').append(dlgHtml);
+                $('.dialogView').append(dlgHtml);
             }else{
                 if($('#add-carousel').length == 1){
                     var prevBtnHtml = '';
@@ -688,13 +734,10 @@ $(document).ready(function(){
         
     });
 
-    $("#searchDialogClose").on('click',function(){
-        $("#searchDialogCancel").click();
-    });
-
-    $("#searchDialogCancel").on('click',function(){
+    $(".searchDialogClose").on('click',function(){
         $('input[name=serachDlg]').val('');
         $('#searchDlgResultDiv').html('');
+        $('.dialog_result strong').html(' 0 ');
     });
 
 });
@@ -703,7 +746,7 @@ $(document).ready(function(){
 //utter td 클릭
 $(document).on('click','.clickUtter',function(event){
     var utter = $(this).find('input[name=entity]').val();
-    $('#dialogRecommand').html(dlgMap[utter]);
+    $('.dialog_box').html(dlgMap[utter]);
 });
 
 //intent selbox 선택
@@ -715,8 +758,8 @@ $(document).on('change','select[name=dlgType]',function(e){
     var idx = $("select[name=dlgType]").index(this);
     var insertHtml = "";
 
-    $('.insertForm:eq(' + idx + ') #carouselLayout').remove();
-    $('.insertForm:eq(' + idx + ') #mediaLayout').remove();
+    $('.insertForm:eq(' + idx + ') .carouselLayout').remove();
+    $('.insertForm:eq(' + idx + ') .mediaLayout').remove();
     $('.insertForm:eq(' + idx + ')').find('.clear-both').each(function( index) {
 
         if ( index != 0 ) {
@@ -728,16 +771,16 @@ $(document).on('change','select[name=dlgType]',function(e){
     if($(e.target).val() == "2") {
 
     } else if($(e.target).val() == "3") {
-        //var $clone = $('#carouselLayout').clone();  <div id="carouselLayout" style="display: block;">[object Object]</div>
-        var caraousHtml = '<div id="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>'
-        $('.insertForm:eq(' + idx + ') form').append('<div id="carouselLayout" style="display:none;">' + caraousHtml + '</div>') ;
-        $('.insertForm:eq(' + idx + ') #carouselLayout').css('display', 'block');
-        $('.insertForm:eq(' + idx + ') #carouselLayout').find('a[name=addCarouselBtn]:last').closest('div').css('display', 'inline-block');
+        //var $clone = $('.carouselLayout').clone();  <div id="carouselLayout" style="display: block;">[object Object]</div>
+        var caraousHtml = '<div class="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>'
+        $('.insertForm:eq(' + idx + ') form').append('<div class="carouselLayout" style="display:none;">' + caraousHtml + '</div>') ;
+        $('.insertForm:eq(' + idx + ') .carouselLayout').css('display', 'block');
+        $('.insertForm:eq(' + idx + ') .carouselLayout').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
     } else if($(e.target).val() == "4") {
         var mediaForm = '<div id="mediaLayout" style="display: block;">' + $mediaForm.html() + '</div>'
-        $('.insertForm:eq(' + idx + ') form').append('<div id="mediaLayout" style="display:none;">' + mediaForm + '</div>') ;
-        $('.insertForm:eq(' + idx + ') #mediaLayout').css('display', 'block');
-        $('.insertForm:eq(' + idx + ') #mediaLayout').find('[name=addMediaBtn]:last').closest('div').css('display', 'inline-block');
+        $('.insertForm:eq(' + idx + ') form').append('<div class="mediaLayout" style="display:none;">' + mediaForm + '</div>') ;
+        $('.insertForm:eq(' + idx + ') .mediaLayout').css('display', 'block');
+        $('.insertForm:eq(' + idx + ') .mediaLayout').find('.addMediaBtn:last').closest('div').css('display', 'inline-block');
     }
 
     if($(e.target).val() == "2") {
@@ -764,7 +807,7 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '</button>';
         insertHtml += '<div class="wc-hscroll-outer" >';
         insertHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (idx) + '">';
-        insertHtml += '<ul>';
+        insertHtml += '<ul style="padding-left: 0px;">';
         insertHtml += '<li class="wc-carousel-item">';
         insertHtml += '<div class="wc-card hero">';
         insertHtml += '<div class="wc-container imgContainer">';
@@ -772,7 +815,7 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '</div>';
         insertHtml += '<h1>CARD_TITLE</h1>';
         insertHtml += '<p class="carousel">CARD_TEXT</p>';
-        insertHtml += '<ul class="wc-card-buttons"><li><button>BTN_1_TITLE</button></li></ul>';
+        insertHtml += '<ul class="wc-card-buttons" style="padding-left: 0px;"><li><button>BTN_1_TITLE</button></li></ul>';
         insertHtml += '</div>';
         insertHtml += '</li>';
         /*
@@ -796,7 +839,7 @@ $(document).on('change','select[name=dlgType]',function(e){
     } else if($(e.target).val() == "4") {
         $(".dialogView").eq(idx).html('');
         insertHtml += '<div class="wc-message wc-message-from-bot">';
-        insertHtml += '<div class="wc-message-content">';
+        insertHtml += '<div class="wc-message-content" style="width: inherit !important;">';
         insertHtml += '<svg class="wc-message-callout"></svg>';
         insertHtml += '<div>';
         insertHtml += '<div class="wc-carousel">';
@@ -804,7 +847,7 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<button class="scroll previous" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png"></button>';
         insertHtml += '<div class="wc-hscroll-outer">';
         insertHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
-        insertHtml += '<ul>';
+        insertHtml += '<ul style="padding-left: 0px;">';
         insertHtml += '<li class="wc-carousel-item wc-carousel-play">';
         insertHtml += '<div class="wc-card hero">';
         insertHtml += '<div class="wc-card-div imgContainer">';
@@ -815,7 +858,7 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<div class="hidden" alt="card_value"></div>';
         insertHtml += '</div>';
         insertHtml += '<h1>media title</h1>';
-        insertHtml += '<ul class="wc-card-buttons">';
+        insertHtml += '<ul class="wc-card-buttons" style="padding-left: 0px;">';
         insertHtml += '</ul>';
         insertHtml += '</div>';
         insertHtml += '</li></ul></div></div>';
@@ -829,7 +872,7 @@ $(document).on('change','select[name=dlgType]',function(e){
 //다이얼로그 생성 유효성 검사
 function dialogValidation(type){
     if(type == 'dialogInsert'){
-        var dialogText = $('#dialogText').val();
+        var dialogText = $('input[name=dialogText]').val();
         
         if(dialogText != "") {
             $('#btnAddDlg').removeClass("disable");
@@ -849,17 +892,17 @@ function writeDialogTitle(e) {
 
     if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 3) {
         //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
-        $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('h1').text(e.value);
+        $('.dialogView').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('h1').text(e.value);
     } else if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 4) {
-        $('#dialogPreview').children().eq(icx).find('h1').html(e.value);
+        $('.dialogView').children().eq(icx).find('h1').html(e.value);
         //$('.dialogView h1').eq(idx).html(e.value);
     } else {
-        //$('#dialogPreview').children().eq(icx).find('.textMent p').html(e.value);
+        //$('.dialogView').children().eq(icx).find('.textMent p').html(e.value);
     }
 }
 
-$(document).on('change','.insertForm #mediaLayout input[name=imgUrl]',function(e){
-    var idx = $(".insertForm #mediaLayout input[name=imgUrl]").index(this);
+$(document).on('change','.insertForm .mediaLayout input[name=imgUrl]',function(e){
+    var idx = $(".insertForm .mediaLayout input[name=imgUrl]").index(this);
     $('.dialogView .wc-card-div img:eq(' + idx + ')').attr("src",$(e.target).val());
 });
 
@@ -868,7 +911,7 @@ function writeCarouselImg(e) {
     var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
     var jcx = $(e).parents('.insertForm').find('input[name=imgUrl]').index(e);
 
-    $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('.imgContainer img').attr("src",e.value);
+    $('.dialogView').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('.imgContainer img').attr("src",e.value);
 }
 
 function writeDialog(e) {
@@ -881,14 +924,14 @@ function writeDialog(e) {
     if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 3) {
         //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
         //var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
-        var jcx = $(e).parents('.insertForm').find('textarea[name=dialogText]').index(e);
-        $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('p').text(e.value);
+        var jcx = $(e).parents('.insertForm').find('input[name=dialogText]').index(e);
+        $('.dialogView').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('p').text(e.value);
     } else if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 4) {
         $('.dialogView h1').eq(idx).html(e.value);
     } else {
         //$('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
-        //$('#dialogPreview').children().eq(icx).find('.textMent p:eq(' + idx + ')').html(e.value);
-        $('#dialogPreview').children().eq(icx).find('.textMent p').html(e.value);
+        //$('.dialogView').children().eq(icx).find('.textMent p:eq(' + idx + ')').html(e.value);
+        $('.dialogView').children().eq(icx).find('.textMent p').html(e.value);
     }
 
     //캐러졀 용
@@ -897,7 +940,7 @@ function writeDialog(e) {
         var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
         var jcx = $(e).parents('.insertForm').find('textarea[name=dialogText]').index(e);
 
-        $('#dialogPreview').children().eq((1)).find('ul:eq(0)').children().eq(1).find('p').text(e.value);
+        $('.dialogView').children().eq((1)).find('ul:eq(0)').children().eq(1).find('p').text(e.value);
     }
     */
     
@@ -905,6 +948,7 @@ function writeDialog(e) {
 }
 
 //다이얼로그 생성
+/*
 function insertDialog(){
 
     $.ajax({
@@ -918,13 +962,13 @@ function insertDialog(){
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
                 inputUttrHtml += '<input name="dlgChk" class="tweak-input"  onclick="" type="checkbox"/> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" ><input type="hidden" name="' + data.DLG_ID + '" value="' + data.DLG_ID + '" />' + data.CARD_TEXT + '</td></tr>';
-                $('#dlgListTable').find('tbody').prepend(inputUttrHtml);                    
-                $('#addDialogClose').click();
+                $('dialog_box').prepend(inputUttrHtml);                    
+                $('.createDlgModalClose').click();
             }
         }
     });
 }
-
+*/
 function createDialog(){
 
     var entity = $('input[name=entity]').val();
@@ -1000,11 +1044,11 @@ function createDialog(){
                 inputUttrHtml += '<input type="hidden" name="dlgId" value="' + data.list[i] + '"/>';
             }
 
-            var createDlgClone = $('#dialogPreview .dialogView').children().clone();
-            $('#dialogRecommand').html('');
-            $('#dialogRecommand').append(createDlgClone);
-            $('#dialogRecommand').append(inputUttrHtml);
-            $('#addDialogCancel').click();
+            var createDlgClone = $('.dialogView').children().clone();
+            $('.dialog_box').html('');
+            $('.dialog_box').append(createDlgClone);
+            $('.dialog_box').append(inputUttrHtml);
+            $('.createDlgModalClose').click();
         }
     });
 }
@@ -1117,7 +1161,7 @@ function selectDlgListAjax(entity) {
             }//<a href="#" class="btn b02  btn-small js-modal-close">Cancel</a>
             //$('#dlgListTable').find('tbody').empty();
 
-            $('#dialogRecommand').prepend(inputUttrHtml);
+            $('.dialog_box').prepend(inputUttrHtml);
 
             //dlg 기억.
             var utter ="";
@@ -1243,16 +1287,15 @@ function utterInput(queryText) {
                 }
     
                 if ( result['result'] == true ) {
-                    //var utter = utterHighlight(entities,result['iptUtterance']);
                     var utter = utterHighlight(result.commonEntities[k],result['iptUtterance'][k]);
                     var selBox = result['selBox'];
     
-                    $('#iptUtterance').val('');
+                    $('input[name="iptUtterance"').val('');
                     var inputUttrHtml = '';
-                    inputUttrHtml += '<tr><input type="hidden" name="hiddenUtter" value="' + queryText + '"/> <td> <div class="check-radio-tweak-wrapper checkUtter" type="checkbox">';
-                    inputUttrHtml += '<input name="ch1" class="tweak-input" type="checkbox" onclick="" /> </div> </td>';
-                    inputUttrHtml += '<td class="txt_left clickUtter"><input type=hidden name="entity" value="' + result['entities'][k] + '"/>' + utter + '</td>';
-                    inputUttrHtml += '<td class="txt_right"><button class="btn_delete" id="utterDelete" style="width: 19px; margin: 0 5px 0 0;"></button></td>';
+                    inputUttrHtml += '<tr><input type="hidden" name="hiddenUtter" value="' + queryText + '"/>';
+                    inputUttrHtml += '<td> <input type="checkbox" name="tableCheckBox" class="flat-red"></td>';
+                    inputUttrHtml += '<td class="txt_left"><input type=hidden name="entity" value="' + result['entities'][k] + '"/>' + utter + '</td>';
+                    inputUttrHtml += '<td><a href="#"><span class="fa  fa-trash utterDelete"><span class="hc">삭제</span></span></a></td></tr>';
                     inputUttrHtml += '<tr><td></td><td class="txt_left" >';
                     
                     if(result.commonEntities[k]){
@@ -1290,12 +1333,25 @@ function utterInput(queryText) {
     
                     inputUttrHtml += '</select></td></tr>';
                     */
-                    $('#entityUtteranceTextTable').find('tbody').prepend(inputUttrHtml);
+                    $('.recommendTbl').find('tbody').prepend(inputUttrHtml);
     
                     selectDlgListAjax(entities[k]);
     
                     pagingFnc();
+
+                    //Flat red color scheme for iCheck
+                    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+                        checkboxClass: 'icheckbox_flat-green',
+                        radioClass   : 'iradio_flat-green'
+                    })
                     
+                    $('input[name=tableAllChk]').on('ifChecked', function(event) {
+                        $('input[name=tableCheckBox]').parent().iCheck('check');
+                            
+                    }).on('ifUnchecked', function() {
+                            $('input[name=tableCheckBox]').parent().iCheck('uncheck');
+                        });
+
                 }
             }
         } //function끝
@@ -1349,60 +1405,28 @@ var $carouselForm;
 var $mediaForm;
 function openModalBox(target){
 
+
     //carousel clone 초기값 저장
     $insertForm = $('#commonLayout .insertForm').eq(0).clone();
-    $dlgForm = $('#commonLayout #textLayout').eq(0).clone();
-    $carouselForm = $('#commonLayout #carouselLayout').eq(0).clone();
-    $mediaForm = $('#commonLayout #mediaLayout').eq(0).clone();
+    $dlgForm = $('#commonLayout .textLayout').eq(0).clone();
+    $carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
+    $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
 
-    // 화면의 높이와 너비를 변수로 만듭니다.
-    var maskHeight = $(document).height();
-    var maskWidth = $(window).width();
-
-    // 마스크의 높이와 너비를 화면의 높이와 너비 변수로 설정합니다.
-    $('.mask').css({'width':maskWidth,'height':maskHeight});
-
-
-    // 레이어 팝업을 가운데로 띄우기 위해 화면의 높이와 너비의 가운데 값과 스크롤 값을 더하여 변수로 만듭니다.
-    var left = ( $(window).scrollLeft() + ( $(window).width() - $(target).width()) / 2 );
-    var top = ( $(window).scrollTop() + ( $(window).height() - $(target).height()) / 2 );
-
-    // css 스타일을 변경합니다.
-    $(target).css({'left':left,'top':top, 'position':'absolute'});
-
-    // 레이어 팝업을 띄웁니다.
-    setTimeout(function() {
-        $(target).fadeIn( );
-        $('#dialogPreview').css({'height':$('#dialogSet').height()});
-      }, 250);
     
+    //count = 1;
 
-    $('html').css({'overflow': 'hidden', 'height': '100%'});
-        $('#element').on('scroll touchmove mousewheel', function(event) { // 터치무브와 마우스휠 스크롤 방지
-            event.preventDefault();
-            event.stopPropagation();
-            //return false;
-    });
-    wrapWindowByMask();
 
     if(target == "#create_dlg") {
-        $(".insertForm form").append($("#textLayout").clone(true));
-        $(".insertForm #textLayout").css("display","block");
+        $(".insertForm form").append($(".textLayout").clone(true));
+        $(".insertForm .textLayout").css("display","block");
     }
 
     if(target == "#search_dlg") {
         selectGroup('searchLargeGroup');
     }
 
-    
 }
 
-function wrapWindowByMask(){ //화면의 높이와 너비를 구한다. 
-    var maskHeight = $(document).height(); 
-    var maskWidth = $(window).width(); //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채운다. 
-    $('#layoutBackground').css({'width':maskWidth,'height':maskHeight}); //마스크의 투명도 처리 
-    $('#layoutBackground').fadeTo("fast",0.7); 
-} 
 
 function selectInent(intent) {
     //intent하위 entity 존재하면 entity select box disable제거되게 구현해야함
@@ -1439,141 +1463,138 @@ function searchDialog() {
 
             var inputUttrHtml = '';
 
-            if(result['list'].length == 0) {
-                inputUttrHtml += '<div style="display:table-cell;vertical-align:middle; height:400px; width:900px; text-align:center;">' +
-                                    language.NO_DATA +
-                                 '</div>';
-            } else {
-
-                var row = [];
-                var arrayNum = 0;
-                for (var k = 0; k < result['list'].length; k++) {
-                    if(k != 0 && result['list'][k].RNUM == result['list'][k-1].RNUM) {
-                        var num = result['list'][k].DLG_ORDER_NO - 1;
-                        arrayNum--;
-                        row[arrayNum][num] = result['list'][k];
-                        arrayNum++;
-                    } else{
-                        row[arrayNum] = [];
-                        row[arrayNum][0] = result['list'][k];
-                        arrayNum++;
-                    }
-                }
-
-                for (var i = 0; i < row.length; i++) {
-                    botChatNum++;
-                    var val = row[i];
-
-                    inputUttrHtml += '<div style="width: 405px; height: 85%; float:left; margin: 15px 20px;">';
-                    inputUttrHtml += '<div style="height: 10%; width: 100%; z-index:5; background-color: #6f6c6c;">';
-                    inputUttrHtml += '<div class="check-radio-tweak-wrapper2 searchDlgChk" type="checkbox">';
-                    inputUttrHtml += '<input name="chksearch" class="tweak-input" type="checkbox"/>';
-                    inputUttrHtml += '</div>';
-                    inputUttrHtml += '</div>';
-                    inputUttrHtml += '<div style="height: 90%; overflow: scroll; overflow-x: hidden; background-color: rgb(241, 243, 246);; padding:10px;">';
-
-                    for(var l = 0; l < val.length; l++){
-                        var tmp = val[l];
-
-                        for(var j = 0; j < tmp.dlg.length; j++) {
-
-                            if(tmp.dlg[j].DLG_TYPE == 2) {
-    
-                                inputUttrHtml += '<div class="wc-message wc-message-from-bot" style="width:200px">';
-                                inputUttrHtml += '<div class="wc-message-content">';
-                                inputUttrHtml += '<svg class="wc-message-callout"></svg>';
-                                inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
-                                inputUttrHtml += '<p>';
-                                inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
-                                inputUttrHtml += tmp.dlg[j].CARD_TEXT;
-                                inputUttrHtml += '</p>';
-                                inputUttrHtml += '</div></div></div></div></div>';
-
-                            } else if(tmp.dlg[j].DLG_TYPE == 3) {
-
-                                if(j == 0) {
-                                    inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
-                                    inputUttrHtml += '<div class="wc-message-content">';
-                                    inputUttrHtml += '<svg class="wc-message-callout"></svg>';
-                                    inputUttrHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
-                                    inputUttrHtml += '<div>';
-                                    inputUttrHtml += '<button class="scroll previous" id="prevBtn' + (botChatNum) + '" style="display: none;" onclick="prevBtn(' + botChatNum + ')">';
-                                    inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
-                                    inputUttrHtml += '</button>';
-                                    inputUttrHtml += '<div class="wc-hscroll-outer" >';
-                                    inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum) + '">';
-                                    inputUttrHtml += '<ul>';
-                                    inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
-                                }
-                                inputUttrHtml += '<li class="wc-carousel-item">';
-                                inputUttrHtml += '<div class="wc-card hero">';
-                                inputUttrHtml += '<div class="wc-container imgContainer" >';
-                                inputUttrHtml += '<img src="' + tmp.dlg[j].IMG_URL +'">';
-                                inputUttrHtml += '</div>';
-                                if(tmp.dlg[j].CARD_TITLE != null) {
-                                    inputUttrHtml += '<h1>' + /*cardtitle*/ tmp.dlg[j].CARD_TITLE + '</h1>';
-                                }
-                                if(tmp.dlg[j].CARD_TEXT != null) {
-
-                                    inputUttrHtml += '<p class="carousel" style="height:20px;min-height:20px;">' + /*cardtext*/ tmp.dlg[j].CARD_TEXT + '</p>';
-                                }
-                                if(tmp.dlg[j].BTN_1_TITLE != null) {
-                                    inputUttrHtml += '<ul class="wc-card-buttons"><li><button>' + /*btntitle*/ tmp.dlg[j].BTN_1_TITLE + '</button></li></ul>';
-                                }
-                                inputUttrHtml += '</div>';
-                                inputUttrHtml += '</li>';
-                                
-                                //다이얼로그가 한개일때에는 오른쪽 버튼 x
-                                if((tmp.dlg.length == 2 && j == 1) || (tmp.dlg.length == 1 && j == 0)) {
-                                    inputUttrHtml += '</ul>';
-                                    inputUttrHtml += '</div>';
-                                    inputUttrHtml += '</div>';
-                                    inputUttrHtml += '</div></div></div></div>';
-                                } else if((tmp.dlg.length-1) == j) {
-                                    inputUttrHtml += '</ul>';
-                                    inputUttrHtml += '</div>';
-                                    inputUttrHtml += '</div>';
-                                    inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
-                                    inputUttrHtml += '</div></div></div></div>';
-                                }
-                            } else if(tmp.dlg[j].DLG_TYPE == 4) {
-                                inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
-                                inputUttrHtml += '<div class="wc-message-content">';
-                                inputUttrHtml += '<svg class="wc-message-callout"></svg>';
-                                inputUttrHtml += '<div>';
-                                inputUttrHtml += '<div class="wc-carousel">';
-                                inputUttrHtml += '<div>';
-                                inputUttrHtml += '<button class="scroll previous" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png"></button>';
-                                inputUttrHtml += '<div class="wc-hscroll-outer">';
-                                inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
-                                inputUttrHtml += '<ul style="min-width:0px">';
-                                inputUttrHtml += '<li class="wc-carousel-item wc-carousel-play">';
-                                inputUttrHtml += '<div class="wc-card hero" style="width:70%">';
-                                inputUttrHtml += '<div class="wc-card-div imgContainer">';
-                                inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
-                                inputUttrHtml += '<img src="' + /* 이미지 url */ tmp.dlg[j].MEDIA_URL + '">';
-                                inputUttrHtml += '<div class="playImg"></div>';
-                                inputUttrHtml += '<div class="hidden" alt="' + tmp.dlg[j].CARD_TITLE + '"></div>';
-                                inputUttrHtml += '<div class="hidden" alt="' + /* media url */ tmp.dlg[j].CARD_VALUE + '"></div>';
-                                inputUttrHtml += '</div>';
-                                inputUttrHtml += '<h1>' + /* title */ tmp.dlg[j].CARD_TITLE + '</h1>';
-                                inputUttrHtml += '<ul class="wc-card-buttons">';
-                                inputUttrHtml += '</ul>';
-                                inputUttrHtml += '</div>';
-                                inputUttrHtml += '</li></ul></div></div>';
-                                inputUttrHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
-                                inputUttrHtml += '</div></div></div></div></div>';
-                            }
-                        }
-                    }
-                
-
-                inputUttrHtml += '</div>';
-                inputUttrHtml += '</div>';
+            var row = [];
+            var arrayNum = 0;
+            for (var k = 0; k < result['list'].length; k++) {
+                if(k != 0 && result['list'][k].RNUM == result['list'][k-1].RNUM) {
+                    var num = result['list'][k].DLG_ORDER_NO - 1;
+                    arrayNum--;
+                    row[arrayNum][num] = result['list'][k];
+                    arrayNum++;
+                } else{
+                    row[arrayNum] = [];
+                    row[arrayNum][0] = result['list'][k];
+                    arrayNum++;
                 }
             }
 
+            for (var i = 0; i < row.length; i++) {
+                botChatNum++;
+                var val = row[i];
+
+                inputUttrHtml += '<div class="chat_box">';
+                inputUttrHtml += '<p><input type="checkbox" name="searchDlgChk" class="flat-red"></p>';          
+                inputUttrHtml += '<div style="width: 350px; height: 95%; overflow: scroll; overflow-x: hidden; padding:10px;">';
+                inputUttrHtml += '<div>';
+
+                for(var l = 0; l < val.length; l++){
+                    var tmp = val[l];
+
+                    for(var j = 0; j < tmp.dlg.length; j++) {
+
+                        if(tmp.dlg[j].DLG_TYPE == 2) {
+
+                            inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
+                            inputUttrHtml += '<div class="wc-message-content">';
+                            inputUttrHtml += '<svg class="wc-message-callout"></svg>';
+                            inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
+                            inputUttrHtml += '<p>';
+                            inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                            inputUttrHtml += tmp.dlg[j].CARD_TEXT;
+                            inputUttrHtml += '</p>';
+                            inputUttrHtml += '</div></div></div></div></div>';
+
+                        } else if(tmp.dlg[j].DLG_TYPE == 3) {
+
+                            if(j == 0) {
+                                inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
+                                inputUttrHtml += '<div class="wc-message-content">';
+                                inputUttrHtml += '<svg class="wc-message-callout"></svg>';
+                                inputUttrHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
+                                inputUttrHtml += '<div>';
+                                inputUttrHtml += '<button class="scroll previous" id="prevBtn' + (botChatNum) + '" style="display: none;" onclick="prevBtn(' + botChatNum + ')">';
+                                inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
+                                inputUttrHtml += '</button>';
+                                inputUttrHtml += '<div class="wc-hscroll-outer" >';
+                                inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum) + '">';
+                                inputUttrHtml += '<ul>';
+                                inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                            }
+                            inputUttrHtml += '<li class="wc-carousel-item">';
+                            inputUttrHtml += '<div class="wc-card hero">';
+                            inputUttrHtml += '<div class="wc-container imgContainer" >';
+                            inputUttrHtml += '<img src="' + tmp.dlg[j].IMG_URL +'">';
+                            inputUttrHtml += '</div>';
+                            if(tmp.dlg[j].CARD_TITLE != null) {
+                                inputUttrHtml += '<h1>' + /*cardtitle*/ tmp.dlg[j].CARD_TITLE + '</h1>';
+                            }
+                            if(tmp.dlg[j].CARD_TEXT != null) {
+
+                                inputUttrHtml += '<p class="carousel" style="height:20px;min-height:20px;">' + /*cardtext*/ tmp.dlg[j].CARD_TEXT + '</p>';
+                            }
+                            if(tmp.dlg[j].BTN_1_TITLE != null) {
+                                inputUttrHtml += '<ul class="wc-card-buttons"><li><button>' + /*btntitle*/ tmp.dlg[j].BTN_1_TITLE + '</button></li></ul>';
+                            }
+                            inputUttrHtml += '</div>';
+                            inputUttrHtml += '</li>';
+                            
+                            //다이얼로그가 한개일때에는 오른쪽 버튼 x
+                            if((tmp.dlg.length == 2 && j == 1) || (tmp.dlg.length == 1 && j == 0)) {
+                                inputUttrHtml += '</ul>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '</div></div></div></div>';
+                            } else if((tmp.dlg.length-1) == j) {
+                                inputUttrHtml += '</ul>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                                inputUttrHtml += '</div></div></div></div>';
+                            }
+                        } else if(tmp.dlg[j].DLG_TYPE == 4) {
+                            inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
+                            inputUttrHtml += '<div class="wc-message-content">';
+                            inputUttrHtml += '<svg class="wc-message-callout"></svg>';
+                            inputUttrHtml += '<div>';
+                            inputUttrHtml += '<div class="wc-carousel">';
+                            inputUttrHtml += '<div>';
+                            inputUttrHtml += '<button class="scroll previous" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png"></button>';
+                            inputUttrHtml += '<div class="wc-hscroll-outer">';
+                            inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
+                            inputUttrHtml += '<ul style="min-width:0px">';
+                            inputUttrHtml += '<li class="wc-carousel-item wc-carousel-play">';
+                            inputUttrHtml += '<div class="wc-card hero" style="width:70%">';
+                            inputUttrHtml += '<div class="wc-card-div imgContainer">';
+                            inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                            inputUttrHtml += '<img src="' + /* 이미지 url */ tmp.dlg[j].MEDIA_URL + '">';
+                            inputUttrHtml += '<div class="playImg"></div>';
+                            inputUttrHtml += '<div class="hidden" alt="' + tmp.dlg[j].CARD_TITLE + '"></div>';
+                            inputUttrHtml += '<div class="hidden" alt="' + /* media url */ tmp.dlg[j].CARD_VALUE + '"></div>';
+                            inputUttrHtml += '</div>';
+                            inputUttrHtml += '<h1>' + /* title */ tmp.dlg[j].CARD_TITLE + '</h1>';
+                            inputUttrHtml += '<ul class="wc-card-buttons">';
+                            inputUttrHtml += '</ul>';
+                            inputUttrHtml += '</div>';
+                            inputUttrHtml += '</li></ul></div></div>';
+                            inputUttrHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                            inputUttrHtml += '</div></div></div></div></div>';
+                        }
+                    }
+                }
+            
+                inputUttrHtml += '</div>';
+                inputUttrHtml += '</div>';
+                inputUttrHtml += '</div>';
+            }
+            
+            $(".dialog_result strong").html(" " + row.length +" ");
             $('#searchDlgResultDiv').prepend(inputUttrHtml);
+
+            //Flat red color scheme for iCheck
+            $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+                checkboxClass: 'icheckbox_flat-green',
+                radioClass   : 'iradio_flat-green'
+            })
            
         },
         error:function(e){  
@@ -1584,31 +1605,32 @@ function searchDialog() {
 
 // Search Dialogue 팝업창 
 // 다이얼로그 체크박스 단일 체크
-$(document).on('click', '.searchDlgChk', function() {
-
-    $('.searchDlgChk').not($(this)).each(function(){
-        $(this).removeAttr('checked');
+$(document).on('ifChecked', 'input[name=searchDlgChk]', function(event) {
+    
+    $('input[name=searchDlgChk]').not($(this)).each(function(){
+        $(this).parent().iCheck('uncheck')
     });
+        
 })
 
 function selectDialog() {
 
-    var rowNum = -1;
-    $("input[name=chksearch]").each(function(n) {
-        var chk = $("input[name=chksearch]").parent().eq(n).attr('checked');
-        if(chk == "checked") {
-            rowNum = n;
+    var successFlagg = false;
+    $("input[name=searchDlgChk]").each(function(n) {
+        var chk = $(this).parent().hasClass('checked');
+        if(chk == true) {
+            var cloneDlg = $(this).parent().parent().next().children().clone();
+            $('.dialog_box').html('');
+            $('.dialog_box').append(cloneDlg);
+            $('.searchDialogClose').click();
+            successFlagg = true;
+            return false;
         }
     });
 
-    if(rowNum == -1) {
+    if(successFlagg == false) {
 
         alert(language.Please_select_a_dialogue);
-    } else {
-        var cloneDlg = $("input[name=chksearch]").parent().parent().eq(rowNum).next().children().clone();
-        $('#dialogRecommand').html('');
-        $('#dialogRecommand').append(cloneDlg);
-        $('#searchDialogCancel').click();
     }
 
 }
@@ -1651,21 +1673,21 @@ function searchSaveDialog() {
 
 
 var carouselDivHtml = 
-$(document).on('click', 'a[name=carouseBtn]',function(e){
+$(document).on('click', '.carouseBtn',function(e){
     //e.stopPropagation();
     //e.preventDefault();
     //var index = 0;
     $(this).parent().parent().find('select').each(function(index) {
         if ( $(this).css("display") === 'none') {
             $(this).show();
-            $(this).parent().parent().next().find('input').eq(index).show();
-            $(this).parent().parent().next().next().find('input').eq(index).show();
+            $(this).parent().next().find('input').eq(index).show();
+            $(this).parent().next().next().find('input').eq(index).show();
             return false;   
         }
     });
 });
 
-$(document).on('click', '[name=addMediaBtn]',function(e){
+$(document).on('click', '.addMediaBtn',function(e){
 
     $(this).parent().parent().find($('.mediaBtnName')).each(function(index){
 
@@ -1681,27 +1703,27 @@ $(document).on('click', '[name=addMediaBtn]',function(e){
 
 //textLayout
 
-//var $carouselForm = $('#commonLayout #carouselLayout').eq(($('#commonLayout #carouselLayout').length)-1).clone();
-$(document).on('click', 'a[name=addCarouselBtn]', function(e){
+//var $carouselForm = $('#commonLayout .carouselLayout').eq(($('#commonLayout .carouselLayout').length)-1).clone();
+$(document).on('click', '.addCarouselBtn', function(e){
     //var $newInsertForm = $insertForm.clone();
     //var $newDlgForm = $dlgForm.clone();
     //var $newCarouselForm = $carouselForm.clone();
     
-    var idx =  $("a[name=addCarouselBtn]:visible").index(this);
-    var jdx = $('select[name=dlgType]').index(( $("a[name=addCarouselBtn]:visible").eq(idx).parents('#dialogLayout').find('select[name=dlgType]') ));
-    //$('a[name=addCarouselBtn]').eq(0).parent().parent().remove();
+    var idx =  $(".addCarouselBtn:visible").index(this);
+    var jdx = $('select[name=dlgType]').index(( $(".addCarouselBtn:visible").eq(idx).parents('form[name=dialogLayout]').find('select[name=dlgType]') ));
+    //$('.addCarouselBtn').eq(0).parent().parent().remove();
     //$(this).parents('.insertForm').after( $newInsertForm);  
     //<div id="textLayout" style="display: block;">  </div>
-    var caraousHtml = '<div id="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>';
-    var dlgFormHtml = '<div id="textLayout" style="display: block;">' + $dlgForm.html() + '</div>';
-    $(this).parents('#dialogLayout').append('<div class="clear-both"></div>').append(dlgFormHtml).append(caraousHtml);
+    var caraousHtml = '<div class="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>';
+    var dlgFormHtml = '<div class="textLayout" style="display: block;">' + $dlgForm.html() + '</div>';
+    $(this).parents('form[name=dialogLayout]').append('<div class="clear-both"></div>').append(dlgFormHtml).append(caraousHtml);
     //$(this).parents('.insertForm').next().find('.clear-both').after($newDlgForm);
-    var claerLen = $(this).parents('#dialogLayout').children('.clear-both').length-1;
-    $(this).parents('#dialogLayout').children('.clear-both').eq(claerLen).next().css('display', 'block');
-    $(this).parents('#dialogLayout').children('.clear-both').eq(claerLen).next().next().css('display', 'block');
+    var claerLen = $(this).parents('form[name=dialogLayout]').children('.clear-both').length-1;
+    $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().css('display', 'block');
+    $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().next().css('display', 'block');
     //$(this).parent().parent().remove();
-    $(this).parent().parent().css('display', 'none');
-    $(this).parents('#dialogLayout').find('a[name=addCarouselBtn]:last').closest('div').css('display', 'inline-block');
+    $(this).parent().css('display', 'none');
+    $(this).parents('form[name=dialogLayout]').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
 
     var inputUttrHtml = '<li class="wc-carousel-item">';
     inputUttrHtml += '<div class="wc-card hero">';
@@ -1710,7 +1732,7 @@ $(document).on('click', 'a[name=addCarouselBtn]', function(e){
     inputUttrHtml += '</div>';
     inputUttrHtml += '<h1>CARD_TITLE</h1>';
     inputUttrHtml += '<p class="carousel">CARD_TEXT</p>';
-    inputUttrHtml += '<ul class="wc-card-buttons"><li><button>BTN_1_TITLE</button></li></ul>';
+    inputUttrHtml += '<ul class="wc-card-buttons" style="padding-left:0px;"><li><button>BTN_1_TITLE</button></li></ul>';
     inputUttrHtml += '</div>';
     inputUttrHtml += '</li>';
 
@@ -1725,43 +1747,6 @@ $(document).on('click', 'a[name=addCarouselBtn]', function(e){
 
 });
 
-
-//** 모달창 */
-function openModalEntity(target){
-
-    // 화면의 높이와 너비를 변수로 만듭니다.
-    var maskHeight = $(document).height();
-    var maskWidth = $(window).width();
-
-    // 마스크의 높이와 너비를 화면의 높이와 너비 변수로 설정합니다.
-    $('.mask').css({'width':maskWidth,'height':maskHeight});
-
-
-    // 레이어 팝업을 가운데로 띄우기 위해 화면의 높이와 너비의 가운데 값과 스크롤 값을 더하여 변수로 만듭니다.
-    var left = ( $(window).scrollLeft() + ( $(window).width() - $(target).width()) / 2 );
-    var top = ( $(window).scrollTop() + ( $(window).height() - $(target).height()) / 2 );
-
-    // css 스타일을 변경합니다.
-    $(target).css({'left':left,'top':top, 'position':'absolute'});
-
-    // 레이어 팝업을 띄웁니다.
-    setTimeout(function() {
-        $(target).fadeIn( );
-        $('#dialogPreview').css({'height':$('#dialogSet').height()});
-      }, 250);
-
-
-    $('html').css({'overflow': 'hidden', 'height': '100%'});
-    $('#element').on('scroll touchmove mousewheel', function(event) { // 터치무브와 마우스휠 스크롤 방지
-        event.preventDefault();
-        event.stopPropagation();
-        //return false;
-    });
-    wrapWindowByMask();
-
-    
-}
-
 //엔티티 추가
 function insertEntity(){
 
@@ -1769,18 +1754,18 @@ function insertEntity(){
         url: '/learning/insertEntity',
         dataType: 'json',
         type: 'POST',
-        data: $('#entityInsertForm').serializeObject(),
+        data: $('#entityInsertForm').serialize(),
         success: function(data) {
             if(data.status == 200){
-                $('#addEntityClose').click();
+                $('.addEntityModalClose').click();
                 alert(language.Added);
-                var originalUtter = [];
-                $('input[name=hiddenUtter]').each(function() {
-                    originalUtter.push($(this).val());
-                });
-                $('#utterListDiv').find('tbody').html('');
-                $('#nav').remove();
-                utterInput(originalUtter);
+                //var originalUtter = [];
+                //$('input[name=hiddenUtter]').each(function() {
+                //    originalUtter.push($(this).val());
+                //});
+                //$('.recommendTbl').find('tbody').html('');
+                //$('.pagination').html('');
+                //utterInput(originalUtter);
             } else {
                 alert(language.It_failed);
             }
