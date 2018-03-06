@@ -2,7 +2,15 @@
 
 <aside class="main-sidebar">
     <section class="sidebar">
-                           <div class="sidebar-form"><%= __('CHATBOT') %> <a href="/users/userMng"  class="left_set"><span class="sr-only">관리자설정바로가기</span></a></div>
+                           <div class="sidebar-form"><%= __('CHATBOT') %> 
+                            <% 
+                                if(sid==="admin") { 
+                            %>
+                                <a href="/users/userMng"  class="left_set"><span class="sr-only">관리자설정바로가기</span></a>
+                            <%
+                                }
+                            %>
+                            </div>
                            <!-- chat bot list -->
                            <div class="sidebar-form se02">
                                           <div class="pull-left image img-circle color_01"> </div>
