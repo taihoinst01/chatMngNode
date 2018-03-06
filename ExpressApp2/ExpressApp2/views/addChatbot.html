@@ -37,14 +37,14 @@
 
       <!-- Content Wrapper -->
       <div class="content-wrapper">
-                        <section class="content-header"><h1>챗봇을 등록해주세요. </h1>  <div class="nec"><span class="nec_ico">*</span> 항목은 필수 입력입니다</div></section>
+                        <section class="content-header"><h1><%= __('REGISTER_CHATBOT') %> </h1>  <div class="nec"><span class="nec_ico">*</span> <%= __('IS_REQUIRED') %></div></section>
     
                         <!-- Main content -->
                         <section class="content">
                                 <div class="box  color-palette-box">
                                         <div class="box-body">
                                                 <div class="form-group">
-                                                    <label class="fl">색상선택</label>
+                                                    <label class="fl"><%= __('SELET_COLOR') %></label>
                                                     <div class="img-circle_wrap">
                                                         <div id="selColor" class="img-circle_l color_01"> </div>
                                                         <div class="img-circle_wrap02">
@@ -67,28 +67,28 @@
                                                     </div>
                                                 </div>                                        
                                                 <div class="form-group" style="clear:both">
-                                                    <label>챗봇이름<span class="nec_ico">*</span></label>
+                                                    <label><%= __('CHATBOT_NAME') %><span class="nec_ico">*</span></label>
                                                     <input type="text" class="form-control" id="appInsertName">
                                                 </div>
                                                 <div class="form-group w50 fl">
-                                                    <label>챗봇 서비스<span class="nec_ico">*</span></label>
+                                                    <label><%= __('CHATBOT_SERVICE') %><span class="nec_ico">*</span></label>
                                                     <select class="form-control" id="appService"> 
                                                         <option value="1">service1<!-- service1 --></option>
                                                         <option value="2">service2<!-- service2 --></option>
                                                     </select>
                                                 </div> 
                                                 <div class="form-group w50 fr ">
-                                                    <label>챗봇 언어 설정 <span class="nec_ico">*</span></label>
-                                                    <p> <input type="radio" name="r3" class="flat-red" checked value="kr"> <span class="mr30" > 한국어 </span>
-                                                        <input type="radio" name="r3" class="flat-red" value="en"> 영어
+                                                    <label><%= __('CHATBOT_LANGUAGE') %> <span class="nec_ico">*</span></label>
+                                                    <p> <input type="radio" name="r3" class="flat-red" checked value="ko-kr"> <span class="mr30" ><%= __('KOREAN') %> </span>
+                                                        <input type="radio" name="r3" class="flat-red" value="en-us"><%= __('ENGLISH') %>
                                                     </p>
                                                 </div>                                     
                                                 <div class="form-group" style="clear:both">
-                                                    <label>챗봇설명</label>
+                                                    <label><%= __('CHATBOT_DESCRIPTION') %></label>
                                                     <textarea  class="form-control"  rows="10" id="appDes"> </textarea>
                                                 </div>  
                                                 <div class="btn_wrap">
-                                                   <button type="button" class="btn btn-default" id="cancelApp">취소</button> <button type="button" class="btn btn_01" id="saveApp">저장</button>
+                                                   <button type="button" class="btn btn-default" id="cancelApp"><%= __('CANCEL') %></button> <button type="button" class="btn btn_01" id="saveApp"><%= __('SAVE') %></button>
                                                 </div>                                 
                                         </div>
                                 </div>

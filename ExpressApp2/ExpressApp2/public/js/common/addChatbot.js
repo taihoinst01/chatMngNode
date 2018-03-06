@@ -1,10 +1,18 @@
 
 
 
-
-
-
-
+//가장 먼저 실행.
+var language;
+;(function($) {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language= data.lang;
+        }
+    });
+})(jQuery);
 
 
 $(document).ready(function () {
@@ -20,7 +28,7 @@ $(document).ready(function () {
     });
     
     $('#cancelApp').click(function() {
-        if( confirm("취소하시겠습니까?") ) {
+        if( confirm(language['ASK_CANCEL']) ) {
             window.location.href='/list';
         }
     });
@@ -32,12 +40,12 @@ $(document).ready(function () {
 function addApp() {
     
     if ($('#appInsertName').val() === "") {
-        alert("챗봇의 이름을 입력해 주세요.");
+        alert(language['INPUT_CHAT_NAME']);
         return;
     }
-
+    var appColor = $('#selColor').attr('class').split(' ')[1];
     var params = {
-        'color': $('#selColor').attr('class').split(' ')[1],
+        'color': appColor,
         'appInsertService': $('#appService').val(),
         'appInsertName': $('#appInsertName').val(),
         'appInsertCulture': $(":input:radio[name=r3]:checked").val(),
@@ -52,9 +60,10 @@ function addApp() {
         success: function(data) {
             //console.log(data);
             if(data.appId != undefined && data.appId != null && data.appId != ''){
-                window.location.href='/';
+                alert(language['REGIST_SUCC']);
+                window.location.href='/?appColor=' + appColor + '&appInsertName=' + $('#appInsertName').val();
             }else{
-                alert(data.error.message);
+                alert(language['It_failed']);
             }
         }
     });

@@ -1,5 +1,5 @@
 ﻿<header class="main-header">
-    <!----- Logo ---->
+    <!-- Logo -->
     <a href="/list" class="logo">
         <span class="logo-mini"></span>
         <span class="logo-lg"></span>
@@ -11,12 +11,35 @@
 
         <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
+        <li style="width:80px; padding-right: 10px;">
+            <select class="" id="selectLang" name="selectLang" style="width:90%; height: 25px; margin: 5px 10px 0 0; font-size: 1em; font-weight: bold;">
+                    <%
+                        if(languageNow == 'ko') {
+                    %>
+                        <option value="ko" selected="selected"><%= __('KOREAN') %></option>
+                        <option value="en"><%= __('ENGLISH') %></option>
+                    <%
+                        } else {
+                    %>
+                        <option value="ko"><%= __('KOREAN') %></option>
+                        <option value="en" selected="selected"><%= __('ENGLISH') %></option>
+                    <%
+                        }
+                    %>
+            </select>
+        </li>
         <% 
             if(sid) { 
         %>
-            <li class="user_id"> <strong><%=sid%></strong> 님</li>
-            <li class="btn_set01"> <a href="/users/userMng" class="left_set"></a></li>
-            <li><a  href="/users/logout" class="btn_log_out"> 로그아웃</a></li>
+            <li class="user_id"> <strong><%=sid%></strong> <%= __('SIR') %></li>
+            <% 
+                if(sid==="admin") { 
+            %>
+                <li class="btn_set01"> <a href="/users/userMng" class="left_set"></a></li>
+            <%
+                }
+            %>
+            <li><a  href="/users/logout" class="btn_log_out" style="margin-left: 5px;"> <%= __('SIGN_OUT') %></a></li>
         
         <%                  
             }
@@ -25,8 +48,16 @@
             {
         %>
                 <script>
-                    alert("로그인을 해주세요");
-                    location.href = '/';
+                    $.ajax({
+                        url: '/jsLang',
+                        dataType: 'json',
+                        type: 'POST',
+                        success: function(data) {
+                            alert(data.lang['SIGN_IN_REQUIRED']);
+                            location.href = '/';
+                        }
+                    });
+                    
                 </script>
         <%
             }
@@ -35,3 +66,14 @@
         </div>
     </nav>
 </header>
+
+
+<script>
+    $(document).ready(function () {
+
+        $('#selectLang').change(function() {
+            location.href="/index/lang"
+        });
+    });
+
+</script>

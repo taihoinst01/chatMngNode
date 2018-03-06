@@ -8,294 +8,261 @@ var language;
         type: 'POST',
         success: function(data) {
             language= data.lang;
-            
-            makeUserGrid(); 
-            makeAppGrid();
-            gridResize("gridList");
-            gridResize("gridUserAuthList");
         }
     });
 })(jQuery);
 
 $(document).ready(function() {
-    $('#searchUserId').focus();
+    makeUserTable();
 });
 
-window.onresize = function() {
-    gridResize("gridList");
-    gridResize("gridUserAuthList");
-}
-
 $(document).ready(function() {
-    $('#searchEmpNm, #searchUserId').on('keypress', function(e) {
-        if (e.keyCode == 13) doSearchParam();
+
+    //검색
+    $('#searchBtn').click(function() {
+        makeUserTable();
     });
 
-    $('#btn_Inq_search').on('click', function() {
-        doSearchParam();
+    //엔터로 검색
+    $('#searchName, #searchId').on('keypress', function(e) {
+        if (e.keyCode == 13) makeUserTable();
+    });
+
+    //저장
+    $('#saveBtn').click(function() {
+        saveUserApp();
+    });
+
+    //앱리스트 초기화
+    $('#initBtn').click(function() {
+        fnc_initAppList();
     });
     
 });
-var beforVal = '';
-$(document).on('keypress','.edit-cell > input',function(e){
-    if (e.keyCode == 13 || e.keyCode == 27) {
-        if ( $(this).val() !== beforVal) {
-            $("#gridList").jqGrid('setCell', $(this).parent().parent().attr('id'), 'statusFlag', "EDIT");
-        }
+
+
+//유저 테이블 페이지 버튼 클릭
+$(document).on('click','#userTablePaging .li_paging',function(e){
+    if(!$(this).hasClass('active')){
+        makeUserTable($(this).text());
     }
 });
 
-var editableCells = ['EMP_NM'];
-function makeUserGrid() {
-    $("#gridList").jqGrid({
-        //url: '../json/data.json',
-        //datatype: "json",
-        //mtype: 'POST',  
-        //editurl: 'clientArray',
-        datatype: function(postdata) {
-            doSearchParam(postdata);
-        },
-          
-        colModel: [
-          {name:'USER_ID_HIDDEN' , label:'USER_ID_HIDDEN' , hidden:true},
-          {name:'USER_ID'    , label:language['ID'], width:70, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'EMP_NM'    , label:language['NAME'] , width:80, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'EMAIL'    , label:language['EMAIL'] , width:120, editable:false, align:'left', sortable:true, hidden:false}
-        ],
-        width: $("#gridList").width(),
-        height: 650,
-        pager: '#pager',
-        emptyrecords: language['NO_DATA'],
-        rowNum: 20, // 한페이지에 보여줄 데이터 수
-        rowList: [ 20, 30], // 페이징 옵션
-        rownumbers: true, // show row numbers
-        rownumWidth: 25, // the width of the row numbers columns
-        cellEdit: true, // true 시 틀고정 ( frozen column 기능 불가 )
-        //cellsubmit:'remote',
-        //onSelectRow: selRow,
-        sortorder: 'asc',
-        //caption:"gridList",
-        loadonce:false, // true 하면 리로딩이 안됨 false
-        viewrecords: true, 
-        onSelectRow: function(rowid, status, e) {  			
-            console.log("asdf : " + rowid + "/" + status + "e :" + e);	
-            doSearchApp(rowid);
-        }	
-        
-        });
-}
-
-function makeAppGrid() {
-    $("#gridUserAuthList").jqGrid({
-        //url: '../json/data.json',
-        //datatype: "json",
-        //mtype: 'POST',  
-        //editurl: 'clientArray',
-        datatype: function() {
-            //doSearchApp(rowid);
-        },
-          
-        colModel: [
-          {name:'sel', label:'' , width:20, editable:false, align:'center', sortable:false, hidden:false, formatter:selCell},
-          {name:'APP_NAME'    , label:language['APP'], width:70, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'APP_ID'    , label:language['APP_ID'], width:150, editable:false, align:'left', sortable:true, hidden:false},
-          {name:'OWNER_EMAIL'    , label:language['OWNER'], width:60, editable:false, align:'right', sortable:true, hidden:false}
-        ],
-        width: $("#gridUserAuthList").width(),
-        height: 650,
-        pager: '#pagerAuth',
-        emptyrecords: language['NO_DATA'],
-        rowNum: 20, // 한페이지에 보여줄 데이터 수
-        rowList: [ 20, 30], // 페이징 옵션
-        rownumbers: true, // show row numbers
-        rownumWidth: 25, // the width of the row numbers columns
-        cellEdit: true, // true 시 틀고정 ( frozen column 기능 불가 )
-        //cellsubmit:'remote',
-        //onSelectRow: selRow,
-        sortorder: 'asc',
-        //caption:"gridList",
-        loadonce:false, // true 하면 리로딩이 안됨 false
-        viewrecords: true,
-        
-        });
-}
-
-function selCell(cellValue, options, rowObject, action) {
-    var empNum = rowObject.empNum;
-    var userId = rowObject.userId;
-    return '<input type="checkbox" name="cell_checkbox" />';
-}
-
-//ㅇㅇㅇㅇㅇㅇㅇㅇㅇ
-//그리드 리사이즈
-var maxGridWidth = ""; // popup 사용 불가, contents가 그려지는 div 크기
-var minGridWidth = 0; // 최소 그리드 사이즈
-var preWindowWidth = 0; // 이전 창 크기
-var shrinkFlag = true; // true : 사이즈조정, false : 사이즈고정, 스크롤 생성
-
-function gridResize(gridId) {
-
-    maxGridWidth = $(".grid_wrap").width() - 2; // popup 사용 불가, contents가 그려지는 div 크기
-    minGridWidth = $('#' + gridId).width();
-    setGridResize(gridId);
-}
-
-function setGridResize(gridId) {
-
-    var windowWidth = $(window).width(); // 창크기
-    var newGridWidth = windowWidth - 2; // 그리드의 새로운 width
-
-    // 그리드에 적용할 width가 최대크기보다 작고 and 그리드에 적용할 width가 최소 크기보다 크고
-    if (maxGridWidth > newGridWidth && minGridWidth < newGridWidth) {
-        $('#' + gridId).setGridWidth(newGridWidth, shrinkFlag);
+//앱 테이블 페이지 버튼 클릭
+$(document).on('click','#appTablePaging .li_paging',function(e){
+    if(!$(this).hasClass('active')){
+        makeAppTable($('#selectUserHiddenId').val(), $(this).text());
     }
+});
 
-    // 그리드가 최대크기보다 크거나 같을 경우
-    if (maxGridWidth <= newGridWidth) {
-        $('#' + gridId).setGridWidth(maxGridWidth, shrinkFlag); // 기본 사이즈로 초기화
-    }
+$(document).on('click', '#userTableBodyId tr[name=userTr]', function() {
+    $('tr[name=userTr]').css("background", '');
+    var clickUserId = $(this).children().eq(1).text();
+    $('#selectUserHiddenId').val(clickUserId);
+    makeAppTable(clickUserId);
 
-    // 그리드가 최소크기보다 작거나 같을 경우
-    if (minGridWidth >= newGridWidth) {
-        $('#' + gridId).setGridWidth(minGridWidth, shrinkFlag); // 최소 사이즈로 초기화
-    }
-    $('#' + gridId).jqGrid('setGridHeight',$(window).innerHeight() -400);
-    preWindowWidth = windowWidth; // 현재 사이즈를 저장
-}
+    $(this).css("background", "aliceblue");
 
-//초기화
-function restoreGridAction() {
-    if(confirm(language['ASK_INIT'])) {
-        mkAppRow(initAppList, initAppCheck);
-    }
-}
+});
 
-
-//조회
-//그리드 초기화 할 때 사용할 grid data
-var saveGridData;
-function doSearchParam(postData) {
-    var sort = postData? postData.sidx : "";
-    var order = postData? postData.sord : "";
+var initAppList;
+var initAppCheck;
+function makeUserTable(newPage) {
+    
     var params = {
-        'sort' : sort,
-        'order' : order,
-        'page' : $('td[dir=ltr]').find('input').val(),
+        'searchName' : $('#searchName').val(),
+        'searchId' : $('#searchId').val(),
+        'currentPage' : newPage,
         'rows' : $('td[dir=ltr]').find('select').val()
     };
     
-    $.tiAjax({
+    $.ajax({
         type: 'POST',
-        applyId:"frm",
         data: params,
-        isloading: true,
         url: '/users/selectUserList',
         success: function(data) {
-            saveGridData = data;
-            var grid = $("#gridList");
-            //var gridData = JSON.parse(data.d);
-            grid.clearGridData();
+           
+            if (data.rows) {
+                
+                var tableHtml = "";
+    
+                for (var i=0;i<data.rows.length;i++) { 
+                    tableHtml += '<tr style="cursor:pointer" name="userTr"><td>' + data.rows[i].SEQ + '</td>';
+                    tableHtml += '<td>' + data.rows[i].USER_ID + '</td>'
+                    tableHtml += '<td>' + data.rows[i].EMP_NM + '</td>'
+                    tableHtml += '<td>' + data.rows[i].EMAIL + '</td>'
+                }
+    
+                saveTableHtml = tableHtml;
+                $('#userTableBodyId').html(tableHtml);
 
-            for (var i=0;i<=data.rows.length;i++) { 
-                //$("#gridList").jqGrid('addRowData', i+1, data.rows[i]);
-                grid.addRowData(i + 1, data.rows[i]);
+                //사용자의 appList 출력
+                $('#userTableBodyId').find('tr').eq(0).children().eq(0).trigger('click');
+
+                $('#userTablePaging .pagination').html('').append(data.pageList);
+
+            } else {
+                $('#userTableBodyId').html('');
+                $('#appTableBodyId').html('');
             }
-            $('#gridList').find('tr').eq(1).children().eq(0).trigger('click');
-
+            
         }
     });
 }
 
-//app 조회
-var initAppList;
-var initAppCheck; // 초기화 할 변수, 저장시 비교
-function doSearchApp( rowid) {
-    var id = $('#gridList').jqGrid().getRowData(rowid).USER_ID;
+function makeAppTable(userId, newPage) {
+    
     var params = {
-        'userId' : id
+        'userId' : userId,
+        'currentPage' : newPage,
+        'currentPageUser' : $('#userTablePaging .active').val()
     };
     
-    $.tiAjax({
+    $.ajax({
         type: 'POST',
         data: params,
-        isloading: true,
         url: '/users/selectUserAppList',
         success: function(data) {
             initAppList = data.rows;
             initAppCheck = data.checkedApp;
             mkAppRow(data.rows, data.checkedApp);
+            
+            $('#appTablePaging .pagination').html('').append(data.pageList);
         }
     });
 }
 
+//appList table tbody html 생성
 function mkAppRow(rows, checkedApp) {
-    var grid = $("#gridUserAuthList");
-    //var gridData = JSON.parse(data.d);
-    grid.clearGridData();
+
+    $('#appTableBodyId').html('');
+    var appHtml ="";
 
     for (var i=0;i<rows.length;i++) { 
-        //$("#gridList").jqGrid('addRowData', i+1, data.rows[i]);
-        grid.addRowData(i + 1, rows[i]);
-
-        for (var j=0; j<checkedApp.length; j++) {
+        
+        appHtml += '<tr><td>' + Number(i+1) + '</td>';
+        
+        var j=0;
+        for (; j<checkedApp.length; j++) {
             if (rows[i].APP_ID === checkedApp[j].APP_ID) {
-                $('input[name=cell_checkbox]').eq(i).trigger('click');
-            }
+                appHtml += '<td><input type="checkbox" class="flat-red" checked name="tableCheckBox"></td>';
+                break;
+            } 
         }
+        if (j === checkedApp.length) {
+            appHtml += '<td><input type="checkbox" class="flat-red" name="tableCheckBox"></td>';
+        }
+
+        appHtml += '<td>' + rows[i].APP_NAME + '</td>';
+        appHtml += '<td>' + rows[i].APP_ID + '</td>';
+        appHtml += '<td>' + rows[i].OWNER_EMAIL + '</td></tr>';
     }
-    if (rows.length >0) {
-        $("#gridUserAuthList").setSelection(1);
+
+    $('#appTableBodyId').html(appHtml);
+
+    iCheckBoxTrans();
+
+}
+
+
+//초기화
+function fnc_initAppList() {
+    if(confirm(language['ASK_INIT'])) {
+        mkAppRow(initAppList, initAppCheck);
     }
 }
-//저장
-function saveAction() {
-    // true : select 된 데이터, false : transaction 일으킨 데이터
-    var saveArr = new Array();
 
-    
-    $('input[name=cell_checkbox]:checked').each(function() {
+//저장
+function saveUserApp() {
+
+    if (confirm(language['ASK_SAVE'])) {
+        var saveArr = new Array();
+        $('tr div[class*=checked]').each(function() {
+            //var rowId = $(this).parent().parent().attr("id");
+            var appId = $(this).parent().next().next().text();
+            //추가로 체크한 app, 체크 취소한 app 구분
+            var rememberLen = initAppCheck.length;
+            for (var i=0; i<rememberLen; i++) {
+                if (appId === initAppCheck[i].APP_ID) {
+                    initAppCheck.splice(i,1);
+                    break;
+                }
+            }
+            if (rememberLen === initAppCheck.length) {
+                saveArr.push(appId);
+            }
+        });    
         
-        var appId = $("#gridUserAuthList").jqGrid("getRowData", rowId).APP_ID;
-        //추가로 체크한 app, 체크 취소한 app 구분
-        var rememberLen = initAppCheck.length;
-        for (var i=0; i<rememberLen; i++) {
-            if (appId === initAppCheck[i].APP_ID) {
-                initAppCheck.splice(i,1);
+        var rowUser;			
+        var userId = $("#selectUserHiddenId").val();
+    
+        for (var i=0; i<$('#userTableBodyId').find('tr').length; i++) {
+            if ($('#userTableBodyId').find('tr').eq(i).children().eq(1).text() === userId) {
+                rowUser = i;
                 break;
             }
         }
-        if (rememberLen === initAppCheck.length) {
-            saveArr.push(appId);
-        }
-    });    
-    var rowUser  = $("#gridList").jqGrid("getGridParam", "selrow" );			
-	var userId = $("#gridList").jqGrid("getRowData", rowUser).USER_ID;
-
-    //save
-    var jsonsaveArr = JSON.stringify(saveArr);
-    var jsoninitAppCheck = JSON.stringify(initAppCheck);
-    var params = {
-        'userId' : userId,
-        'saveData' : jsonsaveArr,
-        'removeData' : jsoninitAppCheck,
-    };
-    $.tiAjax({
-        type: 'POST',
-        datatype: "JSON",
-        data: params,
-        isloading: true,
-        url: '/users/updateUserAppList',
-        success: function(data) {
-            console.log(data);
-            if (data.status === 200) {
-                //window.location.reload();
-                alert(data.message);
-                $('#gridList').find('tr').eq(rowUser).children().eq(0).trigger('click');
-            } else {
-                alert(data.message);
+    
+        //save
+        var jsonsaveArr = JSON.stringify(saveArr);
+        var jsoninitAppCheck = JSON.stringify(initAppCheck);
+        var params = {
+            'userId' : userId,
+            'saveData' : jsonsaveArr,
+            'removeData' : jsoninitAppCheck,
+        };
+        $.ajax({
+            type: 'POST',
+            datatype: "JSON",
+            data: params,
+            url: '/users/updateUserAppList',
+            success: function(data) {
+                if (data.status === 200) {
+                    //window.location.reload();
+                    alert(language['REGIST_SUCC']);
+                    $('#userTableBodyId').find('tr').eq(rowUser).children().eq(1).trigger('click');
+                } else {
+                    alert(language['It_failed']);
+                }
             }
-        }
-    });
+        });
+    }
     
-    
+
 }
+
+
+function iCheckBoxTrans() {
+    $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+        checkboxClass: 'icheckbox_minimal-blue',
+        radioClass   : 'iradio_minimal-blue'
+    })
+    //Red color scheme for iCheck
+    $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+        checkboxClass: 'icheckbox_minimal-red',
+        radioClass   : 'iradio_minimal-red'
+    })
+    //Flat red color scheme for iCheck
+    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+        checkboxClass: 'icheckbox_flat-green',
+        radioClass   : 'iradio_flat-green'
+    })
+
+    $('#check-all').iCheck({
+        checkboxClass: 'icheckbox_flat-green',
+        radioClass   : 'iradio_flat-green'
+    }).on('ifChecked', function(event) {
+        $('input[name=tableCheckBox]').parent().iCheck('check');
+        
+    }).on('ifUnchecked', function() {
+        $('input[name=tableCheckBox]').parent().iCheck('uncheck');
+        
+    });
+}
+
+
+
+
+
+
+

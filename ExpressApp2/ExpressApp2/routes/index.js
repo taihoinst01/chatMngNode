@@ -14,6 +14,7 @@ var subKey = luisConfig.subKey; // Subscription Key
 /* GET home page. */
 router.get('/', function (req, res) {
     if(req.session.sid) {
+
         var client = new Client();
         var appList;
         var options = {
@@ -48,10 +49,27 @@ router.get('/', function (req, res) {
                                 var appRelationStr = "";
                                 var loginId = req.session.sid;
                                 for (var i=0; i<appList.length; i++) {
-                                    appStr += "INSERT INTO TBL_LUIS_APP (APP_NUM, SUBSC_KEY, APP_ID, VERSION, APP_NAME, OWNER_EMAIL, REG_DT, CULTURE, DESCRIPTION) ";
-                                    appStr += "VALUES ((SELECT isNULL(MAX(APP_NUM),0) FROM TBL_LUIS_APP)+1, '" + subKey + "', '" + appList[i].id + "', " +
-                                        " '" + appList[i].activeVersion + "', '" + appList[i].name + "', '" + appList[i].ownerEmail + "', " +
-                                        " convert(VARCHAR(33), '" + appList[i].createdDateTime + "', 126), '" + appList[i].culture + "', '" + appList[i].description + "'); ";
+                                    if (req.query.appInsertName) {
+                                        var appColor = (req.query.appInsertName === appList[i].name?req.query.appColor: 'color_01');
+                                        appStr += "INSERT INTO TBL_LUIS_APP (APP_NUM, SUBSC_KEY, APP_ID, VERSION, APP_NAME, OWNER_EMAIL, REG_DT, CULTURE, DESCRIPTION, APP_COLOR) \n";
+                                        appStr += "VALUES ((SELECT isNULL(MAX(APP_NUM),0) FROM TBL_LUIS_APP)+1, '" + subKey + "', '" + appList[i].id + "', \n" +
+                                            " '" + appList[i].activeVersion + "', '" + appList[i].name + "', '" + appList[i].ownerEmail + "', \n" +
+                                            " convert(VARCHAR(33), '" + appList[i].createdDateTime + "', 126), '" + appList[i].culture + "', '" + appList[i].description + "', " +
+                                            " '" + appColor + "'); \n";
+
+                                        var userId = req.session.sid;
+                                        appStr += "INSERT INTO TBL_USER_RELATION_APP(USER_ID, APP_ID) " +
+                                        "     VALUES ('" + userId + "', '" + appList[i].id + "'); \n";    
+                                    } else {
+
+                                        var tmp = Math.floor(Math.random() * (15 - 1)) + 1;
+                                        var randNum = pad(tmp, 2);
+                                        appStr += "INSERT INTO TBL_LUIS_APP (APP_NUM, SUBSC_KEY, APP_ID, VERSION, APP_NAME, OWNER_EMAIL, REG_DT, CULTURE, DESCRIPTION, APP_COLOR) \n";
+                                        appStr += "VALUES ((SELECT isNULL(MAX(APP_NUM),0) FROM TBL_LUIS_APP)+1, '" + subKey + "', '" + appList[i].id + "', \n" +
+                                            " '" + appList[i].activeVersion + "', '" + appList[i].name + "', '" + appList[i].ownerEmail + "', \n" +
+                                            " convert(VARCHAR(33), '" + appList[i].createdDateTime + "', 126), '" + appList[i].culture + "', '" + appList[i].description + "', " +
+                                            " 'color_" + randNum + "'); \n";
+                                    }
                                 }
                                 //convert(datetime, '2008-10-23T18:52:47.513', 126)
                                 //let insertApp = await pool.request().query(appStr);
@@ -138,7 +156,7 @@ router.get('/', function (req, res) {
 router.get('/list', function (req, res) {
     req.session.selMenu = 'm1';
     var loginId = req.session.sid;
-    var userListStr = "SELECT A.APP_ID, A.VERSION, A.APP_NAME, FORMAT(A.REG_DT,'yyyy-MM-dd') REG_DT, A.CULTURE, A.DESCRIPTION \n" +
+    var userListStr = "SELECT A.APP_ID, A.VERSION, A.APP_NAME, FORMAT(A.REG_DT,'yyyy-MM-dd') REG_DT, A.CULTURE, A.DESCRIPTION, A.APP_COLOR \n" +
                       "  FROM TBL_LUIS_APP A, TBL_USER_RELATION_APP B \n" +
                       " WHERE 1=1 \n" +
                       "   AND A.APP_ID = B.APP_ID \n" +
@@ -209,7 +227,7 @@ router.post('/admin/putAddApps', function (req, res){
     var appService = req.body.appInsertService;
     var appName = req.body.appInsertName;
     var appCulture = req.body.appInsertCulture;
-    var appDes = req.body.appInsertDes;
+    var appDes = req.body.appDes;
 
     var client = new Client();
     
@@ -231,14 +249,6 @@ router.post('/admin/putAddApps', function (req, res){
             if(response.statusCode == 201){ // 등록 성공
 
                 //색상 등록
-                
-
-
-
-
-
-
-
                 responseData = {'appId': data};
             }else{
                 responseData = data;
@@ -331,5 +341,12 @@ router.post('/jsLang', function (req, res) {
         res.send({lang: res.locals.ko});
     }
 });
+
+
+function pad(n, width) {
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+}
+
 
 module.exports = router;
