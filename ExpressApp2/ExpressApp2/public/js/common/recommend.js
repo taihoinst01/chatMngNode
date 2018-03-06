@@ -43,7 +43,7 @@ function recommendAjax(type){
             if(data.list.length > 0){
                 for(var i = 0; i < data.list.length; i++){
                     item += '<tr>' +
-                            '<td><input type="checkbox" class="flat-red" ><input type="hidden" class="seq" value="'+data.list[i].SEQ+'"></td>' +
+                            '<td><input type="checkbox" class="flat-red" name="tableCheckBox"><input type="hidden" class="seq" value="'+data.list[i].SEQ+'"></td>' +
                             '<td class="txt_left">' +
 
                             '<a href="/learning/utterances?utterance='+data.list[i].QUERY + 
@@ -64,25 +64,46 @@ function recommendAjax(type){
                             '</tr>';
                 }
                 
+                $('#recommendContents').append(item);
+            
+                $('.pagination').html('').append(data.pageList)
+
+                $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+                    checkboxClass: 'icheckbox_flat-green',
+                    radioClass   : 'iradio_flat-green'
+                })
+                    
+                $('input[name=tableAllChk]').on('ifChecked', function(event) {
+                    $('input[name=tableCheckBox]').parent().iCheck('check');
+                        
+                }).on('ifUnchecked', function() {
+                        $('input[name=tableCheckBox]').parent().iCheck('uncheck');
+                    });
+
+                if(type == 'delete') {
+                    alert("삭제되었습니다.");
+                }
+    
+                $('input[name=tableAllChk]').parent().iCheck('uncheck');
             } else {
-                item += '<tr>' +
-                            '<td colspan="3">' + language.NO_DATA + '</td>' +
-                        '</tr>';
+                if(type == 'delete') {
+
+                    $('#currentPage').val(($('#currentPage').val() - 1 != 0) ? $('#currentPage').val() - 1 : 1)
+                    recommendAjax('delete');
+
+                } else {
+
+                    item += '<tr>' +
+                                '<td colspan="3">' + language.NO_DATA + '</td>' +
+                            '</tr>';
+                }
             }
             
-            $('#recommendContents').append(item);
             
-            $('.pagination').html('').append(data.pageList)
 
-            $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
-                checkboxClass: 'icheckbox_flat-green',
-                radioClass   : 'iradio_flat-green'
-            })
+            
 
-            if(type == 'delete') {
-                alert("삭제되었습니다.");
-            }
-
+            
         }
     });
 }
@@ -99,8 +120,7 @@ $(document).on('click','div[type=checkbox]',function(e){
 });
 
 $(document).on('click','.li_paging',function(e){
-
-    
+ 
     if($(this).val() != $('#currentPage').val()){
         $('#currentPage').val($(this).val())
         recommendAjax();
@@ -155,7 +175,6 @@ function deleteRecommend(){
                 isloading : true,
                 success: function(data){
                     recommendAjax('delete');
-                    
                 }
             });
     }

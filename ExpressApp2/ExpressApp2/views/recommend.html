@@ -7,21 +7,21 @@
     <title></title>
     <%include  ./common/commonUse.html%>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="../common/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../common/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../common/css/AdminLTE.min.css">
-    <link rel="stylesheet" href="../common/css/skin-blue.min.css">
-    <link rel="stylesheet" href="../common/css/default.css">
+    <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/common/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/common/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/common/css/skin-blue.min.css">
+    <link rel="stylesheet" href="/common/css/default.css">
     <link rel="stylesheet" type="text/css" href="/css/recommend.css" />
     <!--[if lt IE 9]>
     <script src="common/js/html5shiv.min.js"></script>
     <script src="common/js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <script src="../common/js/jquery.min.js"></script>
-    <script src="../common/js/bootstrap.min.js"></script>
-    <script src="../common/js/adminlte.min.js"></script>
-    <script src="../common/js/jquery-2.2.4.min.js"  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-    <script src="../common/js/icheck.min.js"></script>
+    <script src="/common/js/jquery.min.js"></script>
+    <script src="/common/js/bootstrap.min.js"></script>
+    <script src="/common/js/adminlte.min.js"></script>
+    <script src="/common/js/jquery-2.2.4.min.js"  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="/common/js/icheck.min.js"></script>
 
     <script type="text/javascript" src="/js/common/recommend.js"></script>
 </head>
@@ -41,7 +41,7 @@
         <div class="content-wrapper">
             <section class="content-header"><h1>학습 추천 </h1>  </section>
 
-            <!-------- Main content ------------>
+            <!-- Main content -->
             <section class="content">
                 <div class="box  color-palette-box">
                     <div class="box-body">
@@ -53,7 +53,7 @@
                                 <option value="lastMonth">최근1달</option>
                             </select>
                         </div>
-                        <!-------- 검색창 ------------> 
+                        <!-- 검색창 --> 
                         <div class="form-group w50 fr ">
                             <div class="input-group input-group-sm fr" style="width: 250px;">
                                     <input type="text" name="table_search" class="form-control pull-right" placeholder="검색어 입력">
@@ -62,13 +62,13 @@
                                     </div>
                             </div>
                         </div> 
-                        <!-------- 학습 추천 테이블 ------------> 
+                        <!--학습 추천 테이블 --> 
                         <div class="Tbl_wrap">
                             <table class="Tbl" summary="학습 추천 결과">
                                 <colgroup><col width="6%"/><col width="64%"/><col width="30%"/></colgroup>
                                 <thead>
                                     <tr>
-                                        <th><input type="checkbox" class="flat-red"></th>
+                                        <th><input type="checkbox" name="tableAllChk" class="flat-red"></th>
                                         <th>내용</th>
                                         <th>등록일</th>
                                     </tr>
@@ -78,10 +78,10 @@
                                 </tbody>
                             </table>
                         </div> 
-                        <!-------- 버튼 ------------> 
+                        <!-- 버튼 --> 
                         <div class="btn_wrap03"><button type="button" class="btn btn-default fr" onclick="deleteRecommend()">삭제</button> </div>                                                
                         
-                        <!-------- 페이징 ------------> 
+                        <!-- 페이징 --> 
                         <div class="pagination_wrap" >
                             <ul class="pagination pagination-sm no-margin">
 
@@ -91,26 +91,31 @@
                     </div>
                 </div>
             </section>
-            <!-------- //Main content ------------>  
+            <!-- //Main content -->  
         </div>
     </div>
+    <!--// Content Wrapper -->
 
+    <!--  Footer -->
+    <footer class="main-footer">Copyright &copy; <strong> TAIHOINST. </strong> All rights reserved.</footer>
+    <!-- // Footer -->
+    
     <script>
 
         //iCheck for checkbox and radio inputs
         $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
-        checkboxClass: 'icheckbox_minimal-blue',
-        radioClass   : 'iradio_minimal-blue'
+            checkboxClass: 'icheckbox_minimal-blue',
+            radioClass   : 'iradio_minimal-blue'
         })
         //Red color scheme for iCheck
         $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
-        checkboxClass: 'icheckbox_minimal-red',
-        radioClass   : 'iradio_minimal-red'
+            checkboxClass: 'icheckbox_minimal-red',
+            radioClass   : 'iradio_minimal-red'
         })
         //Flat red color scheme for iCheck
         $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
-        checkboxClass: 'icheckbox_flat-green',
-        radioClass   : 'iradio_flat-green'
+            checkboxClass: 'icheckbox_flat-green',
+            radioClass   : 'iradio_flat-green'
         })
         
     </script>
