@@ -354,16 +354,22 @@
                                     <div class="modal_con">
                                         <div class="form-group col-md-5" style="padding-left:0">
                                             <label>버튼명 </label>
-                                            <input type="text" class="form-control" placeholder=" 내용을 입력하세요.">
+                                            <input type="text" class="form-control mediaBtnName" name="mButtonName1" placeholder=" 내용을 입력하세요.">
+                                            <input type="text" class="form-control mediaBtnName" name="mButtonName2" style="display:none;" placeholder=" 내용을 입력하세요.">
+                                            <input type="text" class="form-control mediaBtnName" name="mButtonName3" style="display:none;" placeholder=" 내용을 입력하세요.">
+                                            <input type="text" class="form-control mediaBtnName" name="mButtonName4" style="display:none;" placeholder=" 내용을 입력하세요.">
                                         </div>
                                         <div class="form-group col-md-6" style="padding:0">
                                             <label>버튼콘텐츠 </label>
-                                            <input type="text" class="form-control" placeholder=" 내용을 입력하세요.">
+                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent1" placeholder=" 내용을 입력하세요.">
+                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent2" style="display:none;" placeholder=" 내용을 입력하세요.">
+                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent3" style="display:none;" placeholder=" 내용을 입력하세요.">
+                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent4" style="display:none;" placeholder=" 내용을 입력하세요.">
                                         </div>
                                         <a href="#"  class="btn_delete" ><span class="fa fa-trash"></span></a>
                                     </div>
                                     <div class="btn_wrap" style="clear:both" >
-                                        <button type="button" class="btn btn-default" >버튼 추가 삽입</button> 
+                                        <button type="button" class="btn btn-default addMediaBtn" >버튼 추가 삽입</button> 
                                     </div>                                                                                                                                                        
                                 </div>
                                 
@@ -455,7 +461,7 @@
                         <span class="nec_ico">*</span> 항목은 필수 입력입니다
                     </div>
                     <div class="btn_wrap">
-                        <button type="button" class="btn btn_01">생성</button>
+                        <button type="button" class="btn btn_01" onclick="createDialog();">생성</button>
                         <button type="button" class="btn btn-default createDlgModalClose"  data-dismiss="modal">취소</button>
                     </div>
                 </div>
