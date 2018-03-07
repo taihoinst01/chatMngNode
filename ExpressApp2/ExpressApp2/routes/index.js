@@ -10,13 +10,12 @@ var router = express.Router();
 
 const HOST = 'https://westus.api.cognitive.microsoft.com'; // Luis api host
 var subKey = luisConfig.subKey; // Subscription Key
-
+var saveAppList;
 /* GET home page. */
 router.get('/', function (req, res) {
     if(req.session.sid) {
 
         var client = new Client();
-        var appList;
         var options = {
             headers: {
                 'Ocp-Apim-Subscription-Key': subKey
@@ -25,8 +24,9 @@ router.get('/', function (req, res) {
         try{
             client.get( HOST + '/luis/api/v2.0/apps/', options, function (data, response) {
                 //console.log(data)
-                appList = data;
-                var listStr = 'SELECT APP_ID FROM TBL_LUIS_APP ';
+                var appList = data;
+                saveAppList = JSON.parse(JSON.stringify(data));
+                var listStr = 'SELECT APP_NAME, APP_ID FROM TBL_LUIS_APP ';
 
                 dbConnect.getConnection(sql).then(pool => {
                     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
@@ -35,16 +35,36 @@ router.get('/', function (req, res) {
                             let rows = result.recordset;
                             console.log(rows);
                             var newAppList = [];
+                            var deleteAppStr = "";
+                            
                             for (var i = 0; i < rows.length; i++) {
+                                //luis에서 삭제한 app check
+                                var chkDelApp = true;
+
                                 for (var j=0; j<appList.length; j++) {
-                                    if (rows[i].APP_ID === appList[j].id) {
-                                        appList.splice(j,1);
+                                    
+                                    //db - luis상 app name이 같으면
+                                    if (rows[i].APP_NAME === appList[j].name) {
+                                        
+                                        if (rows[i].APP_ID === appList[j].id) {
+                                            //db에 존재하는 앱은 제외
+                                            appList.splice(j,1);
+                                        } else {
+                                            //기존 앱이 삭제되고 같은 이름의 새 앱이 생긴 경우
+                                            deleteAppStr += "DELETE FROM TBL_LUIS_APP WHERE APP_NAME = '" + rows[i].APP_NAME + "' AND APP_ID = '" + rows[i].APP_ID + "'; \n";
+                                        }
+
+                                        chkDelApp = false;
                                         break;
                                     }
                                 }
+
+                                if (chkDelApp) {
+                                    deleteAppStr += "DELETE FROM TBL_LUIS_APP WHERE APP_NAME = '" + rows[i].APP_NAME + "' AND APP_ID = '" + rows[i].APP_ID + "'; \n";
+                                }
                             }
 
-                            if (appList.length > 0) {
+                            if (appList.length > 0 || deleteAppStr !== "") {
                                 var appStr = "";
                                 var appRelationStr = "";
                                 var loginId = req.session.sid;
@@ -74,7 +94,7 @@ router.get('/', function (req, res) {
                                 //convert(datetime, '2008-10-23T18:52:47.513', 126)
                                 //let insertApp = await pool.request().query(appStr);
                                 dbConnect.getConnection(sql).then(pool => { 
-                                    return pool.request().query(appStr) 
+                                    return pool.request().query(deleteAppStr + appStr) 
                                 }).then(result => {
 
                                 }).catch(err => {
@@ -302,6 +322,65 @@ router.post('/admin/renameApp', function (req, res){
         console.log(e);
     }
     
+});
+
+//luis Train
+//Luis app insert
+router.post('/admin/trainApp', function (req, res){
+    var appId = req.session.appId;
+    var appName = req.session.appName;
+    var versionId;
+
+    for (var i=0; i<saveAppList.length; i++) {
+        if (appName === saveAppList[i].name) {
+            versionId = saveAppList[i].endpoints.PRODUCTION.versionId;
+        }
+    }
+    var client = new Client();
+    
+    var options = {
+        headers: {
+            'Ocp-Apim-Subscription-Key': subKey
+        }
+    };
+    try{
+        client.get( HOST + '/luis/api/v2.0/apps/' + appId + '/versions/' + versionId, options, function (data, response) {
+            //console.log(data); // app id값
+            var responseData = data;
+            var trainResult = {};
+            var sucCnt = 0;
+            var failCnt = 0;
+            //202:성공  400:실패
+            // statusId 
+            // - 0 : Success
+            // - 1 : UpToDate   최신 정보
+            // - 2 : InProgress  진행 중
+            // - 3 : Fail     -> fail시  failureReason에 이유 넘어옴
+            if (response.statusCode == 202) {
+                for (var i=0; i< responseData.length; i++) {
+                    if (responseData[i].details.statusId === 0 ) {
+                        sucCnt++;
+                    } else if (responseData[i].details.statusId === 3) {
+                        failCnt++;
+                    } else {
+                        //continue;
+                    }
+                }
+                trainResult.sucCnt = sucCnt;
+                trainResult.failCnt = failCnt;
+                res.send({result : response.statusCode, resultValue : trainResult});
+
+            } else if (response.statusCode == 400) {
+                res.send({result : response.statusCode, message : data.error.message});
+            } else { //401
+                res.send({result : response.statusCode, message : response.message});
+            }
+
+
+        });
+    }catch(e){
+        console.log(e);
+    }
 });
 
 router.post('/ajax1', function (req, res) {

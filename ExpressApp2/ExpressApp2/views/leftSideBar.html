@@ -23,7 +23,7 @@
                                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=appName %><span></span></a>
                                                 <%
                                                     } else {
-                                                        if(leftList) {
+                                                        if(leftList && leftList.length >0) {
                                                 %>
                                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=leftList[0].APP_NAME %><span></span></a>
                                                 <%
@@ -80,7 +80,7 @@
                                     <li><a href="/learning/utterances"><i class="fa fa-circle-o"></i> <%= __('UTTERANCE_SETTING') %></a></li>
                                     <li><a href="/learning/dialog"><i class="fa fa-circle-o"></i> <%= __('DIALOG_SETTING') %></a></li>
                                     <li><a href="/learning/entities"><i class="fa fa-circle-o"></i> <%= __('ENTITY_SETTING') %></a></li>
-                                    <li><a href="#" class="spmenu" data-toggle="modal" data-target="#myModal"><%= __('TRAIN') %></a></li>
+                                    <li><a href="#" class="spmenu" id="trainBtn" data-toggle="modal" data-target="#myModal"><%= __('TRAIN') %></a></li>
                                     <li class="active"><a href="#" class="spmenu"  data-toggle="control-sidebar" ><%= __('SIMULATION') %></a></li>
                                   </ul>
                                 </li>
@@ -113,10 +113,10 @@
                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
                         <h4 class="modal-title" id="myModalLabel"><%= __('TRAIN') %></h4>
                         </div>
-                        <div class="modal-body"><p class="txt_center mt20"><%= __('TRAIN_COMPLETE') %></p></div>
+                        <div class="modal-body"><p class="txt_center mt20" id="trainResultTag"><%= __('TRAIN_COMPLETE') %></p></div>
                         <div class="modal-footer">
                             <div class="btn_wrap">
-                                            <button type="button" class="btn btn-default"  data-dismiss="modal"><%= __('OK') %></button>
+                                <button type="button" class="btn btn-default"  data-dismiss="modal"><%= __('OK') %></button>
                             </div>
                         </div>
                 </div>
@@ -145,7 +145,7 @@
   <script>
     
     $(window).on('load', function() {
-
+        
         /*
         $('.settingBtn').each(function () {
             if ( $(this).text() === $('#selLeftMenu').val()) {
@@ -203,35 +203,51 @@
             $('#testChatBot').attr('src','https://webchat.botframework.com/embed/smartsend?s=dEQAGijPT-s.cwA.0LA.mnfoxhvCCjOo4YE894AS9nJpoKFTn58Lh3DljcOicdU');
             return false;
         });
-
-    });
-  </script>
-
-
-<script>
-
-        $(document).ready(function(){
-            
         
-            $("a[name=batchTest]").click(function() {
-        
-                if ($("#learningTest").css('display') != 'none') {
-                    $("#learningTest").hide();
-                    $("#batchTestPanel").show();
-                    $("#toggleDiv").toggleClass('open' );
-                    
-                    //$("#toggleDiv").css('right', '0px');
-                } else {
-                    
-                    $("#batchTestPanel").hide();
-                    $("#learningTest").show();
-                    $("#toggleDiv").toggleClass('open');
-                    //$("#toggleDiv").css('right', '-900px');
+        //train --start
+        $('#trainBtn').click(function() {
+
+            $.ajax({
+                url: "/admin/trainApp",
+                type: "post",
+            }).done(function(data) {
+                if (data.result === 400) {
+                    $('#trainResultTag').text(data.message);
+                    //alert(data.message);
+                } else if (data.result === 401) {
+                    $('#trainResultTag').text(data.message);
+                    //alert(data.message);
+                } else { //200
+                    var result = data.resultValue;
+                    $('#trainResultTag').text("성공 : " + result.sucCnt + "실패 : " + result.failCnt);
+                    //alert("성공 : " + result.sucCnt + "실패 : " + result.failCnt);
                 }
             });
+        });
+        
+        //train --end
+
+        $("a[name=batchTest]").click(function() {
+    
+            if ($("#learningTest").css('display') != 'none') {
+                $("#learningTest").hide();
+                $("#batchTestPanel").show();
+                $("#toggleDiv").toggleClass('open' );
+                
+                //$("#toggleDiv").css('right', '0px');
+            } else {
+                
+                $("#batchTestPanel").hide();
+                $("#learningTest").show();
+                $("#toggleDiv").toggleClass('open');
+                //$("#toggleDiv").css('right', '-900px');
+            }
+        });
+
+
+    });
         
             
         
-        });
         
-        </script>
+    </script>
