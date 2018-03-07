@@ -520,7 +520,7 @@ $(document).ready(function(){
             $('#largeGroup').css('display','block');
         }
 
-        e.de
+        return;
     });
     
     //다이얼로그 Add From
@@ -839,7 +839,7 @@ $(document).on('change','select[name=dlgType]',function(e){
     } else if($(e.target).val() == "4") {
         $(".dialogView").eq(idx).html('');
         insertHtml += '<div class="wc-message wc-message-from-bot">';
-        insertHtml += '<div class="wc-message-content" style="width: inherit !important;">';
+        insertHtml += '<div class="wc-message-content">';
         insertHtml += '<svg class="wc-message-callout"></svg>';
         insertHtml += '<div>';
         insertHtml += '<div class="wc-carousel">';
@@ -987,7 +987,7 @@ function createDialog(){
         }
     });
     if(exit) return;
-    $('.insertForm textarea[name=dialogText]').each(function(index) {
+    $('.insertForm input[name=dialogText]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.You_must_enter_the_dialog_text);
             exit = true;
@@ -1092,7 +1092,7 @@ function selectDlgListAjax(entity) {
                             inputUttrHtml += '</button>';
                             inputUttrHtml += '<div class="wc-hscroll-outer" >';
                             inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum) + '">';
-                            inputUttrHtml += '<ul>';
+                            inputUttrHtml += '<ul style="padding-left:0px;">';
                             inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
                         }
                         inputUttrHtml += '<li class="wc-carousel-item">';
@@ -1134,7 +1134,7 @@ function selectDlgListAjax(entity) {
                         inputUttrHtml += '<button class="scroll previous" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png"></button>';
                         inputUttrHtml += '<div class="wc-hscroll-outer">';
                         inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
-                        inputUttrHtml += '<ul>';
+                        inputUttrHtml += '<ul style="padding-left:0px;>';
                         inputUttrHtml += '<li class="wc-carousel-item wc-carousel-play">';
                         inputUttrHtml += '<div class="wc-card hero">';
                         inputUttrHtml += '<div class="wc-card-div imgContainer">';
@@ -1294,9 +1294,9 @@ function utterInput(queryText) {
                     var inputUttrHtml = '';
                     inputUttrHtml += '<tr><input type="hidden" name="hiddenUtter" value="' + queryText + '"/>';
                     inputUttrHtml += '<td> <input type="checkbox" name="tableCheckBox" class="flat-red"></td>';
-                    inputUttrHtml += '<td class="txt_left"><input type=hidden name="entity" value="' + result['entities'][k] + '"/>' + utter + '</td>';
+                    inputUttrHtml += '<td class="txt_left clickUtter"><input type=hidden name="entity" value="' + result['entities'][k] + '"/>' + utter + '</td>';
                     inputUttrHtml += '<td><a href="#"><span class="fa  fa-trash utterDelete"><span class="hc">삭제</span></span></a></td></tr>';
-                    inputUttrHtml += '<tr><td></td><td class="txt_left" >';
+                    inputUttrHtml += '<tr><td></td><td class="txt_left">';
                     
                     if(result.commonEntities[k]){
                         for(var i = 0; i < result.commonEntities[k].length ; i++){
@@ -1510,14 +1510,14 @@ function searchDialog() {
                                 inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
                                 inputUttrHtml += '<div class="wc-message-content">';
                                 inputUttrHtml += '<svg class="wc-message-callout"></svg>';
-                                inputUttrHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
+                                inputUttrHtml += '<div class="wc-carousel slideBanner">';
                                 inputUttrHtml += '<div>';
                                 inputUttrHtml += '<button class="scroll previous" id="prevBtn' + (botChatNum) + '" style="display: none;" onclick="prevBtn(' + botChatNum + ')">';
                                 inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
                                 inputUttrHtml += '</button>';
                                 inputUttrHtml += '<div class="wc-hscroll-outer" >';
                                 inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum) + '">';
-                                inputUttrHtml += '<ul>';
+                                inputUttrHtml += '<ul style="padding-left: 0px;">';
                                 inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
                             }
                             inputUttrHtml += '<li class="wc-carousel-item">';
@@ -1533,7 +1533,7 @@ function searchDialog() {
                                 inputUttrHtml += '<p class="carousel" style="height:20px;min-height:20px;">' + /*cardtext*/ tmp.dlg[j].CARD_TEXT + '</p>';
                             }
                             if(tmp.dlg[j].BTN_1_TITLE != null) {
-                                inputUttrHtml += '<ul class="wc-card-buttons"><li><button>' + /*btntitle*/ tmp.dlg[j].BTN_1_TITLE + '</button></li></ul>';
+                                inputUttrHtml += '<ul class="wc-card-buttons" style="padding-left:0px;"><li><button>' + /*btntitle*/ tmp.dlg[j].BTN_1_TITLE + '</button></li></ul>';
                             }
                             inputUttrHtml += '</div>';
                             inputUttrHtml += '</li>';
@@ -1694,7 +1694,7 @@ $(document).on('click', '.addMediaBtn',function(e){
         if($(this).css('display') === 'none') {
 
             $(this).show();
-            $(this).parent().parent().next().find($('.mediaBtnContent')).eq(index).show();
+            $(this).parent().parent().find($('.mediaBtnContent')).eq(index).show();
             return false; 
         }
     });
