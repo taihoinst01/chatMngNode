@@ -1,164 +1,72 @@
-﻿
-<div id="header_wrap02">
-    <div id="header">
-      <!-- <a class="logo" href="/"><span class="hc">챗봇_학습관리포털</span></a> -->
-        <div class="gnb_wrap" id="menuLv1">
-            <ul class="headerUl">
-            <!--<a class="gnbm" href="/">Home</a><p class="cline">|</p>-->
-            <%
-            if(selMenu == 'm1')
-            {
-                %>
-                    <li class="headerHover currentPage">
-                        <a class="gnbm" href="/list" id="selMenus">My apps</a>
-                    </li>
-                   <!-- <li class="headerHover">
-                        <a class="gnbm" href="/board">Board</a>
-                    </li>
-                    <li class="headerHover">
-                        <a class="gnbm" href="/learning">Learning </a>
-                    </li> -->
-                <%
-            }
-            else if(selMenu == 'm2')
-            {
-                %>
-                    <li class="headerHover">
-                        <a class="gnbm" href="/list" >My apps</a>
-                    </li>
-                    <li class="headerHover currentPage">
-                        <a class="gnbm" href="/board" id="selMenus">Board</a>
-                    </li>
-                    <li class="headerHover">
-                        <a class="gnbm" href="/learning">Learning </a>
-                    </li>
-                <%
-            }
-            else if(selMenu == 'm3')
-            {
-                %>
-                    <li class="headerHover">
-                        <a class="gnbm" href="/list" >My apps</a>
-                    </li>
-                    <li class="headerHover">
-                        <a class="gnbm" href="/board">Board</a>
-                    </li>
-                    <li class="headerHover currentPage">
-                        <a class="gnbm" href="/learning" id="selMenus">Learning</a>
-                    </li>
-                <%
-            }
-            else if(selMenu == 'm4')
-            {
-            %>
-                <li class="headerHover">
-                    <a class="gnbm" href="/list"  id="selMenus4Luis">My apps</a>
-                </li>
-                <li class="headerHover">
-                    <a class="gnbm" href="/board">Board</a>
-                </li>
-                <li class="headerHover">
-                    <a class="gnbm" href="/learning">Learning</a>
-                </li>
-            <%
-            } else {
-                %>
-                <li>ddd</li>
-            <%        
-            }
-            %>
-            <!--<a class="gnbm" href="/list" id="myapp">My app</a><p class="cline">|</p>
-            <a class="gnbm" href="#">DLG</a><p class="cline">|</p>
-            <a class="gnbm" href="#">COMMON</a>-->
-            </ul>
-        </div>
-      <!--
-          
-          <div class="user_login">
-            
-            <% if(sid == ''){ %>
-            <form action="/login" method="post" class="navbar-form navbar-right">
-                <div class="form-group">
-                    <input type="text" name="id" placeholder="id" class="form-control">
-                </div>
-                <div class="form-group">
-                    <input type="password" name="pwd" placeholder="Password" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-success" style="background:#cecece !important;">Sign in</button>
-            </form>
-            <% }else { %>
-            <a class="navbar-brand navbar-right"> <%=sid %> ::: Hello</a>
-            <% }%>
-        
-        </div> -->
-        <div class="loginOk" style="margin:0 110px 0 0">
-            <select class="selectLan" id="selectLang" name="selectLang">
-                <%
-                    if(languageNow == 'ko') {
-                %>
-                    <option value="ko" selected="selected"><%= __('Korean') %></option>
-                    <option value="en"><%= __('English') %></option>
-                <%
-                    } else {
-                %>
-                    <option value="ko"><%= __('Korean') %></option>
-                    <option value="en" selected="selected"><%= __('English') %></option>
-                <%
-                    }
-                %>
+﻿<header class="main-header">
+    <input type="hidden" id="signMassage" value="<%= __('SIGN_IN_REQUIRED') %>" />
+    <!-- Logo -->
+    <a href="/list" class="logo">
+        <span class="logo-mini"></span>
+        <span class="logo-lg"></span>
+    </a>
+
+    <nav class="navbar navbar-static-top">
+        <!-- Sidebar toggle button-->
+        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button"><span class="sr-only">Toggle navigation</span> </a>
+
+        <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+        <li style="width:100px; padding-right: 10px;">
+            <select class="" id="selectLang" name="selectLang" style="width:90%; height: 25px; margin: 5px 10px 0 0; font-size: 1em; font-weight: bold;">
+                    <%
+                        if(languageNow == 'ko') {
+                    %>
+                        <option value="ko" selected="selected"><%= __('KOREAN') %></option>
+                        <option value="en"><%= __('ENGLISH') %></option>
+                    <%
+                        } else {
+                    %>
+                        <option value="ko"><%= __('KOREAN') %></option>
+                        <option value="en" selected="selected"><%= __('ENGLISH') %></option>
+                    <%
+                        }
+                    %>
             </select>
-        </div>
-        <div class="loginOk" onclick="userLayoutPop(event, this);">
- 
-            <% if(sid) { %>
-                <ul class="headerUl">
-                    <li class="headerHover" style="padding: 0.8rem 0.8rem;">
-                        <%=sid%>
-                    </li>
-                </ul>
-                
-                <!-- 레이어 팝업 추가해주세요.
-                <a href="/users/logout" class="btn js-open-modal">로그아웃</a>
-                -->
-            <%                  
+        </li>
+        <% 
+            if(sid) { 
+        %>
+            <li class="user_id"> <strong><%=sid%></strong> <%= __('SIR') %></li>
+            <% 
+                if(sid==="admin") { 
+            %>
+                <li class="btn_set01"> <a href="/users/userMng" class="left_set"></a></li>
+            <%
                 }
-            <!-- 비로그인 접근 시 로그인 화면으로 이동-->
+            %>
+            <li><a  href="/users/logout" class="btn_log_out" style="margin-left: 5px;"> <%= __('SIGN_OUT') %></a></li>
+        
+        <%                  
+            }
+        <!-- 비로그인 접근 시 로그인 화면으로 이동-->
             else
             {
-                %>
+        %>
                 <script>
-                    alert("로그인을 해주세요");
+                    alert($('#signMassage').val());
                     location.href = '/';
                 </script>
-                <%
-            }%>
-            
-        </div>
-        <!-- 언어선택
-        <div class="stb-select_w">
-            <div class="stb-select-container">
-                <span class="selected">English</span><select class="language" id="selLocale" style="display: none;">
-                    <option value="en" selected="">English</option>
-                    <option value="ko">Korea</option>
-                </select><ul class="stb-select" style="display:none;"><li value="en" selected="selected">English</li><li value="ko">Korea</li></ul>
-            </div>
-        </div>
-        -->
-    </div>
-    
-    <div id="userlay" class="userappLayout" >
-        <% 
-        if (sid == 'admin') {
-        %>
-            <div class="userlayerMenu" >
-                <a href="/users/userMng" class="userlayerMenu a userlayoutFont"  id="btn_crte_appEdit">Settings</a> <!-- class="btn_edit js-open-modal" 수정아이콘 -->
-            </div>
         <%
-        }
+            }
         %>
-            <div class="userlayerMenu">
-                <a href="/users/logout" class="userlayerMenu b userlayoutFont">Sign out</a>
-            </div>
-    </div>
+        </ul>
+        </div>
+    </nav>
+</header>
 
-</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('#selectLang').change(function() {
+            location.href="/index/lang"
+        });
+    });
+
+</script>

@@ -11,19 +11,23 @@ var language;
             // sourceType 구분 역할
             var groupType =  $('.selected').text();
             var sourceType = $('#tblSourceType').val();
-            dialogsAjax(groupType, sourceType);
+            selectDlgByTxt(groupType, sourceType);
         }
     });
 })(jQuery);
 
 var rememberSelBoxHtml = '';
 
+
+
 $(document).ready(function(){
+
 
     //검색 enter
     $('#iptDialog').keyup(function(e){
         if(e.keyCode == 13) {
-            searchIptDlg(1);
+            //searchIptDlg(1);
+            selectDlgByTxt('selectDlgByTxt', 'search');
         }
     });
 
@@ -44,11 +48,24 @@ $(document).ready(function(){
     });
 
     $('#tblSourceType').change(function(){
+        
         groupType = $('.selected').text();
         sourceType = $('#tblSourceType').val();
         $('#currentPage').val(1);
         rememberSelBoxHtml = $('#selBoxBody').html();
-        dialogsAjax(groupType, sourceType);
+        selectDlgByTxt(groupType, sourceType);
+        
+        /*
+        var selTypeVal = $('#tblSourceType :selected').text();
+        $('#dialogTbltbody tr').show();
+        $('#dialogTbltbody tr').each(function () {
+            if ($(this).children().eq(0).text() === selTypeVal) {
+            } else {
+                $(this).hide();
+            }
+        });
+        */
+
     });
 
     /**모달 */
@@ -174,87 +191,100 @@ $(document).ready(function(){
         e.preventDefault();
     });
     */
-    //다이얼로그 Add From
+
+    // 다이얼로그 생성 모달 
     $('#addDialogBtn').click(function(e){
         //$(".insertForm:eq(0)").clone(true).appendTo(".copyForm");
         //$(".copyForm textarea[name=dialogText]:last").val('');
 
         var insertForm = '';
-        insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
-        insertForm += '<form name="dialogLayout" id="dialogLayout">';
-        insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
-        insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
-        insertForm += '<option value="2" selected>Text</option>';
-        insertForm += '<option value="3">Carousel</option>';
-        insertForm += '<option value="4">Media</option>';
-        insertForm += '</select></p>';
-        insertForm += '<div class="clear-both"></div>';
-        insertForm += '<div id="textLayout" style="display:block;">';
-        insertForm += '<p class="texcon03">Dialogue Title <span>(required) </span></p>';
-        insertForm += '<p><input name="dialogTitle" type="text" class="inbox02" id="imgUrl" style="width:95%" placeholder="Input image url.." onkeyup="writeDialogTitle(this);" /></p>';
-        insertForm += '<p class="texcon03">Dialogue Text  <span>(required) </span></p>';
-        insertForm += '<p><textarea name="dialogText" id="dialogText" cols="" rows="2" style="width:95%; resize:none;" placeholder="Input text.." onkeyup="writeDialog(this);" onkeyup="dialogValidation("dialogInsert");"></textarea></p>';
-        insertForm += '</div>';
-        insertForm += '</form>';
-        insertForm += '</div>';
+            insertForm += '<hr>';
+            insertForm += '<div class="insertForm">';
+            insertForm += '<div class="form-group" >';
+            insertForm += '<form name="dialogLayout" id="dialogLayout">';
+            insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span> </label>';
+            insertForm += '<select class="form-control" name="dlgType">';
+            insertForm += '<option value="2">' + language.TEXT_TYPE + '</option>';
+            insertForm += '<option value="3">' + language.CARD_TYPE + '</option>';
+            insertForm += '<option value="4">' + language.MEDIA_TYPE + '</option>';
+            insertForm += '</select>';
+            insertForm += '<div class="clear-both"></div>';
+
+            insertForm += '<div class="textLayout" style="display: block;">';
+            insertForm += '<div class="form-group">';
+            insertForm += '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>';
+            insertForm += '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder=" ' + language.Please_enter + '">';
+            insertForm += '</div>';
+            insertForm += '<div class="form-group">';
+            insertForm += '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>';
+            insertForm += '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder=" ' + language.Please_enter + ' ">';
+            insertForm += '</div>';
+            insertForm += '</div>';
+            insertForm += '</form>';
+            insertForm += '</div>';
+            insertForm += '</div>';
 
         $(".insertForm:last").after(insertForm);
         //$(".insertFormWrap").append(insertForm);
-        var insertHtml = '';
-        insertHtml += '<div class="dialogView">';
-        insertHtml += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
-        insertHtml += '<div class="wc-message-content">';
-        insertHtml += '<svg class="wc-message-callout"></svg>';
-        insertHtml += '<div><div class="format-markdown"><div class="textMent">';
-        insertHtml += '<p>';
-        insertHtml += language.Please_enter;
-        insertHtml += '</p>';
-        insertHtml += '</div></div></div></div></div>';
-        insertHtml += '</div>';
-
-        $("#dialogPreview").append(insertHtml);
+        var dialogView = '';
+            dialogView += '<div class="dialogView" >';
+            dialogView += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
+            dialogView += '<div class="wc-message-content">';
+            dialogView += '<svg class="wc-message-callout"></svg>';
+            dialogView += '<div>';
+            dialogView += '<div class="format-markdown">';
+            dialogView += '<div class="textMent">';
+            dialogView += '<p>' + language. Please_enter + '</p>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            
+        $('#dialogViewWrap').append(dialogView);
         e.stopPropagation();
         e.preventDefault();
         
     });
 
-    
-    $(document).on('click', 'a[name=carouseBtn]',function(e){
+    // 다이얼로그 생성 모달
+    $(document).on('click', '.carouseBtn',function(e){
         //e.stopPropagation();
         //e.preventDefault();
         //var index = 0;
         $(this).parent().parent().find('select').each(function(index) {
             if ( $(this).css("display") === 'none') {
                 $(this).show();
-                $(this).parent().parent().next().find('input').eq(index).show();
-                $(this).parent().parent().next().next().find('input').eq(index).show();
+                $(this).parent().next().find('input').eq(index).show();
+                $(this).parent().next().next().find('input').eq(index).show();
                 return false;   
             }
         });
     });
 
-    $(document).on('click', '[name=addMediaBtn]',function(e){
+    // 다이얼로그 생성 모달
+    $(document).on('click', '.addMediaBtn',function(e){
 
         $(this).parent().parent().find($('.mediaBtnName')).each(function(index){
-
+    
             if($(this).css('display') === 'none') {
-
+    
                 $(this).show();
-                $(this).parent().parent().next().find($('.mediaBtnContent')).eq(index).show();
+                $(this).parent().parent().find($('.mediaBtnContent')).eq(index).show();
                 return false; 
             }
         });
-
-
+    
     });
     
+    // 다이얼로그 생성 모달 (다이얼로그 타입 변경)
     $(document).on('change','select[name=dlgType]',function(e){
         var idx = $("select[name=dlgType]").index(this);
         var insertHtml = "";
     
-        $('.insertForm:eq(' + idx + ') #carouselLayout').remove();
-        $('.insertForm:eq(' + idx + ') #mediaLayout').remove();
+        $('.insertForm:eq(' + idx + ') .carouselLayout').remove();
+        $('.insertForm:eq(' + idx + ') .mediaLayout').remove();
         $('.insertForm:eq(' + idx + ')').find('.clear-both').each(function( index) {
+    
             if ( index != 0 ) {
                 $(this).next().remove();
                 $(this).remove();
@@ -264,17 +294,16 @@ $(document).ready(function(){
         if($(e.target).val() == "2") {
     
         } else if($(e.target).val() == "3") {
-            //var $clone = $('#carouselLayout').clone();  <div id="carouselLayout" style="display: block;">[object Object]</div>
-            var caraousHtml = '<div id="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>'
-            $('.insertForm:eq(' + idx + ') form').append('<div id="carouselLayout" style="display:none;">' + caraousHtml + '</div>') ;
-            $('.insertForm:eq(' + idx + ') #carouselLayout').css('display', 'block');
-            $('.insertForm:eq(' + idx + ') #carouselLayout').find('a[name=addCarouselBtn]:last').closest('div').css('display', 'inline-block');
+            //var $clone = $('.carouselLayout').clone();  <div id="carouselLayout" style="display: block;">[object Object]</div>
+            var caraousHtml = '<div class="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>'
+            $('.insertForm:eq(' + idx + ') form').append('<div class="carouselLayout" style="display:none;">' + caraousHtml + '</div>') ;
+            $('.insertForm:eq(' + idx + ') .carouselLayout').css('display', 'block');
+            $('.insertForm:eq(' + idx + ') .carouselLayout').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
         } else if($(e.target).val() == "4") {
-
             var mediaForm = '<div id="mediaLayout" style="display: block;">' + $mediaForm.html() + '</div>'
-            $('.insertForm:eq(' + idx + ') form').append('<div id="mediaLayout" style="display:none;">' + mediaForm + '</div>') ;
-            $('.insertForm:eq(' + idx + ') #mediaLayout').css('display', 'block');
-            //$('.insertForm:eq(' + idx + ') #mediaLayout').find('[name=addMediaBtn]:last').closest('div').css('display', 'inline-block');
+            $('.insertForm:eq(' + idx + ') form').append('<div class="mediaLayout" style="display:none;">' + mediaForm + '</div>') ;
+            $('.insertForm:eq(' + idx + ') .mediaLayout').css('display', 'block');
+            $('.insertForm:eq(' + idx + ') .mediaLayout').find('.addMediaBtn:last').closest('div').css('display', 'inline-block');
         }
     
         if($(e.target).val() == "2") {
@@ -301,7 +330,7 @@ $(document).ready(function(){
             insertHtml += '</button>';
             insertHtml += '<div class="wc-hscroll-outer" >';
             insertHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (idx) + '">';
-            insertHtml += '<ul>';
+            insertHtml += '<ul style="padding-left: 0px;">';
             insertHtml += '<li class="wc-carousel-item">';
             insertHtml += '<div class="wc-card hero">';
             insertHtml += '<div class="wc-container imgContainer">';
@@ -309,7 +338,7 @@ $(document).ready(function(){
             insertHtml += '</div>';
             insertHtml += '<h1>CARD_TITLE</h1>';
             insertHtml += '<p class="carousel">CARD_TEXT</p>';
-            insertHtml += '<ul class="wc-card-buttons"><li><button>BTN_1_TITLE</button></li></ul>';
+            insertHtml += '<ul class="wc-card-buttons" style="padding-left: 0px;"><li><button>BTN_1_TITLE</button></li></ul>';
             insertHtml += '</div>';
             insertHtml += '</li>';
             /*
@@ -341,7 +370,7 @@ $(document).ready(function(){
             insertHtml += '<button class="scroll previous" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png"></button>';
             insertHtml += '<div class="wc-hscroll-outer">';
             insertHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
-            insertHtml += '<ul>';
+            insertHtml += '<ul style="padding-left: 0px;">';
             insertHtml += '<li class="wc-carousel-item wc-carousel-play">';
             insertHtml += '<div class="wc-card hero">';
             insertHtml += '<div class="wc-card-div imgContainer">';
@@ -352,7 +381,7 @@ $(document).ready(function(){
             insertHtml += '<div class="hidden" alt="card_value"></div>';
             insertHtml += '</div>';
             insertHtml += '<h1>media title</h1>';
-            insertHtml += '<ul class="wc-card-buttons">';
+            insertHtml += '<ul class="wc-card-buttons" style="padding-left: 0px;">';
             insertHtml += '</ul>';
             insertHtml += '</div>';
             insertHtml += '</li></ul></div></div>';
@@ -363,35 +392,52 @@ $(document).ready(function(){
         }
     });
 
-
-    $('#addDialogClose , #addDialogCancel').click(function(){
+    //다이얼로그 생성
+    $('.createDlgModalClose').click(function(){
         $('#mediaCarouselLayout').css('display','none');
         $('#cardLayout').css('display','none');
         $('#appInsertForm')[0].reset();
         $('.insertForm').remove();
+        
         var insertForm = '';
-        insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
+        insertForm += '<div class="insertForm">';
+        insertForm += '<div class="form-group" >';
         insertForm += '<form name="dialogLayout" id="dialogLayout">';
-        insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
-        insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
-        insertForm += '<option value="2" selected>Text</option>';
-        insertForm += '<option value="3">Carousel</option>';
-        insertForm += '<option value="4">Media</option>';
-        insertForm += '</select></p>';
+        insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span> </label>';
+        insertForm += '<select class="form-control" name="dlgType">';
+        insertForm += '<option value="2">' + language.TEXT_TYPE + '</option>';
+        insertForm += '<option value="3">' + language.CARD_TYPE + '</option>';
+        insertForm += '<option value="4">' + language.MEDIA_TYPE + '</option>';
+        insertForm += '</select>';
         insertForm += '<div class="clear-both"></div>';
         insertForm += '</form>';
+        insertForm += '</div>';
         insertForm += '</div>';
         
         $('#apiLayout').css('display', 'none');
         $('#commonLayout').css('display', 'block');
-        $('#commonLayout div:first').prepend(insertForm);
+        $('#commonLayout').prepend(insertForm);
         
-        if($('#btnCreatLgroup').html() == 'cancel') {
+        if($('#btnCreateLgroup').html() == '취소' || $('#btnCreateLgroup').html() == 'CANCEL') {
 
-            $('#btnCreatLgroup').click();
+            $('#btnCreateLgroup').click();
         }
-        $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>입력해주세요...</p></div></div></div></div></div></div></div>');
-
+        var dialogView = '';
+        dialogView += '<div class="dialogView" >';
+        dialogView += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
+        dialogView += '<div class="wc-message-content">';
+        dialogView += '<svg class="wc-message-callout"></svg>';
+        dialogView += '<div>';
+        dialogView += '<div class="format-markdown">';
+        dialogView += '<div class="textMent">';
+        dialogView += '<p>' + language.Please_enter + '</p>';
+        dialogView += '</div>';
+        dialogView += '</div>';
+        dialogView += '</div>';
+        dialogView += '</div>';
+        dialogView += '</div>';
+        dialogView += '</div>';
+        $('#dialogViewWrap').html(dialogView);
     });
 
     //다이얼로그 생성 모달 닫는 이벤트(초기화)
@@ -410,52 +456,67 @@ $(document).ready(function(){
     });
     /** 모달 끝 */
 
+    // 다이얼로그 생성 모달 (소스 타입 변경)
     $('#sourceType').change(function(e){
-
         if($(e.target).val() == "API") {
-            $('#dialogPreview').html('');
+            $('.dialogView').html('');
             $('#commonLayout').css('display','none');
             $('#apiLayout').css('display','block');
         } else {
-    
+
             $('.insertForm').remove();
-    
             var insertForm = '';
-            insertForm += '<div class="insertForm" style="border-bottom:1px solid rgb(43, 111, 189);">';
+            insertForm += '<div class="insertForm">';
+            insertForm += '<div class="form-group" >';
             insertForm += '<form name="dialogLayout" id="dialogLayout">';
-            insertForm += '<p class="texcon03">Dialogue Type <span>(required) </span></p>';
-            insertForm += '<p><select name="dlgType" class="inbox02" id="dlgType" style="width:95%" >';
-            insertForm += '<option value="2" selected>Text</option>';
-            insertForm += '<option value="3">Carousel</option>';
-            insertForm += '<option value="4">Media</option>';
-            insertForm += '</select></p>';
+            insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span> </label>';
+            insertForm += '<select class="form-control" name="dlgType">';
+            insertForm += '<option value="2">' + language.TEXT_TYPE + '</option>';
+            insertForm += '<option value="3">' + language.CARD_TYPE + '</option>';
+            insertForm += '<option value="4">' + language.MEDIA_TYPE + '</option>';
+            insertForm += '</select>';
             insertForm += '<div class="clear-both"></div>';
             insertForm += '</form>';
             insertForm += '</div>';
-    
+            insertForm += '</div>';
+            
             $('#commonLayout').css('display','block');
-            $('#commonLayout div:first').prepend(insertForm);
-            $('#dialogPreview').html('<div class="dialogView"><div><div class="wc-message wc-message-from-bot" style="width:80%;"><div class="wc-message-content"><svg class="wc-message-callout"></svg><div><div class="format-markdown"><div class="textMent"><p>입력해주세요...</p></div></div></div></div></div></div></div>');
+            $('#commonLayout').prepend(insertForm);
+            var dialogView = '';
+            dialogView += '<div class="dialogView" >';
+            dialogView += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
+            dialogView += '<div class="wc-message-content">';
+            dialogView += '<svg class="wc-message-callout"></svg>';
+            dialogView += '<div>';
+            dialogView += '<div class="format-markdown">';
+            dialogView += '<div class="textMent">';
+            dialogView += '<p>' + language.Please_enter + '</p>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            dialogView += '</div>';
+            $('#dialogViewWrap').html(dialogView);
             
             $('#apiLayout').css('display','none');
-            $(".insertForm form").append($("#textLayout").clone(true));
-            $('.insertForm #textLayout').css('display','block');
+            $(".insertForm form").append($(".textLayout").clone(true));
+            $('.insertForm .textLayout').css('display','block');
         }
     });
 
-    // create LargeGroup
-    $('#btnCreatLgroup').on('click',function(){
-        if($(this).html() == "new") {
-            $(this).html('cancel');
-            $(this).css('margin','6px 0 0 55px');
+    // 다이얼로그 생성 모달
+    $('#btnCreateLgroup').on('click',function(e){
+        if($(this).html() == "신규" || $(this).html() == "NEW") {
+            $(this).html(language.CANCEL);
             $('#largeGroupEdit').css('display','block');
             $('#largeGroup').css('display','none');
         } else {
-            $(this).html('new');
-            $(this).css('margin','6px 0 0 65px');
+            $(this).html(language.NEW);
             $('#largeGroupEdit').css('display','none');
             $('#largeGroup').css('display','block');
         }
+
         return;
     });
     
@@ -473,6 +534,7 @@ $(document).ready(function(){
 
 
 //검색어로 검색
+var saveSelectDivHtml;
 var searchIptText; //페이징시 필요한 검색어 담아두는 변수
 function searchIptDlg(page){
 
@@ -482,6 +544,10 @@ function searchIptDlg(page){
     }
 
     params = {
+        'sourceType2': sourceType2,
+        'searchGroupL': searchGroupL,
+        'searchGroupM': searchGroupM,
+        'searchGroupS': searchGroupS,
         'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
         'searchText': searchIptText
     };
@@ -502,15 +568,41 @@ function searchIptDlg(page){
                         data.list[i].DLG_API_DEFINE = 'Common';
                     }
                     item += '<tr>' +
-                            '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
-                            '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left dlgCardMordal" style="padding:0 0 0 2px;"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
-                            '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
+                            '<td>' + data.list[i].GroupS +'</td>' +
+                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#dialogShowMordal"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                            '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
 
                 searchIptText = params.searchText;
                 currentSearchNum = 0;
+
+                if(data.groupList.length > 0) {
+                    var item2 = '';
+                    var item3 = '';
+                    item2 = '<label for="all" class="allGroup selectArea">View all</label>';
+                    for(var i = 0; i <data.groupList.length; i++) {
+                        item2 += '<ul class="checkouter selectArea">' +
+                                '<li class="selectArea">' +
+                                '<div class="heading selectArea">' +
+                                '<label class="groupL selectArea" for="' + data.groupList[i].largeGroup + '">' + data.groupList[i].largeGroup + '</label>' +
+                                '<span class="checktoggle largeGroup selectArea"></span></div>' +
+                                '<ul class="checklist selectArea" id="' + data.groupList[i].largeGroup + '">' +
+                                '</ul>' +
+                                '</li>' +
+                                '</ul>';
+                        
+                        item3 += '<option>' + data.groupList[i].largeGroup + '</option>'
+                    }
+                    $('.selectOptionsbox').html("");
+                    $('.selectOptionsbox').append(item2);
+                    //$('#searchGroupL').append(item3);
+                    $('.checklist').hide();
+                    saveSelectDivHtml = item2;
+                } else {
+                    $('.selectOptionsbox').html("");
+                }
             } else {
                 item += '<tr style="height: 175px;">' +
                             '<td colspan="4">' + language.NO_DATA + '</td>' +
@@ -519,7 +611,7 @@ function searchIptDlg(page){
   
             $('#dialogTbltbody').append(item);
 
-            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+            $('#pagination').html('').append(data.pageList);
         }
     });
 }
@@ -539,6 +631,7 @@ function dialogValidation(type){
     }
 }
 
+// 다이얼로그 생성 모달 (다이얼로그 타이틀 입력)
 function writeDialogTitle(e) {
 
     //var idx = $('input[name=dialogTitle]').index(e);
@@ -548,12 +641,12 @@ function writeDialogTitle(e) {
 
     if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 3) {
         //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
-        $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('h1').text(e.value);
+        $('.dialogView').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('h1').text(e.value);
     } else if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 4) {
-        $('#dialogPreview').children().eq(icx).find('h1').html(e.value);
+        $('.dialogView').children().eq(icx).find('h1').html(e.value);
         //$('.dialogView h1').eq(idx).html(e.value);
     } else {
-        //$('#dialogPreview').children().eq(icx).find('.textMent p').html(e.value);
+        //$('.dialogView').children().eq(icx).find('.textMent p').html(e.value);
     }
 }
 
@@ -564,6 +657,7 @@ function writeCarouselImg(e) {
     $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('.imgContainer img').attr("src",e.value);
 }
 
+// 다이얼로그 생성 모달 (다이얼로그 텍스트 입력)
 function writeDialog(e) {
     //var idx = $('textarea[name=dialogText]').index(e);
     
@@ -574,14 +668,14 @@ function writeDialog(e) {
     if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 3) {
         //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
         //var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
-        var jcx = $(e).parents('.insertForm').find('textarea[name=dialogText]').index(e);
-        $('#dialogPreview').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('p').text(e.value);
+        var jcx = $(e).parents('.insertForm').find('input[name=dialogText]').index(e);
+        $('.dialogView').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('p').text(e.value);
     } else if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 4) {
         $('.dialogView h1').eq(idx).html(e.value);
     } else {
         //$('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
-        //$('#dialogPreview').children().eq(icx).find('.textMent p:eq(' + idx + ')').html(e.value);
-        $('#dialogPreview').children().eq(icx).find('.textMent p').html(e.value);
+        //$('.dialogView').children().eq(icx).find('.textMent p:eq(' + idx + ')').html(e.value);
+        $('.dialogView').children().eq(icx).find('.textMent p').html(e.value);
     }
 
     //캐러졀 용
@@ -590,34 +684,35 @@ function writeDialog(e) {
         var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
         var jcx = $(e).parents('.insertForm').find('textarea[name=dialogText]').index(e);
 
-        $('#dialogPreview').children().eq((1)).find('ul:eq(0)').children().eq(1).find('p').text(e.value);
+        $('.dialogView').children().eq((1)).find('ul:eq(0)').children().eq(1).find('p').text(e.value);
     }
     */
     
     
 }
 
-//var $carouselForm = $('#commonLayout #carouselLayout').eq(($('#commonLayout #carouselLayout').length)-1).clone();
-$(document).on('click', 'a[name=addCarouselBtn]', function(e){
+
+
+$(document).on('click', '.addCarouselBtn', function(e){
     //var $newInsertForm = $insertForm.clone();
     //var $newDlgForm = $dlgForm.clone();
     //var $newCarouselForm = $carouselForm.clone();
     
-    var idx =  $("a[name=addCarouselBtn]:visible").index(this);
-    var jdx = $('select[name=dlgType]').index(( $("a[name=addCarouselBtn]:visible").eq(idx).parents('#dialogLayout').find('select[name=dlgType]') ));
-    //$('a[name=addCarouselBtn]').eq(0).parent().parent().remove();
+    var idx =  $(".addCarouselBtn:visible").index(this);
+    var jdx = $('select[name=dlgType]').index(( $(".addCarouselBtn:visible").eq(idx).parents('form[name=dialogLayout]').find('select[name=dlgType]') ));
+    //$('.addCarouselBtn').eq(0).parent().parent().remove();
     //$(this).parents('.insertForm').after( $newInsertForm);  
     //<div id="textLayout" style="display: block;">  </div>
-    var caraousHtml = '<div id="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>';
-    var dlgFormHtml = '<div id="textLayout" style="display: block;">' + $dlgForm.html() + '</div>';
-    $(this).parents('#dialogLayout').append('<div class="clear-both"></div>').append(dlgFormHtml).append(caraousHtml);
+    var caraousHtml = '<div class="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>';
+    var dlgFormHtml = '<div class="textLayout" style="display: block;">' + $dlgForm.html() + '</div>';
+    $(this).parents('form[name=dialogLayout]').append('<div class="clear-both"></div>').append(dlgFormHtml).append(caraousHtml);
     //$(this).parents('.insertForm').next().find('.clear-both').after($newDlgForm);
-    var claerLen = $(this).parents('#dialogLayout').children('.clear-both').length-1;
-    $(this).parents('#dialogLayout').children('.clear-both').eq(claerLen).next().css('display', 'block');
-    $(this).parents('#dialogLayout').children('.clear-both').eq(claerLen).next().next().css('display', 'block');
+    var claerLen = $(this).parents('form[name=dialogLayout]').children('.clear-both').length-1;
+    $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().css('display', 'block');
+    $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().next().css('display', 'block');
     //$(this).parent().parent().remove();
-    $(this).parent().parent().css('display', 'none');
-    $(this).parents('#dialogLayout').find('a[name=addCarouselBtn]:last').closest('div').css('display', 'inline-block');
+    $(this).parent().css('display', 'none');
+    $(this).parents('form[name=dialogLayout]').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
 
     var inputUttrHtml = '<li class="wc-carousel-item">';
     inputUttrHtml += '<div class="wc-card hero">';
@@ -626,7 +721,7 @@ $(document).on('click', 'a[name=addCarouselBtn]', function(e){
     inputUttrHtml += '</div>';
     inputUttrHtml += '<h1>CARD_TITLE</h1>';
     inputUttrHtml += '<p class="carousel">CARD_TEXT</p>';
-    inputUttrHtml += '<ul class="wc-card-buttons"><li><button>BTN_1_TITLE</button></li></ul>';
+    inputUttrHtml += '<ul class="wc-card-buttons" style="padding-left:0px;"><li><button>BTN_1_TITLE</button></li></ul>';
     inputUttrHtml += '</div>';
     inputUttrHtml += '</li>';
 
@@ -737,11 +832,7 @@ function createDialog(){
         data: {'data' : array},
         success: function(data) {
             alert('success');
-
-            var createDlgClone = $('#dialogPreview .dialogView').children().clone();          
-            $('#dialogRecommand').html('');
-            $('#dialogRecommand').append(createDlgClone);
-            $('#addDialogCancel').click();
+            $('.createDlgModalClose').click();
         }
     });
 }
@@ -769,21 +860,39 @@ $(document).on('click', '#searchDlgBtn', function() {
     }
 
     $('#currentPage').val(1);
-    dialogsAjax2(group);
+    selectDlgByFilter(group);
 
 });
 
 var searchGroups; // 페이징을 위해서 검색 후 그룹들을 담아둘 변수
-function dialogsAjax2(group){
-  
+function selectDlgByFilter(group){
+    
+    sourceType2 = $('#sourceType2').val();
+    searchGroupL = $('#searchGroupL').val();
+    searchGroupM = $('#searchGroupM').val();
+    searchGroupS = $('#searchGroupS').val();
+    
     params = {
+        //'searchTxt':$('#iptDialog').val(),
         'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
         'searchGroupL': group.searchGroupL,
         'searchGroupM': group.searchGroupM,
         'searchGroupS': group.searchGroupS,
         'sourceType2': group.sourceType2
     };
-
+    if (searchText !== '') {
+        params.searchText = searchText;
+    }
+    if (searchGroupL !== '') {
+        params.upperGroupL = searchGroupL;
+    }
+    if (searchGroupM !== '') {
+        params.upperGroupM =searchGroupM;
+    }
+    if (searchGroupS !== '') {
+        params.upperGroupS = searchGroupS;
+    }
+    
     $.tiAjax({
         type: 'POST',
         url: '/learning/dialogs2',
@@ -800,14 +909,22 @@ function dialogsAjax2(group){
                         data.list[i].DLG_API_DEFINE = 'Common';
                     }
                     item += '<tr>' +
-                            '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
-                            '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left dlgCardMordal" style="padding:0 0 0 2px;"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
-                            '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
+                            '<td>' + data.list[i].GroupS +'</td>' +
+                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#dialogShowMordal"   onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                            '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
 
                 
+                
+                if (searchGroupL !== '') {
+                    if (!$('#selBoxBody').find('label[for=' + searchGroupL + ']').parent().hasClass('active')) {
+                        $('#selBoxBody').find('label[for=' + searchGroupL + ']').next().trigger('click');
+                    }
+                }
+                
+
             } else {
                 item += '<tr style="height: 175px;">' +
                             '<td colspan="4">' + language.NO_DATA + '</td>' +
@@ -816,7 +933,7 @@ function dialogsAjax2(group){
         
             $('#dialogTbltbody').append(item);
 
-            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+            $('#pagination').html('').append(data.pageList);
             currentSearchNum = 1;
             searchGroups = group;
         }
@@ -831,7 +948,7 @@ $(document).on('click', '.allGroup', function(){
     $('#currentPage').val(1);
     $('.selected').text($(this).text());
     $('.selectOptionsbox').removeClass('active');
-    dialogsAjax(groupType, sourceType);
+    selectDlgByTxt(groupType, sourceType);
 }) 
 
 // 소그룹 클릭시 리스트 출력
@@ -849,7 +966,7 @@ $(document).on('click', '.smallGroup', function(){
 
 
     $('#currentPage').val(1);
-    dialogsAjax2(group);
+    selectDlgByFilter(group);
 });
 
 /** 대그룹 혹은 중그룹 클릭시 하위 그룹 검색  */
@@ -859,8 +976,10 @@ $(document).on('click', '.checktoggle', function (e) {
     if($(this).hasClass('largeGroup')){
 
         if($(this).parent().hasClass('active')) {
+
             $(this).parent().next().slideToggle(200);
             $(this).parent().toggleClass('active').toggleClass('bgcolor');
+            
         } else {
             if($(this).parent().next().children().size() == 0) {
                 searchGroup($(this).prev().text(), 'searchMedium');       
@@ -873,6 +992,17 @@ $(document).on('click', '.checktoggle', function (e) {
             $(this).prev().addClass('currentGroupL');
             $(this).parent().addClass('active').addClass('bgcolor');
             $(this).parent().next().slideDown(200);
+
+            if (searchGroupM !== '') {
+                if ($('#selBoxBody').find('label[for=' + searchGroupL + ']').parents('li')
+                                .find('label[for=' + searchGroupM + ']').parent().next().css('display') !== 'block' ) {
+                if (searchGroupM !== '') {
+                    $('#selBoxBody').find('label[for=' + searchGroupL + ']').parents('li')
+                                    .find('label[for=' + searchGroupM + ']').next().trigger('click');
+                }
+            }
+            }
+            
         }
     }
 
@@ -902,7 +1032,7 @@ function searchGroup(groupName, group, type, groupL) {
     $.tiAjax({
         type: 'POST',
         url: '/learning/searchGroup',
-        data : {'groupName' : groupName, 'group' : group, 'groupL': groupL},
+        data : {'groupName' : groupName, 'group' : group, 'searchType' : type, 'groupL': groupL, 'searchTxt':$('#iptDialog').val()},
         isloading: true,
         success: function(data) {
             if(type == 1) {
@@ -912,22 +1042,72 @@ function searchGroup(groupName, group, type, groupL) {
                     var item = '<option value="">' + language.Middle_group + '</option>';
 
                     for(var i = 0; i <data.groupList.length; i++) {
-
-                        item += '<option>' + data.groupList[i].mediumGroup + '</option>';
+                        if (searchGroupL !== '') {
+                            //if (groupName === searchGroupL) {
+                                item += '<option>' + data.groupList[i].mediumGroup + '</option>';
+                            //}
+                        } else {
+                            item += '<option>' + data.groupList[i].mediumGroup + '</option>';
+                        }
                     }
-
                     $('#searchGroupM').html('');
                     $('#searchGroupS').html('');
                     $('#searchGroupS').html('<option value="">' + language.Small_group + '</option>');
                     $('#searchGroupM').append(item);
+                    
+                    //$('#selBoxBody').find('label[for=' + groupName + ']').next().trigger('click');
+
+                    if(data.groupList.length > 0) {
+                        var item2 = '';
+        
+                        for(var i = 0; i <data.groupList.length; i++) {
+                            item2 += '<li class="selectArea">' +
+                                     '<div class="heading selectArea">' +
+                                     '<label class="selectArea groupM" for="' + data.groupList[i].mediumGroup + '">' + data.groupList[i].mediumGroup + '</label>' +
+                                     '<span class="checktoggle mediumGroup selectArea"></span></div>' +
+                                     '<ul class="checklist2 selectArea ' + data.groupList[i].mediumGroup + ' ' + groupName + '">' +
+                                     '</ul>' +
+                                     '</li>';
+                            
+                        }
+                    }
+                    $('#' + groupName).empty();
+                    $('#' + groupName).append(item2);
+                    $('.checklist2').hide();
+                    
+
                 } else if(group == 'searchSmall') {
                     var item = '<option value="">' + language.Small_group + '</option>';
 
                     for(var i = 0; i <data.groupList.length; i++) {
-                        item += '<option>' + data.groupList[i].smallGroup + '</option>';
+                        if (searchGroupM !== '') {
+                            //if (data.groupList[i].smallGroup === searchGroupM) {
+                                item += '<option>' + data.groupList[i].smallGroup + '</option>';
+                            //}
+                        } else {
+                            item += '<option>' + data.groupList[i].smallGroup + '</option>';
+                        }
                     }
+
                     $('#searchGroupS').html('');
                     $('#searchGroupS').append(item);
+
+                    //$('#selBoxBody').find('label[for=' + $('#searchGroupL').val() + ']').parents('li')
+                    //                .find('label[for=' + groupName + ']').next().trigger('click');
+
+                    if(data.groupList.length > 0) {
+                        var item2 = '';
+        
+                        for(var i = 0; i <data.groupList.length; i++) {
+
+                            item2 += '<li class="smallGroup">' +
+                                     '<label for="check2 groupS" class="menuName">' + data.groupList[i].smallGroup + '</label>' + 
+                                     '</li>';
+                        }
+                    }
+                    $('.' + groupName + '.' + groupL).empty();
+                    $('.' + groupName + '.' + groupL).append(item2);
+
 
                 }
             } else {
@@ -1000,12 +1180,25 @@ function searchMidGroup(groupName) {
     });
 }*/
 
-function dialogsAjax(groupType, sourceType){
-
+//dialog 페이지 첫 로딩때도 실행
+var sourceType2 = $('#sourceType2').val();
+var searchGroupL = '';
+var searchGroupM = '';
+var searchGroupS = '';
+var searchText = '';
+function selectDlgByTxt(groupType, sourceType){
+    if (sourceType === 'search') {
+        sourceType = $('#sourceType2').val();
+    }
     params = {
+        'sourceType2': sourceType2,
+        'searchGroupL': searchGroupL,
+        'searchGroupM': searchGroupM,
+        'searchGroupS': searchGroupS,
         'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
         'groupType':groupType,
-        'sourceType' : sourceType
+        'sourceType' : sourceType,
+        'searchTxt':$('#iptDialog').val()
     };
 
     $.tiAjax({
@@ -1014,6 +1207,7 @@ function dialogsAjax(groupType, sourceType){
         data : params,
         isloading: true,
         success: function(data) {
+            searchText = $('#iptDialog').val();
             $('#dialogTbltbody').html('');
             var item = '';
             if(data.list.length > 0){
@@ -1023,16 +1217,15 @@ function dialogsAjax(groupType, sourceType){
                         data.list[i].DLG_API_DEFINE = 'Common';
                     }
                     item += '<tr>' +
-                            '<td class="txt_center">' + data.list[i].DLG_API_DEFINE +'</td>' +
-                            '<td class="txt_center">' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left dlgCardMordal" style="padding:0 0 0 2px;"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
-                            '<td class="txt_center">' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
+                            '<td>' + data.list[i].GroupS +'</td>' +
+                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#dialogShowMordal"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                            '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
 
                 if(data.groupList.length > 0) {
                     var item2 = '';
-                    var item3 = '';
                     item2 = '<label for="all" class="allGroup selectArea">View all</label>';
                     for(var i = 0; i <data.groupList.length; i++) {
                         item2 += '<ul class="checkouter selectArea">' +
@@ -1044,13 +1237,11 @@ function dialogsAjax(groupType, sourceType){
                                 '</ul>' +
                                 '</li>' +
                                 '</ul>';
-                        
-                        item3 += '<option>' + data.groupList[i].largeGroup + '</option>'
                     }
                     $('.selectOptionsbox').html("");
                     $('.selectOptionsbox').append(item2);
-                    $('#searchGroupL').append(item3);
                     $('.checklist').hide();
+                    saveSelectDivHtml = item2;
                 }
             } else {
                 item += '<tr style="height: 175px;">' +
@@ -1061,7 +1252,7 @@ function dialogsAjax(groupType, sourceType){
             currentSearchNum = 2;
             $('#dialogTbltbody').append(item);
 
-            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+            $('#pagination').html('').append(data.pageList);
 
             if (rememberSelBoxHtml !== '') {
                 $('#selBoxBody').html(rememberSelBoxHtml);
@@ -1072,32 +1263,32 @@ function dialogsAjax(groupType, sourceType){
 }
 
 
+
+
 var currentSearchNum = 2; // 0: 검색어로 검색한 경우, 1: 테이블 위 그룹으로 검색한 경우, 2: 테이블에 있는 그룹으로 검색한 경우
 $(document).on('click','.li_paging',function(e){
     
-    if($(e.target).val() != $('#currentPage').val()){
-        $('#currentPage').val($(e.target).val());
+    if(!$(this).hasClass('active')){
+        $('#currentPage').val($(this).text());
         if(currentSearchNum == 0) {
 
             searchIptDlg(); 
         } else if(currentSearchNum == 1) {
 
-            dialogsAjax2(searchGroups);
+            selectDlgByFilter(searchGroups);
         } else if(currentSearchNum == 2) {
 
             var groupType =  $('.selected').text();
             var sourceType = $('#tblSourceType').val();
-            dialogsAjax(groupType, sourceType);
+            selectDlgByTxt(groupType, sourceType);
         }
-        /*
-        $('#currentPage').val($(e.target).val())
-        var groupType =  $('.selected').text();
-        var sourceType = $('#tblSourceType').val();
-        dialogsAjax(groupType, sourceType);
-        */
     }
 });
 
+var $insertForm;
+var $dlgForm;
+var $carouselForm;
+var $mediaForm;
 function openModalBox(target){
     
     /*
@@ -1109,9 +1300,9 @@ function openModalBox(target){
 
     //carousel clone 초기값 저장
     $insertForm = $('#commonLayout .insertForm').eq(0).clone();
-    $dlgForm = $('#commonLayout #textLayout').eq(0).clone();
-    $carouselForm = $('#commonLayout #carouselLayout').eq(0).clone();
-    $mediaForm = $('#commonLayout #mediaLayout').eq(0).clone();
+    $dlgForm = $('#commonLayout .textLayout').eq(0).clone();
+    $carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
+    $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
 
     // 화면의 높이와 너비를 변수로 만듭니다.
     var maskHeight = $(document).height();
@@ -1131,7 +1322,7 @@ function openModalBox(target){
     // 레이어 팝업을 띄웁니다.
     setTimeout(function() {
         $(target).fadeIn( );
-        $('#dialogPreview').css({'height':$('#dialogSet').height()});
+        $('#dialogPreview').css({'height':'80%'});
       }, 250);
 
     $('html').css({'overflow': 'hidden', 'height': '100%'});
@@ -1143,8 +1334,8 @@ function openModalBox(target){
     wrapWindowByMask();
 
     if(target == "#create_dlg") {
-        $(".insertForm form").append($("#textLayout").clone(true));
-        $(".insertForm #textLayout").css("display","block");
+        $(".insertForm form").append($(".textLayout").clone(true));
+        $(".insertForm .textLayout").css("display","block");
     }
 
 
@@ -1264,7 +1455,7 @@ function searchDialog(dlgID) {
                     botChatNum4Desc++;
                     var val = row[i];
 
-                    inputUttrHtml += '<div style="width: 405px; height: 85%; float:left; margin: 15px 20px;">';
+                    inputUttrHtml += '<div style="width: 90%; height: 90%; float:left; margin: 15px 20px;">';
                     //inputUttrHtml += '<div style="height: 10%; width: 100%; z-index:5; background-color: #6f6c6c;">';
                     //inputUttrHtml += '<div class="check-radio-tweak-wrapper2 searchDlgChk" type="checkbox">';
                     //inputUttrHtml += '<input name="chksearch" class="tweak-input" type="checkbox"/>';
@@ -1374,7 +1565,8 @@ function searchDialog(dlgID) {
             }
             $('#dialogShow').html(inputUttrHtml);
             //$('#dialogShow').prepend(inputUttrHtml);
-            openModalBox('#dialogShowMordal');
+            //openModalBox('#dialogShowMordal');
+            
         } 
         
 

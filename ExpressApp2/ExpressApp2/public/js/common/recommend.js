@@ -26,13 +26,13 @@ $(document).ready(function () {
     });
 })
 
-function recommendAjax(){
-
+function recommendAjax(type){
+ 
     params = {
         'selectType' : $('#recommendPeriod').find('option:selected').val(),
         'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val()
     };
-    $.tiAjax({
+    $.ajax({
         type: 'POST',
         data: params,
         url: '/learning/recommend',
@@ -40,14 +40,15 @@ function recommendAjax(){
         success: function(data) {
             $('#recommendContents').html('');
             var item = '';
+
             if(data.list.length > 0){
                 for(var i = 0; i < data.list.length; i++){
                     item += '<tr>' +
-                    '<td class="txt_left" style="width: 3%;">' +
-                    '<div class="check-radio-tweak-wrapper" type="checkbox">' +
-                    '<input type="hidden" class="seq" value="'+data.list[i].SEQ+'">'+
-                    '<input type="checkbox" class="tweak-input" id="" name=""/></div></td>' +
-                    '<td class="txt_left" colspan="3"><a href="/learning/utterances?utterance='+data.list[i].QUERY+'" class="dashLink" >';
+                            '<td><input type="checkbox" class="flat-red" name="tableCheckBox"><input type="hidden" class="seq" value="'+data.list[i].SEQ+'"></td>' +
+                            '<td class="txt_left">' +
+
+                            '<a href="/learning/utterances?utterance='+data.list[i].QUERY + 
+                                    '" class="dashLink" style="font-size:14px">';
                     var query = data.list[i].QUERY;
                     var entities = data.list[i].ENTITIES.split(',');
                     if(entities.length > 0){
@@ -56,21 +57,53 @@ function recommendAjax(){
                         }
                     }
                     item += query;
-                    item += '</a></td>' +
-                    '<td class="txt_center">' +
-                    data.list[i].UPD_DT +
-                    '</td>' +
-                    //'<td class="txt_right02"><a href="#" class="btn_util" onclick="itemClick();"></a></td>' +
-                    '</tr>';
+                    item += '</a>' +
+                            '</td>' +
+                            '<td>' +
+                            data.list[i].UPD_DT +
+                            '</td>' +
+                            '</tr>';
                 }
-            } else {
-                item += '<tr style="height: 175px;">' +
-                            '<td colspan="5">' + language.NO_DATA + '</td>' +
-                        '</tr>';
-            }
-            $('#recommendContents').append(item);
-            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+                
+                $('#recommendContents').append(item);
+            
+                $('.pagination').html('').append(data.pageList)
 
+                $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+                    checkboxClass: 'icheckbox_flat-green',
+                    radioClass   : 'iradio_flat-green'
+                })
+                    
+                $('input[name=tableAllChk]').on('ifChecked', function(event) {
+                    $('input[name=tableCheckBox]').parent().iCheck('check');
+                        
+                }).on('ifUnchecked', function() {
+                        $('input[name=tableCheckBox]').parent().iCheck('uncheck');
+                    });
+
+                
+    
+                $('input[name=tableAllChk]').parent().iCheck('uncheck');
+            } else {
+                if(type == 'delete') {
+
+                    $('#currentPage').val(($('#currentPage').val() - 1 != 0) ? $('#currentPage').val() - 1 : 1)
+                    recommendAjax();
+
+                } else {
+
+                    item += '<tr>' +
+                                '<td colspan="3">' + language.NO_DATA + '</td>' +
+                            '</tr>';
+                    $('#recommendContents').append(item);
+                }
+            }
+            
+            
+
+            
+
+            
         }
     });
 }
@@ -87,8 +120,9 @@ $(document).on('click','div[type=checkbox]',function(e){
 });
 
 $(document).on('click','.li_paging',function(e){
-    if($(e.target).val() != $('#currentPage').val()){
-        $('#currentPage').val($(e.target).val())
+ 
+    if($(this).val() != $('#currentPage').val()){
+        $('#currentPage').val($(this).val())
         recommendAjax();
     }
 });
@@ -130,9 +164,9 @@ function checkBoxHandler(e){
 function deleteRecommend(){
     if ( confirm( language.ASK_DELETE)) {
         var arry = [];
-        for(var i = 0; i < $('#recommendContents div[type=checkbox][checked]').size(); i++)
+        for(var i = 0; i < $('#recommendContents .checked').length; i++)
         {
-            arry.push($('#recommendContents div[type=checkbox][checked] .seq')[i].value);
+            arry.push($('#recommendContents .checked + .seq')[i].value);
         }
         $.ajax({
                 type: 'POST',
@@ -140,7 +174,8 @@ function deleteRecommend(){
                 url : '/learning/deleteRecommend',
                 isloading : true,
                 success: function(data){
-                    recommendAjax('all');
+                    alert("삭제되었습니다.");
+                    recommendAjax('delete');
                 }
             });
     }

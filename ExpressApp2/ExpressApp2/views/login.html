@@ -2,83 +2,75 @@
 <html>
 
 <head>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>
-        Login
-    </title>
+    <title></title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/common/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/common/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/common/css/skin-blue.min.css">
+    <link rel="stylesheet" href="/common/css/default.css">
+    <!--[if lt IE 9]>
+    <script src="common/js/html5shiv.min.js"></script>
+    <script src="common/js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="/common/js/jquery.min.js"></script>
+    <script src="/common/js/bootstrap.min.js"></script>
+    <script src="/common/js/adminlte.min.js"></script>
+    <script src="/common/js/jquery-2.2.4.min.js"  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="/common/js/icheck.min.js"></script>
 
-    <!-- 
-        <link rel="stylesheet" href="./common/css/css_common.html" />
-        -->
-        <%include  ./common/commonUse.html%>
-        <script type="text/javascript" src="/js/common/login.js"></script>
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> test-->
+    <script type="text/javascript" src="/js/common/login.js"></script>
 </head>
     
 
-<body>
-    <!--
-    <div id="header_wrap02">
-        <div id="header">
-            <div class="stb-select_w">
-                <div class="stb-select-container">
-                    <span class="selected">English</span><select class="language" id="selLocale" style="display: none;">
-                        <option value="en" selected="">English</option>
-                        <option value="ko">Korea</option>
-                    </select><ul class="stb-select" style="display:none;"><li value="en" selected="selected">English</li><li value="ko">Korea</li></ul>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo"><span class="hc">로그인로고</span></div>
+        <div class="login-box-body">
+            <form action="/users/login" method="post" id="loginfrm">
+                <div class="form-group has-feedback">
+                <span class="fa fa-user form-control-feedback"></span>
+                    <input type="text" class="form-control" id="mLoginId" name="mLoginId" placeholder="아이디">
+                    
+                    
                 </div>
-            </div>
-        </div>
+                <div class="form-group has-feedback" >
+                    <input type="password" class="form-control" id="mLoginPass" name="mLoginPass" placeholder="비밀번호">
+                    <span class="fa fa-lock form-control-feedback"></span>
+                    
+                </div>
+                <div class="row">
+                        <div class="col-xs-8">
+                        <input type="checkbox" class="flat-red" checked> 아이디 저장
+                        </div>
+                </div>
+            </form>
+
+        <div class="social-auth-links text-center"><button type="submit" class="btn btn_login" id="sendLoginBtn">로그인</button></div>
+    
+        <p class="login_footer ">COPYRIGHTS <strong> ©TAIHOINST </strong> ALL RIGHTS RESERVED.</p>
     </div>
-    -->
-   <div id="login_wrap">
-   
-   <!-- 비밀번호 변경 -->
-   <div id="div_change_password" class="modal_box w600"  style="height:400px">
-         <form name="changePwdFrm" id="changePwdFrm">
-         <input type="hidden" name="currLoginId" id="currLoginId" value=""/>
-         <header> <a href="#" class="js-modal-close close">×</a>
-           <h3><spring:message code='message.change.password'/></h3>
-         </header>
-         <div class="modal-body">
-           <p class="tit01"><spring:message code='message.user.id'/>:<span class="id" id="currPrtId" > taihoinst </span></p>
-           <p class="tit01"><spring:message code='message.input.previous.password'/></p>
-           <p><input type="text" name="currScrtNum" id="currScrtNum" title="<spring:message code='message.input.previous.password'/>" class="inbox02" style="width:100%"></p>
-           <p class="tit01"><spring:message code='message.input.new.password'/> <span class="ml10">(<spring:message code='message.input.password.rule'/> )</span></p>
-           <p><input type="password" name="newScrtNum" id="newScrtNum" title="<spring:message code='message.input.new.password'/>" class="inbox02" style="width:100%"></p>
-           <p class="tit01"><spring:message code='message.input.new.password.again'/></p>
-           <p><input type="password" name="newScrtNumConfirm" id="newScrtNumConfirm" title="<spring:message code='message.input.new.password.again'/>" class="inbox02" style="width:100%"></p>
-         </div>
-         <footer><a href="javascript://" class="btn" onclick="fn_changePwd();"><spring:message code='button.save'/></a> <a href="#" class="btn b02  btn-small js-modal-close"><spring:message code='button.cancel'/></a> </footer>
-         </form>
-   </div>
-   <!-- //비밀번호 변경 -->
-   
-   <div  class="login_out">
-        <div id="login_contain">
-            <div class="login_con">
-                <form action="/users/login" method="post" name="loginfrm" id="loginfrm">
-                    <!-- <p class="login_logo"></p> -->
-                    <p class="Login_Logo_sub">ChatBot Manager</p>
-                    <!-- 로그인 폼 -->
-                    <div class="login_input">
-                        <p class="pin"><input type="text" name="mLoginId" id="mLoginId" title="ID" class="inbox id" placeholder="ID"  value="admin"/></p>
-                        <p class="pin"><input type="password" name="mLoginPass" id="mLoginPass" title="password" class="inbox pw" placeholder="Password" value="1234"/></p>
-                    </div>
-                </form>
-                <div class="btn_wrap"><a href="javascript://" id="sendLoginBtn" class="btn_login">login</a></div>
-            </div>
-   
-            <p class="login_footer">COPYRIGHTS <strong>Taihoint</strong>  ALL RIGHTS RESERVED.</p>
-        </div>
-   
-   </div>
-   
-   </div>
-   </div>
+  </div>
+  <script>
+        //iCheck for checkbox and radio inputs
+          $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+            checkboxClass: 'icheckbox_minimal-blue',
+            radioClass   : 'iradio_minimal-blue'
+          })
+          //Red color scheme for iCheck
+          $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+            checkboxClass: 'icheckbox_minimal-red',
+            radioClass   : 'iradio_minimal-red'
+          })
+          //Flat red color scheme for iCheck
+          $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+            checkboxClass: 'icheckbox_flat-green',
+            radioClass   : 'iradio_flat-green'
+          })
+      
+    </script>
 
 </body>
 </html>

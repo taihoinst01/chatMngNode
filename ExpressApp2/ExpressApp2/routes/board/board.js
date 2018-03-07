@@ -25,19 +25,20 @@ router.get('/', function (req, res) {
     //selectChannel += "           BETWEEN	 CONVERT(DATE,CONVERT(DATETIME,'" + startDate + "'), 112) ";
     //selectChannel += "           AND		 CONVERT(DATE,CONVERT(DATETIME,'" + endDate + "'), 112) \n";
     selectChannel += "GROUP BY CHANNEL \n";
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectChannel)
         }).then(result => {
             let rows = result.recordset
-            
-            res.render('board', {   
-                selMenu: req.session.menu,
-                appName: req.session.appName,
-                appId: req.session.appId,
-                subKey: req.session.subKey,
-                channelList : rows
-            } );   
+            req.session.save(function(){
+                res.render('board_new', {   
+                    selMenu: req.session.menu,
+                    appName: req.session.appName,
+                    appId: req.session.appId,
+                    subKey: req.session.subKey,
+                    channelList : rows
+                });   
+            });
             sql.close();
         }).catch(err => {
             res.status(500).send({ message: "${err}"})
@@ -54,10 +55,15 @@ router.post('/intentScore', function (req, res) {
     var endDate = req.body.endDate;
     var selDate = req.body.selDate;
     var selChannel = req.body.selChannel;
-    
+    let currentPageNo = checkNull(req.body.page, 1);
+
     var selectQuery = "";
-    selectQuery += "SELECT	LOWER(LUIS_INTENT) AS intentName, \n";
-    selectQuery += "AVG(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreAVG, \n";
+    selectQuery += "SELECT tbp.* from \n" +
+            " (SELECT ROW_NUMBER() OVER(ORDER BY LUIS_INTENT DESC) AS NUM, \n" +
+            "         COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
+            "         CEILING((ROW_NUMBER() OVER(ORDER BY LUIS_INTENT DESC))/ convert(numeric ,10)) PAGEIDX, \n";
+    selectQuery += "	LOWER(LUIS_INTENT) AS intentName, \n";
+    selectQuery += "ROUND(AVG(CAST(LUIS_INTENT_SCORE AS FLOAT)), 2) AS intentScoreAVG,  \n";
     selectQuery += "MAX(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreMAX , \n";
     selectQuery += "MIN(CAST(LUIS_INTENT_SCORE AS FLOAT)) AS intentScoreMIN, \n";
     //selectQuery += "CHANNEL AS channel, \n";
@@ -75,13 +81,15 @@ router.post('/intentScore', function (req, res) {
         selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
     }
 
-    selectQuery += "GROUP BY LUIS_INTENT \n";
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    selectQuery += "GROUP BY LUIS_INTENT ) tbp \n";
+    selectQuery += " WHERE 1=1 \n" +
+                    " AND PAGEIDX = " + currentPageNo + "; \n";
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
     }).then(result => {
         let rows = result.recordset
-        res.send({list : rows});
+        res.send({list : rows, pageList : paging.pagination(currentPageNo,rows[0].TOTCNT)});
         sql.close();
     }).catch(err => {
         res.status(500).send({ message: "${err}"})
@@ -177,7 +185,7 @@ router.post('/getScorePanel', function (req, res) {
     if (selChannel !== 'all') {
         selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
     }
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -197,7 +205,7 @@ router.post('/getOftQuestion', function (req, res) {
     var selChannel = req.body.selChannel;
 
     var selectQuery = "";
-    selectQuery += "SELECT TOP 10 PERCENT 한글질문 AS KORQ, 영어질문 AS ENGQ, 질문수 AS QNUM, 날짜 AS DATE, 채널 AS CHANNEL, RESULT, INTENT_SCORE, INTENT, ENTITIES, TEXT답변 AS TEXT, CARD답변 AS CARD, CARDBTN답변 AS CARDBTN, MEDIA답변 AS MEDIA, MEDIABTN답변 AS MEDIABTN\n";
+    selectQuery += "SELECT TOP 10 한글질문 AS KORQ, 영어질문 AS ENGQ, 질문수 AS QNUM, 날짜 AS DATE, 채널 AS CHANNEL, RESULT, INTENT_SCORE, INTENT, ENTITIES, TEXT답변 AS TEXT, CARD답변 AS CARD, CARDBTN답변 AS CARDBTN, MEDIA답변 AS MEDIA, MEDIABTN답변 AS MEDIABTN\n";
     selectQuery += "FROM\n";
     selectQuery += "(";
     selectQuery += "SELECT CUSTOMER_COMMENT_KR AS 한글질문\n";
@@ -216,10 +224,10 @@ router.post('/getOftQuestion', function (req, res) {
     selectQuery += ", ISNULL(ME.BTN_1_CONTEXT,'') AS MEDIABTN답변\n";
     selectQuery += "FROM\n";
     selectQuery += "(\n";
-    selectQuery += "SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS '영어질문', COUNT(*) AS '질문수', CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS Dimdate, CHANNEL\n";
+    selectQuery += "SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS '영어질문', COUNT(*) AS '질문수', REG_DATE AS Dimdate, CHANNEL\n";
     selectQuery += "FROM TBL_HISTORY_QUERY\n";
     selectQuery += "WHERE 1=1 \n";
-    selectQuery += "AND CONVERT(date, '" + startDate + "') <= CONVERT(date, REG_DATE)  AND  CONVERT(date, REG_DATE)   <= CONVERT(date, '" + endDate + "') ";
+    selectQuery += "AND CONVERT(date, '" + startDate + "') <= CONVERT(date, REG_DATE)  AND  CONVERT(date, REG_DATE)   <= CONVERT(date, '" + endDate + "') \n";
 
 if (selDate !== 'allDay') {
     selectQuery += "AND CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), 112)) = CONVERT(VARCHAR, GETDATE(), 112) \n";
@@ -227,7 +235,7 @@ if (selDate !== 'allDay') {
 if (selChannel !== 'all') {
     selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
 }
-    selectQuery += "GROUP BY CUSTOMER_COMMENT_KR, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), CHANNEL\n";
+    selectQuery += "GROUP BY CUSTOMER_COMMENT_KR, REG_DATE, CHANNEL\n";
     selectQuery += ") HI\n";
     selectQuery += "LEFT OUTER JOIN TBL_QUERY_ANALYSIS_RESULT AN\n";
     selectQuery += "ON REPLACE(REPLACE(LOWER(HI.CUSTOMER_COMMENT_KR),'.',''),'?','') = LOWER(AN.QUERY)\n";
@@ -245,7 +253,7 @@ if (selChannel !== 'all') {
     selectQuery += ") AA\n";
     selectQuery += "WHERE RESULT <> '' AND RESULT IN ('H','S')\n";
     selectQuery += "ORDER BY 질문수 DESC, 날짜 DESC\n";
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -263,25 +271,29 @@ router.post('/nodeQuery', function (req, res) {
     var endDate = req.body.endDate;
     var selDate = req.body.selDate;
     var selChannel = req.body.selChannel;
+    var currentPage = checkNull(req.body.page, 1);
 
-    var selectQuery = "";
-        selectQuery += "SELECT korQuery, enQuery, queryCnt, queryDate, channel, result, intent_score, intent, entities, textResult, cardResult, cardBtnResult, mediaResult, mediaBtnResult \n";
-        selectQuery += "FROM ( \n";
-        selectQuery += "SELECT TOP 100 CUSTOMER_COMMENT_KR AS korQuery \n";
-        selectQuery += "     , ISNULL(영어질문,'') AS enQuery \n";
-        selectQuery += "     , 질문수 AS queryCnt \n";
-        selectQuery += "     , dimdate AS queryDate \n";
-        selectQuery += "     , CHANNEL AS channel \n";
-        selectQuery += "     , ISNULL(AN.RESULT,'') AS result \n";
-        selectQuery += "     , ISNULL(AN.LUIS_INTENT_SCORE,'') AS intent_score \n";
-        selectQuery += "     , ISNULL(LOWER(RE.LUIS_INTENT),'') AS intent \n";
-        selectQuery += "     , ISNULL(RE.LUIS_ENTITIES,'') AS entities \n";
-        selectQuery += "     , ISNULL(TE.CARD_TEXT,'') AS textResult \n";
-        selectQuery += "     , ISNULL(CA.CARD_TITLE,'') AS cardResult \n";
-        selectQuery += "     , ISNULL(CA.BTN_1_CONTEXT,'') AS cardBtnResult \n";
-        selectQuery += "     , ISNULL(ME.CARD_TITLE,'') AS mediaResult \n";
-        selectQuery += "     , ISNULL(ME.BTN_1_CONTEXT,'') AS mediaBtnResult \n";
-        selectQuery += "FROM ( \n";
+    var selectQuery = "SELECT tbp.* from \n" +
+                        " (SELECT ROW_NUMBER() OVER(ORDER BY korQuery DESC) AS NUM, \n" +
+                        "         COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
+                        "         CEILING((ROW_NUMBER() OVER(ORDER BY korQuery DESC))/ convert(numeric ,10)) PAGEIDX, \n" ;
+        selectQuery += "          korQuery, enQuery, queryCnt, queryDate, channel, result, intent_score, intent, entities, textResult, cardResult, cardBtnResult, mediaResult, mediaBtnResult \n";
+        selectQuery += "          FROM ( \n";
+        selectQuery += "              SELECT TOP 100 CUSTOMER_COMMENT_KR AS korQuery \n";
+        selectQuery += "                 , ISNULL(영어질문,'') AS enQuery \n";
+        selectQuery += "                 , 질문수 AS queryCnt \n";
+        selectQuery += "                 , dimdate AS queryDate \n";
+        selectQuery += "                  , CHANNEL AS channel \n";
+        selectQuery += "                  , ISNULL(AN.RESULT,'') AS result \n";
+        selectQuery += "                , ISNULL(AN.LUIS_INTENT_SCORE,'') AS intent_score \n";
+        selectQuery += "                , ISNULL(LOWER(RE.LUIS_INTENT),'') AS intent \n";
+        selectQuery += "                , ISNULL(RE.LUIS_ENTITIES,'') AS entities \n";
+        selectQuery += "                , ISNULL(TE.CARD_TEXT,'') AS textResult \n";
+        selectQuery += "                , ISNULL(CA.CARD_TITLE,'') AS cardResult \n";
+        selectQuery += "                , ISNULL(CA.BTN_1_CONTEXT,'') AS cardBtnResult \n";
+        selectQuery += "                , ISNULL(ME.CARD_TITLE,'') AS mediaResult \n";
+        selectQuery += "                , ISNULL(ME.BTN_1_CONTEXT,'') AS mediaBtnResult \n";
+        selectQuery += "              FROM ( \n";
         selectQuery += "     SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS 영어질문, COUNT(*) AS 질문수, CONVERT(CHAR(19),CONVERT(DATETIME,REG_DATE),120) AS Dimdate, CHANNEL \n";
         selectQuery += "     FROM TBL_HISTORY_QUERY \n";
         selectQuery += "     WHERE 1=1 \n";
@@ -310,14 +322,16 @@ router.post('/nodeQuery', function (req, res) {
         selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_MEDIA) ME \n";
         selectQuery += "     ON DL.DLG_ID = ME.DLG_ID \n";
         selectQuery += "ORDER BY queryCnt DESC, queryDate DESC \n";
-        selectQuery += ") AA;";
+        selectQuery += ") AA ) tbp \n" +
+                    " WHERE 1=1 \n" +
+                    " AND PAGEIDX = " + currentPage + "; \n";
     
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
           let rows = result.recordset
-          res.send({list : rows});
+          res.send({list : rows, pageList : paging.pagination(currentPage,rows[0].TOTCNT)});
           sql.close();
         }).catch(err => {
           res.status(500).send({ message: "${err}"})
@@ -371,8 +385,8 @@ router.post('/firstQueryBar', function (req, res) {
         selectQuery += "    WHERE history.Row = 1 \n";
         selectQuery += ") A \n";
         selectQuery += "GROUP BY INTENT \n";
-    
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -390,9 +404,13 @@ router.post('/firstQueryTable', function (req, res) {
     var endDate = req.body.endDate;
     var selDate = req.body.selDate;
     var selChannel = req.body.selChannel;
+    let currentPageNo = checkNull(req.body.page, 1);
 
-    var selectQuery =  "";
-        selectQuery += "SELECT CUSTOMER_COMMENT_KR AS koQuestion, 날짜 AS query_date, 채널 AS channel, 질문수 AS query_cnt  \n";
+    var selectQuery =  "SELECT tbp.* from \n" +
+                    " (SELECT ROW_NUMBER() OVER(ORDER BY CUSTOMER_COMMENT_KR DESC) AS NUM, \n" +
+                    "         COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
+                    "         CEILING((ROW_NUMBER() OVER(ORDER BY CUSTOMER_COMMENT_KR DESC))/ convert(numeric ,6)) PAGEIDX, \n" ;
+        selectQuery += "      CUSTOMER_COMMENT_KR AS koQuestion, 날짜 AS query_date, 채널 AS channel, 질문수 AS query_cnt  \n";
         selectQuery += "    , ROUND(CAST(ISNULL(AN.LUIS_INTENT_SCORE,0) AS FLOAT),2) AS intent_score \n";
         selectQuery += "    , ISNULL(LOWER(AN.LUIS_INTENT),'') AS intent_name \n";
         selectQuery += "    , ISNULL(TE.CARD_TEXT,'') AS txt_answer \n";
@@ -438,14 +456,16 @@ router.post('/firstQueryTable', function (req, res) {
         selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_CARD WHERE CARD_ORDER_NO = 1) CA \n";
         selectQuery += "    ON DL.DLG_ID = CA.DLG_ID \n";
         selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_MEDIA) ME \n";
-        selectQuery += "    ON DL.DLG_ID = ME.DLG_ID \n";
+        selectQuery += "    ON DL.DLG_ID = ME.DLG_ID ) tbp \n";
+        selectQuery += " WHERE 1=1 \n" +
+                       " AND PAGEIDX = " + currentPageNo + "; \n";
     
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
           let rows = result.recordset
-          res.send({list : rows});
+          res.send({list : rows, pageList : paging.pagination(currentPageNo,rows[0].TOTCNT)});
           sql.close();
         }).catch(err => {
           res.status(500).send({ message: "${err}"})
@@ -499,7 +519,7 @@ router.post('/getResponseScore', function (req, res) {
         selectQuery += "GROUP BY USER_NUMBER \n";
         selectQuery += ") A \n";
     
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -543,7 +563,7 @@ router.post('/getQueryByEachTime', function (req, res) {
         selectQuery += "ORDER BY TIME; \n";
 
 
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -578,7 +598,13 @@ function pad(n, width) {
     n = n + '';
     return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
 }
-
+function checkNull(val, newVal) {
+    if (val === "" || typeof val === "undefined" || val === "0") {
+        return newVal;
+    } else {
+        return val;
+    }
+}
 
 
 module.exports = router;

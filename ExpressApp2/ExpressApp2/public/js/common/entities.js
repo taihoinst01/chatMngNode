@@ -24,15 +24,36 @@ $(document).ready(function(){
         $('#layoutBackground').hide();
     });
 
-    $('#addDialogClose , #addDialogCancel').click(function(){
-        $('#mediaCarouselLayout').css('display','none');
-        $('#cardLayout').css('display','none');
+    $('.addDialogCancel').click(function(){
         $('#appInsertForm')[0].reset();
     });
     //** 모달창 끝 */
 
+    //생성버튼클릭시 다른div hidden
+    $('#entites').click(function() {
+        
+        $('.close').trigger('click')
+    });
+});
 
-})
+$(document).on("click", ".more", function(e){
+    if($(e.target).hasClass('more')){
+        $(e.target).addClass('close').removeClass('more');
+        $(e.target).parent().find(".board").css('visibility', 'visible');
+     }
+});
+
+$(document).on("click", ".close", function(e){
+    if($(e.target).hasClass('close')){
+        $(e.target).addClass('more').removeClass('close');  
+        $(e.target).parent().find(".board").css('visibility', 'hidden');
+     }
+});
+
+$(document).on("click", ".cancelEntityValueBtn", function(e){
+    $(e.target).parent().parent().parent().parent().parent().find(".close").addClass('more').removeClass('close');
+    $(e.target).parent().parent().parent().parent().parent().find(".board").css('visibility', 'hidden');
+});
 
 function entitiesAjax(){
 
@@ -49,38 +70,42 @@ function entitiesAjax(){
             var item = '';
             if(data.list.length > 0){
                 for(var i = 0; i < data.list.length; i++){
+                    
                     item += '<tr>';
-                    item += '<td class="txt_center" style="width: 30%">' + data.list[i].ENTITY + "</td>" ;
-                    item += '<td class="txt_center" style="width: 40%">' + data.list[i].ENTITY_VALUE; 
-                    item += '<form action="" method="post" name="entityForm" style="display: inline;">';
-                    item += '<img src="../images/plus_icon.png" class="openAddInput" style="height:17px; width: 17px; margin-left: 10px;">';
-                    item += '<img src="../images/minus_icon.png" class="closeAddInput" style="height:17px; width: 17px; margin-left: 10px; display: none;">';
-                    item += '<div style="display: none;"><input type="text" name="addEntityValue"/>';
-                    item += '<button class="btn addEntityValueBtn">' + language.SAVE + '</button>';
-                    item += '</div>';
+                    item += '<td>' + data.list[i].ENTITY + "</td>" ;
+                    item += '<td><span class="fl">' + data.list[i].ENTITY_VALUE + "</span>";
+                    item += '<a class="more fl"><span class="hc">+</span></a>';
+                    item += '<div class="board">';
+                    item += '<ul>';
+                    item += '<form action="" method="post" name="entityForm">';
+                    item += ' <li class="inp"><input name="entityValue" type="text" class="form-control fl"  style="width:60%;">';
+                    item += '<button type="button" class="btn btn_01 mb05 addEntityValueBtn">저장</button> <button type="button" class="btn btn-default mb05 cancelEntityValueBtn">취소</button>';
+                    item += '</li>';
                     item += '<input type="hidden" name="entityDefine" value="' + data.list[i].ENTITY + '">';
                     item += '<input type="hidden" name="apiGroup" value="' + data.list[i].API_GROUP + '">';
+                    item += "</form>";
+                    item += '</ul>';
+                    item += '</div>';
                     item += '</td>';
-                    item += '<td class="txt_center" style="width: 30%">' + data.list[i].API_GROUP + '</td>';  
-                    item += '</form>';
+                    item += '<td>' + data.list[i].API_GROUP + '</td>';  
                     item += '</tr>';
                 }
                 
             } else {
-                item += '<tr style="height: 175px;">' +
+                item += '<tr>' +
                             '<td colspan="4">' + language.NO_DATA + '</td>' +
                         '</tr>';
             }
             
             $('#entitesTbltbody').append(item);
-            $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+            $('#pagination').html('').append(data.pageList);
         }
     });
 }
 
 $(document).on('click','.li_paging',function(e){
-    if($(e.target).val() != $('#currentPage').val()){
-        $('#currentPage').val($(e.target).val())
+    if($(e.target).parent().val() != $('#currentPage').val()){
+        $('#currentPage').val($(e.target).parent().val())
         entitiesAjax();
     }
 });
@@ -132,15 +157,17 @@ $(document).on('click', '.addEntityValueBtn', function() {
 function addEntityValueAjax(addValues) {
 
     $.ajax({
-        url: '/learning/addEntityValue',
+        url: '/learning/insertEntity',
         dataType: 'json',
         type: 'POST',
         data: addValues,
         success: function(data) {
             if(data.status == 200){
                 alert(language.Added);
-                $("#iptentites").val(addValues.addEntityValue);
+                $("#iptentites").val(addValues.entityValue);
                 searchEntities();
+            } else if(data.status == 'Duplicate') {
+                alert(language.DUPLICATE_ENTITIES_EXIST);
             } else {
                 alert(language.It_failed);
             }
@@ -170,19 +197,24 @@ function searchEntities() {
                 if(data.list.length > 0){
                     for(var i = 0; i < data.list.length; i++){
                         item += '<tr>';
-                        item += '<td class="txt_center" style="width: 30%">' + data.list[i].ENTITY + "</td>" ;
-                        item += '<td class="txt_center" style="width: 40%">' + data.list[i].ENTITY_VALUE; 
-                        item += '<form action="" method="post" name="entityForm" style="display: inline;">';
-                        item += '<img src="../images/plus_icon.png" class="openAddInput" style="height:17px; width: 17px; margin-left: 10px;">';
-                        item += '<img src="../images/minus_icon.png" class="closeAddInput" style="height:17px; width: 17px; margin-left: 10px; display: none;">';
-                        item += '<div style="display: none;"><input type="text" name="addEntityValue"/>';
-                        item += '<button class="btn addEntityValueBtn">' + language.SAVE +'</button>';
-                        item += '</div>';
+                        item += '<td>' + data.list[i].ENTITY + "</td>" ;
+                        item += '<td><span class="fl">' + data.list[i].ENTITY_VALUE + "</span>";
+                        item += '<a class="more fl"><span class="hc">+</span></a>';
                         item += '<input type="hidden" name="entityDefine" value="' + data.list[i].ENTITY + '">';
                         item += '<input type="hidden" name="apiGroup" value="' + data.list[i].API_GROUP + '">';
+                        item += '<div class="board">';
+                        item += '<ul>';
+                        item += '<form action="" method="post" name="entityForm">';
+                        item += ' <li class="inp"><input name="entityValue" type="text" class="form-control fl"  style="width:60%;">';
+                        item += '<button type="button" class="btn btn_01 mb05 addEntityValueBtn">저장</button> <button type="button" class="btn btn-default mb05 cancelEntityValueBtn">취소</button>';
+                        item += '</li>';
+                        item += '<input type="hidden" name="entityDefine" value="' + data.list[i].ENTITY + '">';
+                        item += '<input type="hidden" name="apiGroup" value="' + data.list[i].API_GROUP + '">';
+                        item += "</form>";
+                        item += '</ul>';
+                        item += '</div>';
                         item += '</td>';
-                        item += '<td class="txt_center" style="width: 30%">' + data.list[i].API_GROUP + '</td>';  
-                        item += '</form>';
+                        item += '<td>' + data.list[i].API_GROUP + '</td>';  
                         item += '</tr>';
                     }
                     
@@ -192,7 +224,7 @@ function searchEntities() {
                             '</tr>';
                 }
                 $('#entitesTbltbody').append(item);
-                $('#pagination').html('').append(data.pageList).css('width', (35 * $('.li_paging').length) +'px');
+                $('#pagination').html('').append(data.pageList);
             }
         });
     }
@@ -264,9 +296,11 @@ function insertEntity(){
         data: $('#appInsertForm').serializeObject(),
         success: function(data) {
             if(data.status == 200){
-                $('#addDialogClose').click();
+                $('.addDialogCancel').click();
                 alert(language.Added);
                 entitiesAjax();
+            } else if(data.status == 'Duplicate') {
+                alert(language.DUPLICATE_ENTITIES_EXIST);
             } else {
                 alert(language.It_failed);
             }
