@@ -228,5 +228,7 @@
 	"MEDIA_URL": "MEDIA URL",
 	"A big group": "A big group",
 	"Middle group": "Middle group",
-	"Small group": "Small group"
+	"Small group": "Small group",
+	"SUCCESS" : "SUCCESS",
+	"FAIL" : "FAIL"
 }

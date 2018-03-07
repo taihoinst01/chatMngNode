@@ -1,4 +1,5 @@
 ﻿<header class="main-header">
+    <input type="hidden" id="signMassage" value="<%= __('SIGN_IN_REQUIRED') %>" />
     <!-- Logo -->
     <a href="/list" class="logo">
         <span class="logo-mini"></span>
@@ -48,15 +49,8 @@
             {
         %>
                 <script>
-                    $.ajax({
-                        url: '/jsLang',
-                        dataType: 'json',
-                        type: 'POST',
-                        success: function(data) {
-                            alert(data.lang['SIGN_IN_REQUIRED']);
-                            location.href = '/';
-                        }
-                    });
+                    alert($('#signMassage').val());
+                    location.href = '/';
                 </script>
         <%
             }

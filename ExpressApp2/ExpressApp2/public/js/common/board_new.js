@@ -1,10 +1,18 @@
 
-
-
-
-
-
+//가장 먼저 실행.
+var language;
 ;(function($) {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language= data.lang;
+            
+        }
+    });
+
+
     $(function () {
         //Initialize Select2 Elements
         $('.select2').select2()
