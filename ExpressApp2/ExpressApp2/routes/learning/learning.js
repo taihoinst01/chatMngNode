@@ -50,7 +50,7 @@ router.post('/recommend', function (req, res) {
             entitiesQueryString += " WHERE PAGEIDX = @currentPage";
             entitiesQueryString += " ORDER BY NUM";
 
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1 = await pool.request()
                 .input('currentPage', sql.Int, currentPage)
                 .query(entitiesQueryString)
@@ -124,7 +124,7 @@ router.get('/dialog', function (req, res) {
         try {
             var group_query = "select distinct GroupL from TBL_DLG where GroupL is not null";
             //var group_query = "SELECT DISTINCT GroupL FROM TBL_DLG WHERE GroupL = '" + searchGroupL + "'";
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result2 = await pool.request().query(group_query);
             let rows2 = result2.recordset;
             
@@ -222,7 +222,7 @@ router.post('/searchGroup', function (req, res) {
     (async () => {
         try {
 
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
 
             var searchGroupQuery;
             if(group == 'searchMedium') {
@@ -308,7 +308,7 @@ router.post('/selectSmallGroup', function (req, res) {
                                  "WHERE PAGEIDX = @currentPage";
 
             //var searchMidGroup = "select * from TBL_DLG where GroupS = @groupName";
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(selectSmallGroup);
             let rows = result1.recordset;
             
@@ -523,7 +523,7 @@ router.post('/dialogs2', function (req, res) {
                 dlg_desQueryString += ") tbp WHERE PAGEIDX = @currentPage \n";
 
                 
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(dlg_desQueryString);
             let rows = result1.recordset;
             
@@ -616,7 +616,7 @@ router.post('/dialogs', function (req, res) {
 */
             dlg_desQueryString += "AND DLG_API_DEFINE like '%" + sourceType + "%') tbp \n" +
                                       "WHERE PAGEIDX = @currentPage";
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(dlg_desQueryString);
             let rows = result1.recordset;
             
@@ -690,7 +690,7 @@ router.post('/utterInputAjax', function(req, res, next) {
 
     (async () => {
         try {
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             
             //res.send({result:true, iptUtterance:iptUtterance, entities:entities, selBox:rows2, commonEntities: commonEntities});
             for (var i=0; i< (typeof iptUtterance !=='string'? iptUtterance.length : 1); i++) {
@@ -831,7 +831,7 @@ router.post('/entities', function (req, res) {
                                     + "tbl_common_entity_define where api_group != 'OCR TEST') tbp                          "
                                     + "WHERE PAGEIDX = @currentPage                                                         "
             
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(entitiesQueryString);
 
             let rows = result1.recordset;
@@ -880,7 +880,7 @@ router.post('/addEntityValue', function (req, res) {
 
             var insertQueryString1 = "insert into TBL_COMMON_ENTITY_DEFINE(ENTITY, ENTITY_VALUE, API_GROUP) values(@entityDefine, @addEntityValue, @apiGroup)";
                       
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
 
             let result1 = await pool.request()
                 .input('entityDefine', sql.NVarChar, entityDefine)
@@ -912,7 +912,7 @@ router.post('/insertEntity', function (req, res) {
     (async () => {
         try {
             
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
 
             var selectQuery  = ' SELECT COUNT(*) as count FROM TBL_COMMON_ENTITY_DEFINE ';
                 selectQuery += ' WHERE ENTITY_VALUE = @entityValue ';
@@ -976,7 +976,7 @@ router.post('/searchEntities', function (req, res) {
                                     + " ) tbp                                                                               "
                                     + "WHERE PAGEIDX = 1                                                                    ";
             
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).input('searchEntities', sql.NVarChar, searchEntities).query(entitiesQueryString);
 
             let rows = result1.recordset;
@@ -1118,7 +1118,7 @@ router.post('/selectDlgListAjax', function (req, res) {
 
     (async () => {
         try {
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
 
             let dlgTextResult = await pool.request()
                 .query(dlgText);
@@ -1308,7 +1308,7 @@ router.post('/learnUtterAjax', function (req, res) {
     
     (async () => {
         try {
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1;
 
             if(typeof dlgId == "string") {
@@ -1354,7 +1354,7 @@ router.post('/deleteRecommend',function(req,res){
     var arryseq = seqs.split(',');
         (async () => {
         try{
-                let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+                let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
                 for(var i = 0 ; i < arryseq.length; i ++)
                 {
                    var deleteQueryString1 = "UPDATE TBL_QUERY_ANALYSIS_RESULT SET RESULT='T' WHERE seq='"+arryseq[i]+"'";
@@ -1379,7 +1379,7 @@ router.post('/selectGroup',function(req,res){
     var selectValue2 = req.body.selectValue2;
     (async () => {
     try{
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             var queryText = "";
             if(selectId == "searchLargeGroup") {
                 queryText = "SELECT DISTINCT GroupL AS 'GROUP' FROM TBL_DLG WHERE GroupL IS NOT NULL";
@@ -1532,7 +1532,7 @@ router.post('/searchDialog',function(req,res){
 
     (async () => {
         try{
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
 
             let dlgTextResult = await pool.request()
                 .query(dlgText);
@@ -1636,7 +1636,7 @@ router.post('/addDialog',function(req,res){
 
     (async () => {
         try{
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             var selectDlgId = 'SELECT ISNULL(MAX(DLG_ID)+1,1) AS DLG_ID FROM TBL_DLG';
             var selectTextDlgId = 'SELECT ISNULL(MAX(TEXT_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_TEXT';
             var selectCarouselDlgId = 'SELECT ISNULL(MAX(CARD_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_CARD';
@@ -1841,7 +1841,7 @@ router.post('/getDlgAjax', function (req, res) {
 
     (async () => {
         try {
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
 
             let dlgTextResult = await pool.request()
                 .query(dlgText);

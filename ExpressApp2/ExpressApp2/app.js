@@ -62,6 +62,12 @@ app.use(function(req, res, next) {
         res.locals.sid = null;
     }
 
+    if(req.session.dbValue) {
+        res.locals.dbValue = req.session.dbValue;
+    } else {
+        res.locals.dbValue = null;
+    }
+
     if(req.session.selMenu) {
         res.locals.selMenu = req.session.selMenu;
     } else {

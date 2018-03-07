@@ -15,19 +15,33 @@ var saveAppList;
 router.get('/', function (req, res) {
     if(req.session.sid) {
 
-        var client = new Client();
-        var options = {
-            headers: {
-                'Ocp-Apim-Subscription-Key': subKey
-            }
-        };
         try{
+
+            //db정보 조회
+
+            dbConnect.getConnection(sql).then(pool => { 
+                return pool.request().query( "SELECT USER_NAME, PASSWORD, SERVER, DATABASE_NAME, APP_NAME, APP_ID FROM TBL_DB_CONFIG; " ) 
+            }).then(result => {
+                let dbValue = result.recordset;
+                req.session.dbValue = dbValue;
+                sql.close();
+            }).catch(err => {
+                console.log(err);
+                sql.close();
+            });
+
+            var client = new Client();
+            var options = {
+                headers: {
+                    'Ocp-Apim-Subscription-Key': subKey
+                }
+            };
+            
             client.get( HOST + '/luis/api/v2.0/apps/', options, function (data, response) {
                 //console.log(data)
                 var appList = data;
                 saveAppList = JSON.parse(JSON.stringify(data));
                 var listStr = 'SELECT APP_NAME, APP_ID FROM TBL_LUIS_APP ';
-
                 dbConnect.getConnection(sql).then(pool => {
                     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
                         return pool.request().query(listStr)
