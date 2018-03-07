@@ -465,7 +465,7 @@ $(document).ready(function(){
             $('#commonLayout').css('display','block');
             $('#commonLayout').prepend(insertForm);
             var dialogView = '';
-            dialogView += '<div class="dialog_box03 dialogView" >';
+            dialogView += '<div class="dialogView" >';
             dialogView += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
             dialogView += '<div class="wc-message-content">';
             dialogView += '<svg class="wc-message-callout"></svg>';
@@ -754,6 +754,7 @@ $(document).on('change','#intentNameList',function(event){
     selectDlgListAjax($("#intentNameList option:selected").val());
 });
 
+// 다이얼로그 생성 모달 (다이얼로그 타입 변경)
 $(document).on('change','select[name=dlgType]',function(e){
     var idx = $("select[name=dlgType]").index(this);
     var insertHtml = "";
@@ -883,6 +884,8 @@ function dialogValidation(type){
         }
     }
 }
+
+// 다이얼로그 생성 모달 (다이얼로그 타이틀 입력)
 function writeDialogTitle(e) {
 
     //var idx = $('input[name=dialogTitle]').index(e);
@@ -914,6 +917,7 @@ function writeCarouselImg(e) {
     $('.dialogView').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('.imgContainer img').attr("src",e.value);
 }
 
+// 다이얼로그 생성 모달 (다이얼로그 텍스트 입력)
 function writeDialog(e) {
     //var idx = $('textarea[name=dialogText]').index(e);
     
@@ -1405,16 +1409,11 @@ var $carouselForm;
 var $mediaForm;
 function openModalBox(target){
 
-
     //carousel clone 초기값 저장
     $insertForm = $('#commonLayout .insertForm').eq(0).clone();
     $dlgForm = $('#commonLayout .textLayout').eq(0).clone();
     $carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
     $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
-
-    
-    //count = 1;
-
 
     if(target == "#create_dlg") {
         $(".insertForm form").append($(".textLayout").clone(true));
@@ -1671,8 +1670,6 @@ function searchSaveDialog() {
 }
 */
 
-
-var carouselDivHtml = 
 $(document).on('click', '.carouseBtn',function(e){
     //e.stopPropagation();
     //e.preventDefault();
@@ -1703,7 +1700,7 @@ $(document).on('click', '.addMediaBtn',function(e){
 
 //textLayout
 
-//var $carouselForm = $('#commonLayout .carouselLayout').eq(($('#commonLayout .carouselLayout').length)-1).clone();
+
 $(document).on('click', '.addCarouselBtn', function(e){
     //var $newInsertForm = $insertForm.clone();
     //var $newDlgForm = $dlgForm.clone();
