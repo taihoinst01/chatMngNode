@@ -14,6 +14,7 @@
         -->
 
     <%include  ./common/commonLib.html%>
+    <link rel='stylesheet' href='/css/botchat.css' />
     <script type="text/javascript" src="/js/common/dialog.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/dialog.css" />
     <!-- 
@@ -42,16 +43,16 @@
     <%include  ./leftSideBar.html%>
 
     <div class="content-wrapper">
-            <section class="content-header"><h1>대화상자 설정 </h1>  </section>
+            <section class="content-header"><h1><%= __('DIALOG_SETTING') %></h1>  </section>
 
-            <!-------- Main content ------------>
+            <!-- Main content -->
             <section class="content">
                     <div class="box  color-palette-box">
                             <div class="box-body">
                             
                                   <div class="modal-body search_op">
                                         <div class="form-group col-lg-2"  style=" padding-left:0px !important" >
-                                            <input type="text" name="iptDialog" id="iptDialog" class="form-control" placeholder=" 연결 발언을 입력하세요.">
+                                            <input type="text" name="iptDialog" id="iptDialog" class="form-control" placeholder=" <%= __('Enter_Connection_utterance') %>">
                                         </div>             
                                         <div class="form-group col-lg-2" >
                                             <select id="sourceType2" name="sourceType" class="form-control"> 
@@ -85,13 +86,13 @@
                                         </div>  
                                                                
                                         <div class="form-group col-lg-2 fr"  style=" margin-top:20px;text-align:right; padding-right:0px;">
-                                            <button type="button" id="searchDlgBtn" class="btn btn_01 ">찾기</button> 
-                                            <button type="button" id="dialog" class="btn btn-default"  data-toggle="modal" data-target="#myModal2">생성</button>
+                                            <button type="button" id="searchDlgBtn" class="btn btn_01 "><%= __('SEARCH') %></button> 
+                                            <button type="button" id="dialog" class="btn btn-default"  data-toggle="modal" data-target="#myModal2"><%= __('CREAT') %></button>
                                         </div>
                                      </div>                                         
                             
 
-                                    <!-------- 학습 추천 테이블 ------------> 
+                                    <!-- 학습 추천 테이블 --> 
                                     <div class="Tbl_wrap">
                                         <table class="Tbl" summary="학습 추천 결과">
                                             <colgroup><col width="15%"/><col width="25%"/><col width="43%"/><col width="17%"/></colgroup>
@@ -117,28 +118,28 @@
                                                             </div>
                                                         </div> 
                                                       </th>
-                                                      <th>설명</th>
-                                                      <th>연결발언</th>
+                                                      <th><%= __('DESC') %></th>
+                                                      <th><%= __('CONNECTION_UTTERANCE') %></th>
                                                   </tr>
                                                 <tbody id="dialogTbltbody">
                                                     
                                                 </tbody>
                                         </table>
                                     </div> 
-                                    <!-------- 페이징 ------------> 
+                                    <!-- 페이징 --> 
                                     <div id="pagination" class="pagination_wrap" >
 
                                     </div>
                             </div>
                     </div>
             </section>
-            <!-------- //Main content ------------>
+            <!-- //Main content -->
 </div>
 <%include  ./footer.html%>
 
 </div>
 
-<!-------- 신규 대화상자 생성 -------->
+<!-- 신규 대화상자 생성 -->
 	<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-dialog modal-lg02" >
                     <div class="modal-content" >
@@ -149,7 +150,7 @@
                                               </div>
                                               <div class="modal-body">
                                               <div class="modal_con">
-                                                    <!-------- 그룹 정보 -------->
+                                                    <!-- 그룹 정보 -->
                                                    <div class="col-md-7" style="padding:0">  
                                                                 <h5><span class="col01 fa fa-chevron-right"></span>그룹 정보</h5>          
                                                                 <div class="form-group col-md-6"   style="padding:0" >
@@ -172,7 +173,7 @@
                                                                 </div>                                                                    
                                                               
                                                             
-                                                                <!------텍스트 타입 -------->
+                                                                <!-- 텍스트 타입 -->
                                                                 <div  class="dialog_w"   style="display:block" id="dialog1">
                                                                         <div class="form-group" >
                                                                              <label>대화상자 타입<span class="nec_ico">*</span> </label>
@@ -194,7 +195,7 @@
                                                                              <button type="button" class="btn btn_01"  >대화상자 추가 삽입</button>
                                                                          </div>                                                                             
                                                      </div>
-                                                      <!------카드 타입 -------->
+                                                      <!-- 카드 타입 -->
                                                       <div  class="dialog_w"   style="display:none" id="dialog2">
                                                                         <div class="form-group" >
                                                                              <label>대화상자 타입<span class="nec_ico">*</span> </label>
@@ -241,7 +242,7 @@
                                                                              <button type="button" class="btn btn_01">대화상자 추가 삽입</button>
                                                                          </div>                                                                                   
                                                       </div>
-                                                      <!------미디어 타입 -------->
+                                                      <!-- 미디어 타입 -->
                                                       <div  class="dialog_w"   style="display:none" id="dialog3">
                                                                         <div class="form-group" >
                                                                              <label>대화상자 타입<span class="nec_ico">*</span> </label>
@@ -288,27 +289,48 @@
                                                       </div>                                                                    
                                          </div>
                                          
-                                         <!--------- 대화상자 미리보기 -------->
+                                         <!-- 대화상자 미리보기 -->
                                          <div class="col-md-5" style="padding-right:0">
-                                                    <h5><span class="col01 fa fa-chevron-right"></span>대화상자 미리보기</h5>  
-                                                    <div class="dialog_box03" >
-                                                      <!-------- 대화상자  -------->
+                                                    <h5><span class="col01 fa fa-chevron-right"></span><%= __('PREVIEW_DLG') %></h5>  
+                                                    <div class="dialog_box03">
+                                                      <!-- 대화상자  -->
                                                     </div>
                                          </div>
                                       </div> 
                                       </div>
                                                                                        
                                    <div class="modal-footer">
-                                        <div class="nec02"><span class="nec_ico">*</span> 항목은 필수 입력입니다</div>
+                                        <div class="nec02"><span class="nec_ico">*</span> <%= __('IS_REQUIRED') %></div>
                                          <div class="btn_wrap">
-                                            <button type="button" class="btn btn_01">생성</button>
-                                            <button type="button" class="btn btn-default"  data-dismiss="modal">취소</button>
+                                            <button type="button" class="btn btn_01"><%= __('CREAT') %></button>
+                                            <button type="button" class="btn btn-default"  data-dismiss="modal"><%= __('CANCEL') %></button>
                                          </div>
                                    </div>
-         </div>
-</div>
-</div> 
 
+                    </div>
+                </div>
+            </div> 
+
+
+        <!-- 팝업_미리보기 -->
+        <div class="modal fade" id="dialogShowMordal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                <div class="modal-dialog">
+                        <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                        <h4 class="modal-title" id="myModalLabel"><%= __('CARD_LIST') %></h4>
+                                    </div>
+                                    <div class="form-group" id="dialogShow" >
+                                    </div>                                                                 
+                                    <div class="modal-footer">
+                                        <div class="btn_wrap">
+                                            <button type="button" class="btn btn_01" data-dismiss="modal" ><%= __('OK') %></button>
+                                        </div>
+                                    </div>
+                        </div>
+                </div>
+    </div>    
+    <!-- //팝업_미리보기 -->
 
 
 </body>

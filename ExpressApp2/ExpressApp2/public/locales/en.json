@@ -34,7 +34,6 @@
 	"QUESTION_CNT_EACH_HOUR": "Question count per time",
 	"Unanswered_questions": "Unanswered questions",
 	"Customer_First_Questions": "First question percustome",
-
 	"Description 1": "Displays a list of learning intentions. You can create or edit new learning intent.",
 	"Response": "Response",
 	"Mean_stay_time": "Mean stay time",
@@ -59,8 +58,8 @@
 	"Additional learning recommendation": "Additional learning recommendation",
 	"All": "All",
 	"Yesterday": "Yesterday",
-	"Last week": "Last week",
-	"Last month": "Last month",
+	"Last_week": "Last week",
+	"Last_month": "Last month",
 	"Learning recommendation sentence": "Learning recommendation sentence",
 	"Registration Date": "Registration Date",
 	"============= Learning > UTTERANCES =============": "",
@@ -93,8 +92,10 @@
 	"Create_new_Entity_Set": "Create new Entity Set",
 	"Search_Dialogue": "Search Dialogue",
 	"============= Learning > DIALOG =============": "",
-	"Enter Connection utterance": "Enter Connection utterance",
+	"Enter_Connection_utterance": "Enter Connection utterance",
 	"explanation": "EXPLANATION",
+	"CONNECTION_UTTERANCE": "CONNECTION UTTERANCE",
+	"PREVIEW_DLG": "PREVIEW DIALOG",
 	"Enter_search_word": "Enter search word",
 	"Connection utterance": "CONNECTION UTTERANCE",
 	"Please_reset_the_group": "Please reset the group",
@@ -190,5 +191,7 @@
 	"IS_REQUIRED": " is required",
 	"SIGN_IN_REQUIRED": "Please sign in.",
 	"SIGN_OUT": "SIGN OUT",
-	"SIR": " "
+	"SIR": " ",
+	"============= recommand  =============": "",
+	"CONTENTS": "CONTENTS"
 }

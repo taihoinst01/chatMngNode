@@ -24,9 +24,9 @@
 <%include  ./leftSideBar.html%>
 
 <div class="content-wrapper">
-    <section class="content-header"><h1>단어 설정 </h1>  </section>
+    <section class="content-header"><h1><%= __('ENTITY_SETTING') %></h1>  </section>
 
-    <!-------- Main content ------------>
+    <!-- Main content -->
     <section class="content">
             <div class="box  color-palette-box">
                     <div class="box-body">
@@ -41,7 +41,7 @@
                                 </div>
                              </div>                                         
 
-                            <!-------- 단어 설정 테이블 ------------> 
+                            <!-- 단어 설정 테이블 --> 
                             <div class="Tbl_wrap">
                                 <table class="Tbl" summary="단어 설정">
                                     <colgroup><col width="34%"/><col width="33%"/><col width="33%"/></colgroup>
@@ -54,39 +54,39 @@
                                         </tbody>
                                 </table>
                             </div> 
-                            <!-------- 페이징 ------------>
+                            <!-- 페이징 -->
                             <div id="pagination" class="pagination_wrap">
 
                             </div>
                     </div>
             </div>
     </section>
-    <!-------- //Main content ------------>
+    <!-- //Main content -->
 
 
 </div>
-<!------ //Content Wrapper  ------------>
+<!-- //Content Wrapper  -->
 
 <%include  ./footer.html%>
 </div>
 
-	<!-------- 팝업_신규단어생성 -------->
+	<!-- 팝업_신규단어생성 -->
 	<div class="modal fade" id="create_dlg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
               <div class="modal-dialog">
                         <div class="modal-content">
                                   <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                                        <h4 class="modal-title" id="myModalLabel">Create new Entity Set</h4>
+                                        <h4 class="modal-title" id="myModalLabel"><%= __('Create_new_Entity_Set') %></h4>
                                   </div>
                                   <form name="appInsertForm" id="appInsertForm" method="post">
                                   <div class="modal-body">
                                         <div class="form-group" >
                                             <label><%= __('Entity definition') %><span class="nec_ico">*</span></label>
-                                            <input name="entityDefine" id="entityDefine" type="text" class="form-control" placeholder=" 내용을 입력하세요." onkeyup="dialogValidation();">
+                                            <input name="entityDefine" id="entityDefine" type="text" class="form-control" placeholder=" <%= __('Please_enter') %>" onkeyup="dialogValidation();">
                                         </div>
                                         <div class="form-group" >
                                             <label><%= __('Entity value') %><span class="nec_ico">*</span></label>
-                                            <input name="entityValue" id="entityValue" type="text" class="form-control" placeholder=" 내용을 입력하세요." onkeyup="dialogValidation();">
+                                            <input name="entityValue" id="entityValue" type="text" class="form-control" placeholder=" <%= __('Please_enter') %>" onkeyup="dialogValidation();">
                                         </div>
                                         <div class="form-group" >
                                             <label>API_Group<span class="nec_ico">*</span></label>
@@ -94,19 +94,19 @@
                                                 <option value="COMMON">COMMON</option>
                                             </select>
                                         </div>
-                                        <div class="nec fr"><span class="nec_ico">*</span> 항목은 필수 입력입니다</div>
+                                        <div class="nec fr"><span class="nec_ico">*</span><%= __('IS_REQUIRED') %></div>
                                   </div>
                                   </form>                                                                    
                                   <div class="modal-footer">
                                         <div class="btn_wrap">
-                                           <button type="button" class="btn btn_01" id="btnAddDlg" onclick="insertEntity()">생성</button>
-                                           <button type="button" class="btn btn-default"  data-dismiss="modal" id="addDialogCancel">취소</button>
+                                           <button type="button" class="btn btn_01" id="btnAddDlg" onclick="insertEntity()"><%= __('CREAT') %></button>
+                                           <button type="button" class="btn btn-default"  data-dismiss="modal" id="addDialogCancel"><%= __('CANCEL') %></button>
                                         </div>
                                   </div>
                         </div>
               </div>
 	</div>    
-    <!-------- //팝업_신규단어생성 -------->
+    <!-- //팝업_신규단어생성 -->
 
 
 

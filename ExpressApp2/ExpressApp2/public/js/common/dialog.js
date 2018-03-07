@@ -18,7 +18,10 @@ var language;
 
 var rememberSelBoxHtml = '';
 
+
+
 $(document).ready(function(){
+
 
     //검색 enter
     $('#iptDialog').keyup(function(e){
@@ -523,7 +526,7 @@ function searchIptDlg(page){
                     item += '<tr>' +
                             '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
                             '<td>' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left tex01"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#dialogShowMordal"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
                             '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
@@ -865,7 +868,7 @@ function selectDlgByFilter(group){
                     item += '<tr>' +
                             '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
                             '<td>' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left tex01"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#dialogShowMordal"   onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
                             '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
@@ -1173,7 +1176,7 @@ function selectDlgByTxt(groupType, sourceType){
                     item += '<tr>' +
                             '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
                             '<td>' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left tex01"><a href="#"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#dialogShowMordal"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
                             '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
@@ -1217,11 +1220,13 @@ function selectDlgByTxt(groupType, sourceType){
 }
 
 
+
+
 var currentSearchNum = 2; // 0: 검색어로 검색한 경우, 1: 테이블 위 그룹으로 검색한 경우, 2: 테이블에 있는 그룹으로 검색한 경우
 $(document).on('click','.li_paging',function(e){
     
-    if($(e.target).val() != $('#currentPage').val()){
-        $('#currentPage').val($(e.target).val());
+    if(!$(this).hasClass('active')){
+        $('#currentPage').val($(this).text());
         if(currentSearchNum == 0) {
 
             searchIptDlg(); 
@@ -1234,12 +1239,6 @@ $(document).on('click','.li_paging',function(e){
             var sourceType = $('#tblSourceType').val();
             selectDlgByTxt(groupType, sourceType);
         }
-        /*
-        $('#currentPage').val($(e.target).val())
-        var groupType =  $('.selected').text();
-        var sourceType = $('#tblSourceType').val();
-        selectDlgByTxt(groupType, sourceType);
-        */
     }
 });
 
@@ -1276,7 +1275,7 @@ function openModalBox(target){
     // 레이어 팝업을 띄웁니다.
     setTimeout(function() {
         $(target).fadeIn( );
-        $('#dialogPreview').css({'height':$('#dialogSet').height()});
+        $('#dialogPreview').css({'height':'80%'});
       }, 250);
 
     $('html').css({'overflow': 'hidden', 'height': '100%'});
@@ -1409,7 +1408,7 @@ function searchDialog(dlgID) {
                     botChatNum4Desc++;
                     var val = row[i];
 
-                    inputUttrHtml += '<div style="width: 405px; height: 85%; float:left; margin: 15px 20px;">';
+                    inputUttrHtml += '<div style="width: 90%; height: 90%; float:left; margin: 15px 20px;">';
                     //inputUttrHtml += '<div style="height: 10%; width: 100%; z-index:5; background-color: #6f6c6c;">';
                     //inputUttrHtml += '<div class="check-radio-tweak-wrapper2 searchDlgChk" type="checkbox">';
                     //inputUttrHtml += '<input name="chksearch" class="tweak-input" type="checkbox"/>';
@@ -1519,7 +1518,8 @@ function searchDialog(dlgID) {
             }
             $('#dialogShow').html(inputUttrHtml);
             //$('#dialogShow').prepend(inputUttrHtml);
-            openModalBox('#dialogShowMordal');
+            //openModalBox('#dialogShowMordal');
+            
         } 
         
 

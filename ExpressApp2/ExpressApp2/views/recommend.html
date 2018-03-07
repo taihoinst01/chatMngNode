@@ -39,7 +39,7 @@
 
         <!-- css는 recommend.css 에 만들었습니다 -->
         <div class="content-wrapper">
-            <section class="content-header"><h1>학습 추천 </h1>  </section>
+            <section class="content-header"><h1><%= __('RECOMMENDATION') %></h1>  </section>
 
             <!-- Main content -->
             <section class="content">
@@ -47,16 +47,16 @@
                     <div class="box-body">
                         <div class="form-group w50 fl"  style="width: 250px;">
                             <select id="recommendPeriod" class="form-control"> 
-                                <option value="all">전체</option>
-                                <option value="yesterday">어제</option>
-                                <option value="lastWeek">최근1주</option>
-                                <option value="lastMonth">최근1달</option>
+                                <option value="all"><%= __('ALL') %></option>
+                                <option value="yesterday"><%= __('Yesterday') %></option>
+                                <option value="lastWeek"><%= __('Last_week') %></option>
+                                <option value="lastMonth"><%= __('Last_month') %></option>
                             </select>
                         </div>
                         <!-- 검색창 --> 
                         <div class="form-group w50 fr ">
                             <div class="input-group input-group-sm fr" style="width: 250px;">
-                                    <input type="text" name="table_search" class="form-control pull-right" placeholder="검색어 입력">
+                                    <input type="text" name="table_search" class="form-control pull-right" placeholder="<%= __('Enter_search_word') %>">
                                     <div class="input-group-btn">
                                     <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                                     </div>
@@ -69,8 +69,8 @@
                                 <thead>
                                     <tr>
                                         <th><input type="checkbox" name="tableAllChk" class="flat-red"></th>
-                                        <th>내용</th>
-                                        <th>등록일</th>
+                                        <th><%= __('CONTENTS') %></th>
+                                        <th><%= __('REGIST_DATE') %></th>
                                     </tr>
                                 </thead>
                                 <tbody id="recommendContents">
@@ -79,7 +79,7 @@
                             </table>
                         </div> 
                         <!-- 버튼 --> 
-                        <div class="btn_wrap03"><button type="button" class="btn btn-default fr" onclick="deleteRecommend()">삭제</button> </div>                                                
+                        <div class="btn_wrap03"><button type="button" class="btn btn-default fr" onclick="deleteRecommend()"><%= __('DELETE') %></button> </div>                                                
                         
                         <!-- 페이징 --> 
                         <div class="pagination_wrap" >

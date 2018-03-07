@@ -124,15 +124,15 @@
 </div>
       
 <!-- Control Sidebar -->
-<aside class="control-sidebar control-sidebar-dark">
+<aside class="control-sidebar control-sidebar-dark" id="simulDiv" style="height:90%;">
         <div  class="hd_top " >
             <h4><%= __('CHATBOT_SIMUL') %></h4>
             <div class="btn_wrap04">
-                <button  type="button" class="btn btn_02"><span class="fa fa-rotate-right  "></span></button>
+                <button  type="button" class="btn btn_02" id="startOver"><span class="fa fa-rotate-right  "></span></button>
                 <button  type="button" class="btn btn_02"  data-toggle="control-sidebar" ><span class="fa fa-close"></span></button>
             </div>
         </div>
-        <div class="chat_con">
+        <div class="chat_con" id="iframChatbot" style="height:100%; padding:0;">
         챗봇 넣기
         <!-- 챗팅창-->
         </div>
@@ -158,7 +158,7 @@
         //learningg menu active
         $('.treeview-menu').find('i').each(function() {
             var menuName = $.trim($(this).parent().text()).replace(/\s/gi, ""); 
-            var pageTitle = $.trim($('.content-header').text()).replace(/\s/gi, ""); 
+            var pageTitle = $.trim($('.content-header>h1').text()).replace(/\s/gi, ""); 
             if (menuName === pageTitle) {
                 $(this).parents('li').addClass('active');
             }
@@ -189,7 +189,49 @@
             var url = "/board"; 
             $(location).attr('href',url);
         });
+    
+        $('.spmenu').click(function() {
+            if( !$('#simulDiv').hasClass('control-sidebar-open') ) {
+                var chatbotItem = '<iframe id="testChatBot" style="height:100%; width:100%;" class="" src="https://webchat.botframework.com/embed/smartsend?s=dEQAGijPT-s.cwA.0LA.mnfoxhvCCjOo4YE894AS9nJpoKFTn58Lh3DljcOicdU"></iframe>';
+                $('#iframChatbot').html(chatbotItem);
+            }
+        });
 
+        //test 챗봇 새로고침
+        $('#startOver').click(function(){
+            $('#testChatBot').removeAttr('src');
+            $('#testChatBot').attr('src','https://webchat.botframework.com/embed/smartsend?s=dEQAGijPT-s.cwA.0LA.mnfoxhvCCjOo4YE894AS9nJpoKFTn58Lh3DljcOicdU');
+            return false;
+        });
 
     });
   </script>
+
+
+<script>
+
+        $(document).ready(function(){
+            
+        
+            $("a[name=batchTest]").click(function() {
+        
+                if ($("#learningTest").css('display') != 'none') {
+                    $("#learningTest").hide();
+                    $("#batchTestPanel").show();
+                    $("#toggleDiv").toggleClass('open' );
+                    
+                    //$("#toggleDiv").css('right', '0px');
+                } else {
+                    
+                    $("#batchTestPanel").hide();
+                    $("#learningTest").show();
+                    $("#toggleDiv").toggleClass('open');
+                    //$("#toggleDiv").css('right', '-900px');
+                }
+            });
+        
+            
+        
+        });
+        
+        </script>
