@@ -40,6 +40,7 @@ function recommendAjax(type){
         success: function(data) {
             $('#recommendContents').html('');
             var item = '';
+
             if(data.list.length > 0){
                 for(var i = 0; i < data.list.length; i++){
                     item += '<tr>' +
@@ -80,22 +81,21 @@ function recommendAjax(type){
                         $('input[name=tableCheckBox]').parent().iCheck('uncheck');
                     });
 
-                if(type == 'delete') {
-                    alert("삭제되었습니다.");
-                }
+                
     
                 $('input[name=tableAllChk]').parent().iCheck('uncheck');
             } else {
                 if(type == 'delete') {
 
                     $('#currentPage').val(($('#currentPage').val() - 1 != 0) ? $('#currentPage').val() - 1 : 1)
-                    recommendAjax('delete');
+                    recommendAjax();
 
                 } else {
 
                     item += '<tr>' +
                                 '<td colspan="3">' + language.NO_DATA + '</td>' +
                             '</tr>';
+                    $('#recommendContents').append(item);
                 }
             }
             
@@ -174,6 +174,7 @@ function deleteRecommend(){
                 url : '/learning/deleteRecommend',
                 isloading : true,
                 success: function(data){
+                    alert("삭제되었습니다.");
                     recommendAjax('delete');
                 }
             });
