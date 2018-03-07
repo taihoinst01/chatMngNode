@@ -39,9 +39,9 @@
         <!-- Content Wrapper -->
         <div class="content-wrapper">
             <section class="content-header">
-                <h1>발언설정 </h1> 
+                <h1><%= __('UTTERANCE_SETTING') %></h1> 
                 <div class="btn_wrap02 fr" style="width:50%" >
-                    <button type="button" class="btn btn_01"  data-toggle="modal" data-target="#addEntityModal">신규 단어 추가</button> <button type="button" class="btn btn-default" id="utterLearn">문장-대화상자 연계 학습</button>
+                    <button type="button" class="btn btn_01"  data-toggle="modal" data-target="#addEntityModal"><%= __('ADD_NEW_WORD') %></button> <button type="button" class="btn btn-default" id="utterLearn"><%= __('SENTENCE_DIALOG_BOX_LINKED_LEARNING') %></button>
                 </div>
             </section>
 
@@ -55,10 +55,10 @@
                     <div class="col-md-7">
                         <div class="box  color-palette-box" style="height:550px">
                             <div class="box-body02">
-                                <div class="box-header with-border"><h3 class="box-title">문장입력</h3></div>
+                                <div class="box-header with-border"><h3 class="box-title"><%= __('Sentence_input') %></h3></div>
                                 <!-- 검색창 --> 
                                 <div class="form-group">
-                                    <input type="text" name="iptUtterance" class="form-control" placeholder="문장을 입력하세요.">
+                                    <input type="text" name="iptUtterance" class="form-control" placeholder="<%= __('Please_enter_a_sentence') %>">
                                 </div> 
                                 <!-- 학습 추천 테이블 --> 
                                 <div class="Tbl_wrap">
@@ -70,8 +70,8 @@
                                         <thead>
                                             <tr>
                                                 <th><input type="checkbox" class="flat-red" name="tableAllChk"></th>
-                                                <th>내용</th>
-                                                <th>기능</th>
+                                                <th><%= __('CONTENTS') %></th>
+                                                <th><%= __('FUNCTION') %></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -96,10 +96,10 @@
                         <div class="box  color-palette-box"  style="height:550px">
                             <div class="box-body02">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">대화상자</h3>
+                                    <h3 class="box-title"><%= __('Dialog_box') %></h3>
                                     <div class="btn_wrap03 fr" style="width:50%" >
-                                        <button type="button" class="btn btn_01" data-toggle="modal" data-target="#myModal1" onclick="openModalBox('#search_dlg')">찾기</button>
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal2" onclick="openModalBox('#create_dlg')">생성</button>
+                                        <button type="button" class="btn btn_01" data-toggle="modal" data-target="#myModal1" onclick="openModalBox('#search_dlg')"><%= __('SEARCH') %></button>
+                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal2" onclick="openModalBox('#create_dlg')"><%= __('CREAT') %></button>
                                     </div>                                                                  
                                 </div>
                                 <div class="dialog_wrap">
@@ -118,7 +118,7 @@
                 <!-- 추천문장 -->
                 <div class="box  color-palette-box">
                 <div class="box-body02">
-                        <div class="box-header with-border"><h3 class="box-title">추천문장</h3></div>
+                        <div class="box-header with-border"><h3 class="box-title"><%= __('A_recommendation') %></h3></div>
                 </div> 
                 </div>
                 <!-- //추천문장 -->                                
@@ -142,32 +142,32 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close addEntityModalClose" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title" id="myModalLabel">신규단어생성</h4>
+                    <h4 class="modal-title" id="myModalLabel"><%= __('ADD_NEW_WORD') %></h4>
                 </div>
                 <div class="modal-body">
                     <form name="entityInsertForm" id="entityInsertForm" method="post">
                         <div class="form-group" >
-                            <label>단어정의<span class="nec_ico">*</span></label>
-                            <input type="text" name="entityDefine" class="form-control" placeholder=" 내용을 입력하세요.">
+                            <label><%= __('WORD_DEFINITION') %><span class="nec_ico">*</span></label>
+                            <input type="text" name="entityDefine" class="form-control" placeholder=" <%= __('Please_enter') %>">
                         </div>
                         <div class="form-group" >
-                            <label>유의어<span class="nec_ico">*</span></label>
-                            <input type="text" name="entityValue" class="form-control" placeholder=" 내용을 입력하세요.">
+                            <label><%= __('SYNONYM') %><span class="nec_ico">*</span></label>
+                            <input type="text" name="entityValue" class="form-control" placeholder=" <%= __('Please_enter') %>">
                         </div>
                         <div class="form-group" >
-                            <label>단어정의<span class="nec_ico">*</span></label>
+                            <label>API_GROUP<span class="nec_ico">*</span></label>
                             <select name="apiGroup" class="form-control"> 
                                 <option value="COMMON">COMMON</option>
                                 <option value="api testdrive">api testdrive</option>
                             </select>
                         </div>
                     </form>
-                    <div class="nec fr"><span class="nec_ico">*</span> 항목은 필수 입력입니다</div>
+                    <div class="nec fr"><span class="nec_ico">*</span> <%= __('IS_REQUIRED') %></div>
                 </div>
                 <div class="modal-footer">
                     <div class="btn_wrap">
-                        <button type="button" class="btn btn_01" onclick="insertEntity()">생성</button>
-                        <button type="button" class="btn btn-default addEntityModalClose"  data-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn_01" onclick="insertEntity()"><%= __('ADD') %></button>
+                        <button type="button" class="btn btn-default addEntityModalClose"  data-dismiss="modal"><%= __('CANCEL') %></button>
                     </div>
                 </div>
             </div>
@@ -181,38 +181,38 @@
             <div class="modal-content">
                 <div class="modal-header" style="clear:both">
                     <button type="button" class="close searchDialogClose" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title" id="myModalLabel">대화상자 찾기</h4>
+                    <h4 class="modal-title" id="myModalLabel"><%= __('SEARCH_DIALOG_BOX') %></h4>
                 </div>
                 <div class="modal-body">
                     <form name="searchForm" id="searchForm" method="post" onsubmit="return false">
                         <div class="form-group fl"  style="width:26%;">
-                            <label>검색어</label>
-                            <input type="text" name="serachDlg" class="form-control" placeholder=" 내용을 입력하세요.">
+                            <label><%= __('GROUP_INFORMATION') %></label>
+                            <input type="text" name="serachDlg" class="form-control" placeholder=" <%= __('Please_enter') %>">
                         </div>             
                         <div class="form-group fl ml10"  style="width:20%;">
-                            <label>대그룹</label>
+                            <label><%= __('Large_group') %></label>
                             <select class="form-control" name="searchLargeGroup" id="searchLargeGroup"> 
-                                <option value="">선택</option>
+                                <option value=""><%= __('SELECT') %></option>
                             </select>
                         </div> 
                         <div class="form-group fl ml10"  style="width:20%;">
-                            <label>중그룹</label>
+                            <label><%= __('Middle_group') %></label>
                             <select class="form-control" name="searchMediumGroup" id="searchMediumGroup"> 
-                                <option value="">선택</option>
+                                <option value=""><%= __('SELECT') %></option>
                             </select>
                         </div>                         
                         <div class="form-group fl ml10"  style="width:20%;">
-                            <label>소그룹</label>
+                            <label><%= __('Small_group') %></label>
                             <select class="form-control" name="searchSmallGroup" id="searchSmallGroup"> 
-                                <option value="">선택</option>
+                                <option value=""><%= __('SELECT') %></option>
                             </select>
                         </div>                         
                         <div class="form-group fr"  style="width:10%; margin-top:45px">
-                            <button type="button" class="btn btn_01 fr" id="searchDialogBtn">검색</button>
+                            <button type="button" class="btn btn_01 fr" id="searchDialogBtn"><%= __('SEARCH') %></button>
                         </div>
                     </form>
                 </div> 
-                <p class="dialog_result">[ 검색결과 : 총 <strong> 0 </strong> 건 ]</p>  
+                <p class="dialog_result">[ <%= __('Search_Results') %> : <%= __('Total') %> <strong> 0 </strong> <%= __('Case') %> ]</p>  
                 <div class="dialog_box02">
                     <div class="chat_box_wrap" id="searchDlgResultDiv">
                                                                                         
@@ -220,8 +220,8 @@
                 </div>                      
                 <div class="modal-footer">
                     <div class="btn_wrap">
-                        <button type="button" class="btn btn_01" onclick="selectDialog()">선택</button>
-                        <button type="button" class="btn btn-default searchDialogClose"  data-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn_01" onclick="selectDialog()"><%= __('SELECT') %></button>
+                        <button type="button" class="btn btn-default searchDialogClose"  data-dismiss="modal"><%= __('CANCEL') %></button>
                     </div>
                 </div>
             </div>
@@ -236,17 +236,17 @@
                                     
                 <div class="modal-header" style="clear:both">
                     <button type="button" class="close createDlgModalClose" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title" id="myModalLabel">대화상자 찾기</h4>
+                    <h4 class="modal-title" id="myModalLabel"><%= __('CREATE_DIALOG_BOX') %></h4>
                 </div>
                 <div class="modal-body">
                     <div class="modal_con">
                         <!-- 그룹 정보 -->
                         <div class="col-md-6" style="padding:0">  
                             <form name="appInsertForm" id="appInsertForm">
-                                <h5><span class="col01 fa fa-chevron-right"></span>그룹 정보</h5>          
+                                <h5><span class="col01 fa fa-chevron-right"></span> <%= __('GROUP_INFORMATION') %></h5>          
                                 <div class="form-group col-md-6"   style="padding:0" >
-                                    <label>대그룹<span class="nec_ico">*</span></label>
-                                    <button type="button" class="btn btn-block btn-default btn-xs  fr" id="btnCreateLgroup">신규</button>
+                                    <label><%= __('Large_group') %><span class="nec_ico">*</span></label>
+                                    <button type="button" class="btn btn-block btn-default btn-xs  fr" id="btnCreateLgroup"><%= __('NEW') %></button>
                                     <select class="form-control" id="largeGroup" name="largeGroup"> 
                                             <option value="" selected>largeGroup1</option>
                                             <option value="">largeGroup2</option>
@@ -255,7 +255,7 @@
                                     <input type="text" name="largeGroupEdit" id="largeGroupEdit" class="form-control" style="display:none;"/>
                                 </div> 
                                 <div class="form-group col-md-6" style="padding-right:0"  >
-                                    <label>소스 타입<span class="nec_ico">*</span> </label>
+                                    <label><%= __('Source_type') %><span class="nec_ico">*</span> </label>
                                     <select class="form-control" id="sourceType" name="sourceType"> 
                                         <option value="COMMON" selected>COMMON</option>
                                         <option value="API">API</option>
@@ -263,19 +263,19 @@
                                 </div> 
                                 <div class="clear-both"></div>
                                 <div class="form-group" >
-                                    <label>설명<span class="nec_ico">*</span> </label>
-                                    <textarea class="form-control" name="description" id="description" rows="3" placeholder="내용을 입력하세요."> </textarea>
+                                    <label><%= __('explanation') %><span class="nec_ico">*</span> </label>
+                                    <textarea class="form-control" name="description" id="description" rows="3" placeholder="<%= __('Please_enter') %>"> </textarea>
                                 </div>  
                             </form>
                             <div id="commonLayout" class="dialog_w">
                                 <div class="insertForm">  
                                     <div class="form-group" >                                  
                                         <form name="dialogLayout" id="dialogLayout">                                
-                                            <label>대화상자 타입<span class="nec_ico">*</span> </label>
+                                            <label><%= __('DIALOG_BOX_TYPE') %><span class="nec_ico">*</span> </label>
                                             <select class="form-control" name="dlgType"> 
-                                                <option value="2">텍스트 타입</option>
-                                                <option value="3">카드 타입</option>
-                                                <option value="4">미디어 타입</option>
+                                                <option value="2"><%= __('TEXT_TYPE') %></option>
+                                                <option value="3"><%= __('CARD_TYPE') %></option>
+                                                <option value="4"><%= __('MEDIA_TYPE') %></option>
                                             </select> 
                                             <div class="clear-both"></div>                                       
                                         </form>                  
@@ -284,24 +284,24 @@
                                 <!-- 텍스트 타입 -->
                                 <div class="textLayout" style="display: none;">                                                         
                                     <div class="form-group">
-                                        <label>대화상자 제목<span class="nec_ico">*</span></label>
-                                        <input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder=" 제목을 입력하세요.">
+                                        <label><%= __('DIALOG_BOX_TITLE') %><span class="nec_ico">*</span></label>
+                                        <input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder=" <%= __('Please_enter') %>">
                                     </div>                                                                                        
                                     <div class="form-group">
-                                        <label>대화상자 내용<span class="nec_ico">*</span></label>
-                                        <input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder=" 내용을 입력하세요.">
+                                        <label><%= __('DIALOG_BOX_CONTENTS') %><span class="nec_ico">*</span></label>
+                                        <input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder=" <%= __('Please_enter') %>">
                                     </div> 
                                     
                                 </div>
                                 <!--카드 타입 -->
                                 <div class="carouselLayout" style="display:none;">                                                               
                                     <div class="form-group">
-                                        <label>이미지 URL <span class="nec_ico">*</span></label>
-                                        <input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="내용을 입력하세요.">
+                                        <label><%= __('IMAGE_URL') %> <span class="nec_ico">*</span></label>
+                                        <input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="<%= __('Please_enter') %>">
                                     </div>
                                     <div class="modal_con">
                                         <div class="form-group col-md-3"  style="padding-left:0">
-                                            <label>버튼 타입<span class="nec_ico">*</span> </label>       
+                                            <label><%= __('BUTTON_TYPE') %><span class="nec_ico">*</span> </label>       
                                             <select class="form-control" name="btn1Type"> 
                                                 <option value="imBack" selected>imBack</option>
                                                 <option value="openURL">openURL</option>
@@ -320,27 +320,27 @@
                                             </select>
                                         </div> 
                                         <div class="form-group col-md-4 cButtonName" style="padding-left:0">
-                                            <label>버튼명 </label>
-                                            <input type="text" name="cButtonName1" class="form-control" placeholder=" 내용을 입력하세요.">
-                                            <input type="text" name="cButtonName2" class="form-control" style="display:none;" placeholder=" 내용을 입력하세요.">
-                                            <input type="text" name="cButtonName3" class="form-control" style="display:none;" placeholder=" 내용을 입력하세요.">
-                                            <input type="text" name="cButtonName4" class="form-control" style="display:none;" placeholder=" 내용을 입력하세요.">
+                                            <label><%= __('BUTTON_NAME') %></label>
+                                            <input type="text" name="cButtonName1" class="form-control" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonName2" class="form-control" style="display:none;" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonName3" class="form-control" style="display:none;" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonName4" class="form-control" style="display:none;" placeholder=" <%= __('Please_enter') %>">
                                         </div>
                                         <div class="form-group col-md-4 cButtonContent" style="padding:0">
-                                            <label>버튼콘텐츠 </label>
-                                            <input type="text" name="cButtonContent1" class="form-control" placeholder=" 내용을 입력하세요.">
-                                            <input type="text" name="cButtonContent2" class="form-control" style="display:none;" placeholder=" 내용을 입력하세요.">
-                                            <input type="text" name="cButtonContent3" class="form-control" style="display:none;" placeholder=" 내용을 입력하세요.">
-                                            <input type="text" name="cButtonContent4" class="form-control" style="display:none;" placeholder=" 내용을 입력하세요.">
+                                            <label><%= __('BUTTON_CONTENTS') %> </label>
+                                            <input type="text" name="cButtonContent1" class="form-control" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonContent2" class="form-control" style="display:none;" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonContent3" class="form-control" style="display:none;" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonContent4" class="form-control" style="display:none;" placeholder=" <%= __('Please_enter') %>">
                                         </div>
                                         <a href="#"  class="btn_delete" ><span class="fa fa-trash"></span></a>
                                     </div>
                                     <div class="clear-both"></div>
                                     <div class="btn_wrap" style="clear:both" >
-                                        <button type="button" class="btn btn-default carouseBtn">버튼 추가 삽입</button> 
+                                        <button type="button" class="btn btn-default carouseBtn"><%= __('INSERT_MORE_BUTTON') %></button> 
                                     </div>  
                                     <div class="btn_wrap" style="clear:both" >
-                                        <button type="button" class="btn btn-default addCarouselBtn">카드 추가 삽입</button>
+                                        <button type="button" class="btn btn-default addCarouselBtn"><%= __('INSERT_MORE_CARDS') %></button>
                                     </div>                       
                                     <div class="clear-both"></div>                                                               
                                 </div>
@@ -348,32 +348,32 @@
                                 <!-- 미디어 타입 -->
                                 <div class="mediaLayout" style="display:none;" id="dialog3">                                                                
                                     <div class="form-group">
-                                        <label>이미지 URL <span class="nec_ico">*</span></label>
-                                        <input type="text" class="form-control" placeholder=" 내용을 입력하세요.">
+                                        <label><%= __('IMAGE_URL') %> <span class="nec_ico">*</span></label>
+                                        <input type="text" class="form-control" placeholder=" <%= __('Please_enter') %>">
                                     </div>
                                     <div class="form-group">
-                                        <label>미디어 URL <span class="nec_ico">*</span></label>
-                                        <input type="text" class="form-control" placeholder=" 내용을 입력하세요.">
+                                        <label><%= __('MEDIA_URL') %> <span class="nec_ico">*</span></label>
+                                        <input type="text" class="form-control" placeholder=" <%= __('Please_enter') %>">
                                     </div>    
                                     <div class="modal_con">
                                         <div class="form-group col-md-5" style="padding-left:0">
-                                            <label>버튼명 </label>
-                                            <input type="text" class="form-control mediaBtnName" name="mButtonName1" placeholder=" 내용을 입력하세요.">
-                                            <input type="text" class="form-control mediaBtnName" name="mButtonName2" style="display:none;" placeholder=" 내용을 입력하세요.">
-                                            <input type="text" class="form-control mediaBtnName" name="mButtonName3" style="display:none;" placeholder=" 내용을 입력하세요.">
-                                            <input type="text" class="form-control mediaBtnName" name="mButtonName4" style="display:none;" placeholder=" 내용을 입력하세요.">
+                                            <label><%= __('BUTTON_NAME') %> </label>
+                                            <input type="text" class="form-control mediaBtnName" name="mButtonName1" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" class="form-control mediaBtnName" name="mButtonName2" style="display:none;" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" class="form-control mediaBtnName" name="mButtonName3" style="display:none;" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" class="form-control mediaBtnName" name="mButtonName4" style="display:none;" placeholder=" <%= __('Please_enter') %>">
                                         </div>
                                         <div class="form-group col-md-6" style="padding:0">
-                                            <label>버튼콘텐츠 </label>
-                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent1" placeholder=" 내용을 입력하세요.">
-                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent2" style="display:none;" placeholder=" 내용을 입력하세요.">
-                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent3" style="display:none;" placeholder=" 내용을 입력하세요.">
-                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent4" style="display:none;" placeholder=" 내용을 입력하세요.">
+                                            <label><%= __('BUTTON_CONTENTS') %> </label>
+                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent1" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent2" style="display:none;" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent3" style="display:none;" placeholder=" <%= __('Please_enter') %>.">
+                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent4" style="display:none;" placeholder=" <%= __('Please_enter') %>">
                                         </div>
                                         <a href="#"  class="btn_delete" ><span class="fa fa-trash"></span></a>
                                     </div>
                                     <div class="btn_wrap" style="clear:both" >
-                                        <button type="button" class="btn btn-default addMediaBtn" >버튼 추가 삽입</button> 
+                                        <button type="button" class="btn btn-default addMediaBtn" ><%= __('INSERT_MORE_BUTTON') %></button> 
                                     </div>                                                                                                                                                        
                                 </div>
                                 
@@ -419,7 +419,7 @@
                                 <!--// media , carousal 일 경우 input box 추가 layout -->
 
                                 <div class="btn_wrap boline" >
-                                    <button type="button" class="btn btn_01" id="addDialogBtn">대화상자 추가 삽입</button>
+                                    <button type="button" class="btn btn_01" id="addDialogBtn"><%= __('INSERT_ADDITIONAL_DIALOG') %></button>
                                 </div>                                  
                             </div>  
                             <!-- source type이 API일 경우 -->
@@ -436,7 +436,7 @@
                         </div>
                         <!-- 대화상자 미리보기 -->
                         <div class="col-md-6" style="padding-right:0">
-                            <h5><span class="col01 fa fa-chevron-right"></span>대화상자 미리보기</h5>  
+                            <h5><span class="col01 fa fa-chevron-right"></span><%= __('PREVIEW_DIALOG_BOX') %></h5>  
                             <!-- 대화상자  -->
                             <div class ="dialog_box03" id="dialogViewWrap">
                                 <div class="dialogView" >
@@ -462,11 +462,11 @@
                                                         
                 <div class="modal-footer">
                     <div class="nec02">
-                        <span class="nec_ico">*</span> 항목은 필수 입력입니다
+                        <span class="nec_ico">*</span> <%= __('IS_REQUIRED') %>
                     </div>
                     <div class="btn_wrap">
-                        <button type="button" class="btn btn_01" onclick="createDialog();">생성</button>
-                        <button type="button" class="btn btn-default createDlgModalClose"  data-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn_01" onclick="createDialog();"><%= __('CREAT') %></button>
+                        <button type="button" class="btn btn-default createDlgModalClose"  data-dismiss="modal"><%= __('CANCEL') %></button>
                     </div>
                 </div>
             </div>
