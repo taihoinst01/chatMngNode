@@ -29,6 +29,11 @@ $(document).ready(function(){
     });
     //** 모달창 끝 */
 
+    //생성버튼클릭시 다른div hidden
+    $('#entites').click(function() {
+        
+        $('.close').trigger('click')
+    });
 });
 
 $(document).on("click", ".more", function(e){
