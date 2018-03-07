@@ -25,7 +25,7 @@ router.get('/', function (req, res) {
     //selectChannel += "           BETWEEN	 CONVERT(DATE,CONVERT(DATETIME,'" + startDate + "'), 112) ";
     //selectChannel += "           AND		 CONVERT(DATE,CONVERT(DATETIME,'" + endDate + "'), 112) \n";
     selectChannel += "GROUP BY CHANNEL \n";
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectChannel)
         }).then(result => {
@@ -84,7 +84,7 @@ router.post('/intentScore', function (req, res) {
     selectQuery += "GROUP BY LUIS_INTENT ) tbp \n";
     selectQuery += " WHERE 1=1 \n" +
                     " AND PAGEIDX = " + currentPageNo + "; \n";
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
     }).then(result => {
@@ -185,7 +185,7 @@ router.post('/getScorePanel', function (req, res) {
     if (selChannel !== 'all') {
         selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
     }
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -253,7 +253,7 @@ if (selChannel !== 'all') {
     selectQuery += ") AA\n";
     selectQuery += "WHERE RESULT <> '' AND RESULT IN ('H','S')\n";
     selectQuery += "ORDER BY 질문수 DESC, 날짜 DESC\n";
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -326,7 +326,7 @@ router.post('/nodeQuery', function (req, res) {
                     " WHERE 1=1 \n" +
                     " AND PAGEIDX = " + currentPage + "; \n";
     
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -386,7 +386,7 @@ router.post('/firstQueryBar', function (req, res) {
         selectQuery += ") A \n";
         selectQuery += "GROUP BY INTENT \n";
 
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -460,7 +460,7 @@ router.post('/firstQueryTable', function (req, res) {
         selectQuery += " WHERE 1=1 \n" +
                        " AND PAGEIDX = " + currentPageNo + "; \n";
     
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -519,7 +519,7 @@ router.post('/getResponseScore', function (req, res) {
         selectQuery += "GROUP BY USER_NUMBER \n";
         selectQuery += ") A \n";
     
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
@@ -563,7 +563,7 @@ router.post('/getQueryByEachTime', function (req, res) {
         selectQuery += "ORDER BY TIME; \n";
 
 
-    dbConnect.getAppConnection(sql, req.session.appName).then(pool => {
+    dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(selectQuery)
         }).then(result => {
