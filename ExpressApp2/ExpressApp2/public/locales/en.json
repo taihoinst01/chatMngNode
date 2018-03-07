@@ -104,6 +104,7 @@
 	"Description 2": "The Entity description or Entity value to search Enter and click on Enter Key or search button",
 	"Enter_entity_value_to_save": "Enter entity value to save",
 	"Enter_entity_deifne_to_save": "Enter entity deifne to save",
+	"DUPLICATE_ENTITIES_EXIST": "[IT FAILED]DUPLICATE ENTITIES EXIST",
 	"============= setting  =============": "",
 	"ADMIN_SETTING": "ADMIN PAGE",
 	"NO_DATA": "There is no data.",

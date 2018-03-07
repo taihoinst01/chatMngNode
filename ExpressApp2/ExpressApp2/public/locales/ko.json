@@ -105,6 +105,7 @@
 	"Description 2": "검색 할 Entity definition 혹은 Entity value를 입력 후 엔터키 혹은 search 버튼 클릭",
 	"Enter_entity_value_to_save": "저장하실 엔티티 밸류를 입력해주세요",
 	"Enter_entity_deifne_to_save": "저장하실 엔티티 디파인을 입력해주세요",
+	"DUPLICATE_ENTITIES_EXIST": "[실패]중복된 엔티티가 존재합니다.",
 	"============= setting  =============": "",
 	"NO_DATA": "데이터가 없습니다.",
 	"ASK_SAVE": "저장 하시겠습니까?",

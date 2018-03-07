@@ -24,9 +24,7 @@ $(document).ready(function(){
         $('#layoutBackground').hide();
     });
 
-    $('#addDialogClose , #addDialogCancel').click(function(){
-        $('#mediaCarouselLayout').css('display','none');
-        $('#cardLayout').css('display','none');
+    $('.addDialogCancel').click(function(){
         $('#appInsertForm')[0].reset();
     });
     //** 모달창 끝 */
@@ -72,12 +70,10 @@ function entitiesAjax(){
                     item += '<td>' + data.list[i].ENTITY + "</td>" ;
                     item += '<td><span class="fl">' + data.list[i].ENTITY_VALUE + "</span>";
                     item += '<a class="more fl"><span class="hc">+</span></a>';
-                    item += '<input type="hidden" name="entityDefine" value="' + data.list[i].ENTITY + '">';
-                    item += '<input type="hidden" name="apiGroup" value="' + data.list[i].API_GROUP + '">';
                     item += '<div class="board">';
                     item += '<ul>';
                     item += '<form action="" method="post" name="entityForm">';
-                    item += ' <li class="inp"><input name="addEntityValue" type="text" class="form-control fl"  style="width:60%;">';
+                    item += ' <li class="inp"><input name="entityValue" type="text" class="form-control fl"  style="width:60%;">';
                     item += '<button type="button" class="btn btn_01 mb05 addEntityValueBtn">저장</button> <button type="button" class="btn btn-default mb05 cancelEntityValueBtn">취소</button>';
                     item += '</li>';
                     item += '<input type="hidden" name="entityDefine" value="' + data.list[i].ENTITY + '">';
@@ -156,15 +152,17 @@ $(document).on('click', '.addEntityValueBtn', function() {
 function addEntityValueAjax(addValues) {
 
     $.ajax({
-        url: '/learning/addEntityValue',
+        url: '/learning/insertEntity',
         dataType: 'json',
         type: 'POST',
         data: addValues,
         success: function(data) {
             if(data.status == 200){
                 alert(language.Added);
-                $("#iptentites").val(addValues.addEntityValue);
+                $("#iptentites").val(addValues.entityValue);
                 searchEntities();
+            } else if(data.status == 'Duplicate') {
+                alert(language.DUPLICATE_ENTITIES_EXIST);
             } else {
                 alert(language.It_failed);
             }
@@ -202,8 +200,8 @@ function searchEntities() {
                         item += '<div class="board">';
                         item += '<ul>';
                         item += '<form action="" method="post" name="entityForm">';
-                        item += ' <li class="inp"><input name="addEntityValue" type="text" class="form-control fl"  style="width:60%;">';
-                        item += '<button type="button" class="btn btn_01 mb05 addEntityValueBtn">저장</button> <button type="button" class="btn btn-default mb05">취소</button>';
+                        item += ' <li class="inp"><input name="entityValue" type="text" class="form-control fl"  style="width:60%;">';
+                        item += '<button type="button" class="btn btn_01 mb05 addEntityValueBtn">저장</button> <button type="button" class="btn btn-default mb05 cancelEntityValueBtn">취소</button>';
                         item += '</li>';
                         item += '<input type="hidden" name="entityDefine" value="' + data.list[i].ENTITY + '">';
                         item += '<input type="hidden" name="apiGroup" value="' + data.list[i].API_GROUP + '">';
@@ -293,9 +291,11 @@ function insertEntity(){
         data: $('#appInsertForm').serializeObject(),
         success: function(data) {
             if(data.status == 200){
-                $('#addDialogClose').click();
+                $('.addDialogCancel').click();
                 alert(language.Added);
                 entitiesAjax();
+            } else if(data.status == 'Duplicate') {
+                alert(language.DUPLICATE_ENTITIES_EXIST);
             } else {
                 alert(language.It_failed);
             }

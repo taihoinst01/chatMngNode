@@ -909,22 +909,37 @@ router.post('/insertEntity', function (req, res) {
     var entityDefine = req.body.entityDefine;
     var entityValue = req.body.entityValue;
     var apiGroup = req.body.apiGroup;
-
     (async () => {
         try {
-
-            var insertQueryString1 = 'INSERT INTO tbl_common_entity_define(ENTITY, ENTITY_VALUE, API_GROUP) VALUES ' +
-            '(@entityDefine, @entityValue, @apiGroup)';
             
             let pool = await dbConnect.getAppConnection(sql, req.session.appName);
 
-            let result1 = await pool.request()
-                .input('entityDefine', sql.NVarChar, entityDefine)
-                .input('entityValue', sql.NVarChar, entityValue)
-                .input('apiGroup', sql.NVarChar, apiGroup)
-                .query(insertQueryString1);  
+            var selectQuery  = ' SELECT COUNT(*) as count FROM TBL_COMMON_ENTITY_DEFINE ';
+                selectQuery += ' WHERE ENTITY_VALUE = @entityValue ';
+                selectQuery += ' AND ENTITY = @entityDefine ';
+                selectQuery += ' AND API_GROUP = @apiGroup ';
+            let result0 = await pool.request()
+            .input('entityValue', sql.NVarChar, entityValue)
+            .input('entityDefine', sql.NVarChar, entityDefine)
+            .input('apiGroup', sql.NVarChar, apiGroup)
+            .query(selectQuery);  
+
+            let rows = result0.recordset;
+
+            if(rows[0].count == 0){
+                var insertQueryString1 = 'INSERT INTO tbl_common_entity_define(ENTITY, ENTITY_VALUE, API_GROUP) VALUES ' +
+                        '(@entityDefine, @entityValue, @apiGroup)';
+                
+                let result1 = await pool.request()
+                    .input('entityDefine', sql.NVarChar, entityDefine)
+                    .input('entityValue', sql.NVarChar, entityValue)
+                    .input('apiGroup', sql.NVarChar, apiGroup)
+                    .query(insertQueryString1);  
             
-            res.send({status:200 , message:'insert Success'});
+                res.send({status:200 , message:'insert Success'});
+            }else{
+                res.send({status:'Duplicate', message:'Duplicate entities exist'});
+            }        
         
         } catch (err) {
             console.log(err);
@@ -954,7 +969,7 @@ router.post('/searchEntities', function (req, res) {
                                     + "CEILING((ROW_NUMBER() OVER(ORDER BY api_group DESC))/ convert(numeric ,10)) PAGEIDX, "
                                     + "entity_value, entity, api_group from (SELECT DISTINCT entity, API_GROUP , STUFF((    "
                                     + "SELECT '[' + b.entity_value + ']' FROM TBL_COMMON_ENTITY_DEFINE b                    "
-                                    + " WHERE b.entity = a.entity FOR XML PATH('') ),1,1,'[') AS entity_value               "
+                                    + " WHERE b.entity = a.entity AND b.API_GROUP = a.API_GROUP FOR XML PATH('') ),1,1,'[') AS entity_value               "
                                     + "FROM TBL_COMMON_ENTITY_DEFINE a where API_GROUP != 'OCR TEST'                        "
                                     + "and (entity = @searchEntities or entity_value = @searchEntities)                                       "
                                     + "group by entity, API_GROUP) a                                                        "

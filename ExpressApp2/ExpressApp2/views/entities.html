@@ -75,7 +75,7 @@
               <div class="modal-dialog">
                         <div class="modal-content">
                                   <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                        <button type="button" class="close addDialogCancel" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
                                         <h4 class="modal-title" id="myModalLabel"><%= __('Create_new_Entity_Set') %></h4>
                                   </div>
                                   <form name="appInsertForm" id="appInsertForm" method="post">
@@ -89,7 +89,7 @@
                                             <input name="entityValue" id="entityValue" type="text" class="form-control" placeholder=" <%= __('Please_enter') %>" onkeyup="dialogValidation();">
                                         </div>
                                         <div class="form-group" >
-                                            <label>API_Group<span class="nec_ico">*</span></label>
+                                            <label>API_GROUP<span class="nec_ico">*</span></label>
                                             <select id="apiGroup" name="apiGroup" class="form-control"> 
                                                 <option value="COMMON">COMMON</option>
                                             </select>
@@ -100,7 +100,7 @@
                                   <div class="modal-footer">
                                         <div class="btn_wrap">
                                            <button type="button" class="btn btn_01" id="btnAddDlg" onclick="insertEntity()"><%= __('CREAT') %></button>
-                                           <button type="button" class="btn btn-default"  data-dismiss="modal" id="addDialogCancel"><%= __('CANCEL') %></button>
+                                           <button type="button" class="btn btn-default addDialogCancel"  data-dismiss="modal"><%= __('CANCEL') %></button>
                                         </div>
                                   </div>
                         </div>
