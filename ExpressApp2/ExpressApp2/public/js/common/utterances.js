@@ -380,11 +380,11 @@ $(document).ready(function(){
         insertForm += '<div class="insertForm">';
         insertForm += '<div class="form-group" >';
         insertForm += '<form name="dialogLayout" id="dialogLayout">';
-        insertForm += '<label>대화상자 타입<span class="nec_ico">*</span> </label>';
+        insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span> </label>';
         insertForm += '<select class="form-control" name="dlgType">';
-        insertForm += '<option value="2">텍스트 타입</option>';
-        insertForm += '<option value="3">카드 타입</option>';
-        insertForm += '<option value="4">미디어 타입</option>';
+        insertForm += '<option value="2">' + language.TEXT_TYPE + '</option>';
+        insertForm += '<option value="3">' + language.CARD_TYPE + '</option>';
+        insertForm += '<option value="4">' + language.MEDIA_TYPE + '</option>';
         insertForm += '</select>';
         insertForm += '<div class="clear-both"></div>';
         insertForm += '</form>';
@@ -395,7 +395,7 @@ $(document).ready(function(){
         $('#commonLayout').css('display', 'block');
         $('#commonLayout').prepend(insertForm);
         
-        if($('#btnCreateLgroup').html() == '취소') {
+        if($('#btnCreateLgroup').html() == '취소' || $('#btnCreateLgroup').html() == 'CANCEL') {
 
             $('#btnCreateLgroup').click();
         }
@@ -407,7 +407,7 @@ $(document).ready(function(){
         dialogView += '<div>';
         dialogView += '<div class="format-markdown">';
         dialogView += '<div class="textMent">';
-        dialogView += '<p>' + language. Please_enter + '</p>';
+        dialogView += '<p>' + language.Please_enter + '</p>';
         dialogView += '</div>';
         dialogView += '</div>';
         dialogView += '</div>';
@@ -451,11 +451,11 @@ $(document).ready(function(){
             insertForm += '<div class="insertForm">';
             insertForm += '<div class="form-group" >';
             insertForm += '<form name="dialogLayout" id="dialogLayout">';
-            insertForm += '<label>대화상자 타입<span class="nec_ico">*</span> </label>';
+            insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span> </label>';
             insertForm += '<select class="form-control" name="dlgType">';
-            insertForm += '<option value="2">텍스트 타입</option>';
-            insertForm += '<option value="3">카드 타입</option>';
-            insertForm += '<option value="4">미디어 타입</option>';
+            insertForm += '<option value="2">' + language.TEXT_TYPE + '</option>';
+            insertForm += '<option value="3">' + language.CARD_TYPE + '</option>';
+            insertForm += '<option value="4">' + language.MEDIA_TYPE + '</option>';
             insertForm += '</select>';
             insertForm += '<div class="clear-both"></div>';
             insertForm += '</form>';
@@ -465,14 +465,14 @@ $(document).ready(function(){
             $('#commonLayout').css('display','block');
             $('#commonLayout').prepend(insertForm);
             var dialogView = '';
-            dialogView += '<div class="dialog_box03 dialogView" >';
+            dialogView += '<div class="dialogView" >';
             dialogView += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
             dialogView += '<div class="wc-message-content">';
             dialogView += '<svg class="wc-message-callout"></svg>';
             dialogView += '<div>';
             dialogView += '<div class="format-markdown">';
             dialogView += '<div class="textMent">';
-            dialogView += '<p>' + language. Please_enter + '</p>';
+            dialogView += '<p>' + language.Please_enter + '</p>';
             dialogView += '</div>';
             dialogView += '</div>';
             dialogView += '</div>';
@@ -510,12 +510,12 @@ $(document).ready(function(){
 
     // create LargeGroup
     $('#btnCreateLgroup').on('click',function(e){
-        if($(this).html() == "신규") {
-            $(this).html('취소');
+        if($(this).html() == "신규" || $(this).html() == "NEW") {
+            $(this).html(language.CANCEL);
             $('#largeGroupEdit').css('display','block');
             $('#largeGroup').css('display','none');
         } else {
-            $(this).html('신규');
+            $(this).html(language.NEW);
             $('#largeGroupEdit').css('display','none');
             $('#largeGroup').css('display','block');
         }
@@ -533,22 +533,22 @@ $(document).ready(function(){
             insertForm += '<div class="insertForm">';
             insertForm += '<div class="form-group" >';
             insertForm += '<form name="dialogLayout" id="dialogLayout">';
-            insertForm += '<label>대화상자 타입<span class="nec_ico">*</span> </label>';
+            insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span> </label>';
             insertForm += '<select class="form-control" name="dlgType">';
-            insertForm += '<option value="2">텍스트 타입</option>';
-            insertForm += '<option value="3">카드 타입</option>';
-            insertForm += '<option value="4">미디어 타입</option>';
+            insertForm += '<option value="2">' + language.TEXT_TYPE + '</option>';
+            insertForm += '<option value="3">' + language.CARD_TYPE + '</option>';
+            insertForm += '<option value="4">' + language.MEDIA_TYPE + '</option>';
             insertForm += '</select>';
             insertForm += '<div class="clear-both"></div>';
 
             insertForm += '<div class="textLayout" style="display: block;">';
             insertForm += '<div class="form-group">';
-            insertForm += '<label>대화상자 제목<span class="nec_ico">*</span></label>';
-            insertForm += '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder=" 제목을 입력하세요.">';
+            insertForm += '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>';
+            insertForm += '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder=" ' + language.Please_enter + '">';
             insertForm += '</div>';
             insertForm += '<div class="form-group">';
-            insertForm += '<label>대화상자 내용<span class="nec_ico">*</span></label>';
-            insertForm += '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder=" 내용을 입력하세요.">';
+            insertForm += '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>';
+            insertForm += '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder=" ' + language.Please_enter + ' ">';
             insertForm += '</div>';
             insertForm += '</div>';
             insertForm += '</form>';
@@ -754,6 +754,7 @@ $(document).on('change','#intentNameList',function(event){
     selectDlgListAjax($("#intentNameList option:selected").val());
 });
 
+// 다이얼로그 생성 모달 (다이얼로그 타입 변경)
 $(document).on('change','select[name=dlgType]',function(e){
     var idx = $("select[name=dlgType]").index(this);
     var insertHtml = "";
@@ -883,6 +884,8 @@ function dialogValidation(type){
         }
     }
 }
+
+// 다이얼로그 생성 모달 (다이얼로그 타이틀 입력)
 function writeDialogTitle(e) {
 
     //var idx = $('input[name=dialogTitle]').index(e);
@@ -914,6 +917,7 @@ function writeCarouselImg(e) {
     $('.dialogView').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('.imgContainer img').attr("src",e.value);
 }
 
+// 다이얼로그 생성 모달 (다이얼로그 텍스트 입력)
 function writeDialog(e) {
     //var idx = $('textarea[name=dialogText]').index(e);
     
@@ -1405,16 +1409,11 @@ var $carouselForm;
 var $mediaForm;
 function openModalBox(target){
 
-
     //carousel clone 초기값 저장
     $insertForm = $('#commonLayout .insertForm').eq(0).clone();
     $dlgForm = $('#commonLayout .textLayout').eq(0).clone();
     $carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
     $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
-
-    
-    //count = 1;
-
 
     if(target == "#create_dlg") {
         $(".insertForm form").append($(".textLayout").clone(true));
@@ -1671,8 +1670,6 @@ function searchSaveDialog() {
 }
 */
 
-
-var carouselDivHtml = 
 $(document).on('click', '.carouseBtn',function(e){
     //e.stopPropagation();
     //e.preventDefault();
@@ -1703,7 +1700,7 @@ $(document).on('click', '.addMediaBtn',function(e){
 
 //textLayout
 
-//var $carouselForm = $('#commonLayout .carouselLayout').eq(($('#commonLayout .carouselLayout').length)-1).clone();
+
 $(document).on('click', '.addCarouselBtn', function(e){
     //var $newInsertForm = $insertForm.clone();
     //var $newDlgForm = $dlgForm.clone();
