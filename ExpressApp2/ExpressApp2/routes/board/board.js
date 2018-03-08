@@ -381,7 +381,7 @@ router.post('/firstQueryBar', function (req, res) {
                 selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
             }
         selectQuery += "        GROUP BY user_number, customer_comment_kr, customer_comment_en, reg_date, channel \n";
-        selectQuery += "    )   AS history INNER join tbl_query_analysis_result as analysis on history.customer_comment_kr = analysis.query \n";
+        selectQuery += "    )   AS history INNER join tbl_query_analysis_result as analysis on dbo.fn_replace_regex(history.customer_comment_kr) = analysis.query  \n";
         selectQuery += "    WHERE history.Row = 1 \n";
         selectQuery += ") A \n";
         selectQuery += "GROUP BY INTENT \n";

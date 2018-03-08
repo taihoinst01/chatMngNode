@@ -51,9 +51,15 @@
                                                         }
                                                     %>
                                                   
-                                                  <li class="tline"></li>
-                                                  <a href="/addChatbot" class="fa fa-plus" id="btn_crte_botCrte" > <%= __('ADD_CHAT') %></a>
-                                                  <a href="/list" class="fa fa-list"> <%= __('CHAT_LIST') %></a>
+                                                    <li class="tline"></li>
+                                                    <% 
+                                                        if(sid==="admin") { 
+                                                    %>
+                                                        <a href="/addChatbot" class="fa fa-plus" id="btn_crte_botCrte" > <%= __('ADD_CHAT') %></a>
+                                                    <%
+                                                        }
+                                                    %>
+                                                    <a href="/list" class="fa fa-list"> <%= __('CHAT_LIST') %></a>
                                                 </ul>
                                               </li>
                                           </ul>
