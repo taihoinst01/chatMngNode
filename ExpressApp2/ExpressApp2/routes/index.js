@@ -358,19 +358,19 @@ router.post('/admin/trainApp', function (req, res){
         }
     };
     try{
-        client.get( HOST + '/luis/api/v2.0/apps/' + appId + '/versions/' + versionId, options, function (data, response) {
+        client.get( HOST + '/luis/api/v2.0/apps/' + appId + '/versions/' + versionId + '/train', options, function (data, response) {
             //console.log(data); // app id값
             var responseData = data;
             var trainResult = {};
             var sucCnt = 0;
             var failCnt = 0;
-            //202:성공  400:실패
+            //200:성공  400:실패
             // statusId 
             // - 0 : Success
             // - 1 : UpToDate   최신 정보
             // - 2 : InProgress  진행 중
             // - 3 : Fail     -> fail시  failureReason에 이유 넘어옴
-            if (response.statusCode == 202) {
+            if (response.statusCode == 200) {
                 for (var i=0; i< responseData.length; i++) {
                     if (responseData[i].details.statusId === 0 ) {
                         sucCnt++;

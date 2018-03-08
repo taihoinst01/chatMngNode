@@ -229,5 +229,7 @@
 	"INSERT_MORE_CARDS": "카드 추가 삽입",
 	"INSERT_MORE_BUTTON": "버튼 추가 삽입",
 	"MEDIA_URL": "미디어 URL",
-	"A big group": "A big group"
+	"A big group": "A big group",
+	"SUCCESS": "성공",
+	"FAIL": "실패"
 }
