@@ -26,12 +26,14 @@ $(document).ready(function () {
     });
 })
 
-function recommendAjax(type){
+function recommendAjax(){
  
     params = {
         'selectType' : $('#recommendPeriod').find('option:selected').val(),
-        'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val()
+        'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
+        'searchRecommendText' : $('input[name=searchRecommendText]').val()
     };
+
     $.ajax({
         type: 'POST',
         data: params,
@@ -84,19 +86,13 @@ function recommendAjax(type){
                 
     
                 $('input[name=tableAllChk]').parent().iCheck('uncheck');
-            } else {
-                if(type == 'delete') {
+            } else {       
 
-                    $('#currentPage').val(($('#currentPage').val() - 1 != 0) ? $('#currentPage').val() - 1 : 1)
-                    recommendAjax();
-
-                } else {
-
-                    item += '<tr>' +
-                                '<td colspan="3">' + language.NO_DATA + '</td>' +
-                            '</tr>';
-                    $('#recommendContents').append(item);
-                }
+                item += '<tr>' +
+                            '<td colspan="3">' + language.NO_DATA + '</td>' +
+                        '</tr>';
+                $('#recommendContents').append(item);
+                
             }
             
             
@@ -175,8 +171,21 @@ function deleteRecommend(){
                 isloading : true,
                 success: function(data){
                     alert("삭제되었습니다.");
-                    recommendAjax('delete');
+                    $('#currentPage').val(1)
+                    recommendAjax();
                 }
             });
+    }
+}
+
+// 학습추천 검색
+function recommendSearch() {
+
+    var searchRecommendText = $('input[name=searchRecommendText]').val();
+
+    if(!searchRecommendText) {
+        alert("검색어를 입력해주시기 바랍니다.");
+    } else {
+        recommendAjax();
     }
 }
