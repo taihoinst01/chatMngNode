@@ -46,12 +46,6 @@ router.post('/recommend', function (req, res) {
                 entitiesQueryString += " AND (CONVERT(CHAR(7), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(7), (select dateadd(month,-1,getdate())), 23)) + '%'";
             }else{
             }
-<<<<<<< HEAD
-
-            entitiesQueryString += " ) TBX) TBY) TBZ \n";
-            entitiesQueryString += " WHERE PAGEIDX = @currentPage \n";
-            entitiesQueryString += " ORDER BY NUM \n";
-=======
             
             if(searchRecommendText) {
                 
@@ -60,7 +54,6 @@ router.post('/recommend', function (req, res) {
             entitiesQueryString += " ) TBX) TBY) TBZ";
             entitiesQueryString += " WHERE PAGEIDX = @currentPage";
             entitiesQueryString += " ORDER BY NUM";
->>>>>>> a3d103d58efe28af631d39fb1d6217d15aba8f0b
 
             let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1 = await pool.request()
