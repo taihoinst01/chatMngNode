@@ -26,12 +26,14 @@ $(document).ready(function () {
     });
 })
 
-function recommendAjax(type){
+function recommendAjax(){
  
     params = {
         'selectType' : $('#recommendPeriod').find('option:selected').val(),
-        'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val()
+        'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
+        'searchRecommendText' : $('input[name=searchRecommendText]').val()
     };
+
     $.ajax({
         type: 'POST',
         data: params,
@@ -173,5 +175,17 @@ function deleteRecommend(){
                     recommendAjax();
                 }
             });
+    }
+}
+
+// 학습추천 검색
+function recommendSearch() {
+
+    var searchRecommendText = $('input[name=searchRecommendText]').val();
+
+    if(!searchRecommendText) {
+        alert("검색어를 입력해주시기 바랍니다.");
+    } else {
+        recommendAjax();
     }
 }

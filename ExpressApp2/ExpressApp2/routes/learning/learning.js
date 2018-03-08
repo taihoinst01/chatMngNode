@@ -22,6 +22,7 @@ router.get('/recommend', function (req, res) {
 router.post('/recommend', function (req, res) {
     var selectType = req.body.selectType;
     var currentPage = req.body.currentPage;
+    var searchRecommendText = req.body.searchRecommendText;
 
     (async () => {
         try {
@@ -45,7 +46,11 @@ router.post('/recommend', function (req, res) {
                 entitiesQueryString += " AND (CONVERT(CHAR(7), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(7), (select dateadd(month,-1,getdate())), 23)) + '%'";
             }else{
             }
-
+            
+            if(searchRecommendText) {
+                
+                entitiesQueryString += " AND QUERY LIKE '%" + searchRecommendText + "%' "; 
+            }
             entitiesQueryString += " ) TBX) TBY) TBZ";
             entitiesQueryString += " WHERE PAGEIDX = @currentPage";
             entitiesQueryString += " ORDER BY NUM";
