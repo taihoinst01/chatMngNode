@@ -18,12 +18,28 @@ router.get('/', function (req, res) {
         try{
 
             //db정보 조회
-
             dbConnect.getConnection(sql).then(pool => { 
                 return pool.request().query( "SELECT USER_NAME, PASSWORD, SERVER, DATABASE_NAME, APP_NAME, APP_ID FROM TBL_DB_CONFIG; " ) 
             }).then(result => {
                 let dbValue = result.recordset;
                 req.session.dbValue = dbValue;
+
+                
+                var userId = req.session.sid;
+                var getSimulUrlStr = "SELECT ISNULL(" +
+                                    "(SELECT CNF_VALUE FROM TBL_CHATBOT_CONF WHERE CNF_TYPE = 'SIMULATION_URL' AND CNF_NM = '" + userId + "'), " +
+                                    "(SELECT CNF_VALUE FROM TBL_CHATBOT_CONF WHERE CNF_TYPE = 'SIMULATION_URL' AND CNF_NM = 'admin'))  AS SIMUL_URL";
+                dbConnect.getConnection(sql).then(pool => { 
+                    return pool.request().query( getSimulUrlStr ) 
+                }).then(result => {
+                    
+                    req.session.simul_url = result.recordset[0].SIMUL_URL;
+
+                }).catch(err => {
+                    console.log(err);
+                    sql.close();
+                });
+
                 sql.close();
             }).catch(err => {
                 console.log(err);
