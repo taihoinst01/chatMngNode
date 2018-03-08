@@ -834,7 +834,7 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '</ul>';
         insertHtml += '</div>';
         insertHtml += '</div>';
-        insertHtml += '<button class="scroll next" style="display: none; height: 30px;" id="nextBtn' + (idx) + '" onclick="nextBtn(' + idx + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+        insertHtml += '<button class="scroll next" style="display: none; height: 30px;" id="nextBtn' + (idx) + '" onclick="nextBtn(' + idx + ', this)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
         insertHtml += '</div></div></div></div>';
         $(".dialogView").eq(idx).html(insertHtml);
     } else if($(e.target).val() == "4") {
@@ -1124,7 +1124,7 @@ function selectDlgListAjax(entity) {
                             inputUttrHtml += '</ul>';
                             inputUttrHtml += '</div>';
                             inputUttrHtml += '</div>';
-                            inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                            inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ', this)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
                             inputUttrHtml += '</div></div></div></div></div>';
                         }
                    
@@ -1182,12 +1182,12 @@ function selectDlgListAjax(entity) {
 }
 
 //오른쪽 버튼 클릭시 슬라이드
-function nextBtn(botChatNum) {
-    
-    $("#slideDiv" + botChatNum).animate({scrollLeft : ($("#slideDiv" + botChatNum).scrollLeft() + 312)}, 500, function(){
+function nextBtn(botChatNum, e) {
+    var width = parseInt($(e).parent().parent().css('width'));
+    $("#slideDiv" + botChatNum).animate({scrollLeft : ($("#slideDiv" + botChatNum).scrollLeft() + width)}, 500, function(){
 
         if($("#slideDiv" + botChatNum).scrollLeft() == 
-                ($("#slideDiv" + botChatNum).find(".wc-carousel-item").length - 2) * 156) {
+                ($("#slideDiv" + botChatNum).find(".wc-carousel-item").length - 2) * (width / 2)) {
             $("#nextBtn" + botChatNum).hide();
         }
         
@@ -1483,7 +1483,7 @@ function searchDialog() {
 
                 inputUttrHtml += '<div class="chat_box">';
                 inputUttrHtml += '<p><input type="checkbox" name="searchDlgChk" class="flat-red"></p>';          
-                inputUttrHtml += '<div style="width: 350px; height: 95%; overflow: scroll; overflow-x: hidden; padding:10px;">';
+                inputUttrHtml += '<div style="width: 100%; height: 95%; overflow: scroll; overflow-x: hidden; padding:10px;">';
                 inputUttrHtml += '<div>';
 
                 for(var l = 0; l < val.length; l++){
@@ -1509,7 +1509,7 @@ function searchDialog() {
                                 inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
                                 inputUttrHtml += '<div class="wc-message-content">';
                                 inputUttrHtml += '<svg class="wc-message-callout"></svg>';
-                                inputUttrHtml += '<div class="wc-carousel slideBanner">';
+                                inputUttrHtml += '<div class="wc-carousel slideBanner" >';
                                 inputUttrHtml += '<div>';
                                 inputUttrHtml += '<button class="scroll previous" id="prevBtn' + (botChatNum) + '" style="display: none;" onclick="prevBtn(' + botChatNum + ')">';
                                 inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
@@ -1547,7 +1547,7 @@ function searchDialog() {
                                 inputUttrHtml += '</ul>';
                                 inputUttrHtml += '</div>';
                                 inputUttrHtml += '</div>';
-                                inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                                inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ', this)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
                                 inputUttrHtml += '</div></div></div></div>';
                             }
                         } else if(tmp.dlg[j].DLG_TYPE == 4) {
