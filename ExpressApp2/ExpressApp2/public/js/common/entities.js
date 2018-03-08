@@ -104,10 +104,17 @@ function entitiesAjax(){
 }
 
 $(document).on('click','.li_paging',function(e){
+
+    if(!$(this).hasClass('active')){
+        $('#currentPage').val($(this).val());
+        entitiesAjax();
+    }
+    /*
     if($(e.target).parent().val() != $('#currentPage').val()){
         $('#currentPage').val($(e.target).parent().val())
         entitiesAjax();
     }
+    */
 });
 
 //엔티티 밸류 추가창 열기버튼

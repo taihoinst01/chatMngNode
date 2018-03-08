@@ -117,8 +117,8 @@ $(document).on('click','div[type=checkbox]',function(e){
 
 $(document).on('click','.li_paging',function(e){
  
-    if($(this).val() != $('#currentPage').val()){
-        $('#currentPage').val($(this).val())
+    if(!$(this).hasClass('active')){
+        $('#currentPage').val($(this).val());
         recommendAjax();
     }
 });

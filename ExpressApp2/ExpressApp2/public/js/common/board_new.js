@@ -385,7 +385,7 @@ function drawFirstQuery() {
             if (data.error_code != null && data.error_message != null) {
                 alert(data.error_message);
             } else {
-
+                
                 var jsonList = [];
                 for (var i=0; i<data.list.length; i++) {
     

@@ -4,6 +4,7 @@
     <section class="sidebar">
         <input type="hidden" id="successHidden" value="<%= __('SUCCESS') %> "/>
         <input type="hidden" id="failHidden" value="<%= __('FAIL') %> "/>
+        <input type="hidden" id="simulURl" value="<%=simul_url%>" />
                            <div class="sidebar-form"><%= __('CHATBOT') %> 
                             <% 
                                 if(sid==="admin") { 
@@ -50,9 +51,15 @@
                                                         }
                                                     %>
                                                   
-                                                  <li class="tline"></li>
-                                                  <a href="/addChatbot" class="fa fa-plus" id="btn_crte_botCrte" > <%= __('ADD_CHAT') %></a>
-                                                  <a href="/list" class="fa fa-list"> <%= __('CHAT_LIST') %></a>
+                                                    <li class="tline"></li>
+                                                    <% 
+                                                        if(sid==="admin") { 
+                                                    %>
+                                                        <a href="/addChatbot" class="fa fa-plus" id="btn_crte_botCrte" > <%= __('ADD_CHAT') %></a>
+                                                    <%
+                                                        }
+                                                    %>
+                                                    <a href="/list" class="fa fa-list"> <%= __('CHAT_LIST') %></a>
                                                 </ul>
                                               </li>
                                           </ul>
@@ -82,7 +89,7 @@
                                     <li><a href="/learning/utterances"><i class="fa fa-circle-o"></i> <%= __('UTTERANCE_SETTING') %></a></li>
                                     <li><a href="/learning/dialog"><i class="fa fa-circle-o"></i> <%= __('DIALOG_SETTING') %></a></li>
                                     <li><a href="/learning/entities"><i class="fa fa-circle-o"></i> <%= __('ENTITY_SETTING') %></a></li>
-                                    <li><a href="#" class="spmenu" id="trainBtn" ><%= __('TRAIN') %></a></li>
+                                    <li class="active"><a href="#" class="spmenu" id="trainBtn" ><%= __('TRAIN') %></a></li>
                                     <li class="active"><a href="#" class="spmenu" id="simulBtn" data-toggle="control-sidebar" ><%= __('SIMULATION') %></a></li>
                                   </ul>
                                 </li>
@@ -193,17 +200,20 @@
             $(location).attr('href',url);
         });
     
+        //simulataion url 아이디별로 구분.
         $('#simulBtn').click(function() {
             if( !$('#simulDiv').hasClass('control-sidebar-open') ) {
-                var chatbotItem = '<iframe id="testChatBot" style="height:100%; width:100%;" class="" src="https://webchat.botframework.com/embed/smartsend?s=dEQAGijPT-s.cwA.0LA.mnfoxhvCCjOo4YE894AS9nJpoKFTn58Lh3DljcOicdU"></iframe>';
+                var simulUrl = $('#simulURl').val();
+                var chatbotItem = '<iframe id="testChatBot" style="height:100%; width:100%;" class="" src="' + simulUrl + '"></iframe>';
                 $('#iframChatbot').html(chatbotItem);
             }
         });
 
         //test 챗봇 새로고침
         $('#startOver').click(function(){
+            var simulUrl = $('#simulURl').val();
             $('#testChatBot').removeAttr('src');
-            $('#testChatBot').attr('src','https://webchat.botframework.com/embed/smartsend?s=dEQAGijPT-s.cwA.0LA.mnfoxhvCCjOo4YE894AS9nJpoKFTn58Lh3DljcOicdU');
+            $('#testChatBot').attr('src', simulUrl);
             return false;
         });
         
