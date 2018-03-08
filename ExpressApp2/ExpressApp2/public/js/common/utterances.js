@@ -226,45 +226,8 @@ $(document).ready(function(){
         }   
     });
 
-    $("input[name=dlgChk]").bind('click',function(){
-        var checkedVal = false;
-        var checkedVal2 = false;
 
-        
-        $("input[name=ch1]").each(function() {
-            if (typeof $(this).parent().attr("checked") != 'undefined') {
-                checkedVal = true;
-            } 
-        });
-
-        if($(this).parent().attr('checked') == "checked") {
-            $(this).parent().removeAttr('checked');
-            checkedVal2 = false;
-            //changeBtnAble('learn', false);
-        } else {
-            $(this).parent().attr("checked", "checked");
-            checkedVal2 = true;
-            //changeBtnAble('learn', true);
-        }
-
-        if(checkedVal == true && checkedVal2 == true) {
-            changeBtnAble('learn', true);
-        } else {
-            changeBtnAble('learn', false);
-        }
-        /*
-        $(this).each(function(){
-            //
-            if($(this).parent().attr('checked') == "checked") {
-                $(this).parent().removeAttr('checked');
-                changeBtnAble('learn', false);
-            } else {
-                $(this).parent().attr("checked", "checked");
-                changeBtnAble('learn', true);
-            }
-        });
-        */
-    })
+    
 
     // Utterance 입력
     $('input[name=iptUtterance]').keypress(function(e) {
@@ -289,41 +252,57 @@ $(document).ready(function(){
     // Utterance Learn
     $('#utterLearn').click(function(){
 
-        
-        var entity = $('input[name=entity]').val();
-        
-        var inputDlgId = $('input[name=dlgId]');
-        var dlgId = new Array();
-        inputDlgId.each(function(n) { 
-            dlgId.push(inputDlgId[n].value);
-            return dlgId;
-        });
+        var chkBoxFlag1 = false;
+        var chkBoxFlag2 = false;
 
-        $.ajax({
-            url: '/learning/learnUtterAjax',
-            dataType: 'json',
-            type: 'POST',
-            data: {'entity':entity, 'dlgId':dlgId},
-            success: function(result) {
-                if(result['result'] == true) {
-                    alert(language.Added);
-                    
-                    $('input[name=tableAllChk]').parent().iCheck('uncheck');
-                    changeBtnAble(false);
-
-                    $('.recommendTbl tbody').html('');
-                    $('.dialog_box').html('');
-
-                    $('#utterLearn').attr('disabled', 'disabled');
-                    $('#utterLearn').addClass('disable');
-
-                    $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
-                    $('.pagination').html('');
-                }else{
-                    alert(language.It_failed);
-                }
+        $('input[name=tableCheckBox]').each(function(){
+            if($(this).parent().hasClass('checked') == true) {
+                chkBoxFlag1 = true;
+                return false;
             }
         });
+
+        if($('input[name=dlgBoxChk]').parent().hasClass('checked') == true) {
+            chkBoxFlag2 = true;
+        }
+
+
+        if(chkBoxFlag1 == true && chkBoxFlag2 == true) {
+
+            var entity = $('input[name=entity]').val();
+            
+            var inputDlgId = $('input[name=dlgId]');
+            var dlgId = new Array();
+            inputDlgId.each(function(n) { 
+                dlgId.push(inputDlgId[n].value);
+                return dlgId;
+            });
+    
+            $.ajax({
+                url: '/learning/learnUtterAjax',
+                dataType: 'json',
+                type: 'POST',
+                data: {'entity':entity, 'dlgId':dlgId},
+                success: function(result) {
+                    if(result['result'] == true) {
+                        alert(language.Added);
+                        
+                        $('input[name=tableAllChk]').parent().iCheck('uncheck');
+                        changeBtnAble(false);
+    
+                        $('.recommendTbl tbody').html('');
+                        $('.dialog_box').html('');
+    
+                        $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
+                        $('.pagination').html('');
+                    }else{
+                        alert(language.It_failed);
+                    }
+                }
+            });
+        } else {
+            alert("학습하고자 하는 것을 체크해주세요");
+        }
 
     });
 
@@ -351,6 +330,7 @@ $(document).ready(function(){
     });
     
     //utter 체크박스 전체선택 
+    /*
     $('#allCheck').parent().click(function() {
         var checkedVal = false;
         if (typeof $('#allCheck').parent().attr('checked') != 'undefined') {
@@ -370,7 +350,8 @@ $(document).ready(function(){
         }
         //changeBtnAble('delete', checkedVal);
     });
-    
+    */
+
 	$('.createDlgModalClose').click(function(){
         $('#mediaCarouselLayout').css('display','none');
         $('#cardLayout').css('display','none');
@@ -418,6 +399,7 @@ $(document).ready(function(){
         $('#dialogViewWrap').html(dialogView);
     });
 
+    /*
     //dlg 체크박스 전체선택 
     $('#checkAllDlg').parent().click(function() {
         //var checkedVal = false;
@@ -438,6 +420,7 @@ $(document).ready(function(){
             });
         }
     });
+    */
 
     // 소스 타입 변경
     $('#sourceType').change(function(e){
@@ -742,6 +725,7 @@ $(document).ready(function(){
     });
 
 });
+
 
 
 //utter td 클릭
@@ -1092,7 +1076,7 @@ function selectDlgListAjax(entity) {
                             inputUttrHtml += '<svg class="wc-message-callout"></svg>';
                             inputUttrHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
                             inputUttrHtml += '<div>';
-                            inputUttrHtml += '<button class="scroll previous" id="prevBtn' + (botChatNum) + '" style="display: none;" onclick="prevBtn(' + botChatNum + ')">';
+                            inputUttrHtml += '<button class="scroll previous" id="prevBtn' + (botChatNum) + '" style="display: none;" onclick="prevBtn(' + botChatNum + ', this)">';
                             inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
                             inputUttrHtml += '</button>';
                             inputUttrHtml += '<div class="wc-hscroll-outer" >';
@@ -1212,28 +1196,30 @@ function prevBtn(botChatNum, e) {
     $("#nextBtn" + botChatNum).show();
 }
 
+
 //checkbox 선택시 이벤트 $(this).attr("checked")
-$(document).on('click','div[type=checkbox]',function(event){
+/*
+$(document).on('ifChecked', '.icheckbox_flat-green',function(event){
     
     var checkedVal = false;
     var checkedVal2 = false;
 
-    if (typeof $(this).attr("checked") == 'undefined') {
-        $(this).attr("checked", "");
+    if ($(this).hasClass("checked") == false) {
+        $(this).iCheck('check');
     } else {
-        $(this).removeAttr('checked');
+        $(this).iCheck('uncheck');
     }
     
 
-    $("input[name=ch1]").each(function() {
-        if (typeof $(this).parent().attr("checked") != 'undefined') {
+    $("input[name=tableCheckBox]").each(function() {
+        if ($(this).parent().hasClass("checked") != false) {
             checkedVal = true;
         } 
     });
     //changeBtnAble('delete', checkedVal);
 
     $("input[name=dlgChk]").each(function() {
-        if (typeof $(this).parent().attr("checked") != 'undefined') {
+        if ($(this).parent().hasClass("checked") != false) {
             checkedVal2 = true;
         } 
     });
@@ -1246,26 +1232,7 @@ $(document).on('click','div[type=checkbox]',function(event){
 
 });
 
-function changeBtnAble(btnName, boolVal){
-    if (btnName=='learn') {
-        if (!boolVal) {
-            $('#utterLearn').attr("disabled", "disabled");
-            $('#utterLearn').addClass("disable");  
-        } else {
-            $('#utterLearn').removeAttr('disabled');
-            $('#utterLearn').removeClass("disable");
-        }
-    } else {
-        if (!boolVal) {
-            //$('#utterDelete').attr("disabled", "disabled");
-            //$('#utterDelete').addClass("disable");   
-        } else {
-            //$('#utterDelete').removeAttr('disabled');
-            //$('#utterDelete').removeClass("disable");
-        }
-    }
-}
-
+*/
 
 function utterInput(queryText) {
     var queryTextArr = [];
@@ -1354,9 +1321,10 @@ function utterInput(queryText) {
                     
                     $('input[name=tableAllChk]').on('ifChecked', function(event) {
                         $('input[name=tableCheckBox]').parent().iCheck('check');
-                            
+                        checkedVal = true;
                     }).on('ifUnchecked', function() {
                             $('input[name=tableCheckBox]').parent().iCheck('uncheck');
+                            checkedVal = false;
                         });
 
                 }
