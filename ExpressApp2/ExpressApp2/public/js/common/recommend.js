@@ -84,19 +84,13 @@ function recommendAjax(type){
                 
     
                 $('input[name=tableAllChk]').parent().iCheck('uncheck');
-            } else {
-                if(type == 'delete') {
+            } else {       
 
-                    $('#currentPage').val(($('#currentPage').val() - 1 != 0) ? $('#currentPage').val() - 1 : 1)
-                    recommendAjax();
-
-                } else {
-
-                    item += '<tr>' +
-                                '<td colspan="3">' + language.NO_DATA + '</td>' +
-                            '</tr>';
-                    $('#recommendContents').append(item);
-                }
+                item += '<tr>' +
+                            '<td colspan="3">' + language.NO_DATA + '</td>' +
+                        '</tr>';
+                $('#recommendContents').append(item);
+                
             }
             
             
@@ -175,7 +169,8 @@ function deleteRecommend(){
                 isloading : true,
                 success: function(data){
                     alert("삭제되었습니다.");
-                    recommendAjax('delete');
+                    $('#currentPage').val(1)
+                    recommendAjax();
                 }
             });
     }

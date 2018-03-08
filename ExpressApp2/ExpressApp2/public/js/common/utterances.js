@@ -289,6 +289,7 @@ $(document).ready(function(){
     // Utterance Learn
     $('#utterLearn').click(function(){
 
+        
         var entity = $('input[name=entity]').val();
         
         var inputDlgId = $('input[name=dlgId]');
@@ -803,7 +804,7 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<svg class="wc-message-callout"></svg>';
         insertHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
         insertHtml += '<div>';
-        insertHtml += '<button class="scroll previous" id="prevBtn' + (idx) + '" style="display: none; height: 30px;" onclick="prevBtn(' + idx + ')">';
+        insertHtml += '<button class="scroll previous" id="prevBtn' + (idx) + '" style="display: none; height: 30px;" onclick="prevBtn(' + idx + ', this)">';
         insertHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
         insertHtml += '</button>';
         insertHtml += '<div class="wc-hscroll-outer" >';
@@ -1183,8 +1184,9 @@ function selectDlgListAjax(entity) {
 
 //오른쪽 버튼 클릭시 슬라이드
 function nextBtn(botChatNum, e) {
+
     var width = parseInt($(e).parent().parent().css('width'));
-    $("#slideDiv" + botChatNum).animate({scrollLeft : ($("#slideDiv" + botChatNum).scrollLeft() + width)}, 500, function(){
+    $("#slideDiv" + botChatNum).animate({scrollLeft : (parseInt($("#slideDiv" + botChatNum).scrollLeft()) + width)}, 500, function(){
 
         if($("#slideDiv" + botChatNum).scrollLeft() == 
                 ($("#slideDiv" + botChatNum).find(".wc-carousel-item").length - 2) * (width / 2)) {
@@ -1197,9 +1199,10 @@ function nextBtn(botChatNum, e) {
 }
 
 //왼쪽 버튼 클릭시 슬라이드
-function prevBtn(botChatNum) {
+function prevBtn(botChatNum, e) {
 
-    $("#slideDiv" + botChatNum).animate({scrollLeft : ($("#slideDiv" + botChatNum).scrollLeft() - 312)}, 500, function() {
+    var width = parseInt($(e).parent().parent().css('width'));
+    $("#slideDiv" + botChatNum).animate({scrollLeft : ($("#slideDiv" + botChatNum).scrollLeft() - width)}, 500, function() {
         
         if($("#slideDiv" + botChatNum).scrollLeft() == 0) {
             $("#prevBtn" + botChatNum).hide();
@@ -1509,9 +1512,9 @@ function searchDialog() {
                                 inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
                                 inputUttrHtml += '<div class="wc-message-content">';
                                 inputUttrHtml += '<svg class="wc-message-callout"></svg>';
-                                inputUttrHtml += '<div class="wc-carousel slideBanner" >';
+                                inputUttrHtml += '<div class="wc-carousel slideBanner" style="width:280px;">';
                                 inputUttrHtml += '<div>';
-                                inputUttrHtml += '<button class="scroll previous" id="prevBtn' + (botChatNum) + '" style="display: none;" onclick="prevBtn(' + botChatNum + ')">';
+                                inputUttrHtml += '<button class="scroll previous" id="prevBtn' + (botChatNum) + '" style="display: none;" onclick="prevBtn(' + botChatNum + ', this)">';
                                 inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
                                 inputUttrHtml += '</button>';
                                 inputUttrHtml += '<div class="wc-hscroll-outer" >';
@@ -1529,7 +1532,7 @@ function searchDialog() {
                             }
                             if(tmp.dlg[j].CARD_TEXT != null) {
 
-                                inputUttrHtml += '<p class="carousel" style="height:20px;min-height:20px;">' + /*cardtext*/ tmp.dlg[j].CARD_TEXT + '</p>';
+                                inputUttrHtml += '<p class="carousel">' + /*cardtext*/ tmp.dlg[j].CARD_TEXT + '</p>';
                             }
                             if(tmp.dlg[j].BTN_1_TITLE != null) {
                                 inputUttrHtml += '<ul class="wc-card-buttons" style="padding-left:0px;"><li><button>' + /*btntitle*/ tmp.dlg[j].BTN_1_TITLE + '</button></li></ul>';
@@ -1560,7 +1563,7 @@ function searchDialog() {
                             inputUttrHtml += '<button class="scroll previous" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png"></button>';
                             inputUttrHtml += '<div class="wc-hscroll-outer">';
                             inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
-                            inputUttrHtml += '<ul style="min-width:0px">';
+                            inputUttrHtml += '<ul style="min-width:0px; padding-left: 0px;">';
                             inputUttrHtml += '<li class="wc-carousel-item wc-carousel-play">';
                             inputUttrHtml += '<div class="wc-card hero" style="width:70%">';
                             inputUttrHtml += '<div class="wc-card-div imgContainer">';
