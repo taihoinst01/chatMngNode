@@ -256,6 +256,48 @@ router.get('/addChatbot', function (req, res) {
     res.render('addChatbot');
 });
 
+//Chatbot App Insert
+router.post('/admin/addChatBotApps', function (req, res){
+    var chatName = req.body.appInsertName;
+    var culture = req.body.appInsertCulture;
+    var chatDes = req.body.appDes;
+    var chatColor = req.body.color;
+
+    (async () => {
+        try {
+            var insertChatQuery = "INSERT INTO TBL_CHATBOT_APP(CHATBOT_NUM,CHATBOT_NAME,CULTURE,DESCRIPTION,APP_COLOR) ";
+            insertChatQuery += "VALUES((SELECT ISNULL(MAX(CHATBOT_NUM),0) FROM TBL_CHATBOT_APP)+1, @chatName, @culture, @chatDes, @chatColor)";
+
+            var insertDbQuery = "INSERT INTO TBL_DB_CONFIG(USER_NAME,PASSWORD,SERVER,DATABASE_NAME,APP_NAME,APP_ID) ";
+            insertDbQuery += "VALUES('taihoinst', 'taiho9788!', 'taiholab.database.windows.net', @chatName, @chatName, @chatName)";
+
+            let pool = await dbConnect.getConnection(sql);
+            let insertChat = await pool.request()
+                .input('chatName', sql.NVarChar, chatName)
+                .input('culture', sql.NVarChar, culture)
+                .input('chatDes', sql.NVarChar, chatDes)
+                .input('chatColor', sql.NVarChar, chatColor)
+                .query(insertChatQuery);
+
+            let insertDb = await pool.request()
+                .input('chatName', sql.NVarChar, chatName)
+                .query(insertDbQuery);
+            
+            if(insertChat.rowsAffected.length > 0 && insertDb.rowsAffected.length > 0){
+                res.send({result:true});
+            } else {
+                res.send({result:false});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+});
+
 //Luis app insert
 router.post('/admin/putAddApps', function (req, res){
     var appService = req.body.appInsertService;

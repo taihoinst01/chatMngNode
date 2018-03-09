@@ -274,12 +274,12 @@ router.post('/nodeQuery', function (req, res) {
     var currentPage = checkNull(req.body.page, 1);
 
     var selectQuery = "SELECT tbp.* from \n" +
-                        " (SELECT ROW_NUMBER() OVER(ORDER BY korQuery DESC) AS NUM, \n" +
+                        " (SELECT ROW_NUMBER() OVER(ORDER BY queryDate DESC) AS NUM, \n" +
                         "         COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
-                        "         CEILING((ROW_NUMBER() OVER(ORDER BY korQuery DESC))/ convert(numeric ,10)) PAGEIDX, \n" ;
+                        "         CEILING((ROW_NUMBER() OVER(ORDER BY queryDate DESC))/ convert(numeric ,10)) PAGEIDX, \n" ;
         selectQuery += "          korQuery, enQuery, queryCnt, queryDate, channel, result, intent_score, intent, entities, textResult, cardResult, cardBtnResult, mediaResult, mediaBtnResult \n";
         selectQuery += "          FROM ( \n";
-        selectQuery += "              SELECT TOP 100 CUSTOMER_COMMENT_KR AS korQuery \n";
+        selectQuery += "              SELECT CUSTOMER_COMMENT_KR AS korQuery \n";
         selectQuery += "                 , ISNULL(영어질문,'') AS enQuery \n";
         selectQuery += "                 , 질문수 AS queryCnt \n";
         selectQuery += "                 , dimdate AS queryDate \n";
@@ -294,7 +294,7 @@ router.post('/nodeQuery', function (req, res) {
         selectQuery += "                , ISNULL(ME.CARD_TITLE,'') AS mediaResult \n";
         selectQuery += "                , ISNULL(ME.BTN_1_CONTEXT,'') AS mediaBtnResult \n";
         selectQuery += "              FROM ( \n";
-        selectQuery += "     SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS 영어질문, COUNT(*) AS 질문수, CONVERT(CHAR(19),CONVERT(DATETIME,REG_DATE),120) AS Dimdate, CHANNEL \n";
+        selectQuery += "     SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS 영어질문, COUNT(*) AS 질문수, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS Dimdate, CHANNEL \n";
         selectQuery += "     FROM TBL_HISTORY_QUERY \n";
         selectQuery += "     WHERE 1=1 \n";
         selectQuery += "AND CONVERT(date, '" + startDate + "') <= CONVERT(date, REG_DATE)  AND  CONVERT(date, REG_DATE)   <= CONVERT(date, '" + endDate + "') ";
@@ -305,11 +305,10 @@ router.post('/nodeQuery', function (req, res) {
             if (selChannel !== 'all') {
                 selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
             }
-        selectQuery += "     GROUP BY CUSTOMER_COMMENT_KR, CONVERT(CHAR(19),CONVERT(DATETIME,REG_DATE),120), CHANNEL \n";
+        selectQuery += "     GROUP BY CUSTOMER_COMMENT_KR, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), CHANNEL \n";
         selectQuery += ") HI \n";
         selectQuery += "LEFT OUTER JOIN TBL_QUERY_ANALYSIS_RESULT AN \n";
         selectQuery += "     ON REPLACE(REPLACE(LOWER(HI.CUSTOMER_COMMENT_KR),'.',''),'?','') = LOWER(AN.QUERY) \n";
-        selectQuery += "     AND (RESULT = '' OR RESULT IN ('D','N') ) \n";
         selectQuery += "LEFT OUTER JOIN (SELECT LUIS_INTENT,LUIS_ENTITIES,MIN(DLG_ID) AS DLG_ID FROM TBL_DLG_RELATION_LUIS GROUP BY LUIS_INTENT, LUIS_ENTITIES) RE \n";
         selectQuery += "     ON AN.LUIS_INTENT = RE.LUIS_INTENT \n";
         selectQuery += "     AND AN.LUIS_ENTITIES = RE.LUIS_ENTITIES \n";
@@ -321,8 +320,7 @@ router.post('/nodeQuery', function (req, res) {
         selectQuery += "     ON DL.DLG_ID = CA.DLG_ID \n";
         selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_MEDIA) ME \n";
         selectQuery += "     ON DL.DLG_ID = ME.DLG_ID \n";
-        selectQuery += "ORDER BY queryCnt DESC, queryDate DESC \n";
-        selectQuery += ") AA ) tbp \n" +
+        selectQuery += ") AA  WHERE (RESULT = '' OR RESULT IN ('D','N') ) \n ) tbp \n" +
                     " WHERE 1=1 \n" +
                     " AND PAGEIDX = " + currentPage + "; \n";
     
