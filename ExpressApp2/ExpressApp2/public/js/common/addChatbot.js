@@ -50,6 +50,10 @@ function addApp() {
         'appInsertName': $('#appInsertName').val(),
         'appInsertCulture': $(":input:radio[name=r3]:checked").val(),
         'appDes': $('#appDes').val(),
+        'dbId' : $('#dbId').val(),
+        'dbPassword' : $('#dbPassword').val(),
+        'dbUrl' : $('#dbUrl').val(),
+        'dbName' : $('#dbName').val()
     };
 
 

@@ -262,6 +262,10 @@ router.post('/admin/addChatBotApps', function (req, res){
     var culture = req.body.appInsertCulture;
     var chatDes = req.body.appDes;
     var chatColor = req.body.color;
+    var dbId = req.body.dbId;
+    var dbPassword = req.body.dbPassword;
+    var dbUrl = req.body.dbUrl;
+    var dbName = req.body.dbName;
 
     (async () => {
         try {
@@ -269,7 +273,7 @@ router.post('/admin/addChatBotApps', function (req, res){
             insertChatQuery += "VALUES((SELECT ISNULL(MAX(CHATBOT_NUM),0) FROM TBL_CHATBOT_APP)+1, @chatName, @culture, @chatDes, @chatColor)";
 
             var insertDbQuery = "INSERT INTO TBL_DB_CONFIG(USER_NAME,PASSWORD,SERVER,DATABASE_NAME,APP_NAME,APP_ID) ";
-            insertDbQuery += "VALUES('taihoinst', 'taiho9788!', 'taiholab.database.windows.net', @chatName, @chatName, @chatName)";
+            insertDbQuery += "VALUES(@dbId, @dbPassword, @dbUrl, @dbName, @chatName, @chatName)";
 
             let pool = await dbConnect.getConnection(sql);
             let insertChat = await pool.request()
@@ -280,6 +284,10 @@ router.post('/admin/addChatBotApps', function (req, res){
                 .query(insertChatQuery);
 
             let insertDb = await pool.request()
+                .input('dbId', sql.NVarChar, dbId)
+                .input('dbPassword', sql.NVarChar, dbPassword)
+                .input('dbUrl', sql.NVarChar, dbUrl)
+                .input('dbName', sql.NVarChar, dbName)
                 .input('chatName', sql.NVarChar, chatName)
                 .query(insertDbQuery);
             
