@@ -13,24 +13,24 @@ var language;
 })(jQuery);
 
 $(document).ready(function() {
-    makeUserTable();
+    makeChatBotTable();
 });
 
 $(document).ready(function() {
 
     //검색
     $('#searchBtn').click(function() {
-        makeUserTable();
+        makeChatBotTable();
     });
 
     //엔터로 검색
     $('#searchName, #searchId').on('keypress', function(e) {
-        if (e.keyCode == 13) makeUserTable();
+        if (e.keyCode == 13) makeChatBotTable();
     });
 
     //저장
     $('#saveBtn').click(function() {
-        saveUserApp();
+        saveChatApp();
     });
 
     //앱리스트 초기화
@@ -42,24 +42,24 @@ $(document).ready(function() {
 
 
 //유저 테이블 페이지 버튼 클릭
-$(document).on('click','#userTablePaging .li_paging',function(e){
+$(document).on('click','#chatTablePaging .li_paging',function(e){
     if(!$(this).hasClass('active')){
-        makeUserTable($(this).text());
+        makeChatBotTable($(this).text());
     }
 });
 
 //앱 테이블 페이지 버튼 클릭
 $(document).on('click','#appTablePaging .li_paging',function(e){
     if(!$(this).hasClass('active')){
-        makeAppTable($('#selectUserHiddenId').val(), $(this).text());
+        makeAppTable($('#selectChatHiddenId').val(), $(this).text());
     }
 });
 
-$(document).on('click', '#userTableBodyId tr[name=userTr]', function() {
+$(document).on('click', '#chatTableBodyId tr[name=userTr]', function() {
     $('tr[name=userTr]').css("background", '');
-    var clickUserId = $(this).children().eq(1).text();
-    $('#selectUserHiddenId').val(clickUserId);
-    makeAppTable(clickUserId);
+    var clicChatId = $(this).children().eq(1).text();
+    $('#selectChatHiddenId').val(clicChatId);
+    makeAppTable(clicChatId);
 
     $(this).css("background", "aliceblue");
 
@@ -67,7 +67,7 @@ $(document).on('click', '#userTableBodyId tr[name=userTr]', function() {
 
 var initAppList;
 var initAppCheck;
-function makeUserTable(newPage) {
+function makeChatBotTable(newPage) {
     
     var params = {
         'searchName' : $('#searchName').val(),
@@ -79,7 +79,7 @@ function makeUserTable(newPage) {
     $.ajax({
         type: 'POST',
         data: params,
-        url: '/users/selectUserList',
+        url: '/users/selecChatList',
         success: function(data) {
            
             if (data.rows) {
@@ -88,21 +88,22 @@ function makeUserTable(newPage) {
     
                 for (var i=0;i<data.rows.length;i++) { 
                     tableHtml += '<tr style="cursor:pointer" name="userTr"><td>' + data.rows[i].SEQ + '</td>';
-                    tableHtml += '<td>' + data.rows[i].USER_ID + '</td>'
-                    tableHtml += '<td>' + data.rows[i].EMP_NM + '</td>'
-                    tableHtml += '<td>' + data.rows[i].EMAIL + '</td></tr>'
+                    tableHtml += '<td>' + data.rows[i].CHATBOT_NUM + '</td>'
+                    tableHtml += '<td>' + data.rows[i].CHATBOT_NAME + '</td>'
+                    tableHtml += '<td>' + data.rows[i].CULTURE + '</td>'
+                    tableHtml += '<td>' + data.rows[i].DESCRIPTION + '</td></tr>'
                 }
     
                 saveTableHtml = tableHtml;
-                $('#userTableBodyId').html(tableHtml);
+                $('#chatTableBodyId').html(tableHtml);
 
                 //사용자의 appList 출력
-                $('#userTableBodyId').find('tr').eq(0).children().eq(0).trigger('click');
+                $('#chatTableBodyId').find('tr').eq(0).children().eq(0).trigger('click');
 
-                $('#userTablePaging .pagination').html('').append(data.pageList);
+                $('#chatTablePaging .pagination').html('').append(data.pageList);
 
             } else {
-                $('#userTableBodyId').html('');
+                $('#chatTableBodyId').html('');
                 $('#appTableBodyId').html('');
             }
             
@@ -110,18 +111,18 @@ function makeUserTable(newPage) {
     });
 }
 
-function makeAppTable(userId, newPage) {
+function makeAppTable(clicChatId, newPage) {
     
     var params = {
-        'userId' : userId,
+        'clicChatId' : clicChatId,
         'currentPage' : newPage,
-        'currentPageUser' : $('#userTablePaging .active').val()
+        'currentPageUser' : $('#chatTablePaging .active').val()
     };
     
     $.ajax({
         type: 'POST',
         data: params,
-        url: '/users/selectUserAppList',
+        url: '/users/selectChatAppList',
         success: function(data) {
             initAppList = data.rows;
             initAppCheck = data.checkedApp;
@@ -144,7 +145,7 @@ function mkAppRow(rows, checkedApp) {
         
         var j=0;
         for (; j<checkedApp.length; j++) {
-            if (rows[i].CHATBOT_NUM === Number(checkedApp[j].APP_ID)) {
+            if (rows[i].CHATBOT_ID === Number(checkedApp[j].CHAT_ID)) {
                 appHtml += '<td><input type="checkbox" class="flat-red" checked name="tableCheckBox"></td>';
                 break;
             } 
@@ -153,9 +154,9 @@ function mkAppRow(rows, checkedApp) {
             appHtml += '<td><input type="checkbox" class="flat-red" name="tableCheckBox"></td>';
         }
 
-        appHtml += '<td>' + rows[i].CHATBOT_NAME + '</td>';
-        appHtml += '<td>' + rows[i].DESCRIPTION + '</td>';
-        appHtml += '<td><input type="hidden" value="' + rows[i].CHATBOT_NUM + '" /></td></tr>';
+        appHtml += '<td>' + rows[i].APP_NAME + '</td>';
+        appHtml += '<td>' + rows[i].APP_ID + '</td>';
+        appHtml += '<td>' + rows[i].OWNER_EMAIL + '</td></tr>';
     }
 
     $('#appTableBodyId').html(appHtml);
@@ -173,31 +174,31 @@ function fnc_initAppList() {
 }
 
 //저장
-function saveUserApp() {
+function saveChatApp() {
 
     if (confirm(language['ASK_SAVE'])) {
         var saveArr = new Array();
         $('tr div[class*=checked]').each(function() {
             //var rowId = $(this).parent().parent().attr("id");
-            var chatId = $(this).parents('tr').children().eq(4).find('input').val();
+            var appId = $(this).parents('tr').children().eq(3).text();
             //추가로 체크한 app, 체크 취소한 app 구분
             var rememberLen = initAppCheck.length;
             for (var i=0; i<rememberLen; i++) {
-                if (chatId === initAppCheck[i].APP_ID) {
+                if (appId === initAppCheck[i].APP_ID) {
                     initAppCheck.splice(i,1);
                     break;
                 }
             }
             if (rememberLen === initAppCheck.length) {
-                saveArr.push(chatId);
+                saveArr.push(appId);
             }
         });    
         
         var rowUser;			
-        var userId = $("#selectUserHiddenId").val();
+        var chatHiddenId = $("#selectChatHiddenId").val();
     
-        for (var i=0; i<$('#userTableBodyId').find('tr').length; i++) {
-            if ($('#userTableBodyId').find('tr').eq(i).children().eq(1).text() === userId) {
+        for (var i=0; i<$('#chatTableBodyId').find('tr').length; i++) {
+            if ($('#chatTableBodyId').find('tr').eq(i).children().eq(1).text() === chatHiddenId) {
                 rowUser = i;
                 break;
             }
@@ -207,7 +208,7 @@ function saveUserApp() {
         var jsonsaveArr = JSON.stringify(saveArr);
         var jsoninitAppCheck = JSON.stringify(initAppCheck);
         var params = {
-            'userId' : userId,
+            'chatId' : chatHiddenId,
             'saveData' : jsonsaveArr,
             'removeData' : jsoninitAppCheck,
         };
@@ -215,12 +216,12 @@ function saveUserApp() {
             type: 'POST',
             datatype: "JSON",
             data: params,
-            url: '/users/updateUserAppList',
+            url: '/users/updateChatAppList',
             success: function(data) {
                 if (data.status === 200) {
                     //window.location.reload();
                     alert(language['REGIST_SUCC']);
-                    $('#userTableBodyId').find('tr').eq(rowUser).children().eq(1).trigger('click');
+                    $('#chatTableBodyId').find('tr').eq(rowUser).children().eq(1).trigger('click');
                 } else {
                     alert(language['It_failed']);
                 }
