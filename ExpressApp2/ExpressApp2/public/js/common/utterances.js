@@ -1726,27 +1726,38 @@ $(document).on('click', '.addCarouselBtn', function(e){
 //엔티티 추가
 function insertEntity(){
 
-    $.ajax({
-        url: '/learning/insertEntity',
-        dataType: 'json',
-        type: 'POST',
-        data: $('#entityInsertForm').serialize(),
-        success: function(data) {
-            if(data.status == 200){
-                $('.addEntityModalClose').click();
-                alert(language.Added);
-                //var originalUtter = [];
-                //$('input[name=hiddenUtter]').each(function() {
-                //    originalUtter.push($(this).val());
-                //});
-                //$('.recommendTbl').find('tbody').html('');
-                //$('.pagination').html('');
-                //utterInput(originalUtter);
-            } else {
-                alert(language.It_failed);
+    var entityDefine = $('input[name=entityDefine]').val();
+    var entityValue = $('input[name=entityValue]').val();
+
+    if((entityDefine == "" || entityDefine == null || entityDefine == undefined) 
+            && (entityValue == "" || entityValue == null || entityValue == undefined)) {
+        alert("내용을 입력해주세요.");
+    } else {
+
+        $.ajax({
+            url: '/learning/insertEntity',
+            dataType: 'json',
+            type: 'POST',
+            data: $('#entityInsertForm').serialize(),
+            success: function(data) {
+                if(data.status == 200){
+                    $('.addEntityModalClose').click();
+                    alert(language.Added);
+                    //var originalUtter = [];
+                    //$('input[name=hiddenUtter]').each(function() {
+                    //    originalUtter.push($(this).val());
+                    //});
+                    //$('.recommendTbl').find('tbody').html('');
+                    //$('.pagination').html('');
+                    //utterInput(originalUtter);
+                } else if(data.status == 'Duplicate') {
+                    alert(language.DUPLICATE_ENTITIES_EXIST);
+                } else {
+                    alert(language.It_failed);
+                }
             }
-        }
-    });
+        });
+    }
 }
 //** 모달창 끝 */
 
