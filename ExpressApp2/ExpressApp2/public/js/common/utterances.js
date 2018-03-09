@@ -24,7 +24,7 @@ $(document).on('click', '.utterDelete', function() {
 
     $(this).parents('tr').next().remove();
     $(this).parents('tr').remove();
-    
+
     /*
     if ($('#entityUtteranceTextTable tbody').find('.off-screen').length > 0) {
         //$('#entityUtteranceTextTable tbody').find('.off-screen').eq(0).animate({opacity: 1}, 300);
@@ -45,9 +45,8 @@ $(document).on('click', '.utterDelete', function() {
     $('.dialog_box').html("");
     $('input[name=tableAllChk]').parent().iCheck('uncheck');
 
-    
-    changeBtnAble(false);
     pagingFnc();
+
     /*
     $('.checkUtter').each(function(){
         if($(this).attr('checked') == 'checked') {
