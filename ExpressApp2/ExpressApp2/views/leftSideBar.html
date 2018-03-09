@@ -4,7 +4,7 @@
     <section class="sidebar">
         <input type="hidden" id="successHidden" value="<%= __('SUCCESS') %> "/>
         <input type="hidden" id="failHidden" value="<%= __('FAIL') %> "/>
-        <input type="hidden" id="simulURl" value="<%=simul_url%>" />
+        <input type="hidden" id="simulURL" value="<%=simul_url%>" />
                            <div class="sidebar-form"><%= __('CHATBOT') %> 
                             <% 
                                 if(sid==="admin") { 
@@ -203,7 +203,7 @@
         //simulataion url 아이디별로 구분.
         $('#simulBtn').click(function() {
             if( !$('#simulDiv').hasClass('control-sidebar-open') ) {
-                var simulUrl = $('#simulURl').val();
+                var simulUrl = $('#simulURL').val();
                 var chatbotItem = '<iframe id="testChatBot" style="height:100%; width:100%;" class="" src="' + simulUrl + '"></iframe>';
                 $('#iframChatbot').html(chatbotItem);
             }
@@ -211,7 +211,7 @@
 
         //test 챗봇 새로고침
         $('#startOver').click(function(){
-            var simulUrl = $('#simulURl').val();
+            var simulUrl = $('#simulURL').val();
             $('#testChatBot').removeAttr('src');
             $('#testChatBot').attr('src', simulUrl);
             return false;

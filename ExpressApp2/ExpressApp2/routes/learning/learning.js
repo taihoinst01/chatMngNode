@@ -35,7 +35,7 @@ router.post('/recommend', function (req, res) {
             "FROM ( \n"+
             "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES \n" +
             "FROM TBL_QUERY_ANALYSIS_RESULT \n" + 
-            "WHERE RESULT='D' OR RESULT='S' \n";
+            "WHERE (RESULT='D' OR RESULT='S') \n";
             
             if(selectType == 'yesterday'){
                 entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) like '%'+(select CONVERT(CHAR(10), (select dateadd(day,-1,getdate())), 23)) + '%'";

@@ -97,8 +97,15 @@ function pagingFnc() {
     var i = 0;
 
     for (; i < pageTotal; i++) {
-        $('<li><a href="#" rel="' + i + '">'+ (i + 1) +'</a></li>')
-                .appendTo('.pagination');
+        if(i == 0) {
+
+            $('<li class="li_paging active" value="' + i + '"><a href="#" onclick="return false;">'+ (i + 1) +'</a></li>')
+                    .appendTo('.pagination');
+        } else {
+
+            $('<li class="li_paging" value="' + i + '"><a href="#" onclick="return false;">'+ (i + 1) +'</a></li>')
+            .appendTo('.pagination');
+        }
     }
 
     $tr.addClass('off-screen')
@@ -106,7 +113,7 @@ function pagingFnc() {
             .removeClass('off-screen');
 
 
-    var $pagingLink = $('.pagination a');
+    var $pagingLink = $('.li_paging');
     $pagingLink.on('click', function (evt) {
         evt.preventDefault();
         var $this = $(this);
@@ -121,7 +128,7 @@ function pagingFnc() {
         // 시작 행 = 페이지 번호 * 페이지당 행수
         // 끝 행 = 시작 행 + 페이지당 행수
 
-        var currPage = $this.attr('rel');
+        var currPage = $this.val();
         var startItem = currPage * rowPerPage;
         var endItem = startItem + rowPerPage;
 
@@ -1592,6 +1599,8 @@ function selectDialog() {
             var cloneDlg = $(this).parent().parent().next().children().clone();
             $('.dialog_box').html('');
             $('.dialog_box').append(cloneDlg);
+            $('.previous').hide();
+            $('.next').show();
             $('.searchDialogClose').click();
             successFlagg = true;
             return false;
