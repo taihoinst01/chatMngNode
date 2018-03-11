@@ -230,5 +230,6 @@
 	"Middle group": "Middle group",
 	"Small group": "Small group",
 	"SUCCESS" : "SUCCESS",
-	"FAIL" : "FAIL"
+	"FAIL" : "FAIL",
+	"Group": "Group"
 }

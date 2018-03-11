@@ -17,6 +17,9 @@ $(document).ready(function(){
     if(recommendParam){
         utterInput(recommendParam);
     }
+    
+    //새로운 다이얼로그 생성 모달창에 필요한 luisId 가져오기
+    getLuisInfo('luisId');
 });
 
 // Utterance 삭제
@@ -294,8 +297,7 @@ $(document).ready(function(){
                         alert(language.Added);
                         
                         $('input[name=tableAllChk]').parent().iCheck('uncheck');
-                        changeBtnAble(false);
-    
+
                         $('.recommendTbl tbody').html('');
                         $('.dialog_box').html('');
     
@@ -383,10 +385,6 @@ $(document).ready(function(){
         $('#commonLayout').css('display', 'block');
         $('#commonLayout').prepend(insertForm);
         
-        if($('#btnCreateLgroup').html() == '취소' || $('#btnCreateLgroup').html() == 'CANCEL') {
-
-            $('#btnCreateLgroup').click();
-        }
         var dialogView = '';
         dialogView += '<div class="dialogView" >';
         dialogView += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
@@ -498,20 +496,6 @@ $(document).ready(function(){
     });
 */
 
-    // create LargeGroup
-    $('#btnCreateLgroup').on('click',function(e){
-        if($(this).html() == "신규" || $(this).html() == "NEW") {
-            $(this).html(language.CANCEL);
-            $('#largeGroupEdit').css('display','block');
-            $('#largeGroup').css('display','none');
-        } else {
-            $(this).html(language.NEW);
-            $('#largeGroupEdit').css('display','none');
-            $('#largeGroup').css('display','block');
-        }
-
-        return;
-    });
     
     //다이얼로그 Add From
     $('#addDialogBtn').click(function(e){
@@ -966,7 +950,7 @@ function insertDialog(){
 */
 function createDialog(){
 
-    var entity = $('input[name=entity]').val();
+    var entities = chkEntities;
     var idx = $('form[name=dialogLayout]').length;
     var array = [];
     var exit = false;
@@ -1007,13 +991,16 @@ function createDialog(){
         var objectCarousel = {};
         if (tmp[0].value === "3") {
             for (var j = 1; j < tmp.length; j++) {
+                
                 if (typeof objectCarousel[tmp[j].name] !== "undefined" || j === tmp.length-1) {
                     carouselArr.push(objectCarousel);
                     objectCarousel = {};
                 } 
+                
                 object[tmp[0].name] = tmp[0].value;
                 objectCarousel[tmp[j].name] = tmp[j].value;
             }
+            //carouselArr.push(objectCarousel);
             object['carouselArr'] = carouselArr;
         } else {
             for (var j = 0; j < tmp.length; j++) {
@@ -1030,7 +1017,7 @@ function createDialog(){
         url: '/learning/addDialog',
         dataType: 'json',
         type: 'POST',
-        data: {'data' : array, 'entity' : entity},
+        data: {'data' : array, 'entities' : entities},
         success: function(data) {
             alert('success');
 
@@ -1384,6 +1371,7 @@ var $insertForm;
 var $dlgForm;
 var $carouselForm;
 var $mediaForm;
+var chkEntities;
 function openModalBox(target){
 
     //carousel clone 초기값 저장
@@ -1392,9 +1380,44 @@ function openModalBox(target){
     $carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
     $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
 
-    if(target == "#create_dlg") {
-        $(".insertForm form").append($(".textLayout").clone(true));
-        $(".insertForm .textLayout").css("display","block");
+    if(target == "#create_dlg") {     
+    
+        /* 
+        
+            checkFlag 체크된 추천문장이 있는지 없는지
+            0 : 다이얼로그 생성 가능
+            1 : 다이얼로그 생성 불가능(체크된 추천문장중 학습이 안된 엔티티가 존재함)
+            2 : 다이얼로그 생성 불가능(체크된 추천문장이 없음)   
+        */
+        var checkFlag = 2;  
+        chkEntities = [];
+        $('input[name=tableCheckBox]').each(function() {
+            if($(this).parent().hasClass('checked') == true) {
+                
+                var $entityValue = $(this).parent().parent().next().find('input[name=entity]').val();
+
+                if($entityValue == "") {
+                    checkFlag = 1;                   
+                    return false;
+                }
+
+                checkFlag = 0;
+                chkEntities.push($entityValue);
+            }
+        })
+
+        if(checkFlag == 1) {
+            $('#create_dlg').removeAttr('data-target');
+            alert("다이얼로그 생성 불가능(선택된 추천문장중 학습이 안된 엔티티가 존재합니다. 학습을 시켜주세요.)");
+        } else if(checkFlag == 2) {
+
+            $('#create_dlg').removeAttr('data-target');
+            alert("선택한 학습 추천 문장이 없습니다. 학습 추천을 선택해주세요.");
+        } else {
+            $('#create_dlg').attr('data-target', "#myModal2");
+            $(".insertForm form").append($(".textLayout").clone(true));
+            $(".insertForm .textLayout").css("display","block");
+        }
     }
 
     if(target == "#search_dlg") {
@@ -1758,6 +1781,49 @@ function insertEntity(){
             }
         });
     }
+}
+
+
+//다이얼로그 생성 모달창 - 중그룹 구하기
+$(document).on('change', 'select[name=luisId]', function(){
+
+    $('select[name=luisIntent] :first-child').nextAll().remove();
+
+
+    getLuisInfo('luisIntent', $('select[name=luisId]').val());
+    
+})
+
+//TBL_DLG_RELATION_LUIS 테이블에서 LUIS_INTENT 가져오기
+function getLuisInfo(searchInfo, luisId) {
+
+    $.ajax({
+        url: '/learning/getLuisInfo',
+        dataType: 'json',
+        data: {'searchInfo': searchInfo, 'luisId': luisId},
+        type: 'POST',
+        success: function(data) {
+
+            if(searchInfo == 'luisIntent') {
+
+                if(data.luisIntentList.length > 0 ) {
+
+                    for(var i = 0; i < data.luisIntentList.length; i++) {
+        
+                        $('select[name=luisIntent]').append('<option>' + data.luisIntentList[i].luisIntent + '</option>');
+                    }
+                } else {
+                    $('select[name=luisIntent] :first-child').nextAll().remove();
+                }
+            } else if(searchInfo == 'luisId') {
+
+                for(var i = 0; i < data.luisIdList.length; i++) {
+                    $('select[name=luisId]').append('<option>' + data.luisIdList[i].luisId + '</option>');
+                }
+            }
+
+        }
+    });
 }
 //** 모달창 끝 */
 
