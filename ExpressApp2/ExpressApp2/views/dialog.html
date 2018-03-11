@@ -57,14 +57,11 @@
                                         <div class="form-group col-lg-2" >
                                             <select id="sourceType2" name="sourceType" class="form-control"> 
                                                 <option value="D" selected="selected">Common</option>
-                                                <option value="API" >Api</option>
-                                                <option value="api cafeteria">식단</option>
-                                                <option value="api shutlebus">셔틀버스</option>
                                             </select>
                                         </div> 
                                         <div class="form-group col-lg-2"  >
                                             <select id="searchGroupL" name="searchGroupL" class="form-control searchGroup"> 
-                                                <option value=""><%= __('A big group') %></option>     
+                                                <option value=""><%= __('Large_group') %></option>     
                                                 <%
                                                     for(var i=0; i<groupList.length; i++) {
                                                 %>
@@ -101,13 +98,10 @@
                                                       <th>                                                        
                                                       <select name="sourceType" id="tblSourceType" class="form-control f01"> 
                                                             <option value="D" selected="selected">Common</option>
-                                                            <option value="API" >Api</option>
-                                                            <option value="api cafeteria">식단</option>
-                                                            <option value="api shutlebus">셔틀버스</option>
                                                        </select>
                                                       </th>
                                                       <th>
-                                                        <div id="selectBoxArea" class="selectArea" style="margin-bottom: 5px;">
+                                                        <div id="selectBoxArea" class="selectArea">
                                                             <div class="inputfield selectArea">
                                                                 <div class="selectbox selectArea">
                                                                     <div class="selected selectArea">View all</div>

@@ -376,7 +376,7 @@ text-align:center;}
 
 .wc-hscroll > ul {
   white-space: nowrap;
-  min-width:300px;
+  /*min-width:300px;*/
 }
 
 .wc-hscroll > ul > li {

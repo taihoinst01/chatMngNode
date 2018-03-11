@@ -4,24 +4,17 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
+    <title>
+            TIIS Manager
+    </title>
     <%include  ./common/commonLib.html%>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="/common/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/common/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/common/css/AdminLTE.min.css">
-    <link rel="stylesheet" href="/common/css/skin-blue.min.css">
-    <link rel="stylesheet" href="/common/css/default.css">
     <link rel="stylesheet" type="text/css" href="/css/recommend.css" />
     <!--[if lt IE 9]>
     <script src="common/js/html5shiv.min.js"></script>
     <script src="common/js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <script src="/common/js/jquery.min.js"></script>
-    <script src="/common/js/bootstrap.min.js"></script>
-    <script src="/common/js/adminlte.min.js"></script>
-    <script src="/common/js/jquery-2.2.4.min.js"  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-    <script src="/common/js/icheck.min.js"></script>
+
 
     <script type="text/javascript" src="/js/common/recommend.js"></script>
 </head>
@@ -56,10 +49,10 @@
                         <!-- 검색창 --> 
                         <div class="form-group w50 fr ">
                             <div class="input-group input-group-sm fr" style="width: 250px;">
-                                    <input type="text" name="table_search" class="form-control pull-right" placeholder="<%= __('Enter_search_word') %>">
-                                    <div class="input-group-btn">
-                                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                                    </div>
+                                <input type="text" name="searchRecommendText" class="form-control pull-right" placeholder="<%= __('Enter_search_word') %>">
+                                <div class="input-group-btn">
+                                <button class="btn btn-default" onclick="recommendSearch()"><i class="fa fa-search"></i></button>
+                                </div>
                             </div>
                         </div> 
                         <!--학습 추천 테이블 --> 

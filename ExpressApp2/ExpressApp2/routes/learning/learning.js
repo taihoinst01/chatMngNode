@@ -22,19 +22,20 @@ router.get('/recommend', function (req, res) {
 router.post('/recommend', function (req, res) {
     var selectType = req.body.selectType;
     var currentPage = req.body.currentPage;
+    var searchRecommendText = req.body.searchRecommendText;
 
     (async () => {
         try {
-            var entitiesQueryString = "SELECT TBZ.* "+
-            "FROM (SELECT TBY.* "+
-            "FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) AS NUM, "+
-            "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, "+
-            "CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX, "+
-            "TBX.* "+
-            "FROM ( "+
-            "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES " +
-            "FROM TBL_QUERY_ANALYSIS_RESULT " + 
-            "WHERE RESULT='D'";
+            var entitiesQueryString = "SELECT TBZ.* \n"+
+            "FROM (SELECT TBY.* \n"+
+            "FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) AS NUM, \n"+
+            "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"+
+            "CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX, \n"+
+            "TBX.* \n"+
+            "FROM ( \n"+
+            "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES \n" +
+            "FROM TBL_QUERY_ANALYSIS_RESULT \n" + 
+            "WHERE (RESULT='D' OR RESULT='S') \n";
             
             if(selectType == 'yesterday'){
                 entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) like '%'+(select CONVERT(CHAR(10), (select dateadd(day,-1,getdate())), 23)) + '%'";
@@ -45,7 +46,11 @@ router.post('/recommend', function (req, res) {
                 entitiesQueryString += " AND (CONVERT(CHAR(7), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(7), (select dateadd(month,-1,getdate())), 23)) + '%'";
             }else{
             }
-
+            
+            if(searchRecommendText) {
+                
+                entitiesQueryString += " AND QUERY LIKE '%" + searchRecommendText + "%' "; 
+            }
             entitiesQueryString += " ) TBX) TBY) TBZ";
             entitiesQueryString += " WHERE PAGEIDX = @currentPage";
             entitiesQueryString += " ORDER BY NUM";

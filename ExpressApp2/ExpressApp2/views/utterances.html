@@ -5,12 +5,11 @@
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
+    <title>
+        TIIS Manager
+    </title>
     <%include  ./common/commonLib.html%>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    
-    
-   
     
     <link rel='stylesheet' href='/css/utterances.css' />
     <link rel='stylesheet' href='/css/botchat.css' />
@@ -21,7 +20,6 @@
 
 
     <script type="text/javascript" src="/js/common/utterances.js"></script>
-    <script type="text/javascript" src="/js/common/botchat.js"></script>
 
 </head>
 
@@ -74,7 +72,7 @@
                                                 <th><%= __('FUNCTION') %></th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="utterTableBody">
                                                                                                         
                                         </tbody>
                                     </table>
@@ -116,11 +114,13 @@
                 <!--// Left col -->                       
                     
                 <!-- 추천문장 -->
+                <!--
                 <div class="box  color-palette-box">
                 <div class="box-body02">
                         <div class="box-header with-border"><h3 class="box-title"><%= __('A_recommendation') %></h3></div>
                 </div> 
                 </div>
+                -->
                 <!-- //추천문장 -->                                
                     
             </section>

@@ -7,11 +7,6 @@ var language;
         success: function(data) {
             language= data.lang;
 
-            // groupType 사양및 장단점 역할
-            // sourceType 구분 역할
-            var groupType =  $('.selected').text();
-            var sourceType = $('#tblSourceType').val();
-            selectDlgByTxt(groupType, sourceType);
         }
     });
 })(jQuery);
@@ -22,6 +17,11 @@ var rememberSelBoxHtml = '';
 
 $(document).ready(function(){
 
+    // groupType 사양및 장단점 역할
+    // sourceType 구분 역할
+    var groupType =  $('.selected').text();
+    var sourceType = $('#tblSourceType').val();
+    selectDlgByTxt(groupType, sourceType);
 
     //검색 enter
     $('#iptDialog').keyup(function(e){
@@ -1269,7 +1269,7 @@ var currentSearchNum = 2; // 0: 검색어로 검색한 경우, 1: 테이블 위 
 $(document).on('click','.li_paging',function(e){
     
     if(!$(this).hasClass('active')){
-        $('#currentPage').val($(this).text());
+        $('#currentPage').val($(this).val());
         if(currentSearchNum == 0) {
 
             searchIptDlg(); 

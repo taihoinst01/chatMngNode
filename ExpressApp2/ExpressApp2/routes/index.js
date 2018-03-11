@@ -17,29 +17,44 @@ var saveAppList;
 /* GET home page. */
 router.get('/', function (req, res) {
     if(req.session.sid) {
-
+        var userId = req.session.sid;
         try{
 
-            //db정보 조회
-
+            //db정보 조회 start-----
             dbConnect.getConnection(sql).then(pool => { 
                 return pool.request().query( "SELECT USER_NAME, PASSWORD, SERVER, DATABASE_NAME, APP_NAME, APP_ID FROM TBL_DB_CONFIG; " ) 
             }).then(result => {
                 let dbValue = result.recordset;
                 req.session.dbValue = dbValue;
+
+                var getSimulUrlStr = "SELECT ISNULL(" +
+                                    "(SELECT CNF_VALUE FROM TBL_CHATBOT_CONF WHERE CNF_TYPE = 'SIMULATION_URL' AND CNF_NM = '" + userId + "'), " +
+                                    "(SELECT CNF_VALUE FROM TBL_CHATBOT_CONF WHERE CNF_TYPE = 'SIMULATION_URL' AND CNF_NM = 'admin'))  AS SIMUL_URL";
+                dbConnect.getConnection(sql).then(pool => { 
+                    return pool.request().query( getSimulUrlStr ) 
+                }).then(result => {
+                    
+                    req.session.simul_url = result.recordset[0].SIMUL_URL;
+
+                }).catch(err => {
+                    console.log(err);
+                    sql.close();
+                });
+
                 sql.close();
             }).catch(err => {
                 console.log(err);
                 sql.close();
             });
+            //db정보 조회 end----
 
             var client = new Client();
             var options = {
                 headers: {
-                    'Ocp-Apim-Subscription-Key': subKey
+                    'Ocp-Apim-Subscription-Key': req.session.subsKey//subKey
                 }
             };
-            
+
             client.get( HOST + '/luis/api/v2.0/apps/', options, function (data, response) {
                 //console.log(data)
                 var appList = data;
@@ -69,6 +84,7 @@ router.get('/', function (req, res) {
                                         } else {
                                             //기존 앱이 삭제되고 같은 이름의 새 앱이 생긴 경우
                                             deleteAppStr += "DELETE FROM TBL_LUIS_APP WHERE APP_NAME = '" + rows[i].APP_NAME + "' AND APP_ID = '" + rows[i].APP_ID + "'; \n";
+                                            deleteAppStr += "DELETE FROM TBL_CHAT_RELATION_APP APP_ID = '" + rows[i].APP_ID + "'; \n";
                                         }
 
                                         chkDelApp = false;
@@ -78,6 +94,7 @@ router.get('/', function (req, res) {
 
                                 if (chkDelApp) {
                                     deleteAppStr += "DELETE FROM TBL_LUIS_APP WHERE APP_NAME = '" + rows[i].APP_NAME + "' AND APP_ID = '" + rows[i].APP_ID + "'; \n";
+                                    deleteAppStr += "DELETE FROM TBL_CHAT_RELATION_APP APP_ID = '" + rows[i].APP_ID + "'; \n";
                                 }
                             }
 
@@ -193,19 +210,63 @@ router.get('/', function (req, res) {
 router.get('/list', function (req, res) {
     req.session.selMenu = 'm1';
     var loginId = req.session.sid;
+    /*
     var userListStr = "SELECT A.APP_ID, A.VERSION, A.APP_NAME, FORMAT(A.REG_DT,'yyyy-MM-dd') REG_DT, A.CULTURE, A.DESCRIPTION, A.APP_COLOR \n" +
                       "  FROM TBL_LUIS_APP A, TBL_USER_RELATION_APP B \n" +
                       " WHERE 1=1 \n" +
                       "   AND A.APP_ID = B.APP_ID \n" +
                       "   AND B.USER_ID = '" + loginId + "'; \n";
-
+    */
+    var userListStr = "SELECT DISTINCT B.CHATBOT_NUM, B.CHATBOT_NAME, B.CULTURE, B.DESCRIPTION, B.APP_COLOR \n";
+       userListStr += "  FROM TBL_USER_RELATION_APP A, TBL_CHATBOT_APP B \n";
+       userListStr += " WHERE A.CHAT_ID = B.CHATBOT_NUM; \n";
     var rows;
-    var cnt_query;
+    
     dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(userListStr)
         }).then(result => {
             rows = result.recordset
+            req.session.leftList = rows;
+            var dbList = req.session.dbValue;
+            if (typeof dbList === 'undefined') {
+                res.render('appList');
+            }
+            sql.close();
+            for (var i=0; i<rows.length; i++) {
+                for (var j=0; j<dbList.length; j++) {
+                    var cnt_query = "SELECT  (SELECT COUNT(DLG_ID) FROM TBL_DLG) AS INTENT_CNT, \n" +
+                                    "		(SELECT count(distinct GroupM) FROM TBL_DLG) AS DLG_CNT, " + i + " AS I_INDEX;"
+                    dbConnect.getAppConnection(sql, rows[0].CHATBOT_NAME, dbList ).then(pool => {
+                        return pool.request().query(cnt_query)
+                    }).then(result2 => {
+                        var rows2 = result2.recordset;
+                        rows[rows2[0].I_INDEX].INTENT_CNT = rows2[0].INTENT_CNT;
+                        rows[rows2[0].I_INDEX].DLG_CNT = rows2[0].DLG_CNT;
+                        sql.close();
+                        if ( rows2[0].I_INDEX === rows.length -1) {
+                            req.session.save(function(){
+                                res.render('appList',
+                                {
+                                    title: 'Express',
+                                    appName: req.session.appName,
+                                    selMenu: req.session.selMenu,
+                                    list: rows,
+                                    leftList: req.session.leftList
+                                });
+                            });
+                        }
+                    }).catch(err => {
+                        res.status(500).send({ message: "${err}"})
+                        sql.close();
+                    });
+                    break;
+                    
+                }
+
+            }
+
+/*
             req.session.leftList = rows;
             if (rows.length > 0) {
                 cnt_query = " SELECT ( SELECT COUNT( DISTINCT LUIS_INTENT ) FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ID ='" + rows[0].APP_NAME + "')  AS INTENT_CNT, \n" +
@@ -243,6 +304,7 @@ router.get('/list', function (req, res) {
                 res.status(500).send({ message: "${err}"})
                 sql.close();
             });
+*/
 
         }).catch(err => {
             res.status(500).send({ message: "${err}"})

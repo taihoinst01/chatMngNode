@@ -68,6 +68,24 @@ app.use(function(req, res, next) {
         res.locals.dbValue = null;
     }
 
+    if(req.session.subsKeyList) {
+        res.locals.subsKeyList = req.session.subsKeyList;
+    } else {
+        res.locals.subsKeyList = null;
+    }
+
+    if(req.session.subsKey) {
+        res.locals.subsKey = req.session.subsKey;
+    } else {
+        res.locals.subsKey = null;
+    }
+
+    if(req.session.simul_url) {
+        res.locals.simul_url = req.session.simul_url;
+    } else {
+        res.locals.simul_url = null;
+    }
+
     if(req.session.selMenu) {
         res.locals.selMenu = req.session.selMenu;
     } else {
