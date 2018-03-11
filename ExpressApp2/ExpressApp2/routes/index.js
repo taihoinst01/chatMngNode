@@ -6,6 +6,9 @@ var dbConfig = require('../config/dbConfig');
 var dbConnect = require('../config/dbConnect');
 var luisConfig = require('../config/luisConfig');
 var i18n = require("i18n");
+const syncClient = require('sync-rest-client');
+const appDbConnect = require('../config/appDbConnect');
+const appSql = require('mssql');
 var router = express.Router();
 
 const HOST = 'https://westus.api.cognitive.microsoft.com'; // Luis api host
@@ -388,8 +391,147 @@ router.post('/admin/renameApp', function (req, res){
     
 });
 
+router.post('/admin/trainApp', function (req, res){
+    var appId = req.session.appId;
+    var appName = req.session.appName;
+    var versionId;
+
+    for (var i=0; i<saveAppList.length; i++) {
+        if (appName === saveAppList[i].name) {
+            versionId = saveAppList[i].endpoints.PRODUCTION.versionId;
+        }
+    }
+    var client = new Client();
+    
+    var options = {
+        headers: {
+            'Ocp-Apim-Subscription-Key': subKey
+        }
+    };
+    
+    var selectAppIdQuery = "SELECT CHATBOT_ID, APP_ID, VERSION, APP_NAME,CULTURE, SUBSC_KEY \n";
+    selectAppIdQuery += "FROM TBL_LUIS_APP \n";
+    selectAppIdQuery += "WHERE CHATBOT_ID = (SELECT CHATBOT_NUM FROM TBL_CHATBOT_APP WHERE CHATBOT_NAME=@chatName)\n";
+
+    var selectEntityQuery = "SELECT ENTITY_VALUE, ENTITY\n";
+    selectEntityQuery += "FROM TBL_COMMON_ENTITY_DEFINE\n";
+    selectEntityQuery += "WHERE TRAIN_FLAG = 'N'\n";
+
+    (async () => {
+        try {
+
+            let pool = await dbConnect.getConnection(sql);
+            let selectAppId = await pool.request()
+                .input('chatName', sql.NVarChar, '오토웨이')
+                .query(selectAppIdQuery);
+
+            var appCount = false;
+            var useLuisAppId;
+
+            for(var i = 0 ; i < selectAppId.recordset.length; i++) {
+                var luisAppId = selectAppId.recordset[i].APP_ID;
+
+                //luis intent count check
+                var intentCountRes = syncClient.get(HOST + '/luis/api/v2.0/apps/' + luisAppId + '/versions/0.1/examples?take=500' , options);
+                
+                if( !(intentCountRes.body.length >= 280) ) {
+                    useLuisAppId = luisAppId;
+                    appCount = true;
+                }
+            }
+
+            if(appCount == false) {
+                //create luis app 
+                res.send({result:402});
+            }else{
+                let dbPool = await appDbConnect.getAppConnection(appSql, req.session.appName, req.session.dbValue);
+                let selectEntity = await dbPool.request()
+                    .query(selectEntityQuery);
+
+                for(var i = 0 ; i < selectEntity.recordset.length; i++ ) {
+                    var entity = selectEntity.recordset[i].ENTITY;
+                    var entityValue = selectEntity.recordset[i].ENTITY_VALUE;
+
+                    //luis hierarchicalentities list count check
+                    var entityListResult = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities?take=500' , options);
+                    if(entityListResult.body.length <= 28) {
+                        var entityId = entityListResult.body[entityListResult.body.length-1].id;
+
+                        //luis hierarchicalentities count check
+                        var entityResult = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities/'+ entityId , options);
+                        
+                        if(entityResult.body.length <= 10) {
+                            options.payload = { "name" :  entity };
+                            // add hierarchicalentities
+                            var entityCreateResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities/'+ entityId + '/children', options);
+                        } else {
+                            options.payload = {
+                                "name" : "entity" + (entityListResult.body.length + 1),
+                                "children" : [entity]
+                            };
+                            // add hierarchicalentities list, entity
+                            var entityListResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities', options);
+                        }
+
+                        // luis intent count check
+                        var intentCountRes = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/examples?take=500' , options);
+
+                        if( !(intentCountRes.body.length >= 280) ) {
+
+                            //get entity name
+                            var getEntityName = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities?take=500' , options);
+                            var addEntity;
+                            for(var i = 0; i < getEntityName.body.length; i++) {
+                                for(var j = 0 ; j < getEntityName.body[i].children.length; j++) {
+                                    if( getEntityName.body[i].children[j].name == entity ) {
+                                        addEntity=getEntityName.body[i].name + "::" + entity;
+                                    }
+                                }
+                            }
+
+                            options.payload = {
+                                "text" : entityValue,
+                                "intentName" : "intent",
+                                "entityLabels" :
+                                [
+                                    {
+                                        "entityName": addEntity,
+                                        "startCharIndex" : 0,
+                                        "endCharIndex": entity.length-1
+                                    }
+                                ]
+                            }
+
+                            // add luis label
+                            var addIntentLabel = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/example' , options);
+                        } else {
+                            res.send({result:402});
+                        }
+                    } else {
+                        //create luis app 
+                        res.send({result:402});
+                    }
+
+                }
+
+                var trainResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train' , options);
+
+                var publishResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/publish' , options);
+
+                res.send({result:200});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+});
+
 //luis Train
 //Luis app insert
+/*
 router.post('/admin/trainApp', function (req, res){
     var appId = req.session.appId;
     var appName = req.session.appName;
@@ -408,6 +550,8 @@ router.post('/admin/trainApp', function (req, res){
         }
     };
     try{
+
+
         client.get( HOST + '/luis/api/v2.0/apps/' + appId + '/versions/' + versionId + '/train', options, function (data, response) {
             //console.log(data); // app id값
             var responseData = data;
@@ -446,6 +590,7 @@ router.post('/admin/trainApp', function (req, res){
         console.log(e);
     }
 });
+*/
 
 router.post('/ajax1', function (req, res) {
     console.log("동기동기 비동기");

@@ -222,7 +222,8 @@
                     //alert(data.message);
                 } else { //200
                     var result = data.resultValue;
-                    $('#trainResultTag').text($('#successHidden').val() + " : " + result.sucCnt + "  " + $('#failHidden').val() + " : " + result.failCnt);
+                    alert("학습을 완료하였습니다.");
+                    //$('#trainResultTag').text($('#successHidden').val() + " : " + result.sucCnt + "  " + $('#failHidden').val() + " : " + result.failCnt);
                     //alert("성공 : " + result.sucCnt + "실패 : " + result.failCnt);
                 }
                 $('#trainBtnHidden').trigger('click');

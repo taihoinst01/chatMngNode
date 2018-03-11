@@ -23,6 +23,7 @@
     "serve-favicon": "^2.3.0",
     "mssql": "4.1.0",
     "crypto": "1.0.1",
-    "i18n": "~0.8.3"
+    "i18n": "~0.8.3",
+    "sync-rest-client": "1.0.3"
   }
 }
