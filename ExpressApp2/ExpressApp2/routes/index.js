@@ -226,6 +226,9 @@ router.get('/list', function (req, res) {
             rows = result.recordset
             req.session.leftList = rows;
             var dbList = req.session.dbValue;
+            if (typeof dbList === 'undefined') {
+                res.render('appList');
+            }
             sql.close();
             for (var i=0; i<rows.length; i++) {
                 for (var j=0; j<dbList.length; j++) {
