@@ -404,15 +404,15 @@ router.post('/updateUserAppList', function (req, res) {
     var removeDataStr = "";
 
     for (var i=0; i<saveData.length; i++) {
-        saveDataStr += "INSERT INTO TBL_USER_RELATION_APP(USER_ID, APP_ID) " +
-                    "     VALUES ('" + userId + "', " + saveData[i] + "); ";    
+        saveDataStr += "INSERT INTO TBL_USER_RELATION_APP(USER_ID, APP_ID, CHAT_ID) " +
+                    "     VALUES ('" + userId + "', " + saveData[i] + ", " + saveData[i] + "); ";    
     }
     
     for (var i=0; i<removeData.length; i++) {
-        removeDataStr += "DELETE FROM TBL_USER_RELATION_APP " +
-                    "      WHERE 1=1 " +
-                    "        AND APP_ID = " + removeData[i].APP_ID + " " +
-                    "        AND USER_ID = '" + userId + "'; ";     
+        removeDataStr += "DELETE FROM TBL_USER_RELATION_APP \n" +
+                    "      WHERE 1=1 \n" +
+                    "        AND CHAT_ID = " + removeData[i].APP_ID + " \n" +
+                    "        AND USER_ID = '" + userId + "'; \n";     
     }
                         
                    
@@ -612,14 +612,18 @@ router.post('/updateChatAppList', function (req, res) {
 
     for (var i=0; i<saveData.length; i++) {
         saveDataStr += "INSERT INTO TBL_CHAT_RELATION_APP(CHAT_ID, APP_ID) " +
-                    "     VALUES (" + chatId + ", '" + saveData[i] + "'); ";    
+                    "     VALUES (" + chatId + ", '" + saveData[i] + "'); \n";    
+        
+        saveDataStr += "UPDATE TBL_LUIS_APP SET CHATBOT_ID = " + chatId + " WHERE APP_ID = '" + saveData[i] + "'; \n";  
     }
     
     for (var i=0; i<removeData.length; i++) {
         removeDataStr += "DELETE FROM TBL_CHAT_RELATION_APP " +
                     "      WHERE 1=1 " +
                     "        AND CHAT_ID = " + chatId + " " +
-                    "        AND APP_ID = '" + removeData[i].APP_ID + "'; ";     
+                    "        AND APP_ID = '" + removeData[i].APP_ID + "'; \n";     
+        
+        removeDataStr += "UPDATE TBL_LUIS_APP SET CHATBOT_ID = NULL WHERE APP_ID = '" + saveData[i] + "'; \n" ;
     }
                         
                    
@@ -801,6 +805,7 @@ router.post('/selecChatList', function (req, res) {
 router.post('/addApp', function (req, res) {
 
     var chatNum = req.body.selApp;
+    var chatName = req.body.selAppName;
     var appDes = checkNull(req.body.appDes, ' ');
     var getApplist = "SELECT APP_NAME, CULTURE, SUBSC_KEY FROM TBL_LUIS_APP WHERE CHATBOT_ID = " + chatNum + ";";
     
@@ -859,10 +864,22 @@ router.post('/addApp', function (req, res) {
                                     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
                                     return pool.request().query(appStr)
                                 }).then(result => {
-        
                                     let rows = result.recordset;
-                                    res.send({ message:'Save Success'});
-                                    sql.close();
+
+                                    var insertQry = "INSERT INTO TBL_CHATBOT_CONF (CNF_TYPE, CNF_NM, CNF_VALUE, ORDER_NO) \n" +
+                                                    "VALUES ('LUIS_APP_ID', '" + appInfo.name + "', '" + appInfo.id + "', (SELECT MAX(ORDER_NO)+1 FROM TBL_CHATBOT_CONF WHERE CNF_TYPE='LUIS_APP_ID')); "
+                                    dbConnect.getAppConnection(sql, chatName, req.session.dbValue).then(pool => {
+                                        //new sql.ConnectionPool(dbConfig).connect().then(pool => {
+                                        return pool.request().query(insertQry) 
+                                    }).then(result => {
+                                        let rows = result.recordset;
+
+                                        res.send({ message:'Save Success'});
+                                        sql.close();
+                                    }).catch(err => {
+                                        console.log(err);
+                                        sql.close();
+                                    });
                                 }).catch(err => {
                                     console.log(err);
                                     sql.close();

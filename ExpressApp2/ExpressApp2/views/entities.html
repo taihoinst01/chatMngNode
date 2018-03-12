@@ -71,11 +71,11 @@
 </div>
 
 	<!-- 팝업_신규단어생성 -->
-	<div class="modal fade" id="create_dlg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+	<div class="modal fade" id="create_dlg" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel" aria-hidden="true" >
               <div class="modal-dialog">
                         <div class="modal-content">
                                   <div class="modal-header">
-                                        <button type="button" class="close addDialogCancel" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                        <button type="button" class="close addEntityModalClose" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
                                         <h4 class="modal-title" id="myModalLabel"><%= __('Create_new_Entity_Set') %></h4>
                                   </div>
                                   <form name="appInsertForm" id="appInsertForm" method="post">
@@ -91,7 +91,7 @@
                                         <div class="form-group" >
                                             <label>API_GROUP<span class="nec_ico">*</span></label>
                                             <select id="apiGroup" name="apiGroup" class="form-control"> 
-                                                <option value="COMMON">COMMON</option>
+                                                <!--<option value="COMMON">COMMON</option>-->
                                             </select>
                                         </div>
                                         <div class="nec fr"><span class="nec_ico">*</span><%= __('IS_REQUIRED') %></div>

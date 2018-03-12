@@ -67,7 +67,7 @@
 	"A_recommendation": "추천문장",
 	"Dialogue": "다이얼로그",
 	"Large group": "대그룹",
-	"Please_enter": "내용을 입력하세요 ..",
+	"Please_enter": "내용을 입력하세요 ",
 	"Search word": "검색어",
 	"Middle group": "중그룹",
 	"Small group": "소그룹",
@@ -236,6 +236,6 @@
 	"Group": "그룹",
 	"ADMIN_SETTING": "관리자 설정",
 	"CHATBOT_MNG": "챗봇 관리",
-	"APP_LIST": "앱 목록"
-
+	"APP_LIST": "앱 목록",
+	"Midium_group": "Midium_group"
 }

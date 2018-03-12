@@ -105,7 +105,19 @@ $(document).ready(function () {
     var lastMonthDayVal = d.getDate();
     //
     
-    var minDate = lastMonthVal.toString() + "/" + lastMonthDayVal.toString() + "/" + (yyyy.toString());  //new Date(yyyy.toString()-1, mm.toString(), dd.toString());
+    //
+    var lastWeek = today.getDate()-7;
+    var lastWeekVal;
+    var lastDay;
+    if (lastWeek < 1) {
+        lastDay = ( new Date( lastMonth.getYear(), lastMonth.getMonth()+1, 0) ).getDate();
+        lastDay += lastWeek;
+    } else {
+        lastDay = lastWeek;
+        lastMonthVal = mm;
+    }
+    //
+    var minDate = lastMonthVal.toString() + "/" + lastDay.toString() + "/" + (yyyy.toString());  //new Date(yyyy.toString()-1, mm.toString(), dd.toString());
     var maxDate = mm.toString() + "/" + dd.toString() + "/" + yyyy.toString();  //new Date(yyyy.toString(), mm.toString(), dd.toString());
     $('#reservation').val(minDate + " - " + maxDate);
 

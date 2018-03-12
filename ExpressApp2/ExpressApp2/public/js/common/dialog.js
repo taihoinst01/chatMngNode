@@ -12,7 +12,10 @@ var language;
 })(jQuery);
 
 var rememberSelBoxHtml = '';
-
+var $insertForm;
+var $dlgForm;
+var $carouselForm;
+var $mediaForm;
 
 
 $(document).ready(function(){
@@ -290,6 +293,11 @@ $(document).ready(function(){
                 $(this).remove();
             } 
         });
+
+        $insertForm = $('#commonLayout .insertForm').eq(0).clone();
+        $dlgForm = $('#commonLayout .textLayout').eq(0).clone();
+        $carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
+        $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
     
         if($(e.target).val() == "2") {
     
@@ -418,9 +426,9 @@ $(document).ready(function(){
         $('#commonLayout').css('display', 'block');
         $('#commonLayout').prepend(insertForm);
         
-        if($('#btnCreateLgroup').html() == '취소' || $('#btnCreateLgroup').html() == 'CANCEL') {
+        if($('#btnCreateLMiddle').html() == '취소' || $('#btnCreateMiddle').html() == 'CANCEL') {
 
-            $('#btnCreateLgroup').click();
+            $('#btnCreateMiddle').click();
         }
         var dialogView = '';
         dialogView += '<div class="dialogView" >';
@@ -506,15 +514,15 @@ $(document).ready(function(){
     });
 
     // 다이얼로그 생성 모달
-    $('#btnCreateLgroup').on('click',function(e){
+    $('#btnCreateMiddle').on('click',function(e){
         if($(this).html() == "신규" || $(this).html() == "NEW") {
             $(this).html(language.CANCEL);
-            $('#largeGroupEdit').css('display','block');
-            $('#largeGroup').css('display','none');
+            $('#middleGroupEdit').css('display','block');
+            $('#middleGroup').css('display','none');
         } else {
             $(this).html(language.NEW);
-            $('#largeGroupEdit').css('display','none');
-            $('#largeGroup').css('display','block');
+            $('#middleGroupEdit').css('display','none');
+            $('#middleGroup').css('display','block');
         }
 
         return;
@@ -530,7 +538,39 @@ $(document).ready(function(){
             $(this).next().prop("disabled", true);
         }   
     });
+
+    //largeGroupSelect
+    getGroupSeelectBox();
 });
+
+function getGroupSeelectBox() {
+    $.ajax({
+        type: 'POST',
+        url: '/learning/getGroupSelectBox',
+        data : params,
+        isloading: true,
+        success: function(data) {
+            var groupL = data.groupL;
+            var groupM = data.groupM;
+
+            var groupHtml = "";
+
+            for(var i = 0; i < groupL.length; i++ ) {
+                groupHtml += '<option value="' + groupL[i].GROUPL + '">' + groupL[i].GROUPL + '</option>';
+            }
+
+            $("#largeGroup").html(groupHtml);
+
+            groupHtml = "";
+            for(var i = 0; i < groupM.length; i++ ) {
+                groupHtml += '<option value="' + groupM[i].GROUPM + '">' + groupM[i].GROUPM + '</option>';
+            }
+
+            $("#middleGroup").html(groupHtml);
+
+        }
+    });
+}
 
 
 //검색어로 검색
@@ -1219,7 +1259,7 @@ function selectDlgByTxt(groupType, sourceType){
                     item += '<tr>' +
                             '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
                             '<td>' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#dialogShowMordal"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#myModal2"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
                             '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
@@ -1285,10 +1325,6 @@ $(document).on('click','.li_paging',function(e){
     }
 });
 
-var $insertForm;
-var $dlgForm;
-var $carouselForm;
-var $mediaForm;
 function openModalBox(target){
     
     /*
@@ -1334,6 +1370,7 @@ function openModalBox(target){
     wrapWindowByMask();
 
     if(target == "#create_dlg") {
+        $("#createDialog").attr('onclick','createDialog()');
         $(".insertForm form").append($(".textLayout").clone(true));
         $(".insertForm .textLayout").css("display","block");
     }
@@ -1455,13 +1492,13 @@ function searchDialog(dlgID) {
                     botChatNum4Desc++;
                     var val = row[i];
 
-                    inputUttrHtml += '<div style="width: 90%; height: 90%; float:left; margin: 15px 20px;">';
+                    //inputUttrHtml += '<div style="width: 90%; height: 90%; float:left; margin: 15px 20px;">';
                     //inputUttrHtml += '<div style="height: 10%; width: 100%; z-index:5; background-color: #6f6c6c;">';
                     //inputUttrHtml += '<div class="check-radio-tweak-wrapper2 searchDlgChk" type="checkbox">';
                     //inputUttrHtml += '<input name="chksearch" class="tweak-input" type="checkbox"/>';
                     //inputUttrHtml += '</div>';
                     //inputUttrHtml += '</div>';
-                    inputUttrHtml += '<div style="height: 90%; overflow: scroll; overflow-x: hidden; background-color: rgb(241, 243, 246);; padding:10px;">';
+                    //inputUttrHtml += '<div style="height: 90%; overflow: scroll; overflow-x: hidden; background-color: rgb(241, 243, 246);; padding:10px;">';
 
                     //for(var l = 0; l < val.length; l++){
                         var tmp = val;//val[l];
@@ -1480,6 +1517,10 @@ function searchDialog(dlgID) {
                                 inputUttrHtml += '</p>';
                                 inputUttrHtml += '</div></div></div></div></div>';
 
+                                $(".insertForm form").append($(".textLayout").clone(true));
+                                $("#dialogLayout").eq(j).find("select[name=dlgType]").val("2").prop("selected",true);
+                                $("#dialogLayout").eq(j).find("input[name=dialogTitle]").val(tmp.dlg[j].CARD_TITLE);
+                                $("#dialogLayout").eq(j).find("input[name=dialogText]").val(tmp.dlg[j].CARD_TEXT);
                             } else if(tmp.dlg[j].DLG_TYPE == 3) {
 
                                 if(j == 0) {
@@ -1555,6 +1596,7 @@ function searchDialog(dlgID) {
                                 inputUttrHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
                                 inputUttrHtml += '</div></div></div></div></div>';
                             }
+                            $('#updateDlgId').val(tmp.dlg[j].DLG_ID);
                         }
                     //}
                 
@@ -1563,13 +1605,25 @@ function searchDialog(dlgID) {
                 inputUttrHtml += '</div>';
                 }
             }
-            $('#dialogShow').html(inputUttrHtml);
+            $('.dialogView').html(inputUttrHtml);
             //$('#dialogShow').prepend(inputUttrHtml);
-            //openModalBox('#dialogShowMordal');
+
+            //대화상자 수정 추가
+            $('h4#myModalLabel.modal-title').text('대화상자 수정');
+            $('#description').text(result['list'][0].DLG_DESCRIPTION);
+            $("#largeGroup").val(result['list'][0].GROUPL).prop("selected",true);
+            $("#middleGroup").val(result['list'][0].GROUPM).prop("selected",true);
+            $("#createDialog").attr('onclick','updateDialog()');
+
+            $(".insertForm .textLayout").css("display","block");
             
         } 
         
 
     }); // ------      ajax 끝-----------------
+}
+
+function updateDialog() {
+
 }
 

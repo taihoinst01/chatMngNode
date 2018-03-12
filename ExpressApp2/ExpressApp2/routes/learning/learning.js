@@ -43,7 +43,7 @@ router.post('/recommend', function (req, res) {
                 entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) >= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, -1)), 23))";
                 entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) <= (SELECT CONVERT(CHAR(10), (DATEADD(wk, DATEDIFF(d, 0, getdate()) / 7 - 1, 5)), 23))";
             }else if(selectType == 'lastMonth'){
-                entitiesQueryString += " AND (CONVERT(CHAR(7), UPD_DT, 23)) like '%'+ (select CONVERT(CHAR(7), (select dateadd(month,-1,getdate())), 23)) + '%'";
+                entitiesQueryString += "  AND CONVERT(CHAR(10), UPD_DT, 23)  BETWEEN CONVERT(CHAR(10),dateadd(month,-1,getdate()), 23) and CONVERT(CHAR(10), getdate(), 23) ";
             }else{
             }
             
@@ -1541,6 +1541,7 @@ router.post('/searchDialog',function(req,res){
                 }
             }
         }
+        relationText += "AND DLG_API_DEFINE = 'D' \n";
         relationText += "GROUP BY LUIS_ENTITIES, DLG_ID, LUIS_ID, LUIS_INTENT \n";
         relationText += ") A LEFT OUTER JOIN TBL_DLG B\n";
         relationText += "ON A.DLG_ID = B.DLG_ID \n";
@@ -1598,6 +1599,7 @@ router.post('/searchDialog',function(req,res){
                 }
             }
         }
+        dlgCard += "AND DLG_API_DEFINE = 'D' \n";
         dlgCard += ") \n ORDER BY DLG_ID";
     
     var dlgMedia = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, MEDIA_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n";
@@ -1628,6 +1630,7 @@ router.post('/searchDialog',function(req,res){
                 }
             }
         }
+        dlgMedia += "AND DLG_API_DEFINE = 'D' \n";
         dlgMedia += ") \n ORDER BY DLG_ID";
 
     (async () => {
@@ -1899,8 +1902,9 @@ router.post('/getDlgAjax', function (req, res) {
 
     var entity = [];
     var dlgID = req.body.dlgID;
-    var selectDlgType = "SELECT DLG_TYPE \n" +
-                        "  FROM TBL_DLG \n" +
+    var selectDlgType = " SELECT DLG_TYPE \n" +
+                        " , DLG_DESCRIPTION , GROUPL , GROUPM\n" +
+                        " FROM TBL_DLG \n" +
                         " WHERE DLG_ID=" + dlgID + " \n";
 
     /*
@@ -1970,6 +1974,9 @@ router.post('/getDlgAjax', function (req, res) {
             for(var i = 0; i < rows.length; i++){
                 var row = {};
                 row.DLG_TYPE = rows[i].DLG_TYPE;
+                row.DLG_DESCRIPTION = rows[i].DLG_DESCRIPTION;
+                row.GROUPL = rows[i].GROUPL;
+                row.GROUPM = rows[i].GROUPM;
                 row.DLG_ID = dlgID;
                 row.dlg = [];
 
@@ -2013,7 +2020,74 @@ router.post('/getDlgAjax', function (req, res) {
     })
 });
 
+router.post('/getGroupSelectBox', function (req, res) {
 
+    var selectGroupLQuery = "SELECT DISTINCT GROUPL \n";
+    selectGroupLQuery += "FROM TBL_DLG \n";
+    selectGroupLQuery += "WHERE GROUPL IS NOT NULL\n";
+
+    var selectGroupMQuery = "SELECT DISTINCT GROUPM \n";
+    selectGroupMQuery += "FROM TBL_DLG \n";
+    selectGroupMQuery += "WHERE GROUPM IS NOT NULL\n";
+
+    (async () => {
+        try {
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
+
+            let selectGroupL = await pool.request()
+                .query(selectGroupLQuery);
+            let groupL = selectGroupL.recordset;
+
+            let selectGroupM = await pool.request()
+            .query(selectGroupMQuery);
+            let groupM = selectGroupM.recordset;
+
+            res.send({"groupL" : groupL, "groupM" : groupM});
+        
+        } catch (err) {
+            console.log(err);
+        } finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
+        
+    })
+});   
+//엔티티 추가시 group selbox 조회
+router.post('/selectApiGroup', function (req, res) {
+    
+    var entityDefine = req.body.entityDefine;
+    var entityValue = req.body.entityValue;
+    var apiGroup = req.body.apiGroup;
+    (async () => {
+        try {
+            
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
+
+            var selectQuery  = '  SELECT API_GROUP \n';
+                selectQuery += '    FROM TBL_COMMON_ENTITY_DEFINE \n';
+                selectQuery += 'GROUP BY API_GROUP; \n';
+            let result0 = await pool.request()
+            .query(selectQuery);  
+
+            let rows = result0.recordset;
+
+            res.send({groupList: rows});
+        
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'insert Entity Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
+    })
+    
+});
 
 
 

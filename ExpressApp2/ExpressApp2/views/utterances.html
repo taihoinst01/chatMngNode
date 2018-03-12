@@ -137,7 +137,7 @@
     
     
     <!-- 팝업_신규단어생성 -->
-    <div class="modal fade" id="addEntityModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal fade" id="addEntityModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel" aria-hidden="true" >
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -148,17 +148,17 @@
                     <form name="entityInsertForm" id="entityInsertForm" method="post">
                         <div class="form-group" >
                             <label><%= __('WORD_DEFINITION') %><span class="nec_ico">*</span></label>
-                            <input type="text" name="entityDefine" class="form-control" placeholder=" <%= __('Please_enter') %>">
+                            <input type="text" name="entityDefine" id="entityDefine" class="form-control" onkeyup="entityValidation();" placeholder=" <%= __('Please_enter') %>">
                         </div>
                         <div class="form-group" >
                             <label><%= __('SYNONYM') %><span class="nec_ico">*</span></label>
-                            <input type="text" name="entityValue" class="form-control" placeholder=" <%= __('Please_enter') %>">
+                            <input type="text" name="entityValue" id="entityValue" class="form-control" onkeyup="entityValidation();" placeholder=" <%= __('Please_enter') %>">
                         </div>
                         <div class="form-group" >
                             <label>API_GROUP<span class="nec_ico">*</span></label>
-                            <select name="apiGroup" class="form-control"> 
-                                <option value="COMMON">COMMON</option>
-                                <option value="api testdrive">api testdrive</option>
+                            <select name="apiGroup" id="apiGroup" class="form-control"> 
+                                <!--<option value="COMMON">COMMON</option>-->
+                                <!--<option value="api testdrive">api testdrive</option>-->
                             </select>
                         </div>
                     </form>
@@ -166,7 +166,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="btn_wrap">
-                        <button type="button" class="btn btn_01" onclick="insertEntity()"><%= __('ADD') %></button>
+                        <button type="button" id="addEntityBtn" class="btn btn_01" onclick="insertEntity()" ><%= __('ADD') %></button>
                         <button type="button" class="btn btn-default addEntityModalClose"  data-dismiss="modal"><%= __('CANCEL') %></button>
                     </div>
                 </div>
@@ -176,7 +176,7 @@
     <!-- //팝업_신규단어생성 -->
 
     <!-- 팝업_대화상자 찾기 -->
-    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header" style="clear:both">
@@ -230,7 +230,7 @@
     <!-- //팝업_대화상자 찾기 -->   
 
     <!-- 신규 대화상자 생성 -->
-    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg02" >
             <div class="modal-content" >
                                     
