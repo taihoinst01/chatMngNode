@@ -148,22 +148,20 @@
                         <div class="col-md-6" style="padding:0">  
                             <form name="appInsertForm" id="appInsertForm">
                                 <h5><span class="col01 fa fa-chevron-right"></span> <%= __('GROUP_INFORMATION') %></h5>          
-                                <div class="form-group col-md-6"   style="padding:0" >
-                                    <label><%= __('Large_group') %><span class="nec_ico">*</span></label>
-                                    <button type="button" class="btn btn-block btn-default btn-xs  fr" id="btnCreateLgroup"><%= __('NEW') %></button>
+                                <div class="form-group col-md-6" style="padding:0"  >
+                                    <label><%= __('Large_group') %><span class="nec_ico">*</span> </label>
                                     <select class="form-control" id="largeGroup" name="largeGroup"> 
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6"   style="padding-right:0" >
+                                    <label><%= __('Middle_group') %><span class="nec_ico">*</span></label>
+                                    <button type="button" class="btn btn-block btn-default btn-xs  fr" id="btnCreateMiddle"><%= __('NEW') %></button>
+                                    <select class="form-control" id="middleGroup" name="middleGroup"> 
                                             <option value="" selected>largeGroup1</option>
                                             <option value="">largeGroup2</option>
                                             <option value="">largeGroup3</option>
                                     </select>
-                                    <input type="text" name="largeGroupEdit" id="largeGroupEdit" class="form-control" style="display:none;"/>
-                                </div> 
-                                <div class="form-group col-md-6" style="padding-right:0"  >
-                                    <label><%= __('Source_type') %><span class="nec_ico">*</span> </label>
-                                    <select class="form-control" id="sourceType" name="sourceType"> 
-                                        <option value="COMMON" selected>COMMON</option>
-                                        <option value="API">API</option>
-                                    </select>
+                                    <input type="text" name="middleGroupEdit" id="middleGroupEdit" class="form-control" style="display:none;"/>
                                 </div> 
                                 <div class="clear-both"></div>
                                 <div class="form-group" >
@@ -370,6 +368,7 @@
                     </div>
                     <div class="btn_wrap">
                         <button type="button" class="btn btn_01" onclick="createDialog();"><%= __('CREAT') %></button>
+                        <button type="button" class="btn btn_01" onclick="updateDialog();">수정</button>
                         <button type="button" class="btn btn-default createDlgModalClose"  data-dismiss="modal"><%= __('CANCEL') %></button>
                     </div>
                 </div>

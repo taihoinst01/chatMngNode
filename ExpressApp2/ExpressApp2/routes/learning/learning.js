@@ -1898,8 +1898,9 @@ router.post('/getDlgAjax', function (req, res) {
 
     var entity = [];
     var dlgID = req.body.dlgID;
-    var selectDlgType = "SELECT DLG_TYPE \n" +
-                        "  FROM TBL_DLG \n" +
+    var selectDlgType = " SELECT DLG_TYPE \n" +
+                        " , DLG_DESCRIPTION , GROUPL , GROUPM\n" +
+                        " FROM TBL_DLG \n" +
                         " WHERE DLG_ID=" + dlgID + " \n";
 
     /*
@@ -1969,6 +1970,9 @@ router.post('/getDlgAjax', function (req, res) {
             for(var i = 0; i < rows.length; i++){
                 var row = {};
                 row.DLG_TYPE = rows[i].DLG_TYPE;
+                row.DLG_DESCRIPTION = rows[i].DLG_DESCRIPTION;
+                row.GROUPL = rows[i].GROUPL;
+                row.GROUPM = rows[i].GROUPM;
                 row.DLG_ID = dlgID;
                 row.dlg = [];
 
@@ -2012,7 +2016,37 @@ router.post('/getDlgAjax', function (req, res) {
     })
 });
 
+router.post('/getGroupSelectBox', function (req, res) {
 
+    var selectGroupLQuery = "SELECT DISTINCT GROUPL \n";
+    selectGroupLQuery += "FROM TBL_DLG \n";
+    selectGroupLQuery += "WHERE GROUPL IS NOT NULL\n";
+
+    var selectGroupMQuery = "SELECT DISTINCT GROUPM \n";
+    selectGroupMQuery += "FROM TBL_DLG \n";
+    selectGroupMQuery += "WHERE GROUPM IS NOT NULL\n";
+
+    (async () => {
+        try {
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
+
+            let selectGroupL = await pool.request()
+                .query(selectGroupLQuery);
+            let groupL = selectGroupL.recordset;
+
+            let selectGroupM = await pool.request()
+            .query(selectGroupMQuery);
+            let groupM = selectGroupM.recordset;
+
+            res.send({"groupL" : groupL, "groupM" : groupM});
+        
+        } catch (err) {
+            console.log(err);
+        } finally {
+            sql.close();
+        }
+    })()
+});
 
 
 
