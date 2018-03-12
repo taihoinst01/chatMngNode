@@ -1546,6 +1546,7 @@ router.post('/searchDialog',function(req,res){
                 }
             }
         }
+        relationText += "AND DLG_API_DEFINE = 'D' \n";
         relationText += "GROUP BY LUIS_ENTITIES, DLG_ID, LUIS_ID, LUIS_INTENT \n";
         relationText += ") A LEFT OUTER JOIN TBL_DLG B\n";
         relationText += "ON A.DLG_ID = B.DLG_ID \n";
@@ -1603,6 +1604,7 @@ router.post('/searchDialog',function(req,res){
                 }
             }
         }
+        dlgCard += "AND DLG_API_DEFINE = 'D' \n";
         dlgCard += ") \n ORDER BY DLG_ID";
     
     var dlgMedia = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, MEDIA_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n";
