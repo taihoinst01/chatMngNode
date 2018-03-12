@@ -2013,6 +2013,39 @@ router.post('/getDlgAjax', function (req, res) {
 });
 
 
+//엔티티 추가시 group selbox 조회
+router.post('/selectApiGroup', function (req, res) {
+    
+    var entityDefine = req.body.entityDefine;
+    var entityValue = req.body.entityValue;
+    var apiGroup = req.body.apiGroup;
+    (async () => {
+        try {
+            
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
+
+            var selectQuery  = '  SELECT API_GROUP \n';
+                selectQuery += '    FROM TBL_COMMON_ENTITY_DEFINE \n';
+                selectQuery += 'GROUP BY API_GROUP; \n';
+            let result0 = await pool.request()
+            .query(selectQuery);  
+
+            let rows = result0.recordset;
+
+            res.send({groupList: rows});
+        
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'insert Entity Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
+    })
+    
+});
 
 
 

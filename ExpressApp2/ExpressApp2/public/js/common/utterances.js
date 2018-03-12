@@ -20,6 +20,9 @@ $(document).ready(function(){
     
     //새로운 다이얼로그 생성 모달창에 필요한 luisId 가져오기
     getLuisInfo('luisId');
+    
+    //엔티티생성 모달 selbox 설정 
+    selectApiGroup();
 });
 
 // Utterance 삭제
@@ -956,6 +959,28 @@ function insertDialog(){
     });
 }
 */
+
+//엔티티 추가 group selbox 설정
+function selectApiGroup() {
+    $.ajax({
+        type: 'POST',
+        datatype: "JSON",
+        //data: params,
+        url: '/learning/selectApiGroup',
+        success: function(data) {
+            if (data.groupList) {
+                var groupList = data.groupList;
+                var optionStr = "";
+                for (var i=0; i<groupList.length; i++) {
+                    optionStr += '<option value="' + groupList[i].API_GROUP + '">' + groupList[i].API_GROUP + '</option>'
+                }
+                $('#apiGroup').html(optionStr);
+            }
+        }
+    });
+}
+
+
 function createDialog(){
 
     var idx = $('form[name=dialogLayout]').length;
