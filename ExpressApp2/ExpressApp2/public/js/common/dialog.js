@@ -24,8 +24,8 @@ $(document).ready(function(){
     selectDlgByTxt(groupType, sourceType);
 
     //api selbox 초기설정
-    selectApiGroup();
-    
+    //selectApiGroup();
+
     //검색 enter
     $('#iptDialog').keyup(function(e){
         if(e.keyCode == 13) {

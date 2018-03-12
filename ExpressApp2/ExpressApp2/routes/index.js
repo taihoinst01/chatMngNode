@@ -247,8 +247,8 @@ router.get('/list', function (req, res) {
             var chkIndexQry = 0;
             for (var i=0; i<rows.length; i++) {
 
-                var cnt_query = "SELECT  (SELECT COUNT(DLG_ID) FROM TBL_DLG) AS INTENT_CNT, \n" +
-                                    "		(SELECT count(distinct GroupM) FROM TBL_DLG) AS DLG_CNT, " + i + " AS I_INDEX;"
+                var cnt_query = "SELECT  (SELECT COUNT(DLG_ID) FROM TBL_DLG) AS DLG_CNT, \n" +
+                                    "		(SELECT count(distinct GroupM) FROM TBL_DLG) AS INTENT_CNT, " + i + " AS I_INDEX;"
 
                 var dbPool = await dbConnect.getAppConnection(appSql, rows[i].CHATBOT_NAME, req.session.dbValue);
                 var result2 = await dbPool.request()
@@ -258,7 +258,7 @@ router.get('/list', function (req, res) {
                 var rows2 = result2.recordset;
                 rows[i].INTENT_CNT = rows2[0].INTENT_CNT;
                 rows[i].DLG_CNT = rows2[0].DLG_CNT;
-
+                sql.close();
                 if ( chkIndex === rows.length) {
                     req.session.save(function(){
                         res.render('appList',

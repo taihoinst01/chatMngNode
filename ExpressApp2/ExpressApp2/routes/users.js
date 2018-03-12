@@ -405,7 +405,7 @@ router.post('/updateUserAppList', function (req, res) {
 
     for (var i=0; i<saveData.length; i++) {
         saveDataStr += "INSERT INTO TBL_USER_RELATION_APP(USER_ID, APP_ID, CHAT_ID) " +
-                    "     VALUES ('" + userId + "', " + saveData[i] + ", " + saveData[i] + "); ";    
+                    "     VALUES ('" + userId + "', " + saveData[i] + ", " + saveData[i] + "); \n";    
     }
     
     for (var i=0; i<removeData.length; i++) {
@@ -548,12 +548,11 @@ router.post('/selectChatAppList', function (req, res) {
                          "   (SELECT ROW_NUMBER() OVER(ORDER BY CHAT_ID DESC) AS NUM, \n" +
                          "           COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
                          "           CEILING((ROW_NUMBER() OVER(ORDER BY CHAT_ID DESC))/ convert(numeric ,10)) PAGEIDX, \n" +
-                        "            CHAT_ID \n" +
+                        "            CHAT_ID, APP_ID\n" +
                         "       FROM TBL_CHAT_RELATION_APP \n" +
                         "      WHERE 1=1 \n" +
                         "        AND CHAT_ID = '" + chatId + "') tbp  \n" + 
-                        " WHERE 1=1;  \n";
-                        //"   AND PAGEIDX = " + currentPage + "; \n";                  
+                        " WHERE 1=1  \n";                
     (async () => {
         try {
             let pool = await dbConnect.getConnection(sql);
@@ -573,8 +572,9 @@ router.post('/selectChatAppList', function (req, res) {
             var checkedApp = [];
             for(var i = 0; i < rows2.length; i++){
                 for (var j=0; j < recordList.length; j++) {
-                    if (rows2[i].CHATBOT_ID === recordList[j].CHAT_ID) {
+                    if (rows2[i].APP_ID.trim() === recordList[j].APP_ID.trim()) {
                         var item = {};
+                        rows2[i].APP_ID = rows2[i].APP_ID.trim();
                         item = rows2[i];
                         checkedApp.push(item);
                         break;
@@ -604,7 +604,7 @@ router.post('/selectChatAppList', function (req, res) {
 })
 
 router.post('/updateChatAppList', function (req, res) {
-    let chatId = req.body.chatId;
+    let chatId = req.body.chatId.trim();
     let saveData = JSON.parse(checkNull(req.body.saveData, ''));
     let removeData = JSON.parse(checkNull(req.body.removeData, ''));
     var saveDataStr = "";
@@ -618,12 +618,12 @@ router.post('/updateChatAppList', function (req, res) {
     }
     
     for (var i=0; i<removeData.length; i++) {
-        removeDataStr += "DELETE FROM TBL_CHAT_RELATION_APP " +
-                    "      WHERE 1=1 " +
-                    "        AND CHAT_ID = " + chatId + " " +
-                    "        AND APP_ID = '" + removeData[i].APP_ID + "'; \n";     
+        removeDataStr += "DELETE FROM TBL_CHAT_RELATION_APP \n" +
+                    "      WHERE 1=1 \n" +
+                    "        AND CHAT_ID = " + chatId + " \n" +
+                    "        AND APP_ID = '" + removeData[i].APP_ID.trim() + "'; \n ";     
         
-        removeDataStr += "UPDATE TBL_LUIS_APP SET CHATBOT_ID = NULL WHERE APP_ID = '" + saveData[i] + "'; \n" ;
+        removeDataStr += " UPDATE TBL_LUIS_APP SET CHATBOT_ID = NULL WHERE APP_ID = '" + removeData[i].APP_ID.trim() + "'; \n" ;
     }
                         
                    
