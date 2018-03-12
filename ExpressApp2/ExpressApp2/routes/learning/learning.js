@@ -1902,7 +1902,7 @@ router.post('/getDlgAjax', function (req, res) {
     var entity = [];
     var dlgID = req.body.dlgID;
     var selectDlgType = " SELECT DLG_TYPE \n" +
-                        " , DLG_DESCRIPTION , GROUPL , GROUPM\n" +
+                        " , DLG_DESCRIPTION , GROUPL , GROUPM, GROUPS\n" +
                         " FROM TBL_DLG \n" +
                         " WHERE DLG_ID=" + dlgID + " \n";
 
@@ -1976,6 +1976,7 @@ router.post('/getDlgAjax', function (req, res) {
                 row.DLG_DESCRIPTION = rows[i].DLG_DESCRIPTION;
                 row.GROUPL = rows[i].GROUPL;
                 row.GROUPM = rows[i].GROUPM;
+                row.GROUPS = rows[i].GROUPS;
                 row.DLG_ID = dlgID;
                 row.dlg = [];
 
@@ -2019,6 +2020,212 @@ router.post('/getDlgAjax', function (req, res) {
     })
 });
 
+router.post('/updateDialog', function (req, res) {
+    var dlgIdReq = req.body.dlgId;
+    var dlgType = req.body.dlgType;
+    var entity = req.body.entity;
+
+    var data = req.body['data[]'];
+    var array = [];
+    var queryText = "";
+    var tblDlgId = [];
+    if( typeof data == "string"){
+        console.log("data is string");
+        var json = JSON.parse(data);
+
+        for( var key in json) {
+            console.log("key : " + key + " value : " + json[key]);
+        }
+    
+    } else {
+        console.log("data is object");
+
+        //array = JSON.parse(data);
+        
+        var dataIdx = data.length;
+        
+        for(var i = 0; i < dataIdx; i++) {
+            array[i] = JSON.parse(data[i]);
+        }
+        
+        for(var i = 0; i < array.length; i++) {
+            for( var key in array[i]) {
+                console.log("key : " + key + " value : " + array[i][key]);
+            }
+        }
+    }
+
+    var delDlgTextQuery = "DELETE FROM TBL_DLG_TEXT WHERE DLG_ID = @dlgId";
+    var delDlgCardQuery = "DELETE FROM TBL_DLG_CARD WHERE DLG_ID = @dlgId";
+    var delDlgMediaQuery = "DELETE FROM TBL_DLG_MEDIA WHERE DLG_ID = @dlgId";
+    var delDlgQuery = "DELETE FROM TBL_DLG WHERE DLG_ID = @dlgId"
+    
+    var selDlgQuery = "SELECT DLG_ID, DLG_LANG, DLG_GROUP, DLG_TYPE, DLG_ORDER_NO\n";
+    selDlgQuery += "FROM TBL_DLG\n";
+    selDlgQuery += "WHERE DLG_ID = @dlgId";
+
+    var selDlgRelationQuery = "";
+
+    (async () => {
+        try {
+
+            var selectDlgId = 'SELECT ISNULL(MAX(DLG_ID)+1,1) AS DLG_ID FROM TBL_DLG';
+            //var selectTextDlgId = 'SELECT ISNULL(MAX(TEXT_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_TEXT';
+            //var selectCarouselDlgId = 'SELECT ISNULL(MAX(CARD_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_CARD';
+            //var selectMediaDlgId = 'SELECT ISNULL(MAX(MEDIA_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_MEDIA';
+            var insertTblDlg = 'INSERT INTO TBL_DLG(DLG_ID,DLG_NAME,DLG_DESCRIPTION,DLG_LANG,DLG_TYPE,DLG_ORDER_NO,USE_YN,GROUPL,GROUPM,GROUPS,DLG_GROUP) VALUES ' +
+            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dialogOrderNo,\'Y\',@groupl,@groupm,@groups,2)';
+            var inserTblDlgText = 'INSERT INTO TBL_DLG_TEXT(DLG_ID,CARD_TITLE,CARD_TEXT,USE_YN) VALUES ' +
+            '(@dlgId,@dialogTitle,@dialogText,\'Y\')';
+            var insertTblCarousel = 'INSERT INTO TBL_DLG_CARD(DLG_ID,CARD_TITLE,CARD_TEXT,IMG_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_ORDER_NO,USE_YN) VALUES ' +
+            '(@dlgId,@dialogTitle,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardOrderNo,\'Y\')';
+            var insertTblDlgMedia = 'INSERT INTO TBL_DLG_MEDIA(DLG_ID,CARD_TITLE,CARD_TEXT,MEDIA_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_VALUE,USE_YN) VALUES ' +
+            '(@dlgId,@dialogTitle,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardValue,\'Y\')';
+            var insertTblRelation = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) " 
+            + "VALUES( @luisId, @luisIntent, @entity, @dlgId, 'D', 'Y' ) ";
+
+            var luisId = array[array.length - 1]["largeGroup"];
+            var luisIntent = array[array.length - 1]["middleGroup"];
+            var sourceType = array[array.length - 1]["sourceType"];
+            var description = array[array.length - 1]["description"];
+
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
+
+            let selDlgRes = await pool.request()
+                .input('dlgId', sql.Int, dlgIdReq)
+                .query(selDlgQuery);
+
+            let selDlg = selDlgRes.recordset;
+
+            //tbl_dlg 삭제
+            let delDlg = await pool.request()
+                .input('dlgId', sql.Int, dlgIdReq)
+                .query(delDlgQuery);
+
+            //tbl_dlg text, card, media 삭제
+            if(selDlg[0].DLG_TYPE == 2) {
+                let delDlgText = await pool.request()
+                    .input('dlgId', sql.Int, dlgIdReq)
+                    .query(delDlgTextQuery);
+            } else if(selDlg[0].DLG_TYPE == 3) {
+                let delDlgCard = await pool.request()
+                    .input('dlgId', sql.Int, dlgIdReq)
+                    .query(delDlgCardQuery);
+            } else if(selDlg[0].DLG_TYPE == 4) {
+                let delDlgMedia = await pool.request()
+                    .input('dlgId', sql.Int, dlgIdReq)
+                    .query(delDlgMediaQuery);
+            }
+
+            for(var i = 0; i < (array.length-1); i++) {
+
+                let result1 = await pool.request()
+                    .query(selectDlgId)
+                let dlgId = result1.recordset;
+
+                let result2 = await pool.request()
+                    .input('dlgId', sql.Int, i==0?dlgIdReq:dlgId[0].DLG_ID)
+                    .input('dialogText', sql.NVarChar, description)
+                    .input('dlgType', sql.NVarChar, array[i]["dlgType"])
+                    .input('dialogOrderNo', sql.Int, (i+1))
+                    .input('groupl', sql.NVarChar, luisId)
+                    .input('groupm', sql.NVarChar, luisIntent)
+                    .input('groups', sql.NVarChar, entity)
+                    .query(insertTblDlg)
+
+                if(array[i]["dlgType"] == "2") {
+
+                    let result4 = await pool.request()
+                    .input('dlgId', sql.Int, i==0?dlgIdReq:dlgId[0].DLG_ID)
+                    .input('dialogTitle', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('dialogText', sql.NVarChar, array[i]["dialogText"])
+                    .query(inserTblDlgText);                    
+
+                } else if(array[i]["dlgType"] == "3") {
+
+                    for (var j=0; j<array[i].carouselArr.length; j++) {
+                        var carTmp = array[i].carouselArr[j];
+                        
+                        carTmp["btn1Type"] = (carTmp["cButtonContent1"] != "") ? carTmp["btn1Type"] : "";
+                        carTmp["btn2Type"] = (carTmp["cButtonContent2"] != "") ? carTmp["btn2Type"] : "";
+                        carTmp["btn3Type"] = (carTmp["cButtonContent3"] != "") ? carTmp["btn3Type"] : "";
+                        carTmp["btn4Type"] = (carTmp["cButtonContent4"] != "") ? carTmp["btn4Type"] : "";
+
+                        let result2 = await pool.request()
+                        .input('dlgId', sql.Int, i==0?dlgIdReq:dlgId[0].DLG_ID)
+                        .input('dialogTitle', sql.NVarChar, carTmp["dialogTitle"])
+                        .input('dialogText', sql.NVarChar, carTmp["dialogText"])
+                        .input('imgUrl', sql.NVarChar, carTmp["imgUrl"])
+                        .input('btn1Type', sql.NVarChar, carTmp["btn1Type"])
+                        .input('buttonName1', sql.NVarChar, carTmp["cButtonName1"])
+                        .input('buttonContent1', sql.NVarChar, carTmp["cButtonContent1"])
+                        .input('btn2Type', sql.NVarChar, carTmp["btn2Type"])
+                        .input('buttonName2', sql.NVarChar, carTmp["cButtonName2"])
+                        .input('buttonContent2', sql.NVarChar, carTmp["cButtonContent2"])
+                        .input('btn3Type', sql.NVarChar, carTmp["btn3Type"])
+                        .input('buttonName3', sql.NVarChar, carTmp["cButtonName3"])
+                        .input('buttonContent3', sql.NVarChar, carTmp["cButtonContent3"])
+                        .input('btn4Type', sql.NVarChar, carTmp["btn4Type"])
+                        .input('buttonName4', sql.NVarChar, carTmp["cButtonName4"])
+                        .input('buttonContent4', sql.NVarChar, carTmp["cButtonContent4"])
+                        .input('cardOrderNo', sql.Int, (j+1))
+                        .query(insertTblCarousel);
+
+                    }
+
+                    tblDlgId.push(dlgId[0].DLG_ID);
+
+                } else if(array[i]["dlgType"] == "4") {
+
+                    let result4 = await pool.request()
+                    .input('dlgId', sql.Int, i==0?dlgIdReq:dlgId[0].DLG_ID)
+                    .input('dialogTitle', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('dialogText', sql.NVarChar, array[i]["dialogText"])
+                    .input('imgUrl', sql.NVarChar, array[i]["imgUrl"])
+                    .input('btn1Type', sql.NVarChar, array[i]["btn1Type"])
+                    .input('buttonName1', sql.NVarChar, array[i]["mButtonName1"])
+                    .input('buttonContent1', sql.NVarChar, array[i]["mButtonContent1"])
+                    .input('btn2Type', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('buttonName2', sql.NVarChar, array[i]["mButtonName2"])
+                    .input('buttonContent2', sql.NVarChar, array[i]["mButtonContent2"])
+                    .input('btn3Type', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('buttonName3', sql.NVarChar, array[i]["mButtonName3"])
+                    .input('buttonContent3', sql.NVarChar, array[i]["mButtonContent3"])
+                    .input('btn4Type', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('buttonName4', sql.NVarChar, array[i]["mButtonName4"])
+                    .input('buttonContent4', sql.NVarChar, array[i]["mButtonContent4"])
+                    .input('cardValue', sql.NVarChar, array[i]["mediaUrl"])
+                    .query(insertTblDlgMedia)
+
+                    tblDlgId.push(dlgId[0].DLG_ID);
+                }
+
+                if(i != 0){
+                    let insertTblRelationRes = await pool.request()
+                        .input('luisId', sql.NVarChar, luisId)
+                        .input('luisIntent', sql.NVarChar, luisIntent)
+                        .input('entity', sql.NVarChar, entity)
+                        .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                        .query(insertTblRelation)
+                }
+
+                tblDlgId.push(dlgId[0].DLG_ID);
+
+            }
+            res.send({"res":true});
+        
+        } catch (err) {
+            console.log(err);
+        } finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
+
+    })
+});
+
 router.post('/getGroupSelectBox', function (req, res) {
 
     var selectGroupLQuery = "SELECT DISTINCT GROUPL \n";
@@ -2051,7 +2258,7 @@ router.post('/getGroupSelectBox', function (req, res) {
     })()
     
     sql.on('error', err => {
-        
+
     })
 });   
 //엔티티 추가시 group selbox 조회
