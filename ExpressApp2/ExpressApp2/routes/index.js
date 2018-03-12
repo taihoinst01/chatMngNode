@@ -251,7 +251,7 @@ router.get('/list', function (req, res) {
                                     "		(SELECT count(distinct GroupM) FROM TBL_DLG) AS DLG_CNT, " + i + " AS I_INDEX;"
 
                 var dbPool = await dbConnect.getAppConnection(appSql, rows[i].CHATBOT_NAME, req.session.dbValue);
-                var selectEntity = await dbPool.request()
+                var result2 = await dbPool.request()
                     .query(cnt_query);
 
                 chkIndex++;
