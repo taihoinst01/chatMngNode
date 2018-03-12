@@ -25,6 +25,7 @@ $(document).ready(function(){
     entityValidation();
     //엔티티추가 모달 selectbox 설정
     selectApiGroup();
+
 });
 // Utterance 삭제
 $(document).on('click', '.utterDelete', function() {
