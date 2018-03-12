@@ -404,15 +404,15 @@ router.post('/updateUserAppList', function (req, res) {
     var removeDataStr = "";
 
     for (var i=0; i<saveData.length; i++) {
-        saveDataStr += "INSERT INTO TBL_USER_RELATION_APP(USER_ID, APP_ID) " +
-                    "     VALUES ('" + userId + "', " + saveData[i] + "); ";    
+        saveDataStr += "INSERT INTO TBL_USER_RELATION_APP(USER_ID, APP_ID, CHAT_ID) " +
+                    "     VALUES ('" + userId + "', " + saveData[i] + ", " + saveData[i] + "); ";    
     }
     
     for (var i=0; i<removeData.length; i++) {
-        removeDataStr += "DELETE FROM TBL_USER_RELATION_APP " +
-                    "      WHERE 1=1 " +
-                    "        AND APP_ID = " + removeData[i].APP_ID + " " +
-                    "        AND USER_ID = '" + userId + "'; ";     
+        removeDataStr += "DELETE FROM TBL_USER_RELATION_APP \n" +
+                    "      WHERE 1=1 \n" +
+                    "        AND CHAT_ID = " + removeData[i].APP_ID + " \n" +
+                    "        AND USER_ID = '" + userId + "'; \n";     
     }
                         
                    
@@ -612,14 +612,18 @@ router.post('/updateChatAppList', function (req, res) {
 
     for (var i=0; i<saveData.length; i++) {
         saveDataStr += "INSERT INTO TBL_CHAT_RELATION_APP(CHAT_ID, APP_ID) " +
-                    "     VALUES (" + chatId + ", '" + saveData[i] + "'); ";    
+                    "     VALUES (" + chatId + ", '" + saveData[i] + "'); \n";    
+        
+        saveDataStr += "UPDATE TBL_LUIS_APP SET CHATBOT_ID = " + chatId + " WHERE APP_ID = '" + saveData[i] + "'; \n";  
     }
     
     for (var i=0; i<removeData.length; i++) {
         removeDataStr += "DELETE FROM TBL_CHAT_RELATION_APP " +
                     "      WHERE 1=1 " +
                     "        AND CHAT_ID = " + chatId + " " +
-                    "        AND APP_ID = '" + removeData[i].APP_ID + "'; ";     
+                    "        AND APP_ID = '" + removeData[i].APP_ID + "'; \n";     
+        
+        removeDataStr += "UPDATE TBL_LUIS_APP SET CHATBOT_ID = NULL WHERE APP_ID = '" + saveData[i] + "'; \n" ;
     }
                         
                    

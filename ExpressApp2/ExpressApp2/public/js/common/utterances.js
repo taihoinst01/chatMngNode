@@ -20,8 +20,12 @@ $(document).ready(function(){
     
     //새로운 다이얼로그 생성 모달창에 필요한 luisId 가져오기
     getLuisInfo('luisId');
+    
+    //엔티티 추가 모달 초기 설정
+    entityValidation();
+    //엔티티추가 모달 selectbox 설정
+    selectApiGroup();
 });
-
 // Utterance 삭제
 $(document).on('click', '.utterDelete', function() {
 
@@ -956,6 +960,41 @@ function insertDialog(){
     });
 }
 */
+//엔티티 추가 생성 유효성 검사
+function entityValidation(){
+    var defineText = $('#entityDefine').val();
+    var valueText = $('#entityValue').val();
+    
+    if(defineText != "" && valueText != "") {
+        $('#addEntityBtn').removeClass("disable");
+        $('#addEntityBtn').attr("disabled", false);
+    } else {
+        $('#addEntityBtn').attr("disabled", "disabled");
+        $('#addEntityBtn').addClass("disable");
+    }
+}
+
+//엔티티 추가 group selbox 설정
+function selectApiGroup() {
+    $.ajax({
+        type: 'POST',
+        datatype: "JSON",
+        //data: params,
+        url: '/learning/selectApiGroup',
+        success: function(data) {
+            if (data.groupList) {
+                var groupList = data.groupList;
+                var optionStr = "";
+                for (var i=0; i<groupList.length; i++) {
+                    optionStr += '<option value="' + groupList[i].API_GROUP + '">' + groupList[i].API_GROUP + '</option>'
+                }
+                $('#apiGroup').html(optionStr);
+            }
+        }
+    });
+}
+
+
 function createDialog(){
 
     var idx = $('form[name=dialogLayout]').length;
@@ -1383,17 +1422,17 @@ function selectGroup(selectId,str1,str2) {
             var group = result.rows;
             $("#"+selectId).html("");
             if(selectId == "searchLargeGroup") {
-                $("#"+selectId).append('<option value="">largeGroup</option>');
+                $("#"+selectId).append('<option value="">' + language.Large_group + '</option>');
                 $('#searchMediumGroup').html("");
                 $('#searchSmallGroup').html("");
-                $('#searchMediumGroup').append('<option value="">mediumGroup</option>');
-                $('#searchSmallGroup').append('<option value="">smallGroup</option>');
+                $('#searchMediumGroup').append('<option value="">' + language.Middle_group + '</option>');
+                $('#searchSmallGroup').append('<option value="">' + language.Small_group + '</option>');
             } else if(selectId == "searchMediumGroup") {
-                $("#"+selectId).append('<option value="">mediumGroup</option>' );
+                $("#"+selectId).append('<option value="">' + language.Middle_group + '</option>' );
                 $('#searchSmallGroup').html("");
-                $('#searchSmallGroup').append('<option value="">smallGroup</option>');
+                $('#searchSmallGroup').append('<option value="">' + language.Small_group + '</option>');
             } else {
-                $('#searchSmallGroup').append('<option value="">smallGroup</option>');
+                $('#searchSmallGroup').append('<option value="">' + language.Small_group + '</option>');
             }
             for(var i = 0; i < group.length; i++){
                 $("#"+selectId).append('<option value="' + group[i]['GROUP'] + '">' + group[i]['GROUP'] + '</option>' );
@@ -1811,7 +1850,7 @@ function insertEntity(){
 
     if((entityDefine == "" || entityDefine == null || entityDefine == undefined) 
             && (entityValue == "" || entityValue == null || entityValue == undefined)) {
-        alert("내용을 입력해주세요.");
+            alert(language.Please_enter);
     } else {
 
         $.ajax({

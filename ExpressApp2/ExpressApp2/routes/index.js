@@ -228,98 +228,58 @@ router.get('/list', function (req, res) {
        userListStr += "    AND A.CHAT_ID = B.CHATBOT_NUM;   \n";
     var rows;
     
-    dbConnect.getConnection(sql).then(pool => {
-    //new sql.ConnectionPool(dbConfig).connect().then(pool => {
-        return pool.request().query(userListStr)
-        }).then(result => {
-            rows = result.recordset
+
+
+    (async () => {
+        try {
+
+            let pool = await dbConnect.getConnection(sql);
+            let rslt = await pool.request()
+                .query(userListStr);
+            rows = rslt.recordset
             req.session.leftList = rows;
             var dbList = req.session.dbValue;
             if (typeof dbList === 'undefined') {
                 res.render('appList');
             }
             sql.close();
+            var chkIndex = 0;
+            var chkIndexQry = 0;
             for (var i=0; i<rows.length; i++) {
-                for (var j=0; j<dbList.length; j++) {
-                    var cnt_query = "SELECT  (SELECT COUNT(DLG_ID) FROM TBL_DLG) AS INTENT_CNT, \n" +
+
+                var cnt_query = "SELECT  (SELECT COUNT(DLG_ID) FROM TBL_DLG) AS INTENT_CNT, \n" +
                                     "		(SELECT count(distinct GroupM) FROM TBL_DLG) AS DLG_CNT, " + i + " AS I_INDEX;"
-                    dbConnect.getAppConnection(sql, rows[0].CHATBOT_NAME, dbList ).then(pool => {
-                        return pool.request().query(cnt_query)
-                    }).then(result2 => {
-                        var rows2 = result2.recordset;
-                        rows[rows2[0].I_INDEX].INTENT_CNT = rows2[0].INTENT_CNT;
-                        rows[rows2[0].I_INDEX].DLG_CNT = rows2[0].DLG_CNT;
-                        sql.close();
-                        if ( rows2[0].I_INDEX === rows.length -1) {
-                            req.session.save(function(){
-                                res.render('appList',
-                                {
-                                    title: 'Express',
-                                    appName: req.session.appName,
-                                    selMenu: req.session.selMenu,
-                                    list: rows,
-                                    leftList: req.session.leftList
-                                });
-                            });
-                        }
-                    }).catch(err => {
-                        res.status(500).send({ message: "${err}"})
-                        sql.close();
+
+                var dbPool = await dbConnect.getAppConnection(appSql, rows[i].CHATBOT_NAME, req.session.dbValue);
+                var result2 = await dbPool.request()
+                    .query(cnt_query);
+
+                chkIndex++;
+                var rows2 = result2.recordset;
+                rows[i].INTENT_CNT = rows2[0].INTENT_CNT;
+                rows[i].DLG_CNT = rows2[0].DLG_CNT;
+
+                if ( chkIndex === rows.length) {
+                    req.session.save(function(){
+                        res.render('appList',
+                        {
+                            title: 'Express',
+                            appName: req.session.appName,
+                            selMenu: req.session.selMenu,
+                            list: rows,
+                            leftList: req.session.leftList
+                        });
                     });
-                    break;
-                    
-                }
-
-            }
-
-/*
-            req.session.leftList = rows;
-            if (rows.length > 0) {
-                cnt_query = " SELECT ( SELECT COUNT( DISTINCT LUIS_INTENT ) FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ID ='" + rows[0].APP_NAME + "')  AS INTENT_CNT, \n" +
-                                    "( SELECT COUNT( GroupL )    FROM TBL_DLG  WHERE GroupL ='" + rows[0].APP_NAME + "') AS DLG_CNT \n";
-                for (var i=1; i<rows.length; i++) {
-                    cnt_query += "UNION ALL \n";
-                    cnt_query += " SELECT ( SELECT COUNT( DISTINCT LUIS_INTENT ) FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ID ='" + rows[i].APP_NAME + "')  AS INTENT_CNT, \n" +
-                                     "( SELECT COUNT( GroupL )    FROM TBL_DLG  WHERE GroupL ='" + rows[i].APP_NAME + "') AS DLG_CNT \n";
                 }
             }
-
-            dbConnect.getConnection(sql).then(pool => {
-                return pool.request().query(cnt_query)
-            }).then(result => {
-                let rows2 = result.recordset;
-    
-                for (var i=0; i<rows.length; i++) {
-                    rows[i].INTENT_CNT = rows2[i].INTENT_CNT;
-                    rows[i].DLG_CNT = rows2[i].DLG_CNT;
-                }
-    
-                req.session.save(function(){
-                    res.render('appList',
-                    {
-                        title: 'Express',
-                        appName: req.session.appName,
-                        selMenu: req.session.selMenu,
-                        list: rows,
-                        leftList: req.session.leftList
-                    });
-                });
-                
-                sql.close();
-            }).catch(err => {
-                res.status(500).send({ message: "${err}"})
-                sql.close();
-            });
-*/
-
-        }).catch(err => {
-            res.status(500).send({ message: "${err}"})
+            
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
             sql.close();
-    });
-    
-    sql.on('error', err => {
-        sql.close();
-    })
+        }
+    })()
 });
 
 router.get('/addChatbot', function (req, res) {

@@ -11,8 +11,13 @@ var language;
 })(jQuery);
 
 $(document).ready(function(){
+
     entitiesAjax();
 
+    //엔티티 추가 모달 초기 설정
+    dialogValidation();
+    //엔티티추가 모달 selectbox 설정
+    selectApiGroup();
     //** 모달창 */
     //다이얼로그 생성 모달 닫는 이벤트(초기화)
     $(".js-modal-close").click(function() {
@@ -296,6 +301,15 @@ function dialogValidation(){
 //엔티티 추가
 function insertEntity(){
 
+    if ($('#entityDefine').val().trim() === "") {
+        alert(language.Please_enter);
+        return false;
+    }
+    if ($('#entityValue').val().trim() === "") {
+        alert(language.Please_enter);
+        return false;
+    }
+
     $.ajax({
         url: '/learning/insertEntity',
         dataType: 'json',
@@ -310,6 +324,26 @@ function insertEntity(){
                 alert(language.DUPLICATE_ENTITIES_EXIST);
             } else {
                 alert(language.It_failed);
+            }
+        }
+    });
+}
+
+//엔티티 추가 group selbox 설정
+function selectApiGroup() {
+    $.ajax({
+        type: 'POST',
+        datatype: "JSON",
+        //data: params,
+        url: '/learning/selectApiGroup',
+        success: function(data) {
+            if (data.groupList) {
+                var groupList = data.groupList;
+                var optionStr = "";
+                for (var i=0; i<groupList.length; i++) {
+                    optionStr += '<option value="' + groupList[i].API_GROUP + '">' + groupList[i].API_GROUP + '</option>'
+                }
+                $('#apiGroup').html(optionStr);
             }
         }
     });
