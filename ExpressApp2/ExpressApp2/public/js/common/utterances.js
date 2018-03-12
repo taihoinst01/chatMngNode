@@ -1383,17 +1383,17 @@ function selectGroup(selectId,str1,str2) {
             var group = result.rows;
             $("#"+selectId).html("");
             if(selectId == "searchLargeGroup") {
-                $("#"+selectId).append('<option value="">largeGroup</option>');
+                $("#"+selectId).append('<option value="">' + language.Large_group + '</option>');
                 $('#searchMediumGroup').html("");
                 $('#searchSmallGroup').html("");
-                $('#searchMediumGroup').append('<option value="">mediumGroup</option>');
-                $('#searchSmallGroup').append('<option value="">smallGroup</option>');
+                $('#searchMediumGroup').append('<option value="">' + language.Middle_group + '</option>');
+                $('#searchSmallGroup').append('<option value="">' + language.Small_group + '</option>');
             } else if(selectId == "searchMediumGroup") {
-                $("#"+selectId).append('<option value="">mediumGroup</option>' );
+                $("#"+selectId).append('<option value="">' + language.Middle_group + '</option>' );
                 $('#searchSmallGroup').html("");
-                $('#searchSmallGroup').append('<option value="">smallGroup</option>');
+                $('#searchSmallGroup').append('<option value="">' + language.Small_group + '</option>');
             } else {
-                $('#searchSmallGroup').append('<option value="">smallGroup</option>');
+                $('#searchSmallGroup').append('<option value="">' + language.Small_group + '</option>');
             }
             for(var i = 0; i < group.length; i++){
                 $("#"+selectId).append('<option value="' + group[i]['GROUP'] + '">' + group[i]['GROUP'] + '</option>' );
