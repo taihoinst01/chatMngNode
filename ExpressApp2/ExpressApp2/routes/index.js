@@ -224,7 +224,7 @@ router.get('/list', function (req, res) {
     */
     var userListStr = " SELECT DISTINCT B.CHATBOT_NUM, B.CHATBOT_NAME, B.CULTURE, B.DESCRIPTION, B.APP_COLOR \n";
        userListStr += "   FROM TBL_USER_RELATION_APP A, TBL_CHATBOT_APP B \n";
-       userListStr += "  WHERE A.USER_ID = 'admin'   \n";
+       userListStr += "  WHERE A.USER_ID = '" + loginId + "'   \n";
        userListStr += "    AND A.CHAT_ID = B.CHATBOT_NUM;   \n";
     var rows;
     
