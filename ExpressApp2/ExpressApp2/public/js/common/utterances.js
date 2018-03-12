@@ -1005,6 +1005,24 @@ function createDialog(){
     var idx = $('form[name=dialogLayout]').length;
     var array = [];
     var exit = false;
+
+    if($('select[name=luisId]').val().trim() === "") {
+        alert(language.Please_reset_the_group);
+        return false;
+    }
+
+    var luisIntent;
+    $('#appInsertForm').find('[name=luisIntent]').each(function() {
+        if($(this).attr('disabled') == undefined) {
+            luisIntent = $(this).val();
+            return false;
+        }
+    })
+    if(luisIntent.trim() === "") {
+        alert(language.Please_reset_the_group);
+        return false;
+    }
+
     if ($('#description').val().trim() === "" ) {
         alert(language.Description_must_be_entered);
         return false;
@@ -1064,10 +1082,22 @@ function createDialog(){
                     }
                 }
                 
-                if (typeof objectCarousel[tmp[j].name] !== "undefined" || j === tmp.length-1) {
+                if (typeof objectCarousel[tmp[j].name] !== "undefined" ) {
                     carouselArr.push(objectCarousel);
                     objectCarousel = {};
+                    btnTypeCount = 1;
+                    cButtonContentCount = 1;
+                    cButtonNameCount = 1;
                 } 
+
+                if(j === tmp.length-1){
+                    object[tmp[0].name] = tmp[0].value;
+                    objectCarousel[tmp[j].name] = tmp[j].value;    
+
+                    carouselArr.push(objectCarousel);
+                    objectCarousel = {};
+                    break;
+                }
                 object[tmp[0].name] = tmp[0].value;
                 objectCarousel[tmp[j].name] = tmp[j].value;
             }
@@ -1860,9 +1890,15 @@ $(document).on('click', '.carouseBtn',function(e){
                 '</tr>'
                 $(this).parent().prev().prev().find('.cardCopyTbl tbody').append(inputTrHtml);
     } else {
-        alert("더이상 추가할 수 없습니다.");
+        alert("버튼은 3개까지 추가할 수 있습니다.");
     }
 
+});
+
+//다이얼로그생성 - 카드삭제 
+$(document).on('click', '.deleteCard',function(e){
+    $(this).parent().parent().parent().prev().remove();
+    $(this).parent().parent().parent().remove();
 });
 
 //다이얼로그생성 - 버튼삭제
@@ -1892,7 +1928,7 @@ $(document).on('click', '.addMediaBtn',function(e){
 
 //textLayout
 
-
+//다이얼로그생성 - 카드추가
 $(document).on('click', '.addCarouselBtn', function(e){
     //var $newInsertForm = $insertForm.clone();
     //var $newDlgForm = $dlgForm.clone();
