@@ -242,11 +242,11 @@ function saveChatApp() {
         var saveArr = new Array();
         $('tr div[class*=checked]').each(function() {
             //var rowId = $(this).parent().parent().attr("id");
-            var appId = $(this).parents('tr').children().eq(3).text();
+            var appId = $(this).parents('tr').children().eq(3).text().trim();
             //추가로 체크한 app, 체크 취소한 app 구분
             var rememberLen = initAppCheck.length;
             for (var i=0; i<rememberLen; i++) {
-                if (appId === initAppCheck[i].APP_ID) {
+                if (appId === initAppCheck[i].APP_ID.trim()) {
                     initAppCheck.splice(i,1);
                     break;
                 }

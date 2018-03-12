@@ -26,6 +26,9 @@ $(document).ready(function(){
     var sourceType = $('#tblSourceType').val();
     selectDlgByTxt(groupType, sourceType);
 
+    //api selbox 초기설정
+    //selectApiGroup();
+
     //검색 enter
     $('#iptDialog').keyup(function(e){
         if(e.keyCode == 13) {
@@ -56,8 +59,9 @@ $(document).ready(function(){
         sourceType = $('#tblSourceType').val();
         $('#currentPage').val(1);
         rememberSelBoxHtml = $('#selBoxBody').html();
+
         selectDlgByTxt(groupType, sourceType);
-        
+
         /*
         var selTypeVal = $('#tblSourceType :selected').text();
         $('#dialogTbltbody tr').show();
@@ -775,6 +779,27 @@ $(document).on('click', '.addCarouselBtn', function(e){
     
 
 });
+
+//엔티티 추가 group selbox 설정
+function selectApiGroup() {
+    $.ajax({
+        type: 'POST',
+        datatype: "JSON",
+        //data: params,
+        url: '/learning/selectApiGroup',
+        success: function(data) {
+            if (data.groupList) {
+                var groupList = data.groupList;
+                var optionStr = "";
+                for (var i=0; i<groupList.length; i++) {
+                    optionStr += '<option value="' + groupList[i].API_GROUP + '">' + groupList[i].API_GROUP + '</option>'
+                }
+                $('#sourceType2').append(optionStr);
+                $('#tblSourceType').append(optionStr);
+            }
+        }
+    });
+}
 
 //오른쪽 버튼 클릭시 슬라이드
 function nextBtn(botChatNum) {
