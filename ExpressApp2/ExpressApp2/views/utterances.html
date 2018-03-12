@@ -97,7 +97,7 @@
                                     <h3 class="box-title"><%= __('Dialog_box') %></h3>
                                     <div class="btn_wrap03 fr" style="width:50%" >
                                         <button type="button" class="btn btn_01" data-toggle="modal" data-target="#myModal1" onclick="openModalBox('#search_dlg')"><%= __('SEARCH') %></button>
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal2" onclick="openModalBox('#create_dlg')"><%= __('CREAT') %></button>
+                                        <button type="button" class="btn btn-default" id="create_dlg" data-toggle="modal" data-target="#myModal2" onclick="openModalBox('#create_dlg')"><%= __('CREAT') %></button>
                                     </div>                                                                  
                                 </div>
                                 <div class="dialog_wrap">
@@ -246,25 +246,21 @@
                                 <h5><span class="col01 fa fa-chevron-right"></span> <%= __('GROUP_INFORMATION') %></h5>          
                                 <div class="form-group col-md-6"   style="padding:0" >
                                     <label><%= __('Large_group') %><span class="nec_ico">*</span></label>
-                                    <button type="button" class="btn btn-block btn-default btn-xs  fr" id="btnCreateLgroup"><%= __('NEW') %></button>
-                                    <select class="form-control" id="largeGroup" name="largeGroup"> 
-                                            <option value="" selected>largeGroup1</option>
-                                            <option value="">largeGroup2</option>
-                                            <option value="">largeGroup3</option>
+                                    <select class="form-control" id="luisId" name="luisId"> 
+                                        <option value="">선택</option>
                                     </select>
                                     <input type="text" name="largeGroupEdit" id="largeGroupEdit" class="form-control" style="display:none;"/>
                                 </div> 
                                 <div class="form-group col-md-6" style="padding-right:0"  >
-                                    <label><%= __('Source_type') %><span class="nec_ico">*</span> </label>
-                                    <select class="form-control" id="sourceType" name="sourceType"> 
-                                        <option value="COMMON" selected>COMMON</option>
-                                        <option value="API">API</option>
+                                    <label><%= __('Middle_group') %><span class="nec_ico">*</span> </label>
+                                    <select class="form-control" id="luisIntent" name="luisIntent"> 
+                                        <option value="">선택</option>
                                     </select>
                                 </div> 
                                 <div class="clear-both"></div>
                                 <div class="form-group" >
                                     <label><%= __('explanation') %><span class="nec_ico">*</span> </label>
-                                    <textarea class="form-control" name="description" id="description" rows="3" placeholder="<%= __('Please_enter') %>"> </textarea>
+                                    <textarea class="form-control" name="description" id="description" rows="3" placeholder="<%= __('Please_enter') %>"></textarea>
                                 </div>  
                             </form>
                             <div id="commonLayout" class="dialog_w">
@@ -285,11 +281,11 @@
                                 <div class="textLayout" style="display: none;">                                                         
                                     <div class="form-group">
                                         <label><%= __('DIALOG_BOX_TITLE') %><span class="nec_ico">*</span></label>
-                                        <input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder=" <%= __('Please_enter') %>">
+                                        <input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="<%= __('Please_enter') %>">
                                     </div>                                                                                        
                                     <div class="form-group">
                                         <label><%= __('DIALOG_BOX_CONTENTS') %><span class="nec_ico">*</span></label>
-                                        <input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder=" <%= __('Please_enter') %>">
+                                        <input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="<%= __('Please_enter') %>">
                                     </div> 
                                     
                                 </div>
@@ -321,17 +317,17 @@
                                         </div> 
                                         <div class="form-group col-md-4 cButtonName" style="padding-left:0">
                                             <label><%= __('BUTTON_NAME') %></label>
-                                            <input type="text" name="cButtonName1" class="form-control" placeholder=" <%= __('Please_enter') %>">
-                                            <input type="text" name="cButtonName2" class="form-control" style="display:none;" placeholder=" <%= __('Please_enter') %>">
-                                            <input type="text" name="cButtonName3" class="form-control" style="display:none;" placeholder=" <%= __('Please_enter') %>">
-                                            <input type="text" name="cButtonName4" class="form-control" style="display:none;" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonName1" class="form-control" placeholder="<%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonName2" class="form-control" style="display:none;" placeholder="<%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonName3" class="form-control" style="display:none;" placeholder="<%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonName4" class="form-control" style="display:none;" placeholder="<%= __('Please_enter') %>">
                                         </div>
                                         <div class="form-group col-md-4 cButtonContent" style="padding:0">
                                             <label><%= __('BUTTON_CONTENTS') %> </label>
-                                            <input type="text" name="cButtonContent1" class="form-control" placeholder=" <%= __('Please_enter') %>">
-                                            <input type="text" name="cButtonContent2" class="form-control" style="display:none;" placeholder=" <%= __('Please_enter') %>">
-                                            <input type="text" name="cButtonContent3" class="form-control" style="display:none;" placeholder=" <%= __('Please_enter') %>">
-                                            <input type="text" name="cButtonContent4" class="form-control" style="display:none;" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonContent1" class="form-control" placeholder="<%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonContent2" class="form-control" style="display:none;" placeholder="<%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonContent3" class="form-control" style="display:none;" placeholder="<%= __('Please_enter') %>">
+                                            <input type="text" name="cButtonContent4" class="form-control" style="display:none;" placeholder="<%= __('Please_enter') %>">
                                         </div>
                                         <a href="#"  class="btn_delete" ><span class="fa fa-trash"></span></a>
                                     </div>
@@ -349,26 +345,26 @@
                                 <div class="mediaLayout" style="display:none;" id="dialog3">                                                                
                                     <div class="form-group">
                                         <label><%= __('IMAGE_URL') %> <span class="nec_ico">*</span></label>
-                                        <input type="text" class="form-control" placeholder=" <%= __('Please_enter') %>">
+                                        <input type="text" class="form-control" placeholder="<%= __('Please_enter') %>">
                                     </div>
                                     <div class="form-group">
                                         <label><%= __('MEDIA_URL') %> <span class="nec_ico">*</span></label>
-                                        <input type="text" class="form-control" placeholder=" <%= __('Please_enter') %>">
+                                        <input type="text" class="form-control" placeholder="<%= __('Please_enter') %>">
                                     </div>    
                                     <div class="modal_con">
                                         <div class="form-group col-md-5" style="padding-left:0">
                                             <label><%= __('BUTTON_NAME') %> </label>
-                                            <input type="text" class="form-control mediaBtnName" name="mButtonName1" placeholder=" <%= __('Please_enter') %>">
-                                            <input type="text" class="form-control mediaBtnName" name="mButtonName2" style="display:none;" placeholder=" <%= __('Please_enter') %>">
-                                            <input type="text" class="form-control mediaBtnName" name="mButtonName3" style="display:none;" placeholder=" <%= __('Please_enter') %>">
-                                            <input type="text" class="form-control mediaBtnName" name="mButtonName4" style="display:none;" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" class="form-control mediaBtnName" name="mButtonName1" placeholder="<%= __('Please_enter') %>">
+                                            <input type="text" class="form-control mediaBtnName" name="mButtonName2" style="display:none;" placeholder="<%= __('Please_enter') %>">
+                                            <input type="text" class="form-control mediaBtnName" name="mButtonName3" style="display:none;" placeholder="<%= __('Please_enter') %>">
+                                            <input type="text" class="form-control mediaBtnName" name="mButtonName4" style="display:none;" placeholder="<%= __('Please_enter') %>">
                                         </div>
                                         <div class="form-group col-md-6" style="padding:0">
                                             <label><%= __('BUTTON_CONTENTS') %> </label>
-                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent1" placeholder=" <%= __('Please_enter') %>">
-                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent2" style="display:none;" placeholder=" <%= __('Please_enter') %>">
-                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent3" style="display:none;" placeholder=" <%= __('Please_enter') %>.">
-                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent4" style="display:none;" placeholder=" <%= __('Please_enter') %>">
+                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent1" placeholder="<%= __('Please_enter') %>">
+                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent2" style="display:none;" placeholder="<%= __('Please_enter') %>">
+                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent3" style="display:none;" placeholder="<%= __('Please_enter') %>.">
+                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent4" style="display:none;" placeholder="<%= __('Please_enter') %>">
                                         </div>
                                         <a href="#"  class="btn_delete" ><span class="fa fa-trash"></span></a>
                                     </div>
