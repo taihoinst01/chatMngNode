@@ -544,7 +544,7 @@ $(document).ready(function(){
 });
 
 function getGroupSeelectBox() {
-    $.tiAjax({
+    $.ajax({
         type: 'POST',
         url: '/learning/getGroupSelectBox',
         data : params,
@@ -1370,6 +1370,7 @@ function openModalBox(target){
     wrapWindowByMask();
 
     if(target == "#create_dlg") {
+        $("#createDialog").attr('onclick','createDialog()');
         $(".insertForm form").append($(".textLayout").clone(true));
         $(".insertForm .textLayout").css("display","block");
     }
@@ -1595,6 +1596,7 @@ function searchDialog(dlgID) {
                                 inputUttrHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
                                 inputUttrHtml += '</div></div></div></div></div>';
                             }
+                            $('#updateDlgId').val(tmp.dlg[j].DLG_ID);
                         }
                     //}
                 
@@ -1611,13 +1613,17 @@ function searchDialog(dlgID) {
             $('#description').text(result['list'][0].DLG_DESCRIPTION);
             $("#largeGroup").val(result['list'][0].GROUPL).prop("selected",true);
             $("#middleGroup").val(result['list'][0].GROUPM).prop("selected",true);
+            $("#createDialog").attr('onclick','updateDialog()');
 
-            
             $(".insertForm .textLayout").css("display","block");
             
         } 
         
 
     }); // ------      ajax 끝-----------------
+}
+
+function updateDialog() {
+
 }
 

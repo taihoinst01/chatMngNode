@@ -365,10 +365,10 @@
                 <div class="modal-footer">
                     <div class="nec02">
                         <span class="nec_ico">*</span> <%= __('IS_REQUIRED') %>
+                        <input type="hidden" name="updateDlgId" id="updateDlgId">
                     </div>
                     <div class="btn_wrap">
-                        <button type="button" class="btn btn_01" onclick="createDialog();"><%= __('CREAT') %></button>
-                        <button type="button" class="btn btn_01" onclick="updateDialog();">수정</button>
+                        <button type="button" class="btn btn_01" onclick="createDialog();" id="createDialog"><%= __('CREAT') %></button>
                         <button type="button" class="btn btn-default createDlgModalClose"  data-dismiss="modal"><%= __('CANCEL') %></button>
                     </div>
                 </div>
