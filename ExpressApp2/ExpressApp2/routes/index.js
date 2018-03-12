@@ -462,8 +462,10 @@ router.post('/admin/renameApp', function (req, res){
 router.post('/admin/trainApp', function (req, res){
     var appId = req.session.appId;
     var appName = req.session.appName;
+    var subsKey = req.session.subsKey;
     var versionId;
-
+    var entityArray = [];
+    
     for (var i=0; i<saveAppList.length; i++) {
         if (appName === saveAppList[i].name) {
             versionId = saveAppList[i].endpoints.PRODUCTION.versionId;
@@ -473,7 +475,7 @@ router.post('/admin/trainApp', function (req, res){
     
     var options = {
         headers: {
-            'Ocp-Apim-Subscription-Key': subKey
+            'Ocp-Apim-Subscription-Key': subsKey
         }
     };
     
@@ -484,13 +486,17 @@ router.post('/admin/trainApp', function (req, res){
     var selectEntityQuery = "SELECT ENTITY_VALUE, ENTITY\n";
     selectEntityQuery += "FROM TBL_COMMON_ENTITY_DEFINE\n";
     selectEntityQuery += "WHERE TRAIN_FLAG = 'N'\n";
+    
+    var updateEntityQuery = "UPDATE TBL_COMMON_ENTITY_DEFINE\n";
+    updateEntityQuery += "SET TRAIN_FLAG = 'Y'\n";
+    updateEntityQuery += "WHERE ENTITY_VALUE in ( @entityValue )";
 
     (async () => {
         try {
 
             let pool = await dbConnect.getConnection(sql);
             let selectAppId = await pool.request()
-                .input('chatName', sql.NVarChar, '오토웨이')
+                .input('chatName', sql.NVarChar, appName)
                 .query(selectAppIdQuery);
 
             var appCount = false;
@@ -507,7 +513,7 @@ router.post('/admin/trainApp', function (req, res){
                     appCount = true;
                 }
             }
-
+            
             if(appCount == false) {
                 //create luis app 
                 res.send({result:402});
@@ -522,10 +528,14 @@ router.post('/admin/trainApp', function (req, res){
 
                     //luis hierarchicalentities list count check
                     var entityListResult = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities?take=500' , options);
-                    if(entityListResult.body.length <= 28) {
+                    
+                    // luis intent count check
+                    var intentCountRes = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/examples?take=500' , options);
+
+                    if( entityListResult.body.length <= 28 && intentCountRes.body.length <= 280 ) {
                         var entityId = entityListResult.body[entityListResult.body.length-1].id;
 
-                        //luis hierarchicalentities count check
+                        // luis hierarchicalentities count check
                         var entityResult = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities/'+ entityId , options);
                         
                         if(entityResult.body.length <= 10) {
@@ -540,12 +550,8 @@ router.post('/admin/trainApp', function (req, res){
                             // add hierarchicalentities list, entity
                             var entityListResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities', options);
                         }
-
-                        // luis intent count check
-                        var intentCountRes = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/examples?take=500' , options);
-
-                        if( !(intentCountRes.body.length >= 280) ) {
-
+                        
+                        if( intentCountRes.body.length <= 280 ) {
                             //get entity name
                             var getEntityName = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities?take=500' , options);
                             var addEntity;
@@ -575,6 +581,7 @@ router.post('/admin/trainApp', function (req, res){
                         } else {
                             res.send({result:402});
                         }
+                        entityArray.push(entityValue);
                     } else {
                         //create luis app 
                         res.send({result:402});
@@ -582,9 +589,14 @@ router.post('/admin/trainApp', function (req, res){
 
                 }
 
+                // luis train
                 var trainResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train' , options);
-
+                // luis publish
                 var publishResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/publish' , options);
+
+                let updateEntity = await dbPool.request()
+                    .input('entityValue', sql.NVarChar, entityArray)
+                    .query(updateEntityQuery);
 
                 res.send({result:200});
             }
