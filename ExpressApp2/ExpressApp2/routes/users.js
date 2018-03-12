@@ -801,6 +801,7 @@ router.post('/selecChatList', function (req, res) {
 router.post('/addApp', function (req, res) {
 
     var chatNum = req.body.selApp;
+    var chatName = req.body.selAppName;
     var appDes = checkNull(req.body.appDes, ' ');
     var getApplist = "SELECT APP_NAME, CULTURE, SUBSC_KEY FROM TBL_LUIS_APP WHERE CHATBOT_ID = " + chatNum + ";";
     
@@ -859,10 +860,22 @@ router.post('/addApp', function (req, res) {
                                     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
                                     return pool.request().query(appStr)
                                 }).then(result => {
-        
                                     let rows = result.recordset;
-                                    res.send({ message:'Save Success'});
-                                    sql.close();
+
+                                    var insertQry = "INSERT INTO TBL_CHATBOT_CONF (CNF_TYPE, CNF_NM, CNF_VALUE, ORDER_NO) \n" +
+                                                    "VALUES ('LUIS_APP_ID', '" + appInfo.name + "', '" + appInfo.id + "', (SELECT MAX(ORDER_NO)+1 FROM TBL_CHATBOT_CONF WHERE CNF_TYPE='LUIS_APP_ID')); "
+                                    dbConnect.getAppConnection(sql, chatName, req.session.dbValue).then(pool => {
+                                        //new sql.ConnectionPool(dbConfig).connect().then(pool => {
+                                        return pool.request().query(insertQry) 
+                                    }).then(result => {
+                                        let rows = result.recordset;
+
+                                        res.send({ message:'Save Success'});
+                                        sql.close();
+                                    }).catch(err => {
+                                        console.log(err);
+                                        sql.close();
+                                    });
                                 }).catch(err => {
                                     console.log(err);
                                     sql.close();

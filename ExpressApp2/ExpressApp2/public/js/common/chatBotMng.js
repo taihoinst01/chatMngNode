@@ -153,6 +153,7 @@ function saveApp() {
     }
     var params = {
         'selApp': $('#appService :selected').val(),
+        'selAppName': $('#appService :selected').text(),
         'appDes': $('#appDes').val()
     };
     $.ajax({

@@ -17,6 +17,9 @@ $(document).ready(function(){
     if(recommendParam){
         utterInput(recommendParam);
     }
+    
+    //새로운 다이얼로그 생성 모달창에 필요한 luisId 가져오기
+    getLuisInfo('luisId');
 });
 
 // Utterance 삭제
@@ -275,27 +278,34 @@ $(document).ready(function(){
 
         if(chkBoxFlag1 == true && chkBoxFlag2 == true) {
 
-            var entity = $('input[name=entity]').val();
-            
+            var inputEntity = $('input[name=entity]');
+            entities = new Array();
+            inputEntity.each(function(n) { 
+                entities.push(inputEntity[n].value);
+                return entities;
+            });
+
             var inputDlgId = $('input[name=dlgId]');
             var dlgId = new Array();
             inputDlgId.each(function(n) { 
                 dlgId.push(inputDlgId[n].value);
                 return dlgId;
             });
-    
+
+            var luisId = $('.dialog_box').find($('input[name=luisId]'))[0].value;
+            var luisIntent = $('.dialog_box').find($('input[name=luisIntent]'))[0].value;
+
             $.ajax({
                 url: '/learning/learnUtterAjax',
                 dataType: 'json',
                 type: 'POST',
-                data: {'entity':entity, 'dlgId':dlgId},
+                data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent},
                 success: function(result) {
                     if(result['result'] == true) {
                         alert(language.Added);
                         
                         $('input[name=tableAllChk]').parent().iCheck('uncheck');
-                        changeBtnAble(false);
-    
+
                         $('.recommendTbl tbody').html('');
                         $('.dialog_box').html('');
     
@@ -383,10 +393,6 @@ $(document).ready(function(){
         $('#commonLayout').css('display', 'block');
         $('#commonLayout').prepend(insertForm);
         
-        if($('#btnCreateLgroup').html() == '취소' || $('#btnCreateLgroup').html() == 'CANCEL') {
-
-            $('#btnCreateLgroup').click();
-        }
         var dialogView = '';
         dialogView += '<div class="dialogView" >';
         dialogView += '<div class="wc-message wc-message-from-bot" style="width:80%;">';
@@ -498,20 +504,6 @@ $(document).ready(function(){
     });
 */
 
-    // create LargeGroup
-    $('#btnCreateLgroup').on('click',function(e){
-        if($(this).html() == "신규" || $(this).html() == "NEW") {
-            $(this).html(language.CANCEL);
-            $('#largeGroupEdit').css('display','block');
-            $('#largeGroup').css('display','none');
-        } else {
-            $(this).html(language.NEW);
-            $('#largeGroupEdit').css('display','none');
-            $('#largeGroup').css('display','block');
-        }
-
-        return;
-    });
     
     //다이얼로그 Add From
     $('#addDialogBtn').click(function(e){
@@ -966,7 +958,6 @@ function insertDialog(){
 */
 function createDialog(){
 
-    var entity = $('input[name=entity]').val();
     var idx = $('form[name=dialogLayout]').length;
     var array = [];
     var exit = false;
@@ -1007,13 +998,16 @@ function createDialog(){
         var objectCarousel = {};
         if (tmp[0].value === "3") {
             for (var j = 1; j < tmp.length; j++) {
+                
                 if (typeof objectCarousel[tmp[j].name] !== "undefined" || j === tmp.length-1) {
                     carouselArr.push(objectCarousel);
                     objectCarousel = {};
                 } 
+                
                 object[tmp[0].name] = tmp[0].value;
                 objectCarousel[tmp[j].name] = tmp[j].value;
             }
+            //carouselArr.push(objectCarousel);
             object['carouselArr'] = carouselArr;
         } else {
             for (var j = 0; j < tmp.length; j++) {
@@ -1030,14 +1024,18 @@ function createDialog(){
         url: '/learning/addDialog',
         dataType: 'json',
         type: 'POST',
-        data: {'data' : array, 'entity' : entity},
+        data: {'data' : array},
         success: function(data) {
-            alert('success');
+            alert(language.Added);
 
             var inputUttrHtml = '';
             for(var i = 0; i < data.list.length; i++) {
                 inputUttrHtml += '<input type="hidden" name="dlgId" value="' + data.list[i] + '"/>';
             }
+            var luisId = $('#appInsertForm').find('#luisId').value();
+            var luisIntent = $('#appInsertForm').find('#luisIntent').value();
+            inputUttrHtml += '<input type="hidden" name="luisId" value="' + luisId + '"/>';
+            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + luisIntent + '"/>';
 
             var createDlgClone = $('.dialogView').children().clone();
             $('.dialog_box').html('');
@@ -1071,6 +1069,8 @@ function selectDlgListAjax(entity) {
                         inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
                         inputUttrHtml += '<p>';
                         inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                        inputUttrHtml += '<input type="hidden" name="luisId" value="' + tmp.LUIS_ID + '"/>';
+                        inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + tmp.LUIS_INTENT + '"/>';
                         inputUttrHtml += tmp.dlg[j].CARD_TEXT;
                         inputUttrHtml += '</p>';
                         inputUttrHtml += '</div></div></div></div></div>';
@@ -1089,6 +1089,8 @@ function selectDlgListAjax(entity) {
                             inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum) + '">';
                             inputUttrHtml += '<ul style="padding-left:0px;">';
                             inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                            inputUttrHtml += '<input type="hidden" name="luisId" value="' + tmp.LUIS_ID + '"/>';
+                            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + tmp.LUIS_INTENT + '"/>';
                         }
                         inputUttrHtml += '<li class="wc-carousel-item">';
                         inputUttrHtml += '<div class="wc-card hero">';
@@ -1134,6 +1136,8 @@ function selectDlgListAjax(entity) {
                         inputUttrHtml += '<div class="wc-card hero">';
                         inputUttrHtml += '<div class="wc-card-div imgContainer">';
                         inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                        inputUttrHtml += '<input type="hidden" name="luisId" value="' + tmp.LUIS_ID + '"/>';
+                        inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + tmp.LUIS_INTENT + '"/>';
                         inputUttrHtml += '<img src="' + /* 이미지 url */ tmp.dlg[j].MEDIA_URL + '">';
                         inputUttrHtml += '<div class="playImg"></div>';
                         inputUttrHtml += '<div class="hidden" alt="' + tmp.dlg[j].CARD_TITLE + '"></div>';
@@ -1143,9 +1147,22 @@ function selectDlgListAjax(entity) {
                         inputUttrHtml += '<ul class="wc-card-buttons">';
                         inputUttrHtml += '</ul>';
                         inputUttrHtml += '</div>';
-                        inputUttrHtml += '</li></ul></div></div>';
-                        inputUttrHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
-                        inputUttrHtml += '</div></div></div></div></div>';
+                        inputUttrHtml += '</li>';
+
+                        //다이얼로그가 한개일때에는 오른쪽 버튼 x
+                        if((tmp.dlg.length == 2 && j == 1) || (tmp.dlg.length == 1 && j == 0)) {
+                            inputUttrHtml += '</ul>';
+                            inputUttrHtml += '</div>';
+                            inputUttrHtml += '</div>';
+                            inputUttrHtml += '</div></div></div></div></div>';
+                        } else if((tmp.dlg.length-1) == j) {
+                            inputUttrHtml += '</ul>';
+                            inputUttrHtml += '</div>';
+                            inputUttrHtml += '</div>';
+                            inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ', this)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                            inputUttrHtml += '</div></div></div></div></div>';
+                        }
+
                     }
                 }
 
@@ -1325,20 +1342,26 @@ function utterInput(queryText) {
                         radioClass   : 'iradio_flat-green'
                     })
                     
-                    $('input[name=tableAllChk]').on('ifChecked', function(event) {
-                        $('input[name=tableCheckBox]').parent().iCheck('check');
-                        checkedVal = true;
-                    }).on('ifUnchecked', function() {
-                            $('input[name=tableCheckBox]').parent().iCheck('uncheck');
-                            checkedVal = false;
-                        });
 
                 }
             }
         } //function끝
 
     }); // ------      ajax 끝-----------------
+
+    
 }
+
+$(document).on('ifChecked','input[name=tableAllChk]', function() {  
+    
+    $('input[name=tableCheckBox]').parent().iCheck('check');
+});
+
+$(document).on('ifUnchecked','input[name=tableAllChk]', function() {  
+   
+    $('input[name=tableCheckBox]').parent().iCheck('uncheck');
+});
+
 
 function utterHighlight(entities, utter) {
     var result = utter;
@@ -1384,6 +1407,7 @@ var $insertForm;
 var $dlgForm;
 var $carouselForm;
 var $mediaForm;
+var chkEntities;
 function openModalBox(target){
 
     //carousel clone 초기값 저장
@@ -1392,7 +1416,45 @@ function openModalBox(target){
     $carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
     $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
 
-    if(target == "#create_dlg") {
+    if(target == "#create_dlg") {     
+    
+        /* 
+        
+            checkFlag 체크된 추천문장이 있는지 없는지
+            0 : 다이얼로그 생성 가능
+            1 : 다이얼로그 생성 불가능(체크된 추천문장중 학습이 안된 엔티티가 존재함)
+            2 : 다이얼로그 생성 불가능(체크된 추천문장이 없음)   
+        
+        var checkFlag = 2;  
+        chkEntities = [];
+        $('input[name=tableCheckBox]').each(function() {
+            if($(this).parent().hasClass('checked') == true) {
+                
+                var $entityValue = $(this).parent().parent().next().find('input[name=entity]').val();
+
+                if($entityValue == "") {
+                    checkFlag = 1;                   
+                    return false;
+                }
+
+                checkFlag = 0;
+                chkEntities.push($entityValue);
+            }
+        })
+
+        if(checkFlag == 1) {
+            $('#create_dlg').removeAttr('data-target');
+            alert("다이얼로그 생성 불가능(선택된 추천문장중 학습이 안된 엔티티가 존재합니다. 학습을 시켜주세요.)");
+        } else if(checkFlag == 2) {
+
+            $('#create_dlg').removeAttr('data-target');
+            alert("선택한 학습 추천 문장이 없습니다. 학습 추천을 선택해주세요.");
+        } else {
+            $('#create_dlg').attr('data-target', "#myModal2");
+            $(".insertForm form").append($(".textLayout").clone(true));
+            $(".insertForm .textLayout").css("display","block");
+        }*/
+
         $(".insertForm form").append($(".textLayout").clone(true));
         $(".insertForm .textLayout").css("display","block");
     }
@@ -1476,6 +1538,8 @@ function searchDialog() {
                             inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
                             inputUttrHtml += '<p>';
                             inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                            inputUttrHtml += '<input type="hidden" name="luisId" value="' + tmp.LUIS_ID + '"/>';
+                            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + tmp.LUIS_INTENT + '"/>';
                             inputUttrHtml += tmp.dlg[j].CARD_TEXT;
                             inputUttrHtml += '</p>';
                             inputUttrHtml += '</div></div></div></div></div>';
@@ -1495,6 +1559,8 @@ function searchDialog() {
                                 inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum) + '">';
                                 inputUttrHtml += '<ul style="padding-left: 0px;">';
                                 inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                                inputUttrHtml += '<input type="hidden" name="luisId" value="' + tmp.LUIS_ID + '"/>';
+                                inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + tmp.LUIS_INTENT + '"/>';
                             }
                             inputUttrHtml += '<li class="wc-carousel-item">';
                             inputUttrHtml += '<div class="wc-card hero">';
@@ -1542,6 +1608,8 @@ function searchDialog() {
                             inputUttrHtml += '<div class="wc-card hero" style="width:70%">';
                             inputUttrHtml += '<div class="wc-card-div imgContainer">';
                             inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                            inputUttrHtml += '<input type="hidden" name="luisId" value="' + tmp.LUIS_ID + '"/>';
+                            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + tmp.LUIS_INTENT + '"/>';
                             inputUttrHtml += '<img src="' + /* 이미지 url */ tmp.dlg[j].MEDIA_URL + '">';
                             inputUttrHtml += '<div class="playImg"></div>';
                             inputUttrHtml += '<div class="hidden" alt="' + tmp.dlg[j].CARD_TITLE + '"></div>';
@@ -1551,9 +1619,21 @@ function searchDialog() {
                             inputUttrHtml += '<ul class="wc-card-buttons">';
                             inputUttrHtml += '</ul>';
                             inputUttrHtml += '</div>';
-                            inputUttrHtml += '</li></ul></div></div>';
-                            inputUttrHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
-                            inputUttrHtml += '</div></div></div></div></div>';
+                            inputUttrHtml += '</li>';
+                            
+                            //다이얼로그가 한개일때에는 오른쪽 버튼 x
+                            if((tmp.dlg.length == 2 && j == 1) || (tmp.dlg.length == 1 && j == 0)) {
+                                inputUttrHtml += '</ul>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '</div></div></div></div></div>';
+                            } else if((tmp.dlg.length-1) == j) {
+                                inputUttrHtml += '</ul>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '</div>';
+                                inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum) + '" onclick="nextBtn(' + botChatNum + ', this)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                                inputUttrHtml += '</div></div></div></div></div>';
+                            }
                         }
                     }
                 }
@@ -1758,6 +1838,49 @@ function insertEntity(){
             }
         });
     }
+}
+
+
+//다이얼로그 생성 모달창 - 중그룹 구하기
+$(document).on('change', 'select[name=luisId]', function(){
+
+    $('select[name=luisIntent] :first-child').nextAll().remove();
+
+
+    getLuisInfo('luisIntent', $('select[name=luisId]').val());
+    
+})
+
+//TBL_DLG_RELATION_LUIS 테이블에서 LUIS_INTENT 가져오기
+function getLuisInfo(searchInfo, luisId) {
+
+    $.ajax({
+        url: '/learning/getLuisInfo',
+        dataType: 'json',
+        data: {'searchInfo': searchInfo, 'luisId': luisId},
+        type: 'POST',
+        success: function(data) {
+
+            if(searchInfo == 'luisIntent') {
+
+                if(data.luisIntentList.length > 0 ) {
+
+                    for(var i = 0; i < data.luisIntentList.length; i++) {
+        
+                        $('select[name=luisIntent]').append('<option>' + data.luisIntentList[i].luisIntent + '</option>');
+                    }
+                } else {
+                    $('select[name=luisIntent] :first-child').nextAll().remove();
+                }
+            } else if(searchInfo == 'luisId') {
+
+                for(var i = 0; i < data.luisIdList.length; i++) {
+                    $('select[name=luisId]').append('<option>' + data.luisIdList[i].luisId + '</option>');
+                }
+            }
+
+        }
+    });
 }
 //** 모달창 끝 */
 
