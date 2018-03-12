@@ -14,6 +14,8 @@ $(document).ready(function(){
 
     entitiesAjax();
 
+    //엔티티 추가 모달 초기 설정
+    dialogValidation();
     //엔티티추가 모달 selectbox 설정
     selectApiGroup();
     //** 모달창 */
@@ -298,7 +300,16 @@ function dialogValidation(){
 
 //엔티티 추가
 function insertEntity(){
-    
+
+    if ($('#entityDefine').val().trim() === "") {
+        alert(language.Please_enter);
+        return false;
+    }
+    if ($('#entityValue').val().trim() === "") {
+        alert(language.Please_enter);
+        return false;
+    }
+
     $.ajax({
         url: '/learning/insertEntity',
         dataType: 'json',

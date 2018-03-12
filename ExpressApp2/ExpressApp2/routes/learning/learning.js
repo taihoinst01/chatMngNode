@@ -1633,6 +1633,7 @@ router.post('/searchDialog',function(req,res){
                 }
             }
         }
+        dlgMedia += "AND DLG_API_DEFINE = 'D' \n";
         dlgMedia += ") \n ORDER BY DLG_ID";
 
     (async () => {
