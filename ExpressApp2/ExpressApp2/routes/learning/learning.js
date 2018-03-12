@@ -1035,21 +1035,24 @@ router.post('/searchEntities', function (req, res) {
     (async () => {
         try {
          
-            var entitiesQueryString = "select tbp.* from 																																		"
-                                    + "(select ROW_NUMBER() OVER(ORDER BY api_group DESC) AS NUM,                           "
-                                    + "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT,                                         "
-                                    + "CEILING((ROW_NUMBER() OVER(ORDER BY api_group DESC))/ convert(numeric ,10)) PAGEIDX, "
-                                    + "entity_value, entity, api_group from (SELECT DISTINCT entity, API_GROUP , STUFF((    "
-                                    + "SELECT '[' + b.entity_value + ']' FROM TBL_COMMON_ENTITY_DEFINE b                    "
-                                    + " WHERE b.entity = a.entity AND b.API_GROUP = a.API_GROUP FOR XML PATH('') ),1,1,'[') AS entity_value               "
-                                    + "FROM TBL_COMMON_ENTITY_DEFINE a where API_GROUP != 'OCR TEST'                        "
-                                    + "and (entity = @searchEntities or entity_value = @searchEntities)                                       "
-                                    + "group by entity, API_GROUP) a                                                        "
-                                    + " ) tbp                                                                               "
-                                    + "WHERE PAGEIDX = 1                                                                    ";
+            var entitiesQueryString = "SELECT tbp.* \n FROM "
+                                    + "    (SELECT ROW_NUMBER() OVER(ORDER BY api_group DESC) AS NUM, \n"
+                                    + "            COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"
+                                    + "            CEILING((ROW_NUMBER() OVER(ORDER BY api_group DESC))/ convert(numeric ,10)) PAGEIDX, \n"
+                                    + "            entity_value, entity, api_group from (SELECT DISTINCT entity, API_GROUP , \n"
+                                    + "            STUFF(( SELECT '[' + b.entity_value + ']' \n "
+                                    + "                      FROM TBL_COMMON_ENTITY_DEFINE b \n"
+                                    + "                     WHERE b.entity = a.entity \n " 
+                                    + "                       AND b.API_GROUP = a.API_GROUP FOR XML PATH('') ),1,1,'[') AS entity_value \n"
+                                    + "      FROM TBL_COMMON_ENTITY_DEFINE a \n"
+                                    + "     WHERE API_GROUP != 'OCR TEST' \n"
+                                    + "       AND (entity like @searchEntities or entity_value like @searchEntities) \n"
+                                    + "  GROUP BY entity, API_GROUP) a \n"
+                                    + "      ) tbp  \n"
+                                    + "WHERE PAGEIDX = 1 \n";
             
             let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
-            let result1 = await pool.request().input('currentPage', sql.Int, currentPage).input('searchEntities', sql.NVarChar, searchEntities).query(entitiesQueryString);
+            let result1 = await pool.request().input('currentPage', sql.Int, currentPage).input('searchEntities', sql.NVarChar, '%'+searchEntities+'%').query(entitiesQueryString);
 
             let rows = result1.recordset;
 
