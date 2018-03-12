@@ -14,9 +14,18 @@ var language;
 
 $(document).ready(function() {
     makeChatBotTable();
+
+    makeChatSelBox();
 });
 
+var selBoxHtml = "";
 $(document).ready(function() {
+
+    //모달 닫을 때 액션
+    $('#addAppMordalId').click(function() {
+        $('#appDes').val('');
+        $('#appService').html(selBoxHtml);
+    });
 
     //검색
     $('#searchBtn').click(function() {
@@ -105,6 +114,58 @@ function makeChatBotTable(newPage) {
             } else {
                 $('#chatTableBodyId').html('');
                 $('#appTableBodyId').html('');
+            }
+            
+        }
+    });
+}
+
+
+function makeChatSelBox() {
+
+    $.ajax({
+        type: 'POST',
+        //data: params,
+        url: '/users/selecChatList',
+        success: function(data) {
+           
+            if (data.rows) {
+                var chatListSelHtml = $.trim($('#appService').html());
+
+                var tableHtml = "";
+    
+                for (var i=0;i<data.rows.length;i++) { 
+                    tableHtml += '<option value="' + data.rows[i].CHATBOT_NUM + '">' + data.rows[i].CHATBOT_NAME + '<!-- service1 --></option>';
+                }
+
+                $('#appService').html(chatListSelHtml + tableHtml);
+                selBoxHtml = chatListSelHtml + tableHtml;
+            }
+            
+        }
+    });
+}
+
+function saveApp() {
+    if ($('#appService :selected').val() === "-1") {
+        alert("챗봇을 선택해야 합니다.");
+        return;
+    }
+    var params = {
+        'selApp': $('#appService :selected').val(),
+        'appDes': $('#appDes').val()
+    };
+    $.ajax({
+        type: 'POST',
+        data: params,
+        url: '/users/addApp',
+        success: function(data) {
+           
+            if (data.message) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert(data.message);
             }
             
         }
@@ -228,8 +289,6 @@ function saveChatApp() {
             }
         });
     }
-    
-
 }
 
 

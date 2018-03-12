@@ -28,7 +28,7 @@
                                                     } else {
                                                         if(leftList && leftList.length >0) {
                                                 %>
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=leftList[0].APP_NAME %><span></span></a>
+                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=leftList[0].CHATBOT_NAME %><span></span></a>
                                                 <%
                                                         } 
                                                     }
@@ -40,7 +40,7 @@
                                                             for(var i=0; i<leftList.length; i++) {
                                                         %>
                                                              <!--row -->
-                                                             <a href="/board?appName=<%= leftList[i].APP_NAME %>&appId=<%= leftList[i].APP_ID %>" class="circle_col"><li><span class="pull-left image img-circle_s <%=leftList[i].APP_COLOR %>"> </span><span class="tex01"><%= leftList[i].APP_NAME %></span> </li></a>
+                                                             <a href="/board?appName=<%= leftList[i].CHATBOT_NAME %>" class="circle_col"><li><span class="pull-left image img-circle_s <%=leftList[i].APP_COLOR %>"> </span><span class="tex01"><%= leftList[i].CHATBOT_NAME %></span> </li></a>
                                                         <%
                                                             }   
                                                         } else {
@@ -232,7 +232,8 @@
                     //alert(data.message);
                 } else { //200
                     var result = data.resultValue;
-                    $('#trainResultTag').text($('#successHidden').val() + " : " + result.sucCnt + "  " + $('#failHidden').val() + " : " + result.failCnt);
+                    alert("학습을 완료하였습니다.");
+                    //$('#trainResultTag').text($('#successHidden').val() + " : " + result.sucCnt + "  " + $('#failHidden').val() + " : " + result.failCnt);
                     //alert("성공 : " + result.sucCnt + "실패 : " + result.failCnt);
                 }
                 $('#trainBtnHidden').trigger('click');

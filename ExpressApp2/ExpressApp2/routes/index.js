@@ -6,6 +6,9 @@ var dbConfig = require('../config/dbConfig');
 var dbConnect = require('../config/dbConnect');
 var luisConfig = require('../config/luisConfig');
 var i18n = require("i18n");
+const syncClient = require('sync-rest-client');
+const appDbConnect = require('../config/appDbConnect');
+const appSql = require('mssql');
 var router = express.Router();
 
 const HOST = 'https://westus.api.cognitive.microsoft.com'; // Luis api host
@@ -14,18 +17,16 @@ var saveAppList;
 /* GET home page. */
 router.get('/', function (req, res) {
     if(req.session.sid) {
-
+        var userId = req.session.sid;
         try{
 
-            //db정보 조회
+            //db정보 조회 start-----
             dbConnect.getConnection(sql).then(pool => { 
                 return pool.request().query( "SELECT USER_NAME, PASSWORD, SERVER, DATABASE_NAME, APP_NAME, APP_ID FROM TBL_DB_CONFIG; " ) 
             }).then(result => {
                 let dbValue = result.recordset;
                 req.session.dbValue = dbValue;
 
-                
-                var userId = req.session.sid;
                 var getSimulUrlStr = "SELECT ISNULL(" +
                                     "(SELECT CNF_VALUE FROM TBL_CHATBOT_CONF WHERE CNF_TYPE = 'SIMULATION_URL' AND CNF_NM = '" + userId + "'), " +
                                     "(SELECT CNF_VALUE FROM TBL_CHATBOT_CONF WHERE CNF_TYPE = 'SIMULATION_URL' AND CNF_NM = 'admin'))  AS SIMUL_URL";
@@ -45,14 +46,15 @@ router.get('/', function (req, res) {
                 console.log(err);
                 sql.close();
             });
+            //db정보 조회 end----
 
             var client = new Client();
             var options = {
                 headers: {
-                    'Ocp-Apim-Subscription-Key': subKey
+                    'Ocp-Apim-Subscription-Key': req.session.subsKey//subKey
                 }
             };
-            
+
             client.get( HOST + '/luis/api/v2.0/apps/', options, function (data, response) {
                 //console.log(data)
                 var appList = data;
@@ -82,6 +84,7 @@ router.get('/', function (req, res) {
                                         } else {
                                             //기존 앱이 삭제되고 같은 이름의 새 앱이 생긴 경우
                                             deleteAppStr += "DELETE FROM TBL_LUIS_APP WHERE APP_NAME = '" + rows[i].APP_NAME + "' AND APP_ID = '" + rows[i].APP_ID + "'; \n";
+                                            deleteAppStr += "DELETE FROM TBL_CHAT_RELATION_APP APP_ID = '" + rows[i].APP_ID + "'; \n";
                                         }
 
                                         chkDelApp = false;
@@ -91,6 +94,7 @@ router.get('/', function (req, res) {
 
                                 if (chkDelApp) {
                                     deleteAppStr += "DELETE FROM TBL_LUIS_APP WHERE APP_NAME = '" + rows[i].APP_NAME + "' AND APP_ID = '" + rows[i].APP_ID + "'; \n";
+                                    deleteAppStr += "DELETE FROM TBL_CHAT_RELATION_APP APP_ID = '" + rows[i].APP_ID + "'; \n";
                                 }
                             }
 
@@ -206,19 +210,63 @@ router.get('/', function (req, res) {
 router.get('/list', function (req, res) {
     req.session.selMenu = 'm1';
     var loginId = req.session.sid;
+    /*
     var userListStr = "SELECT A.APP_ID, A.VERSION, A.APP_NAME, FORMAT(A.REG_DT,'yyyy-MM-dd') REG_DT, A.CULTURE, A.DESCRIPTION, A.APP_COLOR \n" +
                       "  FROM TBL_LUIS_APP A, TBL_USER_RELATION_APP B \n" +
                       " WHERE 1=1 \n" +
                       "   AND A.APP_ID = B.APP_ID \n" +
                       "   AND B.USER_ID = '" + loginId + "'; \n";
-
+    */
+    var userListStr = "SELECT DISTINCT B.CHATBOT_NUM, B.CHATBOT_NAME, B.CULTURE, B.DESCRIPTION, B.APP_COLOR \n";
+       userListStr += "  FROM TBL_USER_RELATION_APP A, TBL_CHATBOT_APP B \n";
+       userListStr += " WHERE A.CHAT_ID = B.CHATBOT_NUM; \n";
     var rows;
-    var cnt_query;
+    
     dbConnect.getConnection(sql).then(pool => {
     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
         return pool.request().query(userListStr)
         }).then(result => {
             rows = result.recordset
+            req.session.leftList = rows;
+            var dbList = req.session.dbValue;
+            if (typeof dbList === 'undefined') {
+                res.render('appList');
+            }
+            sql.close();
+            for (var i=0; i<rows.length; i++) {
+                for (var j=0; j<dbList.length; j++) {
+                    var cnt_query = "SELECT  (SELECT COUNT(DLG_ID) FROM TBL_DLG) AS INTENT_CNT, \n" +
+                                    "		(SELECT count(distinct GroupM) FROM TBL_DLG) AS DLG_CNT, " + i + " AS I_INDEX;"
+                    dbConnect.getAppConnection(sql, rows[0].CHATBOT_NAME, dbList ).then(pool => {
+                        return pool.request().query(cnt_query)
+                    }).then(result2 => {
+                        var rows2 = result2.recordset;
+                        rows[rows2[0].I_INDEX].INTENT_CNT = rows2[0].INTENT_CNT;
+                        rows[rows2[0].I_INDEX].DLG_CNT = rows2[0].DLG_CNT;
+                        sql.close();
+                        if ( rows2[0].I_INDEX === rows.length -1) {
+                            req.session.save(function(){
+                                res.render('appList',
+                                {
+                                    title: 'Express',
+                                    appName: req.session.appName,
+                                    selMenu: req.session.selMenu,
+                                    list: rows,
+                                    leftList: req.session.leftList
+                                });
+                            });
+                        }
+                    }).catch(err => {
+                        res.status(500).send({ message: "${err}"})
+                        sql.close();
+                    });
+                    break;
+                    
+                }
+
+            }
+
+/*
             req.session.leftList = rows;
             if (rows.length > 0) {
                 cnt_query = " SELECT ( SELECT COUNT( DISTINCT LUIS_INTENT ) FROM TBL_DLG_RELATION_LUIS WHERE LUIS_ID ='" + rows[0].APP_NAME + "')  AS INTENT_CNT, \n" +
@@ -256,6 +304,7 @@ router.get('/list', function (req, res) {
                 res.status(500).send({ message: "${err}"})
                 sql.close();
             });
+*/
 
         }).catch(err => {
             res.status(500).send({ message: "${err}"})
@@ -270,6 +319,56 @@ router.get('/list', function (req, res) {
 router.get('/addChatbot', function (req, res) {
     req.session.selMenus = 'ms1';
     res.render('addChatbot');
+});
+
+//Chatbot App Insert
+router.post('/admin/addChatBotApps', function (req, res){
+    var chatName = req.body.appInsertName;
+    var culture = req.body.appInsertCulture;
+    var chatDes = req.body.appDes;
+    var chatColor = req.body.color;
+    var dbId = req.body.dbId;
+    var dbPassword = req.body.dbPassword;
+    var dbUrl = req.body.dbUrl;
+    var dbName = req.body.dbName;
+
+    (async () => {
+        try {
+            var insertChatQuery = "INSERT INTO TBL_CHATBOT_APP(CHATBOT_NUM,CHATBOT_NAME,CULTURE,DESCRIPTION,APP_COLOR) ";
+            insertChatQuery += "VALUES((SELECT ISNULL(MAX(CHATBOT_NUM),0) FROM TBL_CHATBOT_APP)+1, @chatName, @culture, @chatDes, @chatColor)";
+
+            var insertDbQuery = "INSERT INTO TBL_DB_CONFIG(USER_NAME,PASSWORD,SERVER,DATABASE_NAME,APP_NAME,APP_ID) ";
+            insertDbQuery += "VALUES(@dbId, @dbPassword, @dbUrl, @dbName, @chatName, @chatName)";
+
+            let pool = await dbConnect.getConnection(sql);
+            let insertChat = await pool.request()
+                .input('chatName', sql.NVarChar, chatName)
+                .input('culture', sql.NVarChar, culture)
+                .input('chatDes', sql.NVarChar, chatDes)
+                .input('chatColor', sql.NVarChar, chatColor)
+                .query(insertChatQuery);
+
+            let insertDb = await pool.request()
+                .input('dbId', sql.NVarChar, dbId)
+                .input('dbPassword', sql.NVarChar, dbPassword)
+                .input('dbUrl', sql.NVarChar, dbUrl)
+                .input('dbName', sql.NVarChar, dbName)
+                .input('chatName', sql.NVarChar, chatName)
+                .query(insertDbQuery);
+            
+            if(insertChat.rowsAffected.length > 0 && insertDb.rowsAffected.length > 0){
+                res.send({result:true});
+            } else {
+                res.send({result:false});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
 });
 
 //Luis app insert
@@ -354,8 +453,147 @@ router.post('/admin/renameApp', function (req, res){
     
 });
 
+router.post('/admin/trainApp', function (req, res){
+    var appId = req.session.appId;
+    var appName = req.session.appName;
+    var versionId;
+
+    for (var i=0; i<saveAppList.length; i++) {
+        if (appName === saveAppList[i].name) {
+            versionId = saveAppList[i].endpoints.PRODUCTION.versionId;
+        }
+    }
+    var client = new Client();
+    
+    var options = {
+        headers: {
+            'Ocp-Apim-Subscription-Key': subKey
+        }
+    };
+    
+    var selectAppIdQuery = "SELECT CHATBOT_ID, APP_ID, VERSION, APP_NAME,CULTURE, SUBSC_KEY \n";
+    selectAppIdQuery += "FROM TBL_LUIS_APP \n";
+    selectAppIdQuery += "WHERE CHATBOT_ID = (SELECT CHATBOT_NUM FROM TBL_CHATBOT_APP WHERE CHATBOT_NAME=@chatName)\n";
+
+    var selectEntityQuery = "SELECT ENTITY_VALUE, ENTITY\n";
+    selectEntityQuery += "FROM TBL_COMMON_ENTITY_DEFINE\n";
+    selectEntityQuery += "WHERE TRAIN_FLAG = 'N'\n";
+
+    (async () => {
+        try {
+
+            let pool = await dbConnect.getConnection(sql);
+            let selectAppId = await pool.request()
+                .input('chatName', sql.NVarChar, '오토웨이')
+                .query(selectAppIdQuery);
+
+            var appCount = false;
+            var useLuisAppId;
+
+            for(var i = 0 ; i < selectAppId.recordset.length; i++) {
+                var luisAppId = selectAppId.recordset[i].APP_ID;
+
+                //luis intent count check
+                var intentCountRes = syncClient.get(HOST + '/luis/api/v2.0/apps/' + luisAppId + '/versions/0.1/examples?take=500' , options);
+                
+                if( !(intentCountRes.body.length >= 280) ) {
+                    useLuisAppId = luisAppId;
+                    appCount = true;
+                }
+            }
+
+            if(appCount == false) {
+                //create luis app 
+                res.send({result:402});
+            }else{
+                let dbPool = await appDbConnect.getAppConnection(appSql, req.session.appName, req.session.dbValue);
+                let selectEntity = await dbPool.request()
+                    .query(selectEntityQuery);
+
+                for(var i = 0 ; i < selectEntity.recordset.length; i++ ) {
+                    var entity = selectEntity.recordset[i].ENTITY;
+                    var entityValue = selectEntity.recordset[i].ENTITY_VALUE;
+
+                    //luis hierarchicalentities list count check
+                    var entityListResult = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities?take=500' , options);
+                    if(entityListResult.body.length <= 28) {
+                        var entityId = entityListResult.body[entityListResult.body.length-1].id;
+
+                        //luis hierarchicalentities count check
+                        var entityResult = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities/'+ entityId , options);
+                        
+                        if(entityResult.body.length <= 10) {
+                            options.payload = { "name" :  entity };
+                            // add hierarchicalentities
+                            var entityCreateResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities/'+ entityId + '/children', options);
+                        } else {
+                            options.payload = {
+                                "name" : "entity" + (entityListResult.body.length + 1),
+                                "children" : [entity]
+                            };
+                            // add hierarchicalentities list, entity
+                            var entityListResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities', options);
+                        }
+
+                        // luis intent count check
+                        var intentCountRes = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/examples?take=500' , options);
+
+                        if( !(intentCountRes.body.length >= 280) ) {
+
+                            //get entity name
+                            var getEntityName = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities?take=500' , options);
+                            var addEntity;
+                            for(var i = 0; i < getEntityName.body.length; i++) {
+                                for(var j = 0 ; j < getEntityName.body[i].children.length; j++) {
+                                    if( getEntityName.body[i].children[j].name == entity ) {
+                                        addEntity=getEntityName.body[i].name + "::" + entity;
+                                    }
+                                }
+                            }
+
+                            options.payload = {
+                                "text" : entityValue,
+                                "intentName" : "intent",
+                                "entityLabels" :
+                                [
+                                    {
+                                        "entityName": addEntity,
+                                        "startCharIndex" : 0,
+                                        "endCharIndex": entity.length-1
+                                    }
+                                ]
+                            }
+
+                            // add luis label
+                            var addIntentLabel = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/example' , options);
+                        } else {
+                            res.send({result:402});
+                        }
+                    } else {
+                        //create luis app 
+                        res.send({result:402});
+                    }
+
+                }
+
+                var trainResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train' , options);
+
+                var publishResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/publish' , options);
+
+                res.send({result:200});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+});
+
 //luis Train
 //Luis app insert
+/*
 router.post('/admin/trainApp', function (req, res){
     var appId = req.session.appId;
     var appName = req.session.appName;
@@ -374,6 +612,8 @@ router.post('/admin/trainApp', function (req, res){
         }
     };
     try{
+
+
         client.get( HOST + '/luis/api/v2.0/apps/' + appId + '/versions/' + versionId + '/train', options, function (data, response) {
             //console.log(data); // app id값
             var responseData = data;
@@ -412,6 +652,7 @@ router.post('/admin/trainApp', function (req, res){
         console.log(e);
     }
 });
+*/
 
 router.post('/ajax1', function (req, res) {
     console.log("동기동기 비동기");

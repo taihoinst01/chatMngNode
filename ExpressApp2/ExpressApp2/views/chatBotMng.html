@@ -71,6 +71,7 @@
                                                         <div class="col-lg-6" style="padding:0px !important">
                                                                          <h4 class=" col-lg-6"><%= __('APP_LIST') %></h4>
                                                                          <div class=" col-lg-6" style="text-align:right; padding:0px !important"> 
+                                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addAppShowMordal" id="addAppMordalId" ><%= __('create_app') %></button>
                                                                             <button type="button" class="btn btn-default" id="saveBtn"><%= __('SAVE') %></button>
                                                                             <button type="button" class="btn btn-default" id="initBtn"><%= __('INIT') %></button>
                                                                          </div>                                                
@@ -105,7 +106,38 @@
                                 </div>
                         </section>
                         <!-- //Main content -->
-        
+                        
+
+                <!-- 앱생성 모달 -->
+                <div class="modal fade" id="addAppShowMordal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                        <div class="modal-dialog">
+                                <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                                <h4 class="modal-title" id="myModalLabel"><%= __('create_app') %></h4>
+                                            </div>
+                                            <div class="form-group" id="addApp" >
+                                                <label style=" margin-left: 2%;"><%= __('app_name') %><span class="nec_ico">*</span></label>
+                                                <select class="form-control" id="appService" style=" width: 50%; margin-left: 5%;"> 
+                                                    <option value="-1" disabled="disabled" selected><%= __('SELECT') %></option>
+                                                </select>
+                                            </div>     
+
+                                            <div class="form-group" style="clear:both">
+                                                <label style=" margin-left: 2%;"><%= __('DESC') %></label>
+                                                <textarea style="width: 90%; margin: 0 5%;" class="form-control"  rows="10" id="appDes"></textarea>
+                                            </div> 
+
+                                            <div class="modal-footer">
+                                                <div class="btn_wrap">
+                                                    <button type="button" class="btn btn_01" onclick="saveApp(); return false;"><%= __('CREAT') %></button>
+                                                    <button type="button" class="btn btn-default createDlgModalClose"  data-dismiss="modal"><%= __('CANCEL') %></button>
+                                                </div>
+                                            </div>
+                                </div>
+                        </div>
+                </div>    
+                <!-- //앱생성 모달 -->
     </div>
     <!--// Content Wrapper -->
     

@@ -42,6 +42,7 @@
                         <section class="content">
                             
                             <%
+                            if(sid) {
                                 if(list.length > 0) {
                             %>
 
@@ -61,7 +62,7 @@
                                                          <div class="box">
                                                                <div class=" box_chatlist_h <%=list[i].APP_COLOR %>"><span class="lan"> <%= list[i].CULTURE %></span></div>
                                                                <div class="box-body tc">
-                                                                     <a href="/board?appName=<%= list[i].APP_NAME %>&appId=<%= list[i].APP_ID %>" class="title"><%= list[i].APP_NAME %>
+                                                                     <a href="/board?appName=<%= list[i].CHATBOT_NAME %>" class="title"><%= list[i].CHATBOT_NAME %>
                                                                          <span><%= list[i].DESCRIPTION %></span>
                                                                      </a>
                                                                </div>
@@ -87,10 +88,18 @@
                             <%
                                 } else {
                             %>
-            
 
                             <%
                                 }
+                            } else {
+
+                            %>
+                                <script>
+                                    alert($('#signMassage').val());
+                                    location.href = '/';
+                                </script>  
+                            <%
+                                }   
                             %>
                         </section>
                         <!-- //Main content -->

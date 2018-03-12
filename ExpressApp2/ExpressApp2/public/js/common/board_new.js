@@ -91,7 +91,21 @@ $(document).ready(function () {
     var dd = today.getDate();
     var mm = today.getMonth()+1; //January is 0!
     var yyyy = today.getFullYear();
-    var minDate = mm.toString() + "/" + dd.toString() + "/" + (yyyy.toString()-1);  //new Date(yyyy.toString()-1, mm.toString(), dd.toString());
+    
+    var d = new Date();
+    var lastDayofLastMonth = ( new Date( d.getYear(), d.getMonth(), 0) ).getDate();
+        if(d.getDate() > lastDayofLastMonth) {
+            d.setDate(lastDayofLastMonth);
+        }
+
+    //
+    var firstDayOfMonth = new Date( today.getFullYear(), today.getMonth() , 1 );
+    var lastMonth = new Date ( firstDayOfMonth.setDate( firstDayOfMonth.getDate() - 1 ) );
+    var lastMonthVal = lastMonth.getMonth()+1;
+    var lastMonthDayVal = d.getDate();
+    //
+    
+    var minDate = lastMonthVal.toString() + "/" + lastMonthDayVal.toString() + "/" + (yyyy.toString());  //new Date(yyyy.toString()-1, mm.toString(), dd.toString());
     var maxDate = mm.toString() + "/" + dd.toString() + "/" + yyyy.toString();  //new Date(yyyy.toString(), mm.toString(), dd.toString());
     $('#reservation').val(minDate + " - " + maxDate);
 
@@ -126,7 +140,7 @@ function selectAll() {
 //INTENT SCORE 평균/최소/최대 테이블 페이지 버튼 클릭
 $(document).on('click','#scoreTablePaging .li_paging',function(e){
     if(!$(this).hasClass('active')){
-        makeUserTable($(this).text());
+        drawScoreList($(this).text());
     }
 });
  
@@ -245,7 +259,7 @@ function getOftQuestion() {
                 scoreList += "<td>" + tableList[i].KORQ + "</td>";
                 scoreList += "<td>" + tableList[i].CHANNEL + "</td>";
                 scoreList += "<td>" + tableList[i].QNUM + "</td>";
-                scoreList += "<td>" + tableList[i].DATE + "</td></tr>";
+                scoreList += "</tr>";
             }
             
             $("#OftQuestionTableBody").html(scoreList);

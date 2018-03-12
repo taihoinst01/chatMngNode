@@ -50,21 +50,33 @@ function addApp() {
         'appInsertName': $('#appInsertName').val(),
         'appInsertCulture': $(":input:radio[name=r3]:checked").val(),
         'appDes': $('#appDes').val(),
+        'dbId' : $('#dbId').val(),
+        'dbPassword' : $('#dbPassword').val(),
+        'dbUrl' : $('#dbUrl').val(),
+        'dbName' : $('#dbName').val()
     };
 
 
     $.ajax({
         type: 'POST',
-        url: 'admin/putAddApps',
+        url: 'admin/addChatBotApps',
         data: params,
         success: function(data) {
+            if(data.result == true) {
+                alert(language['REGIST_SUCC']);
+                window.location.href = '/';
+            } else {
+                alert(language['It_failed']);
+            }
             //console.log(data);
+            /*
             if(data.appId != undefined && data.appId != null && data.appId != ''){
                 alert(language['REGIST_SUCC']);
                 window.location.href='/?appColor=' + appColor + '&appInsertName=' + $('#appInsertName').val();
             }else{
                 alert(language['It_failed']);
             }
+            */
         }
     });
 }
