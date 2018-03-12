@@ -72,7 +72,7 @@
                                                 <th><%= __('FUNCTION') %></th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="utterTableBody">
                                                                                                         
                                         </tbody>
                                     </table>
@@ -97,7 +97,7 @@
                                     <h3 class="box-title"><%= __('Dialog_box') %></h3>
                                     <div class="btn_wrap03 fr" style="width:50%" >
                                         <button type="button" class="btn btn_01" data-toggle="modal" data-target="#myModal1" onclick="openModalBox('#search_dlg')"><%= __('SEARCH') %></button>
-                                        <button type="button" class="btn btn-default" id="create_dlg" data-toggle="modal" onclick="openModalBox('#create_dlg')"><%= __('CREAT') %></button>
+                                        <button type="button" class="btn btn-default" id="create_dlg" data-toggle="modal" data-target="#myModal2" onclick="openModalBox('#create_dlg')"><%= __('CREAT') %></button>
                                     </div>                                                                  
                                 </div>
                                 <div class="dialog_wrap">

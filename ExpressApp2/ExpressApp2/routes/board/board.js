@@ -71,7 +71,7 @@ router.post('/intentScore', function (req, res) {
     selectQuery += "COUNT(*) AS intentCount \n";
     selectQuery += "FROM	TBL_HISTORY_QUERY A, TBL_QUERY_ANALYSIS_RESULT B \n";
     selectQuery += "WHERE	1=1 \n";
-    selectQuery += "AND 	REPLACE(REPLACE(LOWER(A.CUSTOMER_COMMENT_KR),'.',''),'?','') = B.QUERY \n";
+    selectQuery += "AND 	dbo.fn_replace_regex(A.CUSTOMER_COMMENT_KR) =  B.QUERY \n";
     selectQuery += "AND CONVERT(date, '" + startDate + "') <= CONVERT(date, REG_DATE)  AND  CONVERT(date, REG_DATE)   <= CONVERT(date, '" + endDate + "') ";
     
     if (selDate !== 'allDay') {

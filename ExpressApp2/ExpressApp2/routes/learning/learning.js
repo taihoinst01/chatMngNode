@@ -1091,9 +1091,9 @@ router.post('/selectDlgListAjax', function (req, res) {
     entity = req.body['entity[]'];
     
 
-    var relationText = "SELECT RNUM, LUIS_ENTITIES, A.DLG_ID DLG_ID, B.DLG_TYPE, DLG_ORDER_NO \n"
+    var relationText = "SELECT RNUM, LUIS_ENTITIES, A.DLG_ID DLG_ID, B.DLG_TYPE, DLG_ORDER_NO, LUIS_ID, LUIS_INTENT \n"
                      + "FROM (\n"
-                     + "SELECT RANK() OVER(ORDER BY LUIS_ENTITIES) AS RNUM, LUIS_ENTITIES, DLG_ID \n"
+                     + "SELECT RANK() OVER(ORDER BY LUIS_ENTITIES) AS RNUM, LUIS_ENTITIES, DLG_ID, LUIS_ID, LUIS_INTENT \n"
                      + "FROM TBL_DLG_RELATION_LUIS \n"
                      + "WHERE 1=1\n";
     if(Array.isArray(entity)){
@@ -1108,7 +1108,7 @@ router.post('/selectDlgListAjax', function (req, res) {
         relationText += "AND LUIS_ENTITIES LIKE '%" + entity +"%'\n";
     }
     
-    relationText += "GROUP BY LUIS_ENTITIES, DLG_ID \n"
+    relationText += "GROUP BY LUIS_ENTITIES, DLG_ID, LUIS_ID, LUIS_INTENT \n"
                  + ") A LEFT OUTER JOIN TBL_DLG B\n"
                  + "ON A.DLG_ID = B.DLG_ID \n"
                  + "WHERE RNUM = 1\n"
@@ -1215,6 +1215,8 @@ router.post('/selectDlgListAjax', function (req, res) {
                 row.DLG_ID = rows[i].DLG_ID;
                 row.DLG_TYPE = rows[i].DLG_TYPE;
                 row.DLG_ORDER_NO = rows[i].DLG_ORDER_NO;
+                row.LUIS_ID = rows[i].LUIS_ID;
+                row.LUIS_INTENT = rows[i].LUIS_INTENT;
                 row.dlg = [];
 
                 let dlg_type = rows[i].DLG_TYPE;
@@ -1370,32 +1372,63 @@ router.post('/insertDialog', function (req, res) {
 });
 
 router.post('/learnUtterAjax', function (req, res) {
-    var intent = req.body.intent;
-    var entity = req.body.entity;
+    var luisId = req.body.luisId;
+    var luisintent = req.body.luisIntent;
+
+    var entities = [];
+    entities = req.body['entities[]'];;
+    
     var dlgId = [];
     dlgId = req.body['dlgId[]'];
 
     var queryText = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) "
-                  + "VALUES( 'kona_luis_06', 'luis_test', @entity, @dlgId, 'D', 'Y' )";
+                  + "VALUES( @luisId, @luisIntent, @entities, @dlgId, 'D', 'Y' )";
+    
+    var insertTblRelation = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) " 
+                          + "VALUES( @luisId, @luisIntent, @entity, @dlgId, 'D', 'Y' ) ";
     
     (async () => {
         try {
             let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1;
 
+            /*
             if(typeof dlgId == "string") {
                 result1 = await pool.request()
-                .input('entity', sql.NVarChar, entity)
-                .input('dlgId', sql.NVarChar, dlgId)
-                .query(queryText);
+                                .input('luisId', sql.NVarChar, luisId)
+                                .input('luisintent', sql.NVarChar, luisintent)
+                                .input('entities', sql.NVarChar, entities)
+                                .input('dlgId', sql.NVarChar, dlgId)
+                                .query(queryText);
             } else {
                 for(var i = 0 ; i < dlgId.length; i++) {
                     result1 = await pool.request()
-                        .input('entity', sql.NVarChar, entity)
-                        .input('dlgId', sql.NVarChar, dlgId[i])
-                        .query(queryText);
+                                    .input('luisId', sql.NVarChar, luisId)
+                                    .input('luisintent', sql.NVarChar, luisintent)
+                                    .input('entities', sql.NVarChar, entities)
+                                    .input('dlgId', sql.NVarChar, dlgId[i])
+                                    .query(queryText);
                 }
+            }*/
+
+            for(var i = 0 ; i < entities.length; i++) {
+
+                for(var j = 0 ; j < dlgId.length; j++)
+                result1 = await pool.request()
+                                .input('luisId', sql.NVarChar, luisId)
+                                .input('luisintent', sql.NVarChar, luisintent)
+                                .input('entities', sql.NVarChar, entities[i])
+                                .input('dlgId', sql.NVarChar, dlgId[j])
+                                .query(queryText);
             }
+
+            // TBL_DLG_RELATION_LUIS 삽입
+            let result5 = await pool.request()
+            .input('luisId', sql.NVarChar, luisId)
+            .input('luisIntent', sql.NVarChar, luisIntent)
+            .input('entity', sql.NVarChar, entity)
+            .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+            .query(insertTblRelation)
 
             console.log(result1);
 
@@ -1493,9 +1526,9 @@ router.post('/searchDialog',function(req,res){
     var searchSmallGroup = req.body.searchSmallGroup;
     var serachDlg = req.body.serachDlg.trim();
 
-    var relationText = "SELECT RNUM, LUIS_ENTITIES, A.DLG_ID DLG_ID, B.DLG_TYPE, DLG_ORDER_NO \n";
+    var relationText = "SELECT RNUM, LUIS_ENTITIES, A.DLG_ID DLG_ID, B.DLG_TYPE, DLG_ORDER_NO, LUIS_ID, LUIS_INTENT \n";
         relationText += "FROM (\n";
-        relationText += "SELECT RANK() OVER(ORDER BY LUIS_ENTITIES) AS RNUM, LUIS_ENTITIES, DLG_ID \n";
+        relationText += "SELECT RANK() OVER(ORDER BY LUIS_ENTITIES) AS RNUM, LUIS_ENTITIES, DLG_ID, LUIS_ID, LUIS_INTENT \n";
         relationText += "FROM TBL_DLG_RELATION_LUIS \n";
         relationText += "WHERE 1=1\n";
         if(serachDlg) {
@@ -1513,7 +1546,7 @@ router.post('/searchDialog',function(req,res){
                 }
             }
         }
-        relationText += "GROUP BY LUIS_ENTITIES, DLG_ID \n";
+        relationText += "GROUP BY LUIS_ENTITIES, DLG_ID, LUIS_ID, LUIS_INTENT \n";
         relationText += ") A LEFT OUTER JOIN TBL_DLG B\n";
         relationText += "ON A.DLG_ID = B.DLG_ID \n";
         relationText += "ORDER BY LUIS_ENTITIES, DLG_ORDER_NO";
@@ -1629,6 +1662,8 @@ router.post('/searchDialog',function(req,res){
                 row.DLG_ID = rows[i].DLG_ID;
                 row.DLG_TYPE = rows[i].DLG_TYPE;
                 row.DLG_ORDER_NO = rows[i].DLG_ORDER_NO;
+                row.LUIS_ID = rows[i].LUIS_ID;
+                row.LUIS_INTENT = rows[i].LUIS_INTENT;
                 row.dlg = [];
                 
                 let dlg_type = rows[i].DLG_TYPE;
@@ -1675,7 +1710,7 @@ router.post('/searchDialog',function(req,res){
 
 
 router.post('/addDialog',function(req,res){
-    var entity = req.body['entities[]'];
+
     var data = req.body['data[]'];
     var array = [];
     var queryText = "";
@@ -1721,8 +1756,6 @@ router.post('/addDialog',function(req,res){
             '(@dlgId,@dialogTitle,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardOrderNo,\'Y\')';
             var insertTblDlgMedia = 'INSERT INTO TBL_DLG_MEDIA(DLG_ID,CARD_TITLE,CARD_TEXT,MEDIA_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_VALUE,USE_YN) VALUES ' +
             '(@dlgId,@dialogTitle,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardValue,\'Y\')';
-            var insertTblRelation = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) " + 
-            "VALUES( @luisId, @luisIntent, @entity, @dlgId, 'D', 'Y' )";
 
             var luisId = array[array.length - 1]["luisId"];
             var luisIntent = array[array.length - 1]["luisIntent"];
@@ -1837,15 +1870,7 @@ router.post('/addDialog',function(req,res){
 
                     tblDlgId.push(dlgId[0].DLG_ID);
                 }     
-                     
-                // TBL_DLG_RELATION_LUIS 삽입
-                let result5 = await pool.request()
-                .input('luisId', sql.NVarChar, luisId)
-                .input('luisIntent', sql.NVarChar, luisIntent)
-                .input('entity', sql.NVarChar, entity)
-                .input('dlgId', sql.Int, dlgId[0].DLG_ID)
-                .query(insertTblRelation)
-                
+                                                    
                 tblDlgId.push(dlgId[0].DLG_ID);
 
             }

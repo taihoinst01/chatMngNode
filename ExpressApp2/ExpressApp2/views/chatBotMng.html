@@ -7,7 +7,7 @@
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 <%include  ./common/commonLib.html%>
 
-<script type="text/javascript" src="/js/common/userAuthMng.js"></script>
+<script type="text/javascript" src="/js/common/chatBotMng.js"></script>
 
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -23,71 +23,68 @@
 
       <!-- Content Wrapper -->
       <div class="content-wrapper">
-                        <section class="content-header"><h1><%= __('USER_AUTH_MNG') %></h1>  </section>
-            <input type="hidden" id="selectUserHiddenId" value=""/>
+                        <section class="content-header"><h1><%= __('CHATBOT_MNG') %></h1>  </section>
+            <input type="hidden" id="selectChatHiddenId" value=""/>
                         <!-- Main content -->
                         <section class="content">
                                 <div class="box  color-palette-box">
                                         <div class="box-body">
                                                 <div class="row search_op">
                                                     <div class="form-group col-lg-5"  >
-                                                        <label class="fl mr10"><%= __('USER_NAME') %></label>
+                                                        <label class="fl mr10"><%= __('CHAT') %></label>
                                                         <input type="text" class="form-control" name="searchName" id="searchName" placeholder="<%= __('Please_enter') %>" style="width:80%">
                                                     </div>  
-                                                    <div class="form-group col-lg-5"  >
-                                                        <label  class="fl mr10"><%= __('USER_ID') %></label>
-                                                        <input type="text" class="form-control" name="searchId" id="searchId" placeholder="<%= __('Please_enter') %>"   style="width:80%">
-                                                    </div> 
-                                                    <div class="form-group col-lg-2" style="text-align:right"  >
+                                                    <div class="form-group col-lg-2" style="text-align:left"  >
                                                         <button type="button" class="btn btn_01" id="searchBtn"><%= __('SEARCH') %></button>
                                                     </div>                                                     
                                                 </div>
 
                                                 <div class="mt20">
                                                         <div class="col-lg-6" style="padding-left:0px !important">
-                                                                         <h4 class=" col-lg-6"><%= __('USER_LIST') %></h4>
+                                                                         <h4 class=" col-lg-6"><%= __('CHAT_LIST') %></h4>
                                                         
                                                                         <div class="Tbl_wrap">
                                                                             <table class="Tbl" summary="사용자 권한관리">
-                                                                                <colgroup><col width="3%"/><col width="10%"/><col width="10%"/><col width="15%"/>
+                                                                                <colgroup><col width="3%"/><col width="3%"/><col width="10%"/><col width="5%"/><col width="25%"/>
                                                                                 </colgroup>
                                                                                 <thead>
                                                                                       <tr>
                                                                                           <th></th>
-                                                                                          <th><%= __('USER_ID') %></th>
-                                                                                          <th><%= __('USER_NAME') %></th>                                                                   
-                                                                                          <th><%= __('EMAIL') %></th>
+                                                                                          <th><%= __('ID') %></th>
+                                                                                          <th><%= __('CHAT') %></th>                                                                   
+                                                                                          <th><%= __('Culture') %></th>                                                                     
+                                                                                          <th><%= __('DESC') %></th>
                                                                                       </tr>
                                                                                 </thead>
-                                                                                <tbody id="userTableBodyId">
+                                                                                <tbody id="chatTableBodyId">
                                                                                       <tr>                                                                                                                           
                                                                                       </tr>
                                                                                 </tbody>
                                                                             </table>
                                                                         </div> 
-                                                                <div class="pagination_wrap" id="userTablePaging">
+                                                                <div class="pagination_wrap" id="chatTablePaging">
                                                                     <ul class="pagination pagination-sm no-margin">
                                         
                                                                     </ul>
                                                                 </div>
                                                         </div>
                                                         <div class="col-lg-6" style="padding:0px !important">
-                                                                         <h4 class=" col-lg-6"><%= __('USER_AUTH') %></h4>
+                                                                         <h4 class=" col-lg-6"><%= __('APP_LIST') %></h4>
                                                                          <div class=" col-lg-6" style="text-align:right; padding:0px !important"> 
                                                                             <button type="button" class="btn btn-default" id="saveBtn"><%= __('SAVE') %></button>
                                                                             <button type="button" class="btn btn-default" id="initBtn"><%= __('INIT') %></button>
                                                                          </div>                                                
                                                                         <div class="Tbl_wrap">
                                                                             <table class="Tbl" summary="사용자 권한관리">
-                                                                                <colgroup><col width="3%"/><col width="2%"/><col width="20%"/><col width="25%"/>
+                                                                                <colgroup><col width="3%"/><col width="2%"/><col width="20%"/><col width="30%"/><col width="10%"/>
                                                                                 </colgroup>
                                                                                 <thead>
                                                                                       <tr>
                                                                                           <th></th>
                                                                                           <th><input type="checkbox" class="flat-red" id="check-all"></th>                                                                  
                                                                                           <th><%= __('APP') %></th>
-                                                                                          <th><%= __('APP_ID') %></th>    
-                                                                                          <th></th>
+                                                                                          <th><%= __('APP_ID') %></th>
+                                                                                          <th><%= __('OWNER') %></th>    
                                                                                       </tr>
                                                                                 </thead>
                                                                                 <tbody id="appTableBodyId">

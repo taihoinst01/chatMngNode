@@ -232,5 +232,8 @@
 	"A big group": "A big group",
 	"SUCCESS": "성공",
 	"FAIL": "실패",
-	"Group": "그룹"
+	"Group": "그룹",
+	"ADMIN_SETTING": "관리자 설정",
+	"CHATBOT_MNG": "챗봇 관리",
+	"APP_LIST": "앱 목록"
 }

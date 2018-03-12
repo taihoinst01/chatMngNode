@@ -294,6 +294,7 @@ router.post('/inItPassword', function (req, res) {
 
 });
 
+//
 router.get('/userAuthMng', function (req, res) {  
     res.render('userAuthMng');
 });
@@ -304,11 +305,11 @@ router.post('/selectUserAppList', function (req, res) {
     var currentPage = checkNull(req.body.currentPage, 1);
     var currentPageUser = checkNull(req.body.currentPageUser, 1);
     var selectAppListStr = "SELECT tbp.* from \n" +
-                            " (SELECT ROW_NUMBER() OVER(ORDER BY APP_NAME DESC) AS NUM, \n" +
+                            " (SELECT ROW_NUMBER() OVER(ORDER BY CHATBOT_NAME DESC) AS NUM, \n" +
                             "         COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
-                            "         CEILING((ROW_NUMBER() OVER(ORDER BY APP_NAME DESC))/ convert(numeric ,10)) PAGEIDX, \n" +
-                            "         APP_NAME, APP_ID,  LEFT(OWNER_EMAIL, CHARINDEX('@', OWNER_EMAIL)-1) OWNER_EMAIL \n" +
-                           "          FROM TBL_LUIS_APP ) tbp \n" +
+                            "         CEILING((ROW_NUMBER() OVER(ORDER BY CHATBOT_NAME DESC))/ convert(numeric ,10)) PAGEIDX, \n" +
+                            "         CHATBOT_NUM, CHATBOT_NAME, CULTURE, DESCRIPTION, APP_COLOR \n" +
+                           "          FROM TBL_CHATBOT_APP ) tbp \n" +
                            " WHERE 1=1 \n" +
                            "   AND PAGEIDX = " + currentPage + "; \n";
 
@@ -341,7 +342,7 @@ router.post('/selectUserAppList', function (req, res) {
             var checkedApp = [];
             for(var i = 0; i < rows2.length; i++){
                 for (var j=0; j < recordList.length; j++) {
-                    if (rows2[i].APP_ID === recordList[j].APP_ID) {
+                    if (Number(rows2[i].APP_ID) === recordList[j].CHATBOT_NUM) {
                         var item = {};
                         item = rows2[i];
                         checkedApp.push(item);
@@ -380,14 +381,221 @@ router.post('/updateUserAppList', function (req, res) {
 
     for (var i=0; i<saveData.length; i++) {
         saveDataStr += "INSERT INTO TBL_USER_RELATION_APP(USER_ID, APP_ID) " +
-                    "     VALUES ('" + userId + "', '" + saveData[i] + "'); ";    
+                    "     VALUES ('" + userId + "', " + saveData[i] + "); ";    
     }
     
     for (var i=0; i<removeData.length; i++) {
         removeDataStr += "DELETE FROM TBL_USER_RELATION_APP " +
                     "      WHERE 1=1 " +
-                    "        AND APP_ID = '" + removeData[i].APP_ID + "' " +
+                    "        AND APP_ID = " + removeData[i].APP_ID + " " +
                     "        AND USER_ID = '" + userId + "'; ";     
+    }
+                        
+                   
+    (async () => {
+        try {
+            let pool = await dbConnect.getConnection(sql);
+            if (saveData.length > 0) {
+                let appList = await pool.request().query(saveDataStr);
+            }
+            
+            if (removeData.length > 0) {
+                let userAppList = await pool.request().query(removeDataStr);
+            }
+
+            res.send({status:200 , message:'Update Success'});
+            
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'Update Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+    
+})
+
+router.get('/chatBotMng', function (req, res) {  
+    res.render('chatBotMng');
+});
+
+router.post('/selecChatList', function (req, res) {
+
+    let pageSize = checkNull(req.body.rows, 10);
+    let currentPageNo = checkNull(req.body.page, 1);
+    
+    let searchName = checkNull(req.body.searchName, null);
+    let sortIdx = "CHATBOT_NAME";
+    (async () => {
+        try {
+         
+            var QueryStr =  "SELECT TBZ.* ,(TOT_CNT - SEQ + 1) AS NO \n" +
+                            "  FROM (SELECT TBY.* \n" +
+                            "          FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX." + sortIdx + ") AS SEQ, \n" +
+                            "                       COUNT('1') OVER(PARTITION BY '1') AS TOT_CNT, \n" +
+                            "                       CEILING(ROW_NUMBER() OVER(ORDER BY TBX." + sortIdx + ") / CONVERT( NUMERIC, " + pageSize + " ) ) PAGEIDX, \n" +
+                            "                       TBX.* \n" +
+                            "                  FROM ( \n" +
+                            "                         SELECT \n" +
+                            "                              A.CHATBOT_NUM      AS CHATBOT_NUM, \n" +
+                            "                              A.CHATBOT_NAME      AS CHATBOT_NAME, \n" +
+                            "                              A.CULTURE      AS CULTURE, \n" +
+                            "                              A.DESCRIPTION      AS DESCRIPTION, \n" +
+                            "                              A.APP_COLOR      AS APP_COLOR \n" +
+                            "                         FROM TBL_CHATBOT_APP A \n" +
+                            "                         WHERE 1 = 1 \n" ;
+
+            if (searchName) {
+                QueryStr += "					      AND A.CHATBOT_NAME like '%" + searchName + "%' \n";
+            }
+            QueryStr +=     "                       ) TBX \n" +
+                            "               ) TBY \n" +
+                            "       ) TBZ \n" +
+                            " WHERE PAGEIDX = " + currentPageNo + " \n";
+            
+            
+            let pool = await dbConnect.getConnection(sql);
+            let result1 = await pool.request().query(QueryStr);
+
+            let rows = result1.recordset;
+
+            var recordList = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+                item = rows[i];
+                
+
+                recordList.push(item);
+            }
+
+
+            if(rows.length > 0){
+
+                var totCnt = 0;
+                if (recordList.length > 0)
+                    totCnt = checkNull(recordList[0].TOT_CNT, 0);
+                var getTotalPageCount = Math.floor((totCnt - 1) / checkNull(rows[0].TOT_CNT, 10) + 1);
+
+
+                res.send({
+                    records : recordList.length,
+                    total : getTotalPageCount,
+                    pageList : paging.pagination(currentPageNo,rows[0].TOT_CNT), //page : checkNull(currentPageNo, 1),
+                    rows : recordList
+                });
+
+            }else{
+                res.send({list : result});
+            }
+        } catch (err) {
+            console.log(err)
+            // ... error checks
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+
+
+});
+
+router.post('/selectChatAppList', function (req, res) {
+    
+    let chatId = checkNull(req.body.clicChatId, '');
+    var currentPage = checkNull(req.body.currentPage, 1);
+    var currentPageUser = checkNull(req.body.currentPageUser, 1);
+    var selectAppListStr = "SELECT tbp.* from \n" +
+                            " (SELECT ROW_NUMBER() OVER(ORDER BY APP_NAME DESC) AS NUM, \n" +
+                            "         COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
+                            "         CEILING((ROW_NUMBER() OVER(ORDER BY APP_NAME DESC))/ convert(numeric ,10)) PAGEIDX, \n" +
+                            "         APP_NAME, APP_ID,  LEFT(OWNER_EMAIL, CHARINDEX('@', OWNER_EMAIL)-1) OWNER_EMAIL, CHATBOT_ID \n" +
+                           "          FROM TBL_LUIS_APP ) tbp \n" +
+                           " WHERE 1=1 \n" +
+                           "   AND PAGEIDX = " + currentPage + "; \n";
+
+    var UserAppListStr = "SELECT tbp.* from \n" +
+                         "   (SELECT ROW_NUMBER() OVER(ORDER BY CHAT_ID DESC) AS NUM, \n" +
+                         "           COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
+                         "           CEILING((ROW_NUMBER() OVER(ORDER BY CHAT_ID DESC))/ convert(numeric ,10)) PAGEIDX, \n" +
+                        "            CHAT_ID \n" +
+                        "       FROM TBL_CHAT_RELATION_APP \n" +
+                        "      WHERE 1=1 \n" +
+                        "        AND CHAT_ID = '" + chatId + "') tbp  \n" + 
+                        " WHERE 1=1;  \n";
+                        //"   AND PAGEIDX = " + currentPage + "; \n";                  
+    (async () => {
+        try {
+            let pool = await dbConnect.getConnection(sql);
+            let appList = await pool.request().query(selectAppListStr);
+            let rows = appList.recordset;
+
+            var recordList = [];
+            for(var i = 0; i < rows.length; i++){
+                var item = {};
+                item = rows[i];
+                recordList.push(item);
+            }
+
+            let userAppList = await pool.request().query(UserAppListStr);
+            let rows2 = userAppList.recordset;
+
+            var checkedApp = [];
+            for(var i = 0; i < rows2.length; i++){
+                for (var j=0; j < recordList.length; j++) {
+                    if (rows2[i].CHATBOT_ID === recordList[j].CHAT_ID) {
+                        var item = {};
+                        item = rows2[i];
+                        checkedApp.push(item);
+                        break;
+                    }
+                }
+                
+            }
+
+            res.send({
+                records : recordList.length,
+                rows : recordList,
+                checkedApp : checkedApp,
+                pageList : paging.pagination(currentPage,rows[0].TOTCNT)
+            });
+            
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'app Load Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+
+    sql.on('error', err => {
+        // ... error handler
+    })
+})
+
+router.post('/updateChatAppList', function (req, res) {
+    let chatId = req.body.chatId;
+    let saveData = JSON.parse(checkNull(req.body.saveData, ''));
+    let removeData = JSON.parse(checkNull(req.body.removeData, ''));
+    var saveDataStr = "";
+    var removeDataStr = "";
+
+    for (var i=0; i<saveData.length; i++) {
+        saveDataStr += "INSERT INTO TBL_CHAT_RELATION_APP(CHAT_ID, APP_ID) " +
+                    "     VALUES (" + chatId + ", '" + saveData[i] + "'); ";    
+    }
+    
+    for (var i=0; i<removeData.length; i++) {
+        removeDataStr += "DELETE FROM TBL_CHAT_RELATION_APP " +
+                    "      WHERE 1=1 " +
+                    "        AND CHAT_ID = " + chatId + " " +
+                    "        AND APP_ID = '" + removeData[i].APP_ID + "'; ";     
     }
                         
                    
