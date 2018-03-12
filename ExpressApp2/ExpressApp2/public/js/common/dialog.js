@@ -26,6 +26,9 @@ $(document).ready(function(){
     var sourceType = $('#tblSourceType').val();
     selectDlgByTxt(groupType, sourceType);
 
+    //api selbox 초기설정
+    //selectApiGroup();
+
     //검색 enter
     $('#iptDialog').keyup(function(e){
         if(e.keyCode == 13) {
@@ -56,8 +59,9 @@ $(document).ready(function(){
         sourceType = $('#tblSourceType').val();
         $('#currentPage').val(1);
         rememberSelBoxHtml = $('#selBoxBody').html();
+
         selectDlgByTxt(groupType, sourceType);
-        
+
         /*
         var selTypeVal = $('#tblSourceType :selected').text();
         $('#dialogTbltbody tr').show();
@@ -610,7 +614,7 @@ function searchIptDlg(page){
                     item += '<tr>' +
                             '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
                             '<td>' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#dialogShowMordal"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#myModal2"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
                             '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
@@ -775,6 +779,27 @@ $(document).on('click', '.addCarouselBtn', function(e){
     
 
 });
+
+//엔티티 추가 group selbox 설정
+function selectApiGroup() {
+    $.ajax({
+        type: 'POST',
+        datatype: "JSON",
+        //data: params,
+        url: '/learning/selectApiGroup',
+        success: function(data) {
+            if (data.groupList) {
+                var groupList = data.groupList;
+                var optionStr = "";
+                for (var i=0; i<groupList.length; i++) {
+                    optionStr += '<option value="' + groupList[i].API_GROUP + '">' + groupList[i].API_GROUP + '</option>'
+                }
+                $('#sourceType2').append(optionStr);
+                $('#tblSourceType').append(optionStr);
+            }
+        }
+    });
+}
 
 //오른쪽 버튼 클릭시 슬라이드
 function nextBtn(botChatNum) {
@@ -951,7 +976,7 @@ function selectDlgByFilter(group){
                     item += '<tr>' +
                             '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
                             '<td>' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#dialogShowMordal"   onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#myModal2"   onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
                             '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                             '</tr>';
                 }
@@ -1597,6 +1622,8 @@ function searchDialog(dlgID) {
                                 inputUttrHtml += '</div></div></div></div></div>';
                             }
                             $('#updateDlgId').val(tmp.dlg[j].DLG_ID);
+                            $('#updateDlgType').val(tmp.dlg[j].DLG_TYPE);
+                            $('#updateDlgEntity').val(tmp.GROUPS);
                         }
                     //}
                 
@@ -1625,5 +1652,80 @@ function searchDialog(dlgID) {
 
 function updateDialog() {
 
+    var dlgId = $('#updateDlgId').val();
+    var dlgType = $('#updateDlgType').val();
+    var entity = $('#updateDlgEntity').val();
+
+    var idx = $('form[name=dialogLayout]').length;
+    var array = [];
+    var exit = false;
+    if ($('#description').val().trim() === "" ) {
+        alert(language.Description_must_be_entered);
+        return false;
+    }
+    $('.insertForm input[name=dialogTitle]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert();
+            exit = true;
+            return false;
+        }
+    });
+    if(exit) return;
+    $('.insertForm textarea[name=dialogText]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert(language.You_must_enter_a_Dialog_Title);
+            exit = true;
+            return false;
+        }
+    });
+    if(exit) return;
+    $('.insertForm input[name=imgUrl]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert(language.ImageURL_must_be_entered);
+            exit = true;
+            return false;
+        }
+    });
+    if(exit) return;
+
+
+    for(var i = 0 ; i < idx ; i++) {
+        var tmp = $("form[name=dialogLayout]").eq(i).serializeArray();
+        var object  = {};
+        var carouselArr = [];
+        var objectCarousel = {};
+        if (tmp[0].value === "3") {
+            for (var j = 1; j < tmp.length; j++) {
+                if (typeof objectCarousel[tmp[j].name] !== "undefined" || j === tmp.length-1) {
+                    carouselArr.push(objectCarousel);
+                    objectCarousel = {};
+                } 
+                object[tmp[0].name] = tmp[0].value;
+                objectCarousel[tmp[j].name] = tmp[j].value;
+            }
+            object['carouselArr'] = carouselArr;
+        } else {
+            for (var j = 0; j < tmp.length; j++) {
+                object[tmp[j].name] = tmp[j].value;
+            }
+        }
+        
+        array[i] = JSON.stringify(object);//JSON.stringify(tmp);//tmp.substring(1, tmp.length-2);
+    }
+    //JSON.stringify($("form[name=appInsertForm]").serializeObject());
+    array[array.length] = JSON.stringify($("form[name=appInsertForm]").serializeObject());//JSON.stringify($("form[name=appInsertForm]"));
+
+    $.ajax({
+        url: '/learning/updateDialog',                //주소
+        dataType: 'json',                  //데이터 형식
+        type: 'POST',                      //전송 타입
+        data: {'dlgId':dlgId,'dlgType':dlgType,'data' : array,'entity':entity},      //데이터를 json 형식, 객체형식으로 전송
+
+        success: function(result) {
+            alert('success');
+            $('.createDlgModalClose').click();
+        }
+
+    });
 }
 

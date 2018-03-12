@@ -996,7 +996,7 @@ function selectApiGroup() {
                 for (var i=0; i<groupList.length; i++) {
                     optionStr += '<option value="' + groupList[i].API_GROUP + '">' + groupList[i].API_GROUP + '</option>'
                 }
-                $('#apiGroup').html(optionStr);
+                $('#apiGroup').append(optionStr);
             }
         }
     });

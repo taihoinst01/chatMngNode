@@ -36,13 +36,18 @@ $(document).ready(function(){
 
     //생성버튼클릭시 다른div hidden
     $('#entites').click(function() {
-        
-        $('.close').trigger('click')
+        $('.cancelEntityValueBtn').trigger('click')
+        //$('.close').trigger('click')
     });
 });
 
 $(document).on("click", ".more", function(e){
     if($(e.target).hasClass('more')){
+        //$(this).next().css('visibility') === 'visible'
+        $('.board').hide();
+        $('.board').eq(  $('.board').index($(this).next())  ).show();
+        $('.fl.close').addClass('more').removeClass('close');  
+
         $(e.target).addClass('close').removeClass('more');
         $(e.target).parent().find(".board").css('visibility', 'visible');
      }
