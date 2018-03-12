@@ -533,6 +533,9 @@ $(document).ready(function(){
             insertForm += '<div class="clear-both"></div>';
 
             insertForm += '<div class="textLayout" style="display: block;">';
+            insertForm += '<div class="btn_wrap" style="clear:both">';
+            insertForm += '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제(통짜로 삭제)</button>';
+            insertForm += '</div>'
             insertForm += '<div class="form-group">';
             insertForm += '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>';
             insertForm += '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder=" ' + language.Please_enter + '">';
@@ -765,8 +768,8 @@ $(document).on('change','select[name=dlgType]',function(e){
 
     } else if($(e.target).val() == "3") {
         //var $clone = $('.carouselLayout').clone();  <div id="carouselLayout" style="display: block;">[object Object]</div>
-        var caraousHtml = '<div class="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>'
-        $('.insertForm:eq(' + idx + ') form').append('<div class="carouselLayout" style="display:none;">' + caraousHtml + '</div>') ;
+        //var caraousHtml = '<div class="carouselLayout" style="display: block;">' +  + '</div>'
+        $('.insertForm:eq(' + idx + ') form').append('<div class="carouselLayout" style="display:none;">' + $carouselForm.html() + '</div>') ;
         $('.insertForm:eq(' + idx + ') .carouselLayout').css('display', 'block');
         $('.insertForm:eq(' + idx + ') .carouselLayout').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
     } else if($(e.target).val() == "4") {
@@ -1520,6 +1523,7 @@ function openModalBox(target){
 
     //carousel clone 초기값 저장
     $insertForm = $('#commonLayout .insertForm').eq(0).clone();
+
     $dlgForm = $('#commonLayout .textLayout').eq(0).clone();
     $carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
     $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
@@ -1895,10 +1899,51 @@ $(document).on('click', '.carouseBtn',function(e){
 
 });
 
+//다이얼로그생성 - 카드삭제(통짜로 삭제) 
+$(document).on('click', '.deleteInsertForm',function(e){
+
+    insertFormLength = $('.insertForm').length;
+    if(insertFormLength == 1) {
+        alert("카드는 기본으로 1개는 가지고 있어야 합니다.");
+    } else {
+        var idx = $(".deleteInsertForm").index(this);
+        $(".dialogView").eq(idx).remove();
+        $(this).parents('.insertForm').next().remove();
+        $(this).parents('.insertForm').remove();
+    }
+    $(this).parents('.insertForm'); 
+});
+
 //다이얼로그생성 - 카드삭제 
 $(document).on('click', '.deleteCard',function(e){
-    $(this).parent().parent().parent().prev().remove();
-    $(this).parent().parent().parent().remove();
+
+    insertFormLength = $('.insertForm').length;
+    if(insertFormLength == 1) {
+        var inputOption  = '<option value="2">' + language.TEXT_TYPE + '</option>';
+            inputOption += '<option value="3">' + language.CARD_TYPE + '</option>';
+            inputOption += '<option value="4">' + language.MEDIA_TYPE + '</option>';
+        
+        $(this).parents('form[name=dialogLayout]').find('select[name=dlgType] option').remove(); 
+        $(this).parents('form[name=dialogLayout]').find('select[name=dlgType]').append(inputOption);
+        $(this).parent().parent().remove();
+
+        var idx = $(".deleteCard").index(this);
+        $(".dialogView").eq(idx).html('');
+        var insertHtml = '<div class="wc-message wc-message-from-bot" style="width:80%;">';
+            insertHtml += '<div class="wc-message-content">';
+            insertHtml += '<svg class="wc-message-callout"></svg>';
+            insertHtml += '<div><div class="format-markdown"><div class="textMent">';
+            insertHtml += '<p>';
+            insertHtml += language.Please_enter;
+            insertHtml += '</p>';
+            insertHtml += '</div></div></div></div></div>';
+
+        $(".dialogView").eq(idx).html(insertHtml);
+    } else {
+
+    }
+    $(this).parent().parent().prev().remove();
+    $(this).parent().parent().remove();
 });
 
 //다이얼로그생성 - 버튼삭제
@@ -1939,9 +1984,9 @@ $(document).on('click', '.addCarouselBtn', function(e){
     //$('.addCarouselBtn').eq(0).parent().parent().remove();
     //$(this).parents('.insertForm').after( $newInsertForm);  
     //<div id="textLayout" style="display: block;">  </div>
-    var caraousHtml = '<div class="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>';
+    //var caraousHtml = '<div class="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>';
     var dlgFormHtml = '<div class="textLayout" style="display: block;">' + $dlgForm.html() + '</div>';
-    $(this).parents('form[name=dialogLayout]').append('<div class="clear-both"></div>').append(dlgFormHtml).append(caraousHtml);
+    $(this).parents('form[name=dialogLayout]').append('<div class="clear-both"></div>').append(dlgFormHtml).append('<div class="carouselLayout" style="display:none;">' + $carouselForm.html() + '</div>');
     //$(this).parents('.insertForm').next().find('.clear-both').after($newDlgForm);
     var claerLen = $(this).parents('form[name=dialogLayout]').children('.clear-both').length-1;
     $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().css('display', 'block');
