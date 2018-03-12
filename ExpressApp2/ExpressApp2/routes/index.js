@@ -57,6 +57,7 @@ router.get('/', function (req, res) {
                 var appList = data;
                 saveAppList = JSON.parse(JSON.stringify(data));
                 var listStr = 'SELECT APP_NAME, APP_ID FROM TBL_LUIS_APP ';
+                var chatConfQry = "";
                 dbConnect.getConnection(sql).then(pool => {
                     //new sql.ConnectionPool(dbConfig).connect().then(pool => {
                         return pool.request().query(listStr)
@@ -81,7 +82,9 @@ router.get('/', function (req, res) {
                                         } else {
                                             //기존 앱이 삭제되고 같은 이름의 새 앱이 생긴 경우
                                             deleteAppStr += "DELETE FROM TBL_LUIS_APP WHERE APP_NAME = '" + rows[i].APP_NAME + "' AND APP_ID = '" + rows[i].APP_ID + "'; \n";
-                                            deleteAppStr += "DELETE FROM TBL_CHAT_RELATION_APP APP_ID = '" + rows[i].APP_ID + "'; \n";
+                                            deleteAppStr += "DELETE FROM TBL_CHAT_RELATION_APP WHERE APP_ID = '" + rows[i].APP_ID + "'; \n";
+                                            
+                                            //chatConfQry += "UPDATE TBL_CHATBOT_CONF SET CNF_VALUE = '" + rows[i].APP_ID + "' WHERE CNF_NM = '" + rows[i].APP_NAME + "'"
                                         }
 
                                         chkDelApp = false;
@@ -91,7 +94,9 @@ router.get('/', function (req, res) {
 
                                 if (chkDelApp) {
                                     deleteAppStr += "DELETE FROM TBL_LUIS_APP WHERE APP_NAME = '" + rows[i].APP_NAME + "' AND APP_ID = '" + rows[i].APP_ID + "'; \n";
-                                    deleteAppStr += "DELETE FROM TBL_CHAT_RELATION_APP APP_ID = '" + rows[i].APP_ID + "'; \n";
+                                    deleteAppStr += "DELETE FROM TBL_CHAT_RELATION_APP WHERE APP_ID = '" + rows[i].APP_ID + "'; \n";
+                                    
+                                    //chatConfQry += "DELETE FROM TBL_CHATBOT_CONF CNF_NM = '" + rows[i].APP_NAME + "'; \n";
                                 }
                             }
 
@@ -214,9 +219,10 @@ router.get('/list', function (req, res) {
                       "   AND A.APP_ID = B.APP_ID \n" +
                       "   AND B.USER_ID = '" + loginId + "'; \n";
     */
-    var userListStr = "SELECT DISTINCT B.CHATBOT_NUM, B.CHATBOT_NAME, B.CULTURE, B.DESCRIPTION, B.APP_COLOR \n";
-       userListStr += "  FROM TBL_USER_RELATION_APP A, TBL_CHATBOT_APP B \n";
-       userListStr += " WHERE A.CHAT_ID = B.CHATBOT_NUM; \n";
+    var userListStr = " SELECT DISTINCT B.CHATBOT_NUM, B.CHATBOT_NAME, B.CULTURE, B.DESCRIPTION, B.APP_COLOR \n";
+       userListStr += "   FROM TBL_USER_RELATION_APP A, TBL_CHATBOT_APP B \n";
+       userListStr += "  WHERE A.USER_ID = 'admin'   \n";
+       userListStr += "    AND A.CHAT_ID = B.CHATBOT_NUM;   \n";
     var rows;
     
     dbConnect.getConnection(sql).then(pool => {
