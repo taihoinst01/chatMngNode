@@ -220,6 +220,7 @@
 	"DIALOG_BOX_TITLE": "대화상자 제목",
 	"DIALOG_BOX_CONTENTS": "대화상자 내용",
 	"IMAGE_URL": "이미지 URL",
+	"BUTTON": "버튼",
 	"BUTTON_TYPE": "버튼 타입",
 	"BUTTON_NAME": "버튼 이름",
 	"BUTTON_CONTENTS": "버튼 내용",
@@ -235,6 +236,6 @@
 	"Group": "그룹",
 	"ADMIN_SETTING": "관리자 설정",
 	"CHATBOT_MNG": "챗봇 관리",
-	"APP_LIST": "앱 목록"
-
+	"APP_LIST": "앱 목록",
+	"Midium_group": "Midium_group"
 }

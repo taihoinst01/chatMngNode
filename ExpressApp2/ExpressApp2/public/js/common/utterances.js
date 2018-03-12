@@ -379,6 +379,10 @@ $(document).ready(function(){
         $('#appInsertForm')[0].reset();
         $('.insertForm').remove();
         
+        $('.btnInsertDiv').each(function() {
+          $(this).html("");  
+        })
+        
         var insertForm = '';
         insertForm += '<div class="insertForm">';
         insertForm += '<div class="form-group" >';
@@ -1001,6 +1005,24 @@ function createDialog(){
     var idx = $('form[name=dialogLayout]').length;
     var array = [];
     var exit = false;
+
+    if($('select[name=luisId]').val().trim() === "") {
+        alert(language.Please_reset_the_group);
+        return false;
+    }
+
+    var luisIntent;
+    $('#appInsertForm').find('[name=luisIntent]').each(function() {
+        if($(this).attr('disabled') == undefined) {
+            luisIntent = $(this).val();
+            return false;
+        }
+    })
+    if(luisIntent.trim() === "") {
+        alert(language.Please_reset_the_group);
+        return false;
+    }
+
     if ($('#description').val().trim() === "" ) {
         alert(language.Description_must_be_entered);
         return false;
@@ -1037,13 +1059,45 @@ function createDialog(){
         var carouselArr = [];
         var objectCarousel = {};
         if (tmp[0].value === "3") {
+            var btnTypeCount = 1;
+            var cButtonContentCount = 1;
+            var cButtonNameCount = 1;
             for (var j = 1; j < tmp.length; j++) {
+                if(tmp[j].name == 'btnType') {
+                    tmp[j].name = 'btn'+ (btnTypeCount++) +'Type';
+                    if(btnTypeCount == 4) {
+                        btnTypeCount = 1;
+                    }
+                }
+                if(tmp[j].name == 'cButtonContent') {
+                    tmp[j].name = 'cButtonContent'+ (cButtonContentCount++);
+                    if(cButtonContentCount == 4) {
+                        cButtonContentCount = 1;
+                    }
+                }
+                if(tmp[j].name == 'cButtonName') {
+                    tmp[j].name = 'cButtonName'+ (cButtonNameCount++);
+                    if(cButtonNameCount == 4) {
+                        cButtonNameCount = 1;
+                    }
+                }
                 
-                if (typeof objectCarousel[tmp[j].name] !== "undefined" || j === tmp.length-1) {
+                if (typeof objectCarousel[tmp[j].name] !== "undefined" ) {
                     carouselArr.push(objectCarousel);
                     objectCarousel = {};
+                    btnTypeCount = 1;
+                    cButtonContentCount = 1;
+                    cButtonNameCount = 1;
                 } 
-                
+
+                if(j === tmp.length-1){
+                    object[tmp[0].name] = tmp[0].value;
+                    objectCarousel[tmp[j].name] = tmp[j].value;    
+
+                    carouselArr.push(objectCarousel);
+                    objectCarousel = {};
+                    break;
+                }
                 object[tmp[0].name] = tmp[0].value;
                 objectCarousel[tmp[j].name] = tmp[j].value;
             }
@@ -1072,8 +1126,17 @@ function createDialog(){
             for(var i = 0; i < data.list.length; i++) {
                 inputUttrHtml += '<input type="hidden" name="dlgId" value="' + data.list[i] + '"/>';
             }
-            var luisId = $('#appInsertForm').find('#luisId').value();
-            var luisIntent = $('#appInsertForm').find('#luisIntent').value();
+            var luisId = $('#appInsertForm').find('#luisId')[0].value
+            var luisIntent;
+             $('#appInsertForm').find('[name=luisIntent]').each(function() {
+                if($(this).attr('disabled') == undefined) {
+                    luisIntent = $(this).val();
+                    return false;
+                }
+            })
+            $('.newMidBtn').click();
+            $('.cancelMidBtn').click();
+
             inputUttrHtml += '<input type="hidden" name="luisId" value="' + luisId + '"/>';
             inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + luisIntent + '"/>';
 
@@ -1228,6 +1291,10 @@ function selectDlgListAjax(entity) {
 
     }); // ------      ajax 끝-----------------
 }
+
+
+
+
 
 //오른쪽 버튼 클릭시 슬라이드
 function nextBtn(botChatNum, e) {
@@ -1448,6 +1515,7 @@ var $dlgForm;
 var $carouselForm;
 var $mediaForm;
 var chkEntities;
+
 function openModalBox(target){
 
     //carousel clone 초기값 저장
@@ -1768,19 +1836,80 @@ function searchSaveDialog() {
 
 }
 */
-
+/*
 $(document).on('click', '.carouseBtn',function(e){
     //e.stopPropagation();
     //e.preventDefault();
     //var index = 0;
     $(this).parent().parent().find('select').each(function(index) {
         if ( $(this).css("display") === 'none') {
-            $(this).show();
-            $(this).parent().next().find('input').eq(index).show();
-            $(this).parent().next().next().find('input').eq(index).show();
+            $(this).show().removeAttr('disabled');
+            $(this).parent().next().find('input').eq(index).show().removeAttr('disabled');;
+            $(this).parent().next().next().find('input').eq(index).show().removeAttr('disabled');;
             return false;   
         }
     });
+});
+*/
+
+//다이얼로그생성 - 버튼추가
+$(document).on('click', '.carouseBtn',function(e){
+
+    var inputHtml = '<div><label>' + language.BUTTON + '</label></div>' +
+                '<div class="form-group col-md-13"  style="padding-left:0; margin-top: 0px;">' +
+                '<table class="cardCopyTbl" style="width:100%">' +
+                '<col width="21%"><col width="1%"><col width="35%">' +
+                '<col width="1%"><col width="35%"><col width="1%"><col width="6%">' +
+                '<thead><tr>' + 
+                '<th>' + language.Type + '</th><th></th><th>' + language.NAME + '</th>'+
+                '<th></th><th>' + language.CONTENTS + '</th><th></th><th></th>' +
+                '</tr></thead>' +
+                '<tbody>' +
+                '<tr>'+
+                '<td><select class="form-control" name="btnType"><option value="imBack" selected>imBack</option>' +
+                '<option value="openURL">openURL</option></select></td>' +
+                '<td></td><td><input type="text" name="cButtonName" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                '<td></td><td><input type="text" name="cButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
+                '</tr></tbody></table></div>';
+               
+    $btnInsertDiv = $(this).parent().prev().prev();
+    if($btnInsertDiv.children().length == 0) {
+        $btnInsertDiv.html(inputHtml);
+        return;
+    }
+    var trLength = $(this).parent().prev().prev().find('.cardCopyTbl tbody tr').length;
+    if(trLength >= 1 && trLength < 3) {
+        
+        var inputTrHtml = '<tr>'+
+                '<td><select class="form-control" name="btnType"><option value="imBack" selected>imBack</option>' +
+                '<option value="openURL">openURL</option></select></td>' +
+                '<td></td><td><input type="text" name="cButtonName" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                '<td></td><td><input type="text" name="cButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
+                '</tr>'
+                $(this).parent().prev().prev().find('.cardCopyTbl tbody').append(inputTrHtml);
+    } else {
+        alert("버튼은 3개까지 추가할 수 있습니다.");
+    }
+
+});
+
+//다이얼로그생성 - 카드삭제 
+$(document).on('click', '.deleteCard',function(e){
+    $(this).parent().parent().parent().prev().remove();
+    $(this).parent().parent().parent().remove();
+});
+
+//다이얼로그생성 - 버튼삭제
+$(document).on('click', '.btn_delete',function(e){
+
+    var trLength = $(this).parents('tbody').children().length;
+    if(trLength == 1) {
+        $(this).parents('.btnInsertDiv').html('');
+        return;
+    }
+    $(this).parent().parent().remove();
 });
 
 $(document).on('click', '.addMediaBtn',function(e){
@@ -1799,7 +1928,7 @@ $(document).on('click', '.addMediaBtn',function(e){
 
 //textLayout
 
-
+//다이얼로그생성 - 카드추가
 $(document).on('click', '.addCarouselBtn', function(e){
     //var $newInsertForm = $insertForm.clone();
     //var $newDlgForm = $dlgForm.clone();
@@ -1880,6 +2009,32 @@ function insertEntity(){
     }
 }
 
+//다이얼로그 생성 모달창 - 중그룹 신규버튼
+$(document).on('click', '.newMidBtn, .cancelMidBtn', function() {
+
+    var $iptLuisIntent = $('input[name=luisIntent]');
+    var $selectLuisIntent = $('select[name=luisIntent]');
+
+    if($(this).hasClass('newMidBtn')) {
+        $('.newMidBtn').hide();
+        $('.cancelMidBtn').show();
+
+        $iptLuisIntent.show();
+        $iptLuisIntent.removeAttr('disabled');
+
+        $selectLuisIntent.hide();
+        $selectLuisIntent.attr('disabled', 'disabled');
+    } else {
+        $('.newMidBtn').show();
+        $('.cancelMidBtn').hide();
+
+        $selectLuisIntent.show();
+        $selectLuisIntent.removeAttr('disabled');
+
+        $iptLuisIntent.hide();
+        $iptLuisIntent.attr('disabled', 'disabled');
+    }
+})
 
 //다이얼로그 생성 모달창 - 중그룹 구하기
 $(document).on('change', 'select[name=luisId]', function(){
