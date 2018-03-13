@@ -1546,6 +1546,7 @@ function searchDialog(dlgID) {
                                 $("#dialogLayout").eq(j).find("select[name=dlgType]").val("2").prop("selected",true);
                                 $("#dialogLayout").eq(j).find("input[name=dialogTitle]").val(tmp.dlg[j].CARD_TITLE);
                                 $("#dialogLayout").eq(j).find("input[name=dialogText]").val(tmp.dlg[j].CARD_TEXT);
+                                $(".insertForm .textLayout").css("display","block");
                             } else if(tmp.dlg[j].DLG_TYPE == 3) {
 
                                 if(j == 0) {
@@ -1593,6 +1594,46 @@ function searchDialog(dlgID) {
                                     inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum4Desc) + '" onclick="nextBtn(' + botChatNum4Desc + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
                                     inputUttrHtml += '</div></div></div></div>';
                                 }
+                                
+                                $(".insertForm form").append($('#commonLayout .textLayout').eq(0).clone());
+                                $(".insertForm form").append($('#commonLayout .carouselLayout').eq(0).clone());
+                                $("#dialogLayout").eq(j).find("select[name=dlgType]").val("3").prop("selected",true);
+                                $("#dialogLayout").find(".textLayout").eq(j).css("display","block");
+                                $("#dialogLayout").find(".carouselLayout").eq(j).css("display","block");
+
+                                $("#dialogLayout").find(".textLayout").eq(j).find("input[name=dialogTitle]").val(tmp.dlg[j].CARD_TITLE);
+                                $("#dialogLayout").find(".textLayout").eq(j).find("input[name=dialogText]").val(tmp.dlg[j].CARD_TEXT);
+                                $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=imgUrl]").val(tmp.dlg[j].IMG_URL);
+
+                                if(tmp.dlg[j].BTN_1_TYPE != null && tmp.dlg[j].BTN_1_TYPE != "") {
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn1Type]").val(tmp.dlg[j].BTN_1_TYPE).prop("selected",true);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName1]").val(tmp.dlg[j].BTN_1_TITLE);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent1]").val(tmp.dlg[j].BTN_1_CONTEXT);
+                                }
+                                if(tmp.dlg[j].BTN_2_TYPE != null && tmp.dlg[j].BTN_2_TYPE != "") {
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn2Type]").css("display","block");
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn2Type]").val(tmp.dlg[j].BTN_2_TYPE).prop("selected",true);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName2]").css("display","block");
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName2]").val(tmp.dlg[j].BTN_2_TITLE);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent2]").css("display","block");
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent2]").val(tmp.dlg[j].BTN_2_CONTEXT);
+                                }
+                                if(tmp.dlg[j].BTN_3_TYPE != null && tmp.dlg[j].BTN_3_TYPE != "") {
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn3Type]").css("display","block");
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn3Type]").val(tmp.dlg[j].BTN_3_TYPE).prop("selected",true);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName3]").css("display","block");
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName3]").val(tmp.dlg[j].BTN_3_TITLE);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent3]").css("display","block");
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent3]").val(tmp.dlg[j].BTN_3_CONTEXT);
+                                }
+                                if(tmp.dlg[j].BTN_4_TYPE != null && tmp.dlg[j].BTN_4_TYPE != "") {
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn4Type]").css("display","block");
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn4Type]").val(tmp.dlg[j].BTN_4_TYPE).prop("selected",true);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName4]").css("display","block");
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName4]").val(tmp.dlg[j].BTN_4_TITLE);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent4]").css("display","block");
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent4]").val(tmp.dlg[j].BTN_4_CONTEXT);
+                                }
                             } else if(tmp.dlg[j].DLG_TYPE == 4) {
                                 inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
                                 inputUttrHtml += '<div class="wc-message-content">';
@@ -1620,6 +1661,21 @@ function searchDialog(dlgID) {
                                 inputUttrHtml += '</li></ul></div></div>';
                                 inputUttrHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
                                 inputUttrHtml += '</div></div></div></div></div>';
+                            
+                                $(".insertForm form").append($(".textLayout").clone(true));
+                                $(".insertForm form").append($(".mediaLayout").clone(true));
+                                $("#dialogLayout").eq(j).find("select[name=dlgType]").val("4").prop("selected",true);
+                                $("#dialogLayout").find(".textLayout").eq(j).css("display","block");
+                                $("#dialogLayout").find(".mediaLayout").eq(j).css("display","block");
+                            
+                                $("#dialogLayout").find(".textLayout").eq(j).find("input[name=dialogTitle]").val(tmp.dlg[j].CARD_TITLE);
+                                $("#dialogLayout").find(".textLayout").eq(j).find("input[name=dialogText]").val(tmp.dlg[j].CARD_TEXT);
+
+                                $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=imageUrl]").val(tmp.dlg[j].MEDIA_URL);
+                                $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mediaUrl]").val(tmp.dlg[j].CARD_VALUE);
+
+                                $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonName1]").val(tmp.dlg[j].BTN_1_TITLE);
+                                $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonContent1]").val(tmp.dlg[j].BTN_1_CONTEXT);
                             }
                             $('#updateDlgId').val(tmp.dlg[j].DLG_ID);
                             $('#updateDlgType').val(tmp.dlg[j].DLG_TYPE);
@@ -1642,7 +1698,7 @@ function searchDialog(dlgID) {
             $("#middleGroup").val(result['list'][0].GROUPM).prop("selected",true);
             $("#createDialog").attr('onclick','updateDialog()');
 
-            $(".insertForm .textLayout").css("display","block");
+            //$(".insertForm .textLayout").css("display","block");
             
         } 
         
@@ -1665,7 +1721,7 @@ function updateDialog() {
     }
     $('.insertForm input[name=dialogTitle]').each(function(index) {
         if ($(this).val().trim() === "") {
-            alert();
+            alert(language.You_must_enter_a_Dialog_Title);
             exit = true;
             return false;
         }
