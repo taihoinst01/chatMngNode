@@ -295,10 +295,10 @@ router.post('/nodeQuery', function (req, res) {
         selectQuery += "                , ISNULL(ME.CARD_TITLE,'') AS mediaResult \n";
         selectQuery += "                , ISNULL(ME.BTN_1_CONTEXT,'') AS mediaBtnResult \n";
         selectQuery += "              FROM ( \n";
-        selectQuery += "     SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS 영어질문, COUNT(*) AS 질문수, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120) AS Dimdate, CHANNEL \n";
+        selectQuery += "     SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS 영어질문, COUNT(*) AS 질문수, REG_DATE AS Dimdate, CHANNEL \n";
         selectQuery += "     FROM TBL_HISTORY_QUERY \n";
         selectQuery += "     WHERE 1=1 \n";
-        selectQuery += "AND CONVERT(date, '" + startDate + "') <= CONVERT(date, REG_DATE)  AND  CONVERT(date, REG_DATE)   <= CONVERT(date, '" + endDate + "') ";
+        selectQuery += "AND CONVERT(date, '" + startDate + "') <= CONVERT(date, REG_DATE)  AND  CONVERT(date, REG_DATE)   <= CONVERT(date, '" + endDate + "') \n";
     
             if (selDate !== 'allDay') {
                 selectQuery += "AND CONVERT(int, CONVERT(char(8), CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), 112)) = CONVERT(VARCHAR, GETDATE(), 112) \n";
@@ -306,7 +306,7 @@ router.post('/nodeQuery', function (req, res) {
             if (selChannel !== 'all') {
                 selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
             }
-        selectQuery += "     GROUP BY CUSTOMER_COMMENT_KR, CONVERT(DATE,CONVERT(DATETIME,REG_DATE),120), CHANNEL \n";
+        selectQuery += "     GROUP BY CUSTOMER_COMMENT_KR, REG_DATE, CHANNEL \n";
         selectQuery += ") HI \n";
         selectQuery += "LEFT OUTER JOIN TBL_QUERY_ANALYSIS_RESULT AN \n";
         selectQuery += "     ON REPLACE(REPLACE(LOWER(HI.CUSTOMER_COMMENT_KR),'.',''),'?','') = LOWER(AN.QUERY) \n";

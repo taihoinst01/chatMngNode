@@ -192,35 +192,40 @@ router.post('/getLuisInfo', function (req, res) {
 router.get('/dialog', function (req, res) {
 
     req.session.selMenus = 'ms3';
-    (async () => {
-        try {
-            var group_query = "select distinct GroupL from TBL_DLG where GroupL is not null";
-            //var group_query = "SELECT DISTINCT GroupL FROM TBL_DLG WHERE GroupL = '" + searchGroupL + "'";
-            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
-            let result2 = await pool.request().query(group_query);
-            let rows2 = result2.recordset;
-            
-            var groupList = [];
-            for(var i = 0; i < rows2.length; i++){
-                var item2 = {};
+    if (!req.session.sid) {
+        res.render('dialog');
+    } else {
 
-                var largeGroup = rows2[i].GroupL;
-
-                //item2.largeGroup = largeGroup;
-                //groupList.push(item2);
+        (async () => {
+            try {
+                var group_query = "select distinct GroupL from TBL_DLG where GroupL is not null";
+                //var group_query = "SELECT DISTINCT GroupL FROM TBL_DLG WHERE GroupL = '" + searchGroupL + "'";
+                let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
+                let result2 = await pool.request().query(group_query);
+                let rows2 = result2.recordset;
+                
+                var groupList = [];
+                for(var i = 0; i < rows2.length; i++){
+                    var item2 = {};
+    
+                    var largeGroup = rows2[i].GroupL;
+    
+                    //item2.largeGroup = largeGroup;
+                    //groupList.push(item2);
+                }
+                
+                res.render('dialog', {
+                    selMenus: req.session.selMenus,
+                    groupList: rows2
+                } );
+            } catch (err) {
+                console.log(err)
+                // ... error checks
+            } finally {
+                sql.close();
             }
-            
-            res.render('dialog', {
-                selMenus: req.session.selMenus,
-                groupList: rows2
-            } );
-        } catch (err) {
-            console.log(err)
-            // ... error checks
-        } finally {
-            sql.close();
-        }
-    })()
+        })()
+    }
 
 });
 
@@ -1413,20 +1418,21 @@ router.post('/learnUtterAjax', function (req, res) {
                 }
             }*/
 
-            for(var i = 0 ; i < entities.length; i++) {
+            for(var i = 0 ; i < (typeof entities ==="string" ? 1:entities.length); i++) {
 
-                for(var j = 0 ; j < dlgId.length; j++)
-                result1 = await pool.request()
-                                .input('luisId', sql.NVarChar, luisId)
-                                .input('luisIntent', sql.NVarChar, luisIntent)
-                                .input('entities', sql.NVarChar, entities[i])
-                                .input('dlgId', sql.NVarChar, dlgId[j])
-                                .query(queryText);
+                for(var j = 0 ; j < (typeof dlgId ==="string" ? 1:dlgId.length); j++){
+                    result1 = await pool.request()
+                                    .input('luisId', sql.NVarChar, luisId)
+                                    .input('luisIntent', sql.NVarChar, luisIntent)
+                                    .input('entities', sql.NVarChar, (typeof entities ==="string" ? entities:entities[i]))
+                                    .input('dlgId', sql.NVarChar, (typeof dlgId ==="string" ? dlgId:dlgId[j]))
+                                    .query(queryText);
 
-                result2 = await pool.request()
-                                .input('entities', sql.NVarChar, entities[i])
-                                .input('dlgId', sql.NVarChar, dlgId[j])
-                                .query(updateTblDlg);
+                    result2 = await pool.request()
+                                    .input('entities', sql.NVarChar, (typeof entities ==="string" ? entities:entities[i]))
+                                    .input('dlgId', sql.NVarChar, (typeof dlgId ==="string" ? dlgId:dlgId[j]))
+                                    .query(updateTblDlg);
+                }
             }
             console.log(result1);
             console.log(result2);
@@ -2068,7 +2074,7 @@ router.post('/updateDialog', function (req, res) {
     selDlgQuery += "FROM TBL_DLG\n";
     selDlgQuery += "WHERE DLG_ID = @dlgId";
 
-    var selDlgRelationQuery = "";
+    var updDlgRelationQuery = "UPDATE TBL_DLG_RELATION_LUIS SET LUIS_ID = @luisId, LUIS_INTENT = @luisIntent WHERE DLG_ID = @dlgId";
 
     (async () => {
         try {
@@ -2100,7 +2106,7 @@ router.post('/updateDialog', function (req, res) {
                 .query(selDlgQuery);
 
             let selDlg = selDlgRes.recordset;
-
+            //selDlg[0].DLG_ID
             //tbl_dlg 삭제
             let delDlg = await pool.request()
                 .input('dlgId', sql.Int, dlgIdReq)

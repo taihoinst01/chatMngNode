@@ -63,11 +63,13 @@
                                             <select id="searchGroupL" name="searchGroupL" class="form-control searchGroup"> 
                                                 <option value=""><%= __('Large_group') %></option>     
                                                 <%
+                                                if(sid) { 
                                                     for(var i=0; i<groupList.length; i++) {
                                                 %>
                                                     <option value="<%=groupList[i].GroupL%>"><%=groupList[i].GroupL%></option>             
                                                 <%
                                                     }
+                                                }
                                                 %>
                                             </select>
                                         </div>                         
@@ -84,7 +86,7 @@
                                                                
                                         <div class="form-group col-lg-2 fr"  style=" margin-top:20px;text-align:right; padding-right:0px;">
                                             <button type="button" id="searchDlgBtn" class="btn btn_01 "><%= __('SEARCH') %></button> 
-                                            <button type="button" id="dialog" class="btn btn-default"  data-toggle="modal" data-target="#myModal2" onclick="openModalBox('#create_dlg')"><%= __('CREAT') %></button>
+                                            <button type="button" id="dialog" class="btn btn-default"  data-toggle="modal" data-target="#myModal2" onclick="openModalBox('#create_dlg')"><%= __('CREATE') %></button>
                                         </div>
                                      </div>                                         
                             
@@ -251,11 +253,11 @@
                                 <div class="mediaLayout" style="display:none;" id="dialog3">                                                                
                                     <div class="form-group">
                                         <label><%= __('IMAGE_URL') %> <span class="nec_ico">*</span></label>
-                                        <input type="text" class="form-control" placeholder=" <%= __('Please_enter') %>">
+                                        <input type="text" name="imageUrl" class="form-control" placeholder=" <%= __('Please_enter') %>">
                                     </div>
                                     <div class="form-group">
                                         <label><%= __('MEDIA_URL') %> <span class="nec_ico">*</span></label>
-                                        <input type="text" class="form-control" placeholder=" <%= __('Please_enter') %>">
+                                        <input type="text" name="mediaUrl" class="form-control" placeholder=" <%= __('Please_enter') %>">
                                     </div>    
                                     <div class="modal_con">
                                         <div class="form-group col-md-5" style="padding-left:0">
@@ -370,7 +372,7 @@
                         <input type="hidden" name="updateDlgEntity" id="updateDlgEntity">
                     </div>
                     <div class="btn_wrap">
-                        <button type="button" class="btn btn_01" onclick="createDialog();" id="createDialog"><%= __('CREAT') %></button>
+                        <button type="button" class="btn btn_01" onclick="createDialog();" id="createDialog"><%= __('SAVE') %></button>
                         <button type="button" class="btn btn-default createDlgModalClose"  data-dismiss="modal"><%= __('CANCEL') %></button>
                     </div>
                 </div>
