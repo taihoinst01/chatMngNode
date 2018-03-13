@@ -532,7 +532,7 @@ $(document).ready(function(){
             insertForm += '</div>';
             insertForm += '</div>';
             insertForm += '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >';
-            insertForm += '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제(통짜로 삭제)</button>';
+            insertForm += '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제</button>';
             insertForm += '</div>'; 
             insertForm += '</form>';
             insertForm += '</div>';
@@ -1445,7 +1445,7 @@ function openModalBox(target){
               '</div>';
 
     deleteInsertForm = '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >' +
-                       '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제(통짜로 삭제)</button>' +
+                       '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제</button>' +
                        '</div>'
     //$dlgForm = $('#commonLayout .textLayout').eq(0).clone();
     //$carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
@@ -1780,7 +1780,7 @@ $(document).on('click', '.carouseBtn',function(e){
 });
 */
 
-//다이얼로그생성 - 버튼추가
+//다이얼로그생성모달 - 버튼추가
 $(document).on('click', '.carouseBtn',function(e){
 
     var inputHtml = '<div><label>' + language.BUTTON + '</label></div>' +
@@ -1823,12 +1823,12 @@ $(document).on('click', '.carouseBtn',function(e){
 
 });
 
-//다이얼로그생성 - 다이얼로그삭제(통짜로 삭제) 
+//다이얼로그생성모달 - 다이얼로그삭제
 $(document).on('click', '.deleteInsertForm',function(e){
 
     insertFormLength = $('.insertForm').length;
     if(insertFormLength == 1) {
-        alert("카드는 기본으로 1개는 가지고 있어야 합니다.");
+        alert("다이얼로그는 기본으로 1개는 가지고 있어야 합니다.");
     } else {
         var idx = $(".deleteInsertForm").index(this);
         $(".dialogView").eq(idx).remove();
@@ -1839,7 +1839,7 @@ $(document).on('click', '.deleteInsertForm',function(e){
     $(this).parents('.insertForm'); 
 });
 
-//다이얼로그생성 - 카드삭제 
+//다이얼로그생성모달 - 카드삭제 
 $(document).on('click', '.deleteCard',function(e){
 
     var insertFormIdx;
@@ -1861,6 +1861,9 @@ $(document).on('click', '.deleteCard',function(e){
         } else {
             //$(".dialogView").eq(insertFormIdx-1).find('.slideDiv li').length;
             $(".dialogView").eq(insertFormIdx).find('.slideDiv .wc-carousel-item').eq(idx).remove();
+            if($(".dialogView").eq(insertFormIdx).find('.slideDiv .wc-carousel-item').length == 2) {
+                
+            }
             $(this).parent().parent().prev().remove();
             $(this).parent().parent().remove();
         }
@@ -1881,13 +1884,12 @@ $(document).on('click', '.deleteCard',function(e){
 
 });
 
-//다이얼로그생성 - 버튼삭제
+//다이얼로그생성모달 - 버튼삭제
 $(document).on('click', '.btn_delete',function(e){
 
     var trLength = $(this).parents('tbody').children().length;
     if(trLength == 1) {
         $(this).parents('.btnInsertDiv').html('');
-        return;
     }
     $(this).parent().parent().remove();
 });
