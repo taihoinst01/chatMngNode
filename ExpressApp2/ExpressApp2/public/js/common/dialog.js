@@ -32,7 +32,7 @@ $(document).ready(function(){
     //검색 enter
     $('#iptDialog').keyup(function(e){
         if(e.keyCode == 13) {
-            //searchIptDlg(1);
+            searchIptDlg(1);
             selectDlgByTxt('selectDlgByTxt', 'search');
         }
     });
@@ -439,8 +439,11 @@ $(document).ready(function(){
         $('.insertForm:eq(' + idx + ')').find('.clear-both').each(function( index) {
         $('.insertForm:eq(' + idx + ') form').find('.addCarouselBtnDiv').remove();
             if ( index != 0 ) {
-                $(this).next().remove();
-                $(this).remove();
+                if ($('.insertForm').length > 1) {
+
+                    $(this).next().remove();
+                    $(this).remove();
+                }
             } 
         });
 
@@ -1674,13 +1677,11 @@ $(document).on('click','.li_paging',function(e){
     if(!$(this).hasClass('active')){
         $('#currentPage').val($(this).val());
         if(currentSearchNum == 0) {
-
             searchIptDlg(); 
         } else if(currentSearchNum == 1) {
-
             selectDlgByFilter(searchGroups);
         } else if(currentSearchNum == 2) {
-
+            
             var groupType =  $('.selected').text();
             var sourceType = $('#tblSourceType').val();
             selectDlgByTxt(groupType, sourceType);
