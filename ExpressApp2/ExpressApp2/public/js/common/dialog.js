@@ -407,6 +407,28 @@ $(document).ready(function(){
 
     // 다이얼로그 생성 모달 (다이얼로그 타입변경)
     $(document).on('change','select[name=dlgType]',function(e){
+
+        addCarouselForm  = '<div class="btn_wrap addCarouselBtnDiv" style="clear:both" >' +  
+        '<button type="button" class="btn btn-default addCarouselBtn">' + language.INSERT_MORE_CARDS + '</button>' +  
+        '</div>';
+
+        carouselForm =  '<div class="carouselLayout">' +                                                               
+        '<div class="form-group">' +  
+        '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +  
+        '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
+        '</div>' +  
+        '<div class="modal_con btnInsertDiv">' +  
+        '</div>' +  
+        '<div class="clear-both"></div>' +  
+        '<div class="btn_wrap" style="clear:both" >' +  
+        '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +   
+        '</div>' +   
+        '<div class="btn_wrap" style="clear:both" >' +  
+        '<button type="button" class="btn btn-default carouseBtn">' + language.INSERT_MORE_BUTTON + '</button>' +   
+        '</div>' +                     
+        '<div class="clear-both"></div>' +                                                                 
+        '</div>';
+
         var idx = $("select[name=dlgType]").index(this);
         var insertHtml = "";
 
@@ -1777,9 +1799,14 @@ function openModalBox(target){
             $(".insertForm form").append($(".textLayout").clone(true));
             $(".insertForm .textLayout").css("display","block");
         }*/
+        
 
         $(".insertForm form").append($(".textLayout").clone(true));
         $(".insertForm form").append(deleteInsertForm);
+
+        $('h4#myModalLabel.modal-title').text(language.CREATE_DIALOG_BOX);
+        $('#description').text('');
+
         $(".insertForm .textLayout").css("display","block");
     }
 
@@ -1925,6 +1952,10 @@ function searchDialog(dlgID) {
     $carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
     $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
 
+    deleteInsertForm = '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >' +
+    '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제</button>' +
+    '</div>'
+
     $.ajax({
         url: '/learning/getDlgAjax',                //주소
         dataType: 'json',                  //데이터 형식
@@ -1987,6 +2018,7 @@ function searchDialog(dlgID) {
                                 inputUttrHtml += '</div></div></div></div></div>';
 
                                 $(".insertForm form").append($(".textLayout").clone(true));
+                                $(".insertForm form").append(deleteInsertForm);
                                 $("#dialogLayout").eq(j).find("select[name=dlgType]").val("2").prop("selected",true);
                                 $("#dialogLayout").eq(j).find("input[name=dialogTitle]").val(tmp.dlg[j].CARD_TITLE);
                                 $("#dialogLayout").eq(j).find("input[name=dialogText]").val(tmp.dlg[j].CARD_TEXT);
