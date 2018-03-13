@@ -382,21 +382,7 @@ $(document).ready(function(){
         $('.btnInsertDiv').each(function() {
           $(this).html("");  
         })
-        
-        var insertForm = '';
-        insertForm += '<div class="insertForm">';
-        insertForm += '<div class="form-group" >';
-        insertForm += '<form name="dialogLayout" id="dialogLayout">';
-        insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span> </label>';
-        insertForm += '<select class="form-control" name="dlgType">';
-        insertForm += '<option value="2">' + language.TEXT_TYPE + '</option>';
-        insertForm += '<option value="3">' + language.CARD_TYPE + '</option>';
-        insertForm += '<option value="4">' + language.MEDIA_TYPE + '</option>';
-        insertForm += '</select>';
-        insertForm += '<div class="clear-both"></div>';
-        insertForm += '</form>';
-        insertForm += '</div>';
-        insertForm += '</div>';
+
         
         $('#apiLayout').css('display', 'none');
         $('#commonLayout').css('display', 'block');
@@ -524,6 +510,7 @@ $(document).ready(function(){
             insertForm += '<div class="insertForm">';
             insertForm += '<div class="form-group" >';
             insertForm += '<form name="dialogLayout" id="dialogLayout">';
+
             insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span> </label>';
             insertForm += '<select class="form-control" name="dlgType">';
             insertForm += '<option value="2">' + language.TEXT_TYPE + '</option>';
@@ -534,7 +521,6 @@ $(document).ready(function(){
 
             insertForm += '<div class="textLayout" style="display: block;">';
             insertForm += '<div class="btn_wrap" style="clear:both">';
-            insertForm += '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제(통짜로 삭제)</button>';
             insertForm += '</div>'
             insertForm += '<div class="form-group">';
             insertForm += '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>';
@@ -545,6 +531,9 @@ $(document).ready(function(){
             insertForm += '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder=" ' + language.Please_enter + ' ">';
             insertForm += '</div>';
             insertForm += '</div>';
+            insertForm += '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >';
+            insertForm += '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제(통짜로 삭제)</button>';
+            insertForm += '</div>'; 
             insertForm += '</form>';
             insertForm += '</div>';
             insertForm += '</div>';
@@ -572,127 +561,7 @@ $(document).ready(function(){
     });
 
 
-    //다이얼로그 Add
-    /*$('#addDialogBtn').click(function(e){
-        var dlgType = $('#dlgType').val();
-        var dlgHtml = '';
-        if(dlgType == '2'){ //text
-            if($('#dialogText').val() == ''){
-                alert('다이얼로그 텍스트를 입력하세요');
-            }else{
-                dlgHtml += '<div class="wc-message wc-message-from-bot" style="width:90%;">';
-                dlgHtml += '<div class="wc-message-content">';
-                dlgHtml += '<svg class="wc-message-callout"></svg>';
-                dlgHtml += '<div><div class="format-markdown"><div class="textMent">';
-                dlgHtml += '<p>';
-                dlgHtml += $('#dialogText').val();
-                dlgHtml += '</p>';
-                dlgHtml += '</div></div></div></div></div>';
-            }
 
-            $('.dialogView').append(dlgHtml);
-        }else if(dlgType == '3'){ //carousel
-            if($('#add-carousel').length == 0){ //초기 append
-                dlgHtml += '<div id="add-carousel">';
-                dlgHtml += '<div class="wc-message wc-message-from-bot">';
-                dlgHtml += '<div class="wc-message-content"><!-- react-empty: 124 -->';
-                dlgHtml += '<svg class="wc-message-callout"></svg>';
-                dlgHtml += '<div>';
-                dlgHtml += '<div class="wc-carousel" style="width: 312px;">';
-                dlgHtml += '<div>';
-                dlgHtml += '<div class="wc-hscroll-outer">';
-                dlgHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;">';
-                dlgHtml += '<ul>';
-                dlgHtml += '<li class="wc-carousel-item">';
-                dlgHtml += '<div class="wc-card hero">';
-                dlgHtml += '<div class="wc-container imgContainer">';
-                dlgHtml += '<img src="https://bot.hyundai.com/assets/images/mainfeatureImg/01_Kona.jpg">';
-                dlgHtml += '</div>';
-                //dlgHtml += '<h1>Kona 핵심기능</h1>';
-                dlgHtml += '<p class="carousel">'+$('#dialogText').val()+'</p>';
-                dlgHtml += '<ul class="wc-card-buttons">';
-                for(var i = 0 ; i < $('input[id^="buttonName"]').length ; i ++){
-                    if($('#buttonName' + (i+1)).val() != ''){
-                        dlgHtml += '<li>';
-                        dlgHtml += '<button>'+$('#buttonName' + (i+1)).val()+'</button>';
-                        dlgHtml += '</li>';
-                    }
-                }
-                dlgHtml += '</ul>';
-                dlgHtml += '</div>';
-                dlgHtml += '</li>';
-                dlgHtml += '</ul>';
-                dlgHtml += '</div>';
-                dlgHtml += '</div>';
-                dlgHtml += '</div>';
-                dlgHtml += '</div>';
-                dlgHtml += '</div>';
-                dlgHtml += '</div>';
-                dlgHtml += '</div>';
-                dlgHtml += '</div>';
-
-                $('.dialogView').append(dlgHtml);
-            }else{
-                if($('#add-carousel').length == 1){
-                    var prevBtnHtml = '';
-                    var afterBtnHtml = '';
-    
-                    prevBtnHtml += '<button class="scroll previous">';
-                    prevBtnHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
-                    prevBtnHtml += '</button>';
-                    afterBtnHtml += '<button class="scroll next">';
-                    afterBtnHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png">';
-                    afterBtnHtml += '</button>';
-    
-                    $('.wc-carousel > div').prepend(prevBtnHtml);
-                    $('.wc-carousel > div').append(afterBtnHtml);
-
-                    $('.scroll.previous').click(function(e){
-                        scrollPrevoius();
-                        e.stopPropagation();
-                        e.preventDefault();
-                    })
-                    $('.scroll.next').click(function(e){
-                        scrollNext();
-                        e.stopPropagation();
-                        e.preventDefault();
-                    })
-                }
-                
-                var dlgHtml = '';
-                dlgHtml += '<li class="wc-carousel-item">';
-                dlgHtml += '<div class="wc-card hero">';
-                dlgHtml += '<div class="wc-container imgContainer">';
-                dlgHtml += '<img src="https://bot.hyundai.com/assets/images/style/USP_style_03.jpg">';
-                dlgHtml += '</div>';
-                //dlgHtml += '<h1>스타일</h1>';
-                dlgHtml += '<p class="carousel">'+$('#dialogText').val()+'</p>';
-                dlgHtml += '<ul class="wc-card-buttons">';
-                for(var i = 0 ; i < $('input[id^="buttonName"]').length ; i ++){
-                    if($('#buttonName' + (i+1)).val() != ''){
-                        dlgHtml += '<li>';
-                        dlgHtml += '<button>'+$('#buttonName' + (i+1)).val()+'</button>';
-                        dlgHtml += '</li>';
-                    }
-                }
-                dlgHtml += '</ul>';
-                dlgHtml += '</div>';
-                dlgHtml += '</li>';
-
-                $('.wc-hscroll > ul').append(dlgHtml);
-            }
-        }else if(dlgType == '4'){ //media
-
-        }else{
-        }
-
-        $('#appInsertForm')[0].reset();
-        $('#dlgType').change();
-
-        e.stopPropagation();
-        e.preventDefault();
-    });
-    */
 
     $("#searchLargeGroup").change(function(){
         var str = "";
@@ -749,15 +618,17 @@ $(document).on('change','#intentNameList',function(event){
     selectDlgListAjax($("#intentNameList option:selected").val());
 });
 
-// 다이얼로그 생성 모달 (다이얼로그 타입 변경)
+// 다이얼로그 생성 모달 (다이얼로그 타입변경)
 $(document).on('change','select[name=dlgType]',function(e){
     var idx = $("select[name=dlgType]").index(this);
     var insertHtml = "";
 
     $('.insertForm:eq(' + idx + ') .carouselLayout').remove();
+    $('.insertForm:eq(' + idx + ') .carouselLayout').after().remove();
     $('.insertForm:eq(' + idx + ') .mediaLayout').remove();
+    $('.insertForm:eq(' + idx + ') .mediaLayout').after().remove();
     $('.insertForm:eq(' + idx + ')').find('.clear-both').each(function( index) {
-
+    $('.insertForm:eq(' + idx + ') form').find('.addCarouselBtnDiv').remove();
         if ( index != 0 ) {
             $(this).next().remove();
             $(this).remove();
@@ -769,7 +640,8 @@ $(document).on('change','select[name=dlgType]',function(e){
     } else if($(e.target).val() == "3") {
         //var $clone = $('.carouselLayout').clone();  <div id="carouselLayout" style="display: block;">[object Object]</div>
         //var caraousHtml = '<div class="carouselLayout" style="display: block;">' +  + '</div>'
-        $('.insertForm:eq(' + idx + ') form').append('<div class="carouselLayout" style="display:none;">' + $carouselForm.html() + '</div>') ;
+        $('.insertForm:eq(' + idx + ') form .deleteInsertFormDiv').before(addCarouselForm);
+        $('.insertForm:eq(' + idx + ') form').find('.addCarouselBtnDiv').before(carouselForm);
         $('.insertForm:eq(' + idx + ') .carouselLayout').css('display', 'block');
         $('.insertForm:eq(' + idx + ') .carouselLayout').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
     } else if($(e.target).val() == "4") {
@@ -802,7 +674,7 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
         insertHtml += '</button>';
         insertHtml += '<div class="wc-hscroll-outer" >';
-        insertHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (idx) + '">';
+        insertHtml += '<div class="wc-hscroll slideDiv" style="margin-bottom: 0px;" class="content" id="slideDiv' + (idx) + '">';
         insertHtml += '<ul style="padding-left: 0px;">';
         insertHtml += '<li class="wc-carousel-item">';
         insertHtml += '<div class="wc-card hero">';
@@ -1513,19 +1385,70 @@ function selectGroup(selectId,str1,str2) {
 }
 
 //---------------두연 추가
-var $insertForm;
-var $dlgForm;
-var $carouselForm;
+var insertForm;
+var dlgForm;
+var carouselForm;
 var $mediaForm;
 var chkEntities;
-
+var addCarouselForm;
+var deleteInsertForm;
 function openModalBox(target){
 
     //carousel clone 초기값 저장
-    $insertForm = $('#commonLayout .insertForm').eq(0).clone();
+    //$insertForm = $('#commonLayout .insertForm').eq(0).clone();
+    insertForm = '<div class="insertForm">';  
+    insertForm += '<div class="form-group">';                                 
+    insertForm += '<form name="dialogLayout" id="dialogLayout">';                            
+    insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span> </label>';
+    insertForm += '<select class="form-control" name="dlgType">'; 
+    insertForm += '<option value="2">' + language.TEXT_TYPE + '</option>';
+    insertForm += '<option value="3">' + language.CARD_TYPE + '</option>';
+    insertForm += '<option value="4">' + language.MEDIA_TYPE + '</option>';
+    insertForm += '</select>'; 
+    insertForm += '<div class="btn_wrap" style="clear:both" >';
+    insertForm += '</div>';  
+    insertForm += '<div class="clear-both"></div>';                                                                               
+    insertForm += '</form>';                  
+    insertForm += '</div>';  
+    insertForm += '</div>';
 
-    $dlgForm = $('#commonLayout .textLayout').eq(0).clone();
-    $carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
+    carouselForm =  '<div class="carouselLayout">' +                                                               
+                    '<div class="form-group">' +  
+                    '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +  
+                    '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
+                    '</div>' +  
+                    '<div class="modal_con btnInsertDiv">' +  
+                    '</div>' +  
+                    '<div class="clear-both"></div>' +  
+                    '<div class="btn_wrap" style="clear:both" >' +  
+                    '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +   
+                    '</div>' +   
+                    '<div class="btn_wrap" style="clear:both" >' +  
+                    '<button type="button" class="btn btn-default carouseBtn">' + language.INSERT_MORE_BUTTON + '</button>' +   
+                    '</div>' +                     
+                    '<div class="clear-both"></div>' +                                                                 
+                    '</div>';
+ 
+    addCarouselForm  = '<div class="btn_wrap addCarouselBtnDiv" style="clear:both" >' +  
+                    '<button type="button" class="btn btn-default addCarouselBtn">' + language.INSERT_MORE_CARDS + '</button>' +  
+                    '</div>' 
+
+    dlgForm = '<div class="textLayout">' +                                                         
+              '<div class="form-group">' + 
+              '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>' + 
+              '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="' + language.Please_enter + '">' + 
+              '</div>' +                                                                                         
+              '<div class="form-group">' + 
+              '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>' + 
+              '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="' + language.Please_enter + '">' + 
+              '</div>' +  
+              '</div>';
+
+    deleteInsertForm = '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >' +
+                       '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제(통짜로 삭제)</button>' +
+                       '</div>'
+    //$dlgForm = $('#commonLayout .textLayout').eq(0).clone();
+    //$carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
     $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
 
     if(target == "#create_dlg") {     
@@ -1568,6 +1491,7 @@ function openModalBox(target){
         }*/
 
         $(".insertForm form").append($(".textLayout").clone(true));
+        $(".insertForm form").append(deleteInsertForm);
         $(".insertForm .textLayout").css("display","block");
     }
 
@@ -1899,7 +1823,7 @@ $(document).on('click', '.carouseBtn',function(e){
 
 });
 
-//다이얼로그생성 - 카드삭제(통짜로 삭제) 
+//다이얼로그생성 - 다이얼로그삭제(통짜로 삭제) 
 $(document).on('click', '.deleteInsertForm',function(e){
 
     insertFormLength = $('.insertForm').length;
@@ -1908,6 +1832,7 @@ $(document).on('click', '.deleteInsertForm',function(e){
     } else {
         var idx = $(".deleteInsertForm").index(this);
         $(".dialogView").eq(idx).remove();
+        $(this).parents('.insertForm').prev().remove();
         $(this).parents('.insertForm').next().remove();
         $(this).parents('.insertForm').remove();
     }
@@ -1917,33 +1842,43 @@ $(document).on('click', '.deleteInsertForm',function(e){
 //다이얼로그생성 - 카드삭제 
 $(document).on('click', '.deleteCard',function(e){
 
+    var insertFormIdx;
+    $('.insertForm').each(function(count){
+        if($(this)[0] == $(e.target).parents('#commonLayout').find($('.insertForm').find(e.target).parents('.insertForm'))[0]) {
+            insertFormIdx = count;
+        }
+    })
     insertFormLength = $('.insertForm').length;
+    //insertFormIdx = $('.insertForm').index();
+    var carouselLayoutLength = $(this).parents('form[name=dialogLayout]').find('.carouselLayout').length;
+    var idx = $(this).parents('form[name=dialogLayout]').find('.carouselLayout').find('.deleteCard').index(this);
+    
     if(insertFormLength == 1) {
-        var inputOption  = '<option value="2">' + language.TEXT_TYPE + '</option>';
-            inputOption += '<option value="3">' + language.CARD_TYPE + '</option>';
-            inputOption += '<option value="4">' + language.MEDIA_TYPE + '</option>';
-        
-        $(this).parents('form[name=dialogLayout]').find('select[name=dlgType] option').remove(); 
-        $(this).parents('form[name=dialogLayout]').find('select[name=dlgType]').append(inputOption);
-        $(this).parent().parent().remove();
 
-        var idx = $(".deleteCard").index(this);
-        $(".dialogView").eq(idx).html('');
-        var insertHtml = '<div class="wc-message wc-message-from-bot" style="width:80%;">';
-            insertHtml += '<div class="wc-message-content">';
-            insertHtml += '<svg class="wc-message-callout"></svg>';
-            insertHtml += '<div><div class="format-markdown"><div class="textMent">';
-            insertHtml += '<p>';
-            insertHtml += language.Please_enter;
-            insertHtml += '</p>';
-            insertHtml += '</div></div></div></div></div>';
+        if(carouselLayoutLength == 1) {
+            alert("카드는 1개 이상 가지고 있어야 합니다. 카드를 완전히 삭제 하고 싶으신 경우에는 다이얼로그 삭제 버튼을 눌러주세요.");
 
-        $(".dialogView").eq(idx).html(insertHtml);
+        } else {
+            //$(".dialogView").eq(insertFormIdx-1).find('.slideDiv li').length;
+            $(".dialogView").eq(insertFormIdx).find('.slideDiv .wc-carousel-item').eq(idx).remove();
+            $(this).parent().parent().prev().remove();
+            $(this).parent().parent().remove();
+        }
+
     } else {
 
+        if(carouselLayoutLength == 1) {
+            alert("카드는 1개 이상 가지고 있어야 합니다. 카드를 완전히 삭제 하고 싶으신 경우에는 다이얼로그 삭제 버튼을 눌러주세요.");
+        } else {
+            //$(".dialogView").eq($(this).index()).find('slideDiv li').length;
+            $(".dialogView").eq(insertFormIdx).find('.slideDiv .wc-carousel-item').eq(idx).remove();
+            $(this).parent().parent().prev().prev().remove();
+            $(this).parent().parent().prev().remove();
+            $(this).parent().parent().remove();
+        }
+
     }
-    $(this).parent().parent().prev().remove();
-    $(this).parent().parent().remove();
+
 });
 
 //다이얼로그생성 - 버튼삭제
@@ -1985,14 +1920,15 @@ $(document).on('click', '.addCarouselBtn', function(e){
     //$(this).parents('.insertForm').after( $newInsertForm);  
     //<div id="textLayout" style="display: block;">  </div>
     //var caraousHtml = '<div class="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>';
-    var dlgFormHtml = '<div class="textLayout" style="display: block;">' + $dlgForm.html() + '</div>';
-    $(this).parents('form[name=dialogLayout]').append('<div class="clear-both"></div>').append(dlgFormHtml).append('<div class="carouselLayout" style="display:none;">' + $carouselForm.html() + '</div>');
+    var dlgFormHtml = '<div class="textLayout" style="display: block;">' + dlgForm + '</div>';
+    $(this).parent().before('<div class="clear-both"></div>').before(dlgFormHtml).before(carouselForm);
+    //$(this).parents('form[name=dialogLayout] .deleteInsertFormDiv').before('<div class="clear-both"></div>').after(dlgFormHtml).append(carouselForm);
     //$(this).parents('.insertForm').next().find('.clear-both').after($newDlgForm);
     var claerLen = $(this).parents('form[name=dialogLayout]').children('.clear-both').length-1;
     $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().css('display', 'block');
     $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().next().css('display', 'block');
     //$(this).parent().parent().remove();
-    $(this).parent().css('display', 'none');
+    //$(this).parent().css('display', 'none');
     $(this).parents('form[name=dialogLayout]').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
 
     var inputUttrHtml = '<li class="wc-carousel-item">';
@@ -2013,8 +1949,6 @@ $(document).on('click', '.addCarouselBtn', function(e){
     if ($('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().children().length > 2) {
         $('#nextBtn'+ jdx).show();
     }
-    
-
 });
 
 //엔티티 추가
