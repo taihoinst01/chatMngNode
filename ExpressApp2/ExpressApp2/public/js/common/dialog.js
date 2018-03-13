@@ -1004,6 +1004,34 @@ $(document).on('click', '.addCarouselBtn', function(e){
     //var $newInsertForm = $insertForm.clone();
     //var $newDlgForm = $dlgForm.clone();
     //var $newCarouselForm = $carouselForm.clone();
+
+    dlgForm = '<div class="textLayout">' +                                                         
+    '<div class="form-group">' + 
+    '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>' + 
+    '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="' + language.Please_enter + '">' + 
+    '</div>' +                                                                                         
+    '<div class="form-group">' + 
+    '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>' + 
+    '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="' + language.Please_enter + '">' + 
+    '</div>' +  
+    '</div>';
+
+    carouselForm =  '<div class="carouselLayout">' +                                                               
+    '<div class="form-group">' +  
+    '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +  
+    '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
+    '</div>' +  
+    '<div class="modal_con btnInsertDiv">' +  
+    '</div>' +  
+    '<div class="clear-both"></div>' +  
+    '<div class="btn_wrap" style="clear:both" >' +  
+    '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +   
+    '</div>' +   
+    '<div class="btn_wrap" style="clear:both" >' +  
+    '<button type="button" class="btn btn-default carouseBtn">' + language.INSERT_MORE_BUTTON + '</button>' +   
+    '</div>' +                     
+    '<div class="clear-both"></div>' +                                                                 
+    '</div>';
     
     var idx =  $(".addCarouselBtn:visible").index(this);
     var jdx = $('select[name=dlgType]').index(( $(".addCarouselBtn:visible").eq(idx).parents('form[name=dialogLayout]').find('select[name=dlgType]') ));
