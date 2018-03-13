@@ -1980,6 +1980,38 @@ function searchDialog(dlgID) {
     $carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
     $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
 
+    carouselForm =  '<div class="carouselLayout">' +                                                               
+    '<div class="form-group">' +  
+    '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +  
+    '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
+    '</div>' +  
+    '<div class="modal_con btnInsertDiv">' +  
+    '</div>' +  
+    '<div class="clear-both"></div>' +  
+    '<div class="btn_wrap" style="clear:both" >' +  
+    '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +   
+    '</div>' +   
+    '<div class="btn_wrap" style="clear:both" >' +  
+    '<button type="button" class="btn btn-default carouseBtn">' + language.INSERT_MORE_BUTTON + '</button>' +   
+    '</div>' +                     
+    '<div class="clear-both"></div>' +                                                                 
+    '</div>';
+
+    addCarouselForm  = '<div class="btn_wrap addCarouselBtnDiv" style="clear:both" >' +  
+                    '<button type="button" class="btn btn-default addCarouselBtn">' + language.INSERT_MORE_CARDS + '</button>' +  
+                    '</div>'
+
+    dlgForm = '<div class="textLayout">' +                                                         
+    '<div class="form-group">' + 
+    '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>' + 
+    '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="' + language.Please_enter + '">' + 
+    '</div>' +                                                                                         
+    '<div class="form-group">' + 
+    '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>' + 
+    '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="' + language.Please_enter + '">' + 
+    '</div>' +  
+    '</div>';
+
     deleteInsertForm = '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >' +
     '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제</button>' +
     '</div>'
@@ -2045,7 +2077,7 @@ function searchDialog(dlgID) {
                                 inputUttrHtml += '</p>';
                                 inputUttrHtml += '</div></div></div></div></div>';
 
-                                $(".insertForm form").append($(".textLayout").clone(true));
+                                $(".insertForm form").append(dlgForm);
                                 $(".insertForm form").append(deleteInsertForm);
                                 $("#dialogLayout").eq(j).find("select[name=dlgType]").val("2").prop("selected",true);
                                 $("#dialogLayout").eq(j).find("input[name=dialogTitle]").val(tmp.dlg[j].CARD_TITLE);
@@ -2059,11 +2091,11 @@ function searchDialog(dlgID) {
                                     inputUttrHtml += '<svg class="wc-message-callout"></svg>';
                                     inputUttrHtml += '<div class="wc-carousel slideBanner" style="width: 312px;">';
                                     inputUttrHtml += '<div>';
-                                    inputUttrHtml += '<button class="scroll previous" id="prevBtn' + (botChatNum4Desc) + '" style="display: none;" onclick="prevBtn(' + botChatNum4Desc + ')">';
+                                    inputUttrHtml += '<button class="scroll previous" id="prevBtn0" style="display: none;" onclick="prevBtn(0,this)">';
                                     inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_left_401x.png">';
                                     inputUttrHtml += '</button>';
                                     inputUttrHtml += '<div class="wc-hscroll-outer" >';
-                                    inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum4Desc) + '">';
+                                    inputUttrHtml += '<div class="wc-hscroll slideDiv" style="margin-bottom: 0px;" class="content" id="slideDiv0">';
                                     inputUttrHtml += '<ul>';
                                     //inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
                                 }
@@ -2086,21 +2118,23 @@ function searchDialog(dlgID) {
                                 inputUttrHtml += '</li>';
                                 
                                 //다이얼로그가 한개일때에는 오른쪽 버튼 x
-                                if((tmp.dlg.length == 2 && j == 1) || (tmp.dlg.length == 1 && j == 0)) {
+                                if((tmp.dlg.length-1) == j) {
                                     inputUttrHtml += '</ul>';
                                     inputUttrHtml += '</div>';
                                     inputUttrHtml += '</div>';
-                                    inputUttrHtml += '</div></div></div></div>';
-                                } else if((tmp.dlg.length-1) == j) {
-                                    inputUttrHtml += '</ul>';
-                                    inputUttrHtml += '</div>';
-                                    inputUttrHtml += '</div>';
-                                    inputUttrHtml += '<button class="scroll next" id="nextBtn' + (botChatNum4Desc) + '" onclick="nextBtn(' + botChatNum4Desc + ')"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                                    inputUttrHtml += '<button class="scroll next" style="display: none; height: 30px;" id="nextBtn0" onclick="nextBtn(0,this)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
                                     inputUttrHtml += '</div></div></div></div>';
                                 }
+
                                 
-                                $(".insertForm form").append($('#commonLayout .textLayout').eq(0).clone());
-                                $(".insertForm form").append($('#commonLayout .carouselLayout').eq(0).clone());
+                                $(".insertForm form").append(dlgForm);
+                                $(".insertForm form").append(carouselForm);
+
+                                if( (tmp.dlg.length-1) == j ) {
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).after(addCarouselForm);
+                                    $("#dialogLayout").find(".addCarouselBtnDiv").after(deleteInsertForm);
+                                }
+                                
                                 $("#dialogLayout").eq(j).find("select[name=dlgType]").val("3").prop("selected",true);
                                 $("#dialogLayout").find(".textLayout").eq(j).css("display","block");
                                 $("#dialogLayout").find(".carouselLayout").eq(j).css("display","block");
@@ -2187,14 +2221,15 @@ function searchDialog(dlgID) {
                         }
                     //}
                 
+                    /*
                     for(var j = 0; j < tmp.dlg.length; j++) {
                         if(tmp.dlg.length-1 != j){
                             $("#dialogLayout").find(".carouselLayout").eq(j).find(".addCarouselBtn").css("display","none");
                         }
                     }
-
-                inputUttrHtml += '</div>';
-                inputUttrHtml += '</div>';
+                    */
+                //inputUttrHtml += '</div>';
+                //inputUttrHtml += '</div>';
                 }
             }
             $('.dialogView').html(inputUttrHtml);
