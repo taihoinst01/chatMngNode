@@ -1801,7 +1801,7 @@ $(document).on('click', '.carouseBtn',function(e){
                 '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
                 '</tr></tbody></table></div>';
                
-    $btnInsertDiv = $(this).parent().prev().prev();
+    $btnInsertDiv = $(this).parent().prev().prev().prev();
     if($btnInsertDiv.children().length == 0) {
         $btnInsertDiv.html(inputHtml);
         return;
@@ -1890,6 +1890,7 @@ $(document).on('click', '.btn_delete',function(e){
     var trLength = $(this).parents('tbody').children().length;
     if(trLength == 1) {
         $(this).parents('.btnInsertDiv').html('');
+        return;
     }
     $(this).parent().parent().remove();
 });
