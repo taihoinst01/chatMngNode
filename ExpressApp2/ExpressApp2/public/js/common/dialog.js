@@ -1396,6 +1396,8 @@ function openModalBox(target){
 
     if(target == "#create_dlg") {
         $("#createDialog").attr('onclick','createDialog()');
+        $('h4#myModalLabel.modal-title').text(language.CREATE_DIALOG_BOX);
+        $('#description').text('');
         $(".insertForm form").append($(".textLayout").clone(true));
         $(".insertForm .textLayout").css("display","block");
     }
@@ -1605,6 +1607,12 @@ function searchDialog(dlgID) {
                                 $("#dialogLayout").find(".textLayout").eq(j).find("input[name=dialogText]").val(tmp.dlg[j].CARD_TEXT);
                                 $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=imgUrl]").val(tmp.dlg[j].IMG_URL);
 
+                                if(tmp.dlg.length-1 == j){
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".addCarouselBtn").css("display","block");
+                                } else {
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".addCarouselBtn").css("display","none");
+                                }
+
                                 if(tmp.dlg[j].BTN_1_TYPE != null && tmp.dlg[j].BTN_1_TYPE != "") {
                                     $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn1Type]").val(tmp.dlg[j].BTN_1_TYPE).prop("selected",true);
                                     $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName1]").val(tmp.dlg[j].BTN_1_TITLE);
@@ -1692,7 +1700,7 @@ function searchDialog(dlgID) {
             //$('#dialogShow').prepend(inputUttrHtml);
 
             //대화상자 수정 추가
-            $('h4#myModalLabel.modal-title').text('대화상자 수정');
+            $('h4#myModalLabel.modal-title').text(language.UPDATE_DIALOG_BOX);
             $('#description').text(result['list'][0].DLG_DESCRIPTION);
             $("#largeGroup").val(result['list'][0].GROUPL).prop("selected",true);
             $("#middleGroup").val(result['list'][0].GROUPM).prop("selected",true);
@@ -1719,6 +1727,7 @@ function updateDialog() {
         alert(language.Description_must_be_entered);
         return false;
     }
+    /*
     $('.insertForm input[name=dialogTitle]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.You_must_enter_a_Dialog_Title);
@@ -1727,6 +1736,7 @@ function updateDialog() {
         }
     });
     if(exit) return;
+    */
     $('.insertForm textarea[name=dialogText]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.You_must_enter_a_Dialog_Title);

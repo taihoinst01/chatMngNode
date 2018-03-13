@@ -2068,7 +2068,7 @@ router.post('/updateDialog', function (req, res) {
     selDlgQuery += "FROM TBL_DLG\n";
     selDlgQuery += "WHERE DLG_ID = @dlgId";
 
-    var selDlgRelationQuery = "";
+    var updDlgRelationQuery = "UPDATE TBL_DLG_RELATION_LUIS SET LUIS_ID = @luisId, LUIS_INTENT = @luisIntent WHERE DLG_ID = @dlgId";
 
     (async () => {
         try {
@@ -2100,7 +2100,7 @@ router.post('/updateDialog', function (req, res) {
                 .query(selDlgQuery);
 
             let selDlg = selDlgRes.recordset;
-
+            //selDlg[0].DLG_ID
             //tbl_dlg 삭제
             let delDlg = await pool.request()
                 .input('dlgId', sql.Int, dlgIdReq)
