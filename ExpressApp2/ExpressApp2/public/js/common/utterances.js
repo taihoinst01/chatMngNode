@@ -1849,7 +1849,7 @@ $(document).on('click', '.deleteCard',function(e){
         }
     })
     insertFormLength = $('.insertForm').length;
-    //insertFormIdx = $('.insertForm').index();
+
     var carouselLayoutLength = $(this).parents('form[name=dialogLayout]').find('.carouselLayout').length;
     var idx = $(this).parents('form[name=dialogLayout]').find('.carouselLayout').find('.deleteCard').index(this);
     
@@ -1859,11 +1859,13 @@ $(document).on('click', '.deleteCard',function(e){
             alert("카드는 1개 이상 가지고 있어야 합니다. 카드를 완전히 삭제 하고 싶으신 경우에는 다이얼로그 삭제 버튼을 눌러주세요.");
 
         } else {
-            //$(".dialogView").eq(insertFormIdx-1).find('.slideDiv li').length;
-            $(".dialogView").eq(insertFormIdx).find('.slideDiv .wc-carousel-item').eq(idx).remove();
-            if($(".dialogView").eq(insertFormIdx).find('.slideDiv .wc-carousel-item').length == 2) {
-                
+
+            if($('.dialogView').eq(insertFormIdx).find('.slideDiv .wc-carousel-item').length == 3) {
+                $('.dialogView').eq(insertFormIdx).find('.next').hide();
+                $('.dialogView').eq(insertFormIdx).find('.previous').hide();
             }
+
+            $('.dialogView').eq(insertFormIdx).find('.slideDiv .wc-carousel-item').eq(idx).remove();
             $(this).parent().parent().prev().remove();
             $(this).parent().parent().remove();
         }
@@ -1873,7 +1875,12 @@ $(document).on('click', '.deleteCard',function(e){
         if(carouselLayoutLength == 1) {
             alert("카드는 1개 이상 가지고 있어야 합니다. 카드를 완전히 삭제 하고 싶으신 경우에는 다이얼로그 삭제 버튼을 눌러주세요.");
         } else {
-            //$(".dialogView").eq($(this).index()).find('slideDiv li').length;
+
+            if($('.dialogView').eq(insertFormIdx).find('.slideDiv .wc-carousel-item').length == 3) {
+                $('.dialogView').eq(insertFormIdx).find('.next').hide();
+                $('.dialogView').eq(insertFormIdx).find('.previous').hide();
+            }
+
             $(".dialogView").eq(insertFormIdx).find('.slideDiv .wc-carousel-item').eq(idx).remove();
             $(this).parent().parent().prev().prev().remove();
             $(this).parent().parent().prev().remove();
