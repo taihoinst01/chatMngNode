@@ -993,7 +993,7 @@ function createDialog(){
         url: '/learning/addDialog',
         dataType: 'json',
         type: 'POST',
-        data: {'data' : array},
+        data: {'data' : array, 'entities' : chkEntities},
         success: function(data) {
             alert(language.Added);
 
@@ -1491,7 +1491,7 @@ function openModalBox(target){
             0 : 다이얼로그 생성 가능
             1 : 다이얼로그 생성 불가능(체크된 추천문장중 학습이 안된 엔티티가 존재함)
             2 : 다이얼로그 생성 불가능(체크된 추천문장이 없음)   
-        
+        */
         var checkFlag = 2;  
         chkEntities = [];
         $('input[name=tableCheckBox]').each(function() {
@@ -1519,12 +1519,13 @@ function openModalBox(target){
         } else {
             $('#create_dlg').attr('data-target', "#myModal2");
             $(".insertForm form").append($(".textLayout").clone(true));
+            $(".insertForm form").append(deleteInsertForm);
             $(".insertForm .textLayout").css("display","block");
-        }*/
+        }
 
-        $(".insertForm form").append($(".textLayout").clone(true));
-        $(".insertForm form").append(deleteInsertForm);
-        $(".insertForm .textLayout").css("display","block");
+        //$(".insertForm form").append($(".textLayout").clone(true));
+        //$(".insertForm form").append(deleteInsertForm);
+        //$(".insertForm .textLayout").css("display","block");
     }
 
     if(target == "#search_dlg") {

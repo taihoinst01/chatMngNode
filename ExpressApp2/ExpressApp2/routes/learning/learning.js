@@ -1392,7 +1392,7 @@ router.post('/learnUtterAjax', function (req, res) {
     var queryText = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) "
                   + "VALUES( @luisId, @luisIntent, @entities, @dlgId, 'D', 'Y' )";   
     
-    var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId";
+    //var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId";
 
     (async () => {
         try {
@@ -1427,15 +1427,16 @@ router.post('/learnUtterAjax', function (req, res) {
                                     .input('entities', sql.NVarChar, (typeof entities ==="string" ? entities:entities[i]))
                                     .input('dlgId', sql.NVarChar, (typeof dlgId ==="string" ? dlgId:dlgId[j]))
                                     .query(queryText);
-
+                    /*
                     result2 = await pool.request()
                                     .input('entities', sql.NVarChar, (typeof entities ==="string" ? entities:entities[i]))
                                     .input('dlgId', sql.NVarChar, (typeof dlgId ==="string" ? dlgId:dlgId[j]))
                                     .query(updateTblDlg);
+                    */
                 }
             }
             console.log(result1);
-            console.log(result2);
+            //console.log(result2);
             let rows = result1.rowsAffected;
 
             if(rows[0] == 1) {
@@ -1719,6 +1720,7 @@ router.post('/searchDialog',function(req,res){
 router.post('/addDialog',function(req,res){
 
     var data = req.body['data[]'];
+    var luisEntities = req.body['entities[]'];
     var array = [];
     var queryText = "";
     var tblDlgId = [];
@@ -1755,8 +1757,8 @@ router.post('/addDialog',function(req,res){
             //var selectTextDlgId = 'SELECT ISNULL(MAX(TEXT_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_TEXT';
             //var selectCarouselDlgId = 'SELECT ISNULL(MAX(CARD_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_CARD';
             //var selectMediaDlgId = 'SELECT ISNULL(MAX(MEDIA_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_MEDIA';
-            var insertTblDlg = 'INSERT INTO TBL_DLG(DLG_ID,DLG_NAME,DLG_DESCRIPTION,DLG_LANG,DLG_TYPE,DLG_ORDER_NO,USE_YN, GroupL, GroupM, DLG_GROUP) VALUES ' +
-            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dialogOrderNo,\'Y\', @luisId, @luisIntent, 2)';
+            var insertTblDlg = 'INSERT INTO TBL_DLG(DLG_ID,DLG_NAME,DLG_DESCRIPTION,DLG_LANG,DLG_TYPE,DLG_ORDER_NO,USE_YN, GroupL, GroupM, DLG_GROUP, GroupS) VALUES ' +
+            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dialogOrderNo,\'Y\', @luisId, @luisIntent, 2, @luisEntities)';
             var inserTblDlgText = 'INSERT INTO TBL_DLG_TEXT(DLG_ID,CARD_TITLE,CARD_TEXT,USE_YN) VALUES ' +
             '(@dlgId,@dialogTitle,@dialogText,\'Y\')';
             var insertTblCarousel = 'INSERT INTO TBL_DLG_CARD(DLG_ID,CARD_TITLE,CARD_TEXT,IMG_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_ORDER_NO,USE_YN) VALUES ' +
@@ -1775,8 +1777,7 @@ router.post('/addDialog',function(req,res){
                 .query(selectDlgId)
                 let dlgId = result1.recordset;
 
-                if(array[i]["dlgType"] == "2") {
-
+                for(var j = 0 ; j < (typeof luisEntities ==="string" ? 1:luisEntities.length); j++) {
                     let result2 = await pool.request()
                     .input('dlgId', sql.Int, dlgId[0].DLG_ID)
                     .input('dialogText', sql.NVarChar, description)
@@ -1784,7 +1785,13 @@ router.post('/addDialog',function(req,res){
                     .input('dialogOrderNo', sql.Int, (i+1))
                     .input('luisId', sql.NVarChar, luisId)
                     .input('luisIntent', sql.NVarChar, luisIntent)
-                    .query(insertTblDlg)
+                    .input('luisEntities', sql.NVarChar, (typeof luisEntities ==="string" ? luisEntities:luisEntities[j]))
+                    .query(insertTblDlg);
+                }
+
+                if(array[i]["dlgType"] == "2") {
+
+                   
 
                     /*
                     let result3 = await pool.request()
@@ -1799,7 +1806,7 @@ router.post('/addDialog',function(req,res){
                     .query(inserTblDlgText);                    
 
                 } else if(array[i]["dlgType"] == "3") {
-                    
+                    /*
                     let result2 = await pool.request()
                     .input('dlgId', sql.Int, dlgId[0].DLG_ID)
                     .input('dialogText', sql.NVarChar, description)
@@ -1807,8 +1814,9 @@ router.post('/addDialog',function(req,res){
                     .input('dialogOrderNo', sql.Int, (i+1))
                     .input('luisId', sql.NVarChar, luisId)
                     .input('luisIntent', sql.NVarChar, luisIntent)
+                    .input('luisEntities', sql.NVarChar, luisEntities)
                     .query(insertTblDlg);
-
+                    */
                     for (var j=0; j<array[i].carouselArr.length; j++) {
                         var carTmp = array[i].carouselArr[j];
                         
@@ -1842,6 +1850,7 @@ router.post('/addDialog',function(req,res){
                     tblDlgId.push(dlgId[0].DLG_ID);
 
                 } else if(array[i]["dlgType"] == "4") {
+                    /*
                     let result1 = await pool.request()
                     .query(selectDlgId)
                     let dlgId = result1.recordset;
@@ -1853,9 +1862,9 @@ router.post('/addDialog',function(req,res){
                     .input('dialogOrderNo', sql.Int, (i+1))
                     .input('luisId', sql.NVarChar, luisId)
                     .input('luisIntent', sql.NVarChar, luisIntent)
+                    .input('luisEntities', sql.NVarChar, luisEntities)
                     .query(insertTblDlg)
 
-                    /*
                     let result3 = await pool.request()
                     .query(selectMediaDlgId)
                     let mediaDlgId = result3.recordset;
