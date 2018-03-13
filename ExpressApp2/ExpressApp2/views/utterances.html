@@ -270,20 +270,25 @@
                             <div id="commonLayout" class="dialog_w">
                                 <div class="insertForm">  
                                     <div class="form-group" >                                  
-                                        <form name="dialogLayout" id="dialogLayout">                                
+                                        <form name="dialogLayout" id="dialogLayout">
+                                                                            
                                             <label><%= __('DIALOG_BOX_TYPE') %><span class="nec_ico">*</span> </label>
                                             <select class="form-control" name="dlgType"> 
                                                 <option value="2"><%= __('TEXT_TYPE') %></option>
                                                 <option value="3"><%= __('CARD_TYPE') %></option>
                                                 <option value="4"><%= __('MEDIA_TYPE') %></option>
-                                            </select> 
-                                            <div class="btn_wrap" style="clear:both" >
-                                                    <button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제(통짜로 삭제)</button> 
-                                            </div>  
-                                            <div class="clear-both"></div>                                                                               
+                                            </select>  
+                                            <div class="clear-both"></div>  
+                                                                                                                         
                                         </form>                  
                                     </div>  
-                                </div>       
+                                </div>   
+
+                                <!-- 다이얼로그 삭제 버튼 -->
+                                <div class="btn_wrap deleteInsertFormDiv" style="clear:both; display:none;" >
+                                    <button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제(통짜로 삭제)</button> 
+                                </div> 
+
                                 <!-- 텍스트 타입 -->
                                 <div class="textLayout" style="display: none;">                                                         
                                     <div class="form-group">
@@ -293,8 +298,7 @@
                                     <div class="form-group">
                                         <label><%= __('DIALOG_BOX_CONTENTS') %><span class="nec_ico">*</span></label>
                                         <input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="<%= __('Please_enter') %>">
-                                    </div> 
-                                    
+                                    </div>                                     
                                 </div>
                                 <!--카드 타입 -->
                                 <div class="carouselLayout" style="display:none;">                                                               
