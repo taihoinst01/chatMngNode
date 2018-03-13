@@ -63,11 +63,13 @@
                                             <select id="searchGroupL" name="searchGroupL" class="form-control searchGroup"> 
                                                 <option value=""><%= __('Large_group') %></option>     
                                                 <%
+                                                if(sid) { 
                                                     for(var i=0; i<groupList.length; i++) {
                                                 %>
                                                     <option value="<%=groupList[i].GroupL%>"><%=groupList[i].GroupL%></option>             
                                                 <%
                                                     }
+                                                }
                                                 %>
                                             </select>
                                         </div>                         
