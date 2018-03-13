@@ -1770,9 +1770,14 @@ function openModalBox(target){
             $(".insertForm form").append($(".textLayout").clone(true));
             $(".insertForm .textLayout").css("display","block");
         }*/
+        
 
         $(".insertForm form").append($(".textLayout").clone(true));
         $(".insertForm form").append(deleteInsertForm);
+
+        $('h4#myModalLabel.modal-title').text(language.CREATE_DIALOG_BOX);
+        $('#description').text('');
+
         $(".insertForm .textLayout").css("display","block");
     }
 
