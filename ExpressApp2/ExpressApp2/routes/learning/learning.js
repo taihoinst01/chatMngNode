@@ -488,7 +488,7 @@ router.post('/searchIptDlg', function (req, res) {
                   
                 dlg_desQueryString+= "  and LUIS_ENTITIES like '%" + searchText + "%' ";
                 dlg_desQueryString += ") tbp WHERE PAGEIDX = @currentPage";
-            let pool = await dbConnect.getConnection(sql);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);//dbConnect.getConnection(sql);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(dlg_desQueryString);
             let rows = result1.recordset;
             
