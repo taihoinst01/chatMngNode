@@ -645,7 +645,7 @@ $(document).on('change','select[name=dlgType]',function(e){
         $('.insertForm:eq(' + idx + ') .carouselLayout').css('display', 'block');
         $('.insertForm:eq(' + idx + ') .carouselLayout').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
     } else if($(e.target).val() == "4") {
-        var mediaForm = '<div id="mediaLayout" style="display: block;">' + $mediaForm.html() + '</div>'
+        //var mediaForm = '<div id="mediaLayout" style="display: block;">' + $mediaForm.html() + '</div>'
         $('.insertForm:eq(' + idx + ') form').append('<div class="mediaLayout" style="display:none;">' + mediaForm + '</div>') ;
         $('.insertForm:eq(' + idx + ') .mediaLayout').css('display', 'block');
         $('.insertForm:eq(' + idx + ') .mediaLayout').find('.addMediaBtn:last').closest('div').css('display', 'inline-block');
@@ -1388,7 +1388,7 @@ function selectGroup(selectId,str1,str2) {
 var insertForm;
 var dlgForm;
 var carouselForm;
-var $mediaForm;
+var mediaForm;
 var chkEntities;
 var addCarouselForm;
 var deleteInsertForm;
@@ -1433,6 +1433,38 @@ function openModalBox(target){
                     '<button type="button" class="btn btn-default addCarouselBtn">' + language.INSERT_MORE_CARDS + '</button>' +  
                     '</div>' 
 
+    mediaForm = '<div class="form-group">' +
+                '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +
+                '<input type="text" class="form-control" placeholder="' + language.Please_enter + '">' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label>' + language.MEDIA_URL + '<span class="nec_ico">*</span></label>' +
+                '<input type="text" class="form-control" placeholder="' + language.Please_enter + '">' +
+                '</div>' +    
+                '<div class="modal_con">' +
+                '<div class="form-group col-md-5" style="padding-left:0">' +
+                '<label>' + language.BUTTON_NAME + '</label>' +
+                '<input type="text" class="form-control mediaBtnName" name="mButtonName1" placeholder="' + language.Please_enter + '">' +
+                '<input type="text" class="form-control mediaBtnName" name="mButtonName2" style="display:none;" placeholder="' + language.Please_enter + '" disabled>' +
+                '<input type="text" class="form-control mediaBtnName" name="mButtonName3" style="display:none;" placeholder="' + language.Please_enter + '" disabled>' +
+                '<input type="text" class="form-control mediaBtnName" name="mButtonName4" style="display:none;" placeholder="' + language.Please_enter + '" disabled>' +
+                '</div>' +
+                '<div class="form-group col-md-6" style="padding:0">' +
+                '<label>' + language.BUTTON_CONTENTS + '</label>' +
+                '<input type="text" class="form-control mediaBtnContent" name="mButtonContent1" placeholder="' + language.Please_enter + '">' +
+                '<input type="text" class="form-control mediaBtnContent" name="mButtonContent2" style="display:none;" placeholder="' + language.Please_enter + '" disabled>' +
+                '<input type="text" class="form-control mediaBtnContent" name="mButtonContent3" style="display:none;" placeholder="' + language.Please_enter + '" disabled>' +
+                '<input type="text" class="form-control mediaBtnContent" name="mButtonContent4" style="display:none;" placeholder="' + language.Please_enter + '" disabled>' +
+                '</div>' +
+                '<a href="#"  class="btn_delete" ><span class="fa fa-trash"></span></a>' +
+                '</div>' +
+                '<div class="btn_wrap" style="clear:both" >' +
+                '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +
+                '</div>' +
+                '<div class="btn_wrap" style="clear:both" >' +
+                '<button type="button" class="btn btn-default addMediaBtn" >' + language.INSERT_MORE_BUTTON + '</button>' +
+                '</div>';
+
     dlgForm = '<div class="textLayout">' +                                                         
               '<div class="form-group">' + 
               '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>' + 
@@ -1449,7 +1481,7 @@ function openModalBox(target){
                        '</div>'
     //$dlgForm = $('#commonLayout .textLayout').eq(0).clone();
     //$carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
-    $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
+    //$mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
 
     if(target == "#create_dlg") {     
     
@@ -1806,8 +1838,8 @@ $(document).on('click', '.carouseBtn',function(e){
         $btnInsertDiv.html(inputHtml);
         return;
     }
-    var trLength = $(this).parent().prev().prev().find('.cardCopyTbl tbody tr').length;
-    if(trLength >= 1 && trLength < 3) {
+    var trLength = $(this).parent().prev().prev().prev().find('.cardCopyTbl tbody tr').length;
+    if(trLength >= 1 && trLength < 4) {
         
         var inputTrHtml = '<tr>'+
                 '<td><select class="form-control" name="btnType"><option value="imBack" selected>imBack</option>' +
@@ -1816,9 +1848,9 @@ $(document).on('click', '.carouseBtn',function(e){
                 '<td></td><td><input type="text" name="cButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
                 '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
                 '</tr>'
-                $(this).parent().prev().prev().find('.cardCopyTbl tbody').append(inputTrHtml);
+                $(this).parent().prev().prev().prev().find('.cardCopyTbl tbody').append(inputTrHtml);
     } else {
-        alert("버튼은 3개까지 추가할 수 있습니다.");
+        alert("버튼은 4개까지 추가할 수 있습니다.");
     }
 
 });
