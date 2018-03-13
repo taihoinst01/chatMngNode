@@ -1483,6 +1483,12 @@ var botChatNum4Desc = 1;
 //dlg 저장
 var dlgMap = new Object();
 function searchDialog(dlgID) {
+
+    $insertForm = $('#commonLayout .insertForm').eq(0).clone();
+    $dlgForm = $('#commonLayout .textLayout').eq(0).clone();
+    $carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
+    $mediaForm = $('#commonLayout .mediaLayout').eq(0).clone();
+
     $.ajax({
         url: '/learning/getDlgAjax',                //주소
         dataType: 'json',                  //데이터 형식
@@ -1563,7 +1569,7 @@ function searchDialog(dlgID) {
                                     inputUttrHtml += '<div class="wc-hscroll-outer" >';
                                     inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum4Desc) + '">';
                                     inputUttrHtml += '<ul>';
-                                    inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
+                                    //inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
                                 }
                                 inputUttrHtml += '<li class="wc-carousel-item">';
                                 inputUttrHtml += '<div class="wc-card hero">';
@@ -1606,12 +1612,6 @@ function searchDialog(dlgID) {
                                 $("#dialogLayout").find(".textLayout").eq(j).find("input[name=dialogTitle]").val(tmp.dlg[j].CARD_TITLE);
                                 $("#dialogLayout").find(".textLayout").eq(j).find("input[name=dialogText]").val(tmp.dlg[j].CARD_TEXT);
                                 $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=imgUrl]").val(tmp.dlg[j].IMG_URL);
-
-                                if(tmp.dlg.length-1 == j){
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".addCarouselBtn").css("display","block");
-                                } else {
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".addCarouselBtn").css("display","none");
-                                }
 
                                 if(tmp.dlg[j].BTN_1_TYPE != null && tmp.dlg[j].BTN_1_TYPE != "") {
                                     $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn1Type]").val(tmp.dlg[j].BTN_1_TYPE).prop("selected",true);
@@ -1691,6 +1691,11 @@ function searchDialog(dlgID) {
                         }
                     //}
                 
+                    for(var j = 0; j < tmp.dlg.length; j++) {
+                        if(tmp.dlg.length-1 != j){
+                            $("#dialogLayout").find(".carouselLayout").eq(j).find(".addCarouselBtn").css("display","none");
+                        }
+                    }
 
                 inputUttrHtml += '</div>';
                 inputUttrHtml += '</div>';
