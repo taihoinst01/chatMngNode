@@ -960,8 +960,8 @@ $(document).on('click', '.carouseBtn',function(e){
         $btnInsertDiv.html(inputHtml);
         return;
     }
-    var trLength = $(this).parent().prev().prev().find('.cardCopyTbl tbody tr').length;
-    if(trLength >= 1 && trLength < 3) {
+    var trLength = $(this).parent().prev().prev().prev().find('.cardCopyTbl tbody tr').length;
+    if(trLength >= 1 && trLength < 4) {
         
         var inputTrHtml = '<tr>'+
                 '<td><select class="form-control" name="btnType"><option value="imBack" selected>imBack</option>' +
@@ -970,9 +970,9 @@ $(document).on('click', '.carouseBtn',function(e){
                 '<td></td><td><input type="text" name="cButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
                 '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
                 '</tr>'
-                $(this).parent().prev().prev().find('.cardCopyTbl tbody').append(inputTrHtml);
+                $(this).parent().prev().prev().prev().find('.cardCopyTbl tbody').append(inputTrHtml);
     } else {
-        alert("버튼은 3개까지 추가할 수 있습니다.");
+        alert("버튼은 4개까지 추가할 수 있습니다.");
     }
 
 });
