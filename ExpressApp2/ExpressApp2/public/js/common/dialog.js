@@ -2126,7 +2126,9 @@ function searchDialog(dlgID) {
                                     inputUttrHtml += '</div></div></div></div>';
                                 }
 
-                                
+                                if(j != 0) {
+                                    $(".insertForm form").append('<div class="clear-both"></div>');
+                                }
                                 $(".insertForm form").append(dlgForm);
                                 $(".insertForm form").append(carouselForm);
 
