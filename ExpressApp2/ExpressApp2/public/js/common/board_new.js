@@ -25,7 +25,7 @@ var language;
         $('[data-mask]').inputmask()
     
         //Date range picker
-        $('#reservation').daterangepicker()
+        $('#reservation').daterangepicker({ maxDate: new Date() })
         //Date range picker with time picker
         $('#reservationtime').daterangepicker({ timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A' })
         //Date range as a button
@@ -47,9 +47,11 @@ var language;
           }
         )
     
+
         //Date picker
         $('#datepicker').datepicker({
-          autoclose: true
+          autoclose: true,
+          maxDate: new Date()
         })
     
         //iCheck for checkbox and radio inputs
@@ -152,21 +154,21 @@ function selectAll() {
 //INTENT SCORE 평균/최소/최대 테이블 페이지 버튼 클릭
 $(document).on('click','#scoreTablePaging .li_paging',function(e){
     if(!$(this).hasClass('active')){
-        drawScoreList($(this).text());
+        drawScoreList($(this).val());
     }
 });
  
 //미답변 질문 테이블 페이지 버튼 클릭
 $(document).on('click','#noneQueryDivTablePaging .li_paging',function(e){
     if(!$(this).hasClass('active')){
-        drawNoneQuerytable($(this).text());
+        drawNoneQuerytable($(this).val());
     }
 });
   
 //고객 별 첫 질문 테이블 페이지 버튼 클릭
 $(document).on('click','#fistQueryTablePaging .li_paging',function(e){
     if(!$(this).hasClass('active')){
-        drawfirstQuerytable($(this).text());
+        drawfirstQuerytable($(this).val());
     }
 });
 
