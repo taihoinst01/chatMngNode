@@ -883,9 +883,10 @@ function createDialog(){
 
     if($('select[name=luisId]').val().trim() === "") {
         alert(language.Please_reset_the_group);
+        exit = true;
         return false;
     }
-
+    if(exit) return;
     var luisIntent;
     $('#appInsertForm').find('[name=luisIntent]').each(function() {
         if($(this).attr('disabled') == undefined) {
@@ -895,13 +896,16 @@ function createDialog(){
     })
     if(luisIntent.trim() === "") {
         alert(language.Please_reset_the_group);
+        exit = true;
         return false;
     }
-
+    if(exit) return;
+    /*
     if ($('#description').val().trim() === "" ) {
         alert(language.Description_must_be_entered);
         return false;
     }
+    
     $('.insertForm input[name=dialogTitle]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.You_must_enter_a_Dialog_Title);
@@ -909,6 +913,7 @@ function createDialog(){
             return false;
         }
     });
+
     if(exit) return;
     $('.insertForm input[name=dialogText]').each(function(index) {
         if ($(this).val().trim() === "") {
@@ -917,7 +922,9 @@ function createDialog(){
             return false;
         }
     });
+    
     if(exit) return;
+    
     $('.insertForm input[name=imgUrl]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.ImageURL_must_be_entered);
@@ -925,6 +932,7 @@ function createDialog(){
             return false;
         }
     });
+    */
     if(exit) return;
 
 
@@ -1414,7 +1422,7 @@ function openModalBox(target){
 
     carouselForm =  '<div class="carouselLayout">' +                                                               
                     '<div class="form-group">' +  
-                    '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +  
+                    '<label>' + language.IMAGE_URL + '</label>' +  
                     '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
                     '</div>' +  
                     '<div class="modal_con btnInsertDiv">' +  
@@ -1434,11 +1442,11 @@ function openModalBox(target){
                     '</div>' 
 
     mediaForm = '<div class="form-group">' +
-                '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +
+                '<label>' + language.IMAGE_URL + '</label>' +
                 '<input type="text" class="form-control" placeholder="' + language.Please_enter + '">' +
                 '</div>' +
                 '<div class="form-group">' +
-                '<label>' + language.MEDIA_URL + '<span class="nec_ico">*</span></label>' +
+                '<label>' + language.MEDIA_URL + '</label>' +
                 '<input type="text" class="form-control" placeholder="' + language.Please_enter + '">' +
                 '</div>' +    
                 '<div class="modal_con">' +
@@ -1467,11 +1475,11 @@ function openModalBox(target){
 
     dlgForm = '<div class="textLayout">' +                                                         
               '<div class="form-group">' + 
-              '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>' + 
+              '<label>' + language.DIALOG_BOX_TITLE + '</label>' + 
               '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="' + language.Please_enter + '">' + 
               '</div>' +                                                                                         
               '<div class="form-group">' + 
-              '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>' + 
+              '<label>' + language.DIALOG_BOX_CONTENTS + '</label>' + 
               '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="' + language.Please_enter + '">' + 
               '</div>' +  
               '</div>';
@@ -1491,7 +1499,7 @@ function openModalBox(target){
             0 : 다이얼로그 생성 가능
             1 : 다이얼로그 생성 불가능(체크된 추천문장중 학습이 안된 엔티티가 존재함)
             2 : 다이얼로그 생성 불가능(체크된 추천문장이 없음)   
-        */
+        
         var checkFlag = 2;  
         chkEntities = [];
         $('input[name=tableCheckBox]').each(function() {
@@ -1522,10 +1530,10 @@ function openModalBox(target){
             $(".insertForm form").append(deleteInsertForm);
             $(".insertForm .textLayout").css("display","block");
         }
-
-        //$(".insertForm form").append($(".textLayout").clone(true));
-        //$(".insertForm form").append(deleteInsertForm);
-        //$(".insertForm .textLayout").css("display","block");
+        */
+        $(".insertForm form").append($(".textLayout").clone(true));
+        $(".insertForm form").append(deleteInsertForm);
+        $(".insertForm .textLayout").css("display","block");
     }
 
     if(target == "#search_dlg") {
