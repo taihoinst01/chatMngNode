@@ -45,7 +45,7 @@ $(document).on("click", ".more", function(e){
     if($(e.target).hasClass('more')){
         //$(this).next().css('visibility') === 'visible'
         $('.board').hide();
-        $('.board').eq(  $('.board').index($(this).next())  ).show();
+        $('.board').eq(  $('.board').index($(this).parent().children(":last"))  ).show();
         $('.fl.close').addClass('more').removeClass('close');  
 
         $(e.target).addClass('close').removeClass('more');
