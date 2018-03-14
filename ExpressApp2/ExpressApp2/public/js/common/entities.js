@@ -392,7 +392,6 @@ function insertEntity(){
         return ;
     }
     
-    obj2.entityValueList = entityValueList;
     $.ajax({
         url: '/learning/insertEntity',
         dataType: 'json',
