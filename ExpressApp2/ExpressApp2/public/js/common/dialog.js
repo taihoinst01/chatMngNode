@@ -2014,7 +2014,33 @@ function searchDialog(dlgID) {
 
     deleteInsertForm = '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >' +
     '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제</button>' +
-    '</div>'
+    '</div>';
+
+    var inputHtml = '<div><label>' + language.BUTTON + '</label></div>' +
+    '<div class="form-group col-md-13"  style="padding-left:0; margin-top: 0px;">' +
+    '<table class="cardCopyTbl" style="width:100%">' +
+    '<col width="21%"><col width="1%"><col width="35%">' +
+    '<col width="1%"><col width="35%"><col width="1%"><col width="6%">' +
+    '<thead><tr>' + 
+    '<th>' + language.Type + '</th><th></th><th>' + language.NAME + '</th>'+
+    '<th></th><th>' + language.CONTENTS + '</th><th></th><th></th>' +
+    '</tr></thead>' +
+    '<tbody>' +
+    '<tr>'+
+    '<td><select class="form-control" name="btnType"><option value="imBack" selected>imBack</option>' +
+    '<option value="openURL">openURL</option></select></td>' +
+    '<td></td><td><input type="text" name="cButtonName" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+    '<td></td><td><input type="text" name="cButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+    '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
+    '</tr></tbody></table></div>';
+
+    var inputTrHtml = '<tr>'+
+    '<td><select class="form-control" name="btnType"><option value="imBack" selected>imBack</option>' +
+    '<option value="openURL">openURL</option></select></td>' +
+    '<td></td><td><input type="text" name="cButtonName" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+    '<td></td><td><input type="text" name="cButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+    '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
+    '</tr>';
 
     $.ajax({
         url: '/learning/getDlgAjax',                //주소
@@ -2146,33 +2172,31 @@ function searchDialog(dlgID) {
                                 $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=imgUrl]").val(tmp.dlg[j].IMG_URL);
 
                                 if(tmp.dlg[j].BTN_1_TYPE != null && tmp.dlg[j].BTN_1_TYPE != "") {
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn1Type]").val(tmp.dlg[j].BTN_1_TYPE).prop("selected",true);
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName1]").val(tmp.dlg[j].BTN_1_TITLE);
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent1]").val(tmp.dlg[j].BTN_1_CONTEXT);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".btnInsertDiv").append(inputHtml);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btnType]:eq(0)").val(tmp.dlg[j].BTN_1_TYPE).prop("selected",true);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName]:eq(0)").val(tmp.dlg[j].BTN_1_TITLE);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent]:eq(0)").val(tmp.dlg[j].BTN_1_CONTEXT);
                                 }
                                 if(tmp.dlg[j].BTN_2_TYPE != null && tmp.dlg[j].BTN_2_TYPE != "") {
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn2Type]").css("display","block");
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn2Type]").val(tmp.dlg[j].BTN_2_TYPE).prop("selected",true);
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName2]").css("display","block");
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName2]").val(tmp.dlg[j].BTN_2_TITLE);
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent2]").css("display","block");
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent2]").val(tmp.dlg[j].BTN_2_CONTEXT);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".cardCopyTbl tbody").append(inputHtml);
+
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btnType]:eq(1)").val(tmp.dlg[j].BTN_2_TYPE).prop("selected",true);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName]:eq(1)").val(tmp.dlg[j].BTN_2_TITLE);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent]:eq(1)").val(tmp.dlg[j].BTN_2_CONTEXT);
                                 }
                                 if(tmp.dlg[j].BTN_3_TYPE != null && tmp.dlg[j].BTN_3_TYPE != "") {
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn3Type]").css("display","block");
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn3Type]").val(tmp.dlg[j].BTN_3_TYPE).prop("selected",true);
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName3]").css("display","block");
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName3]").val(tmp.dlg[j].BTN_3_TITLE);
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent3]").css("display","block");
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent3]").val(tmp.dlg[j].BTN_3_CONTEXT);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".cardCopyTbl tbody").append(inputHtml);
+
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btnType]:eq(2)").val(tmp.dlg[j].BTN_3_TYPE).prop("selected",true);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName]:eq(2)").val(tmp.dlg[j].BTN_3_TITLE);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent]:eq(2)").val(tmp.dlg[j].BTN_3_CONTEXT);
                                 }
                                 if(tmp.dlg[j].BTN_4_TYPE != null && tmp.dlg[j].BTN_4_TYPE != "") {
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn4Type]").css("display","block");
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btn4Type]").val(tmp.dlg[j].BTN_4_TYPE).prop("selected",true);
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName4]").css("display","block");
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName4]").val(tmp.dlg[j].BTN_4_TITLE);
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent4]").css("display","block");
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent4]").val(tmp.dlg[j].BTN_4_CONTEXT);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".cardCopyTbl tbody").append(inputHtml);
+
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btnType]:eq(3)").val(tmp.dlg[j].BTN_4_TYPE).prop("selected",true);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName]:eq(3)").val(tmp.dlg[j].BTN_4_TITLE);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent]:eq(3)").val(tmp.dlg[j].BTN_4_CONTEXT);
                                 }
                             } else if(tmp.dlg[j].DLG_TYPE == 4) {
                                 inputUttrHtml += '<div class="wc-message wc-message-from-bot">';
