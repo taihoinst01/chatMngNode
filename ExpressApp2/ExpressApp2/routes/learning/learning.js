@@ -1771,8 +1771,8 @@ router.post('/addDialog',function(req,res){
             //var selectTextDlgId = 'SELECT ISNULL(MAX(TEXT_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_TEXT';
             //var selectCarouselDlgId = 'SELECT ISNULL(MAX(CARD_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_CARD';
             //var selectMediaDlgId = 'SELECT ISNULL(MAX(MEDIA_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_MEDIA';
-            var insertTblDlg = 'INSERT INTO TBL_DLG(DLG_ID,DLG_NAME,DLG_DESCRIPTION,DLG_LANG,DLG_TYPE,DLG_ORDER_NO,USE_YN, GroupL, GroupM, DLG_GROUP, GroupS) VALUES ' +
-            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dialogOrderNo,\'Y\', @luisId, @luisIntent, 2, @luisEntities)';
+            var insertTblDlg = 'INSERT INTO TBL_DLG(DLG_ID,DLG_NAME,DLG_DESCRIPTION,DLG_LANG,DLG_TYPE,DLG_ORDER_NO,USE_YN, GroupL, GroupM, DLG_GROUP) VALUES ' +
+            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dialogOrderNo,\'Y\', @luisId, @luisIntent, 2)';
             var inserTblDlgText = 'INSERT INTO TBL_DLG_TEXT(DLG_ID,CARD_TITLE,CARD_TEXT,USE_YN) VALUES ' +
             '(@dlgId,@dialogTitle,@dialogText,\'Y\')';
             var insertTblCarousel = 'INSERT INTO TBL_DLG_CARD(DLG_ID,CARD_TITLE,CARD_TEXT,IMG_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_ORDER_NO,USE_YN) VALUES ' +
@@ -1790,7 +1790,7 @@ router.post('/addDialog',function(req,res){
                 let result1 = await pool.request()
                 .query(selectDlgId)
                 let dlgId = result1.recordset;
-
+                /*
                 for(var j = 0 ; j < (typeof luisEntities ==="string" ? 1:luisEntities.length); j++) {
                     let result2 = await pool.request()
                     .input('dlgId', sql.Int, dlgId[0].DLG_ID)
@@ -1802,10 +1802,17 @@ router.post('/addDialog',function(req,res){
                     .input('luisEntities', sql.NVarChar, (typeof luisEntities ==="string" ? luisEntities:luisEntities[j]))
                     .query(insertTblDlg);
                 }
-
+                */
                 if(array[i]["dlgType"] == "2") {
 
-                   
+                    let result2 = await pool.request()
+                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                    .input('dialogText', sql.NVarChar, description)
+                    .input('dlgType', sql.NVarChar, array[i]["dlgType"])
+                    .input('dialogOrderNo', sql.Int, (i+1))
+                    .input('luisId', sql.NVarChar, luisId)
+                    .input('luisIntent', sql.NVarChar, luisIntent)
+                    .query(insertTblDlg);
 
                     /*
                     let result3 = await pool.request()
