@@ -132,9 +132,9 @@
                 </div>
     </div>
 </div>
-      
+
 <!-- Control Sidebar -->
-<aside class="control-sidebar control-sidebar-dark" id="simulDiv" style="height:90%;">
+<aside class="control-sidebar control-sidebar-dark" id="simulDiv" style="height:90%; max-height: 800px; position: fixed">
         <div  class="hd_top " >
             <h4><%= __('CHATBOT_SIMUL') %></h4>
             <div class="btn_wrap04">
@@ -142,14 +142,15 @@
                 <button  type="button" class="btn btn_02"  data-toggle="control-sidebar" ><span class="fa fa-close"></span></button>
             </div>
         </div>
-        <div class="chat_con" id="iframChatbot" style="height:100%; padding:0;">
+        <div class="chat_con" id="iframChatbot" style="height:100%; padding:0; ">
         챗봇 넣기
         <!-- 챗팅창-->
         </div>
 </aside>
 <!-- /.control-sidebar -->
 
-<div class="control-sidebar-bg"></div>
+<div class="control-sidebar-bg" style="max-height: 850px;">
+</div>
 
 
   <script>
