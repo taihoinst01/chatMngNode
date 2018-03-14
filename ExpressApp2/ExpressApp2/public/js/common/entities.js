@@ -54,6 +54,7 @@ $(document).on("click", "#addEntityValBtn", function(e){
     inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
     $('.entityValDiv').append(inputEntityStr);
     $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+    dialogValidation();
 });
 
 $(document).on("click", "a[name=delEntityBtn]", function(e){
@@ -62,8 +63,8 @@ $(document).on("click", "a[name=delEntityBtn]", function(e){
         $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
     } else {
         $(this).parent().remove();
-        
-    $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+        $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+        dialogValidation();
     }
 });
 
@@ -390,12 +391,14 @@ function insertEntity(){
         alert(language.DUPLICATE_ENTITIES_EXIST);
         return ;
     }
-
+    
+    obj2.entityValueList = entityValueList;
     $.ajax({
         url: '/learning/insertEntity',
         dataType: 'json',
+        contentType: 'application/json',
         type: 'POST',
-        data: {entityObj : JSON.stringify(entityValueList)},//$('#appInsertForm').serializeObject(),
+        data: JSON.stringify(entityValueList), //$('#appInsertForm').serializeObject(),
         success: function(data) {
             if(data.status == 200){
                 $('.addDialogCancel').click();

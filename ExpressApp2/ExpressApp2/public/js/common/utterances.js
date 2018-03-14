@@ -28,9 +28,10 @@ $(document).ready(function(){
     
     $('.addDialogCancel').click(function(){
         $('#appInsertForm')[0].reset();
-        var inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' tabindex='1' id='entityValue' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='dialogValidation();'>";
+        var inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' tabindex='1' id='entityValue' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='entityValidation();'>";
         inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
         $('.entityValDiv').html(inputEntityStr);
+        entityValidation();
     });
     
     
@@ -41,6 +42,7 @@ $(document).ready(function(){
         } else {
             $(this).parent().remove();
             $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+            entityValidation();
         }
     });
 
@@ -49,10 +51,11 @@ $(document).ready(function(){
 
 $(document).on("click", "#addEntityValBtn", function(e){
     var entityLength = $('.entityValDiv  input[name=entityValue]').length;
-    inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' tabindex='" + entityLength + "' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='dialogValidation();'>";
+    inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' tabindex='" + entityLength + "' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='entityValidation();'>";
     inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
     $('.entityValDiv').append(inputEntityStr);
     $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+    entityValidation();
 });
 
 $(document).on("keypress", "input[name=entityValue]", function(e){
@@ -876,18 +879,27 @@ function insertDialog(){
     });
 }
 */
-//엔티티 추가 생성 유효성 검사
+//모달창 입력값에 따른 save 버튼 활성화 처리
 function entityValidation(){
-    var defineText = $('#entityDefine').val();
-    var valueText = $('#entityValue').val();
     
-    if(defineText != "" && valueText != "") {
-        $('#addEntityBtn').removeClass("disable");
-        $('#addEntityBtn').attr("disabled", false);
+    var defineText = $('#entityDefine').val().trim();
+    var valueText = true;
+    
+    $('.entityValDiv  input[name=entityValue]').each(function() {
+        if ($(this).val().trim() === "") {
+            valueText = false;
+            return;
+        }
+    });
+
+    if(defineText != "" && valueText) {
+        $('#btnAddDlg').removeClass("disable");
+        $('#btnAddDlg').attr("disabled", false);
     } else {
-        $('#addEntityBtn').attr("disabled", "disabled");
-        $('#addEntityBtn').addClass("disable");
+        $('#btnAddDlg').attr("disabled", "disabled");
+        $('#btnAddDlg').addClass("disable");
     }
+       
 }
 
 //엔티티 추가 group selbox 설정
@@ -2090,8 +2102,9 @@ function insertEntity(){
     $.ajax({
         url: '/learning/insertEntity',
         dataType: 'json',
+        contentType: 'application/json',
         type: 'POST',
-        data: {entityObj : JSON.stringify(entityValueList)},//$('#appInsertForm').serializeObject(),
+        data: JSON.stringify(entityValueList), //$('#appInsertForm').serializeObject(),
         success: function(data) {
             if(data.status == 200){
                 $('.addDialogCancel').click();

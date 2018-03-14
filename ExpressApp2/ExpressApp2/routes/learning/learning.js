@@ -986,7 +986,8 @@ router.post('/insertEntity', function (req, res) {
     //var entityDefine = req.body.entityDefine;
     //var entityValue = req.body.entityValueList;
     //var apiGroup = req.body.apiGroup;
-    var entityList = JSON.parse(req.body.entityObj);
+    var entityList = req.body;
+    //var entityList = JSON.parse(req.body.entityObj);
     (async () => {
         try {
             var entityInputStr = "";
