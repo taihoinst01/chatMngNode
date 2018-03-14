@@ -488,7 +488,7 @@ router.post('/searchIptDlg', function (req, res) {
                   
                 dlg_desQueryString+= "  and LUIS_ENTITIES like '%" + searchText + "%' ";
                 dlg_desQueryString += ") tbp WHERE PAGEIDX = @currentPage";
-            let pool = await dbConnect.getConnection(sql);
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);//dbConnect.getConnection(sql);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(dlg_desQueryString);
             let rows = result1.recordset;
             
@@ -983,14 +983,28 @@ router.post('/addEntityValue', function (req, res) {
 //엔티티 추가
 router.post('/insertEntity', function (req, res) {
     
-    var entityDefine = req.body.entityDefine;
-    var entityValue = req.body.entityValue;
-    var apiGroup = req.body.apiGroup;
+    //var entityDefine = req.body.entityDefine;
+    //var entityValue = req.body.entityValueList;
+    //var apiGroup = req.body.apiGroup;
+    var entityList = req.body;
+    //var entityList = JSON.parse(req.body.entityObj);
     (async () => {
         try {
-            
+            var entityInputStr = "";
+            entityInputStr += " SELECT COUNT(*) as count FROM TBL_COMMON_ENTITY_DEFINE \n";
+            entityInputStr += "  WHERE 1=1 \n";
+            entityInputStr += "    AND ENTITY = '" + entityList[0].entityDefine + "' \n";
+            entityInputStr += "    AND API_GROUP = '" + entityList[0].apiGroup + "' \n";
+            entityInputStr += "    AND ( ";
+            for ( var i=0; i< entityList.length; i++) {
+                if ( i !== 0) {entityInputStr += "     OR "}
+                    entityInputStr += "ENTITY_VALUE = '" + entityList[i].entityValue + "' \n";
+            }
+            entityInputStr += "); \n";
             let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
 
+            let result0 = await pool.request().query(entityInputStr);  
+            /*
             var selectQuery  = ' SELECT COUNT(*) as count FROM TBL_COMMON_ENTITY_DEFINE ';
                 selectQuery += ' WHERE ENTITY_VALUE = @entityValue ';
                 selectQuery += ' AND ENTITY = @entityDefine ';
@@ -1000,18 +1014,18 @@ router.post('/insertEntity', function (req, res) {
             .input('entityDefine', sql.NVarChar, entityDefine)
             .input('apiGroup', sql.NVarChar, apiGroup)
             .query(selectQuery);  
-
+            */
             let rows = result0.recordset;
 
             if(rows[0].count == 0){
-                var insertQueryString1 = 'INSERT INTO tbl_common_entity_define(ENTITY, ENTITY_VALUE, API_GROUP) VALUES ' +
-                        '(@entityDefine, @entityValue, @apiGroup)';
+
+                var entityInputStr = "";
+                for ( var i=0; i< entityList.length; i++) {
+                    entityInputStr += " INSERT INTO tbl_common_entity_define(ENTITY, ENTITY_VALUE, API_GROUP) \n";
+                    entityInputStr += " VALUES ('" + entityList[i].entityDefine + "', '" + entityList[i].entityValue + "', '" + entityList[i].apiGroup + "'); \n";
+                }
                 
-                let result1 = await pool.request()
-                    .input('entityDefine', sql.NVarChar, entityDefine)
-                    .input('entityValue', sql.NVarChar, entityValue)
-                    .input('apiGroup', sql.NVarChar, apiGroup)
-                    .query(insertQueryString1);  
+                let result1 = await pool.request().query(entityInputStr);  
             
                 res.send({status:200 , message:'insert Success'});
             }else{
@@ -1392,7 +1406,7 @@ router.post('/learnUtterAjax', function (req, res) {
     var queryText = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) "
                   + "VALUES( @luisId, @luisIntent, @entities, @dlgId, 'D', 'Y' )";   
     
-    var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId";
+    //var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId";
 
     (async () => {
         try {
@@ -1427,15 +1441,16 @@ router.post('/learnUtterAjax', function (req, res) {
                                     .input('entities', sql.NVarChar, (typeof entities ==="string" ? entities:entities[i]))
                                     .input('dlgId', sql.NVarChar, (typeof dlgId ==="string" ? dlgId:dlgId[j]))
                                     .query(queryText);
-
+                    /*
                     result2 = await pool.request()
                                     .input('entities', sql.NVarChar, (typeof entities ==="string" ? entities:entities[i]))
                                     .input('dlgId', sql.NVarChar, (typeof dlgId ==="string" ? dlgId:dlgId[j]))
                                     .query(updateTblDlg);
+                    */
                 }
             }
             console.log(result1);
-            console.log(result2);
+            //console.log(result2);
             let rows = result1.rowsAffected;
 
             if(rows[0] == 1) {
@@ -1719,6 +1734,7 @@ router.post('/searchDialog',function(req,res){
 router.post('/addDialog',function(req,res){
 
     var data = req.body['data[]'];
+    var luisEntities = req.body['entities[]'];
     var array = [];
     var queryText = "";
     var tblDlgId = [];
@@ -1755,8 +1771,8 @@ router.post('/addDialog',function(req,res){
             //var selectTextDlgId = 'SELECT ISNULL(MAX(TEXT_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_TEXT';
             //var selectCarouselDlgId = 'SELECT ISNULL(MAX(CARD_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_CARD';
             //var selectMediaDlgId = 'SELECT ISNULL(MAX(MEDIA_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_MEDIA';
-            var insertTblDlg = 'INSERT INTO TBL_DLG(DLG_ID,DLG_NAME,DLG_DESCRIPTION,DLG_LANG,DLG_TYPE,DLG_ORDER_NO,USE_YN, GroupL, GroupM, DLG_GROUP) VALUES ' +
-            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dialogOrderNo,\'Y\', @luisId, @luisIntent, 2)';
+            var insertTblDlg = 'INSERT INTO TBL_DLG(DLG_ID,DLG_NAME,DLG_DESCRIPTION,DLG_LANG,DLG_TYPE,DLG_ORDER_NO,USE_YN, GroupL, GroupM, DLG_GROUP, GroupS) VALUES ' +
+            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dialogOrderNo,\'Y\', @luisId, @luisIntent, 2, @luisEntities)';
             var inserTblDlgText = 'INSERT INTO TBL_DLG_TEXT(DLG_ID,CARD_TITLE,CARD_TEXT,USE_YN) VALUES ' +
             '(@dlgId,@dialogTitle,@dialogText,\'Y\')';
             var insertTblCarousel = 'INSERT INTO TBL_DLG_CARD(DLG_ID,CARD_TITLE,CARD_TEXT,IMG_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_ORDER_NO,USE_YN) VALUES ' +
@@ -1775,8 +1791,7 @@ router.post('/addDialog',function(req,res){
                 .query(selectDlgId)
                 let dlgId = result1.recordset;
 
-                if(array[i]["dlgType"] == "2") {
-
+                for(var j = 0 ; j < (typeof luisEntities ==="string" ? 1:luisEntities.length); j++) {
                     let result2 = await pool.request()
                     .input('dlgId', sql.Int, dlgId[0].DLG_ID)
                     .input('dialogText', sql.NVarChar, description)
@@ -1784,7 +1799,13 @@ router.post('/addDialog',function(req,res){
                     .input('dialogOrderNo', sql.Int, (i+1))
                     .input('luisId', sql.NVarChar, luisId)
                     .input('luisIntent', sql.NVarChar, luisIntent)
-                    .query(insertTblDlg)
+                    .input('luisEntities', sql.NVarChar, (typeof luisEntities ==="string" ? luisEntities:luisEntities[j]))
+                    .query(insertTblDlg);
+                }
+
+                if(array[i]["dlgType"] == "2") {
+
+                   
 
                     /*
                     let result3 = await pool.request()
@@ -1799,7 +1820,7 @@ router.post('/addDialog',function(req,res){
                     .query(inserTblDlgText);                    
 
                 } else if(array[i]["dlgType"] == "3") {
-                    
+                    /*
                     let result2 = await pool.request()
                     .input('dlgId', sql.Int, dlgId[0].DLG_ID)
                     .input('dialogText', sql.NVarChar, description)
@@ -1807,8 +1828,9 @@ router.post('/addDialog',function(req,res){
                     .input('dialogOrderNo', sql.Int, (i+1))
                     .input('luisId', sql.NVarChar, luisId)
                     .input('luisIntent', sql.NVarChar, luisIntent)
+                    .input('luisEntities', sql.NVarChar, luisEntities)
                     .query(insertTblDlg);
-
+                    */
                     for (var j=0; j<array[i].carouselArr.length; j++) {
                         var carTmp = array[i].carouselArr[j];
                         
@@ -1842,6 +1864,7 @@ router.post('/addDialog',function(req,res){
                     tblDlgId.push(dlgId[0].DLG_ID);
 
                 } else if(array[i]["dlgType"] == "4") {
+                    /*
                     let result1 = await pool.request()
                     .query(selectDlgId)
                     let dlgId = result1.recordset;
@@ -1853,9 +1876,9 @@ router.post('/addDialog',function(req,res){
                     .input('dialogOrderNo', sql.Int, (i+1))
                     .input('luisId', sql.NVarChar, luisId)
                     .input('luisIntent', sql.NVarChar, luisIntent)
+                    .input('luisEntities', sql.NVarChar, luisEntities)
                     .query(insertTblDlg)
 
-                    /*
                     let result3 = await pool.request()
                     .query(selectMediaDlgId)
                     let mediaDlgId = result3.recordset;

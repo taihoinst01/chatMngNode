@@ -25,8 +25,47 @@ $(document).ready(function(){
     entityValidation();
     //엔티티추가 모달 selectbox 설정
     selectApiGroup();
+    
+    $('.addDialogCancel').click(function(){
+        $('#appInsertForm')[0].reset();
+        var inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' tabindex='1' id='entityValue' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='entityValidation();'>";
+        inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
+        $('.entityValDiv').html(inputEntityStr);
+        entityValidation();
+    });
+    
+    
+    $(document).on("click", "a[name=delEntityBtn]", function(e){
+        if ($('.entityValDiv  input[name=entityValue]').length < 2) {
+            alert('1개 이상 입력해야 합니다.');
+            $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+        } else {
+            $(this).parent().remove();
+            $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+            entityValidation();
+        }
+    });
 
 });
+
+
+$(document).on("click", "#addEntityValBtn", function(e){
+    var entityLength = $('.entityValDiv  input[name=entityValue]').length;
+    inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' tabindex='" + entityLength + "' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='entityValidation();'>";
+    inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
+    $('.entityValDiv').append(inputEntityStr);
+    $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+    entityValidation();
+});
+
+$(document).on("keypress", "input[name=entityValue]", function(e){
+    if (e.keyCode === 13) {	//	Enter Key
+        //var inputIndex = $('.entityValDiv  input[name=entityValue]').index($(this));
+        $('#addEntityValBtn').trigger('click');
+        $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+    }
+});
+
 // Utterance 삭제
 $(document).on('click', '.utterDelete', function() {
 
@@ -840,18 +879,27 @@ function insertDialog(){
     });
 }
 */
-//엔티티 추가 생성 유효성 검사
+//모달창 입력값에 따른 save 버튼 활성화 처리
 function entityValidation(){
-    var defineText = $('#entityDefine').val();
-    var valueText = $('#entityValue').val();
     
-    if(defineText != "" && valueText != "") {
-        $('#addEntityBtn').removeClass("disable");
-        $('#addEntityBtn').attr("disabled", false);
+    var defineText = $('#entityDefine').val().trim();
+    var valueText = true;
+    
+    $('.entityValDiv  input[name=entityValue]').each(function() {
+        if ($(this).val().trim() === "") {
+            valueText = false;
+            return;
+        }
+    });
+
+    if(defineText != "" && valueText) {
+        $('#btnAddDlg').removeClass("disable");
+        $('#btnAddDlg').attr("disabled", false);
     } else {
-        $('#addEntityBtn').attr("disabled", "disabled");
-        $('#addEntityBtn').addClass("disable");
+        $('#btnAddDlg').attr("disabled", "disabled");
+        $('#btnAddDlg').addClass("disable");
     }
+       
 }
 
 //엔티티 추가 group selbox 설정
@@ -883,9 +931,10 @@ function createDialog(){
 
     if($('select[name=luisId]').val().trim() === "") {
         alert(language.Please_reset_the_group);
+        exit = true;
         return false;
     }
-
+    if(exit) return;
     var luisIntent;
     $('#appInsertForm').find('[name=luisIntent]').each(function() {
         if($(this).attr('disabled') == undefined) {
@@ -895,13 +944,16 @@ function createDialog(){
     })
     if(luisIntent.trim() === "") {
         alert(language.Please_reset_the_group);
+        exit = true;
         return false;
     }
-
+    if(exit) return;
+    /*
     if ($('#description').val().trim() === "" ) {
         alert(language.Description_must_be_entered);
         return false;
     }
+    
     $('.insertForm input[name=dialogTitle]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.You_must_enter_a_Dialog_Title);
@@ -909,6 +961,7 @@ function createDialog(){
             return false;
         }
     });
+
     if(exit) return;
     $('.insertForm input[name=dialogText]').each(function(index) {
         if ($(this).val().trim() === "") {
@@ -917,7 +970,9 @@ function createDialog(){
             return false;
         }
     });
+    
     if(exit) return;
+    
     $('.insertForm input[name=imgUrl]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.ImageURL_must_be_entered);
@@ -925,6 +980,7 @@ function createDialog(){
             return false;
         }
     });
+    */
     if(exit) return;
 
 
@@ -993,7 +1049,7 @@ function createDialog(){
         url: '/learning/addDialog',
         dataType: 'json',
         type: 'POST',
-        data: {'data' : array},
+        data: {'data' : array, 'entities' : chkEntities},
         success: function(data) {
             alert(language.Added);
 
@@ -1414,7 +1470,7 @@ function openModalBox(target){
 
     carouselForm =  '<div class="carouselLayout">' +                                                               
                     '<div class="form-group">' +  
-                    '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +  
+                    '<label>' + language.IMAGE_URL + '</label>' +  
                     '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
                     '</div>' +  
                     '<div class="modal_con btnInsertDiv">' +  
@@ -1434,11 +1490,11 @@ function openModalBox(target){
                     '</div>' 
 
     mediaForm = '<div class="form-group">' +
-                '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +
+                '<label>' + language.IMAGE_URL + '</label>' +
                 '<input type="text" class="form-control" placeholder="' + language.Please_enter + '">' +
                 '</div>' +
                 '<div class="form-group">' +
-                '<label>' + language.MEDIA_URL + '<span class="nec_ico">*</span></label>' +
+                '<label>' + language.MEDIA_URL + '</label>' +
                 '<input type="text" class="form-control" placeholder="' + language.Please_enter + '">' +
                 '</div>' +    
                 '<div class="modal_con">' +
@@ -1467,11 +1523,11 @@ function openModalBox(target){
 
     dlgForm = '<div class="textLayout">' +                                                         
               '<div class="form-group">' + 
-              '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>' + 
+              '<label>' + language.DIALOG_BOX_TITLE + '</label>' + 
               '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="' + language.Please_enter + '">' + 
               '</div>' +                                                                                         
               '<div class="form-group">' + 
-              '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>' + 
+              '<label>' + language.DIALOG_BOX_CONTENTS + '</label>' + 
               '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="' + language.Please_enter + '">' + 
               '</div>' +  
               '</div>';
@@ -1519,9 +1575,10 @@ function openModalBox(target){
         } else {
             $('#create_dlg').attr('data-target', "#myModal2");
             $(".insertForm form").append($(".textLayout").clone(true));
+            $(".insertForm form").append(deleteInsertForm);
             $(".insertForm .textLayout").css("display","block");
-        }*/
-
+        }
+        */
         $(".insertForm form").append($(".textLayout").clone(true));
         $(".insertForm form").append(deleteInsertForm);
         $(".insertForm .textLayout").css("display","block");
@@ -1956,78 +2013,111 @@ $(document).on('click', '.addCarouselBtn', function(e){
     //var $newDlgForm = $dlgForm.clone();
     //var $newCarouselForm = $carouselForm.clone();
     
-    var idx =  $(".addCarouselBtn:visible").index(this);
-    var jdx = $('select[name=dlgType]').index(( $(".addCarouselBtn:visible").eq(idx).parents('form[name=dialogLayout]').find('select[name=dlgType]') ));
-    //$('.addCarouselBtn').eq(0).parent().parent().remove();
-    //$(this).parents('.insertForm').after( $newInsertForm);  
-    //<div id="textLayout" style="display: block;">  </div>
-    //var caraousHtml = '<div class="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>';
-    var dlgFormHtml = '<div class="textLayout" style="display: block;">' + dlgForm + '</div>';
-    $(this).parent().before('<div class="clear-both"></div>').before(dlgFormHtml).before(carouselForm);
-    //$(this).parents('form[name=dialogLayout] .deleteInsertFormDiv').before('<div class="clear-both"></div>').after(dlgFormHtml).append(carouselForm);
-    //$(this).parents('.insertForm').next().find('.clear-both').after($newDlgForm);
-    var claerLen = $(this).parents('form[name=dialogLayout]').children('.clear-both').length-1;
-    $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().css('display', 'block');
-    $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().next().css('display', 'block');
-    //$(this).parent().parent().remove();
-    //$(this).parent().css('display', 'none');
-    $(this).parents('form[name=dialogLayout]').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
+    if($(this).parents('.insertForm').find('.carouselLayout').length == 10) {
+        alert("카드는 10개까지 추가가 가능합니다.");
+    } else {
 
-    var inputUttrHtml = '<li class="wc-carousel-item">';
-    inputUttrHtml += '<div class="wc-card hero">';
-    inputUttrHtml += '<div class="wc-container imgContainer" >';
-    inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/movieImg/teasure/02_teaser.jpg">';
-    inputUttrHtml += '</div>';
-    inputUttrHtml += '<h1>CARD_TITLE</h1>';
-    inputUttrHtml += '<p class="carousel">CARD_TEXT</p>';
-    inputUttrHtml += '<ul class="wc-card-buttons" style="padding-left:0px;"><li><button>BTN_1_TITLE</button></li></ul>';
-    inputUttrHtml += '</div>';
-    inputUttrHtml += '</li>';
-
-    var kdx = $('.insertForm').index($(this).parents('.insertForm'));
-
-    $('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().append(inputUttrHtml);
+        var idx =  $(".addCarouselBtn:visible").index(this);
+        var jdx = $('select[name=dlgType]').index(( $(".addCarouselBtn:visible").eq(idx).parents('form[name=dialogLayout]').find('select[name=dlgType]') ));
+        //$('.addCarouselBtn').eq(0).parent().parent().remove();
+        //$(this).parents('.insertForm').after( $newInsertForm);  
+        //<div id="textLayout" style="display: block;">  </div>
+        //var caraousHtml = '<div class="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>';
+        var dlgFormHtml = '<div class="textLayout" style="display: block;">' + dlgForm + '</div>';
+        $(this).parent().before('<div class="clear-both"></div>').before(dlgFormHtml).before(carouselForm);
+        //$(this).parents('form[name=dialogLayout] .deleteInsertFormDiv').before('<div class="clear-both"></div>').after(dlgFormHtml).append(carouselForm);
+        //$(this).parents('.insertForm').next().find('.clear-both').after($newDlgForm);
+        var claerLen = $(this).parents('form[name=dialogLayout]').children('.clear-both').length-1;
+        $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().css('display', 'block');
+        $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().next().css('display', 'block');
+        //$(this).parent().parent().remove();
+        //$(this).parent().css('display', 'none');
+        $(this).parents('form[name=dialogLayout]').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
     
-    if ($('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().children().length > 2) {
-        $('#nextBtn'+ jdx).show();
+        var inputUttrHtml = '<li class="wc-carousel-item">';
+        inputUttrHtml += '<div class="wc-card hero">';
+        inputUttrHtml += '<div class="wc-container imgContainer" >';
+        inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/movieImg/teasure/02_teaser.jpg">';
+        inputUttrHtml += '</div>';
+        inputUttrHtml += '<h1>CARD_TITLE</h1>';
+        inputUttrHtml += '<p class="carousel">CARD_TEXT</p>';
+        inputUttrHtml += '<ul class="wc-card-buttons" style="padding-left:0px;"><li><button>BTN_1_TITLE</button></li></ul>';
+        inputUttrHtml += '</div>';
+        inputUttrHtml += '</li>';
+    
+        var kdx = $('.insertForm').index($(this).parents('.insertForm'));
+    
+        $('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().append(inputUttrHtml);
+        
+        if ($('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().children().length > 2) {
+            $('#nextBtn'+ jdx).show();
+        }
     }
 });
 
 //엔티티 추가
 function insertEntity(){
 
-    var entityDefine = $('input[name=entityDefine]').val();
-    var entityValue = $('input[name=entityValue]').val();
-
-    if((entityDefine == "" || entityDefine == null || entityDefine == undefined) 
-            && (entityValue == "" || entityValue == null || entityValue == undefined)) {
-            alert(language.Please_enter);
-    } else {
-
-        $.ajax({
-            url: '/learning/insertEntity',
-            dataType: 'json',
-            type: 'POST',
-            data: $('#entityInsertForm').serialize(),
-            success: function(data) {
-                if(data.status == 200){
-                    $('.addEntityModalClose').click();
-                    alert(language.Added);
-                    //var originalUtter = [];
-                    //$('input[name=hiddenUtter]').each(function() {
-                    //    originalUtter.push($(this).val());
-                    //});
-                    //$('.recommendTbl').find('tbody').html('');
-                    //$('.pagination').html('');
-                    //utterInput(originalUtter);
-                } else if(data.status == 'Duplicate') {
-                    alert(language.DUPLICATE_ENTITIES_EXIST);
-                } else {
-                    alert(language.It_failed);
-                }
-            }
-        });
+    if ($('#entityDefine').val().trim() === "") {
+        alert(language.Please_enter);
+        return false;
     }
+    var valueText = false;
+    
+    $('.entityValDiv input[name=entityValue]').each(function() {
+        if ($(this).val().trim() === "") {
+            valueText = true;
+            return;
+        }
+    });
+
+    if (valueText) {
+        alert(language.Please_enter);
+        return ;
+    }
+
+    var entityDefineVal = $('#entityDefine').val().trim();
+    var apiGroupVal = $('#apiGroup :selected').val();
+    var entityValueList = [];
+    $('.entityValDiv input[name=entityValue]').each(function() {
+        
+        for (var i=0; i<entityValueList.length; i++) {
+            if ( entityValueList[i].entityValue === $(this).val().trim()) {
+                valueText = true;
+            }
+        }
+
+        var obj = new Object();
+        obj.entityDefine = entityDefineVal;
+        obj.apiGroup = apiGroupVal;
+        obj.entityValue = $(this).val().trim();
+        entityValueList.push(obj);
+    });
+
+    if (valueText) {
+        alert(language.DUPLICATE_ENTITIES_EXIST);
+        return ;
+    }
+
+    $.ajax({
+        url: '/learning/insertEntity',
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify(entityValueList), //$('#appInsertForm').serializeObject(),
+        success: function(data) {
+            if(data.status == 200){
+                $('.addDialogCancel').click();
+                alert(language.Added);
+                entitiesAjax();
+            } else if(data.status == 'Duplicate') {
+                alert(language.DUPLICATE_ENTITIES_EXIST);
+            } else {
+                alert(language.It_failed);
+            }
+        }
+    });
+    
 }
 
 //다이얼로그 생성 모달창 - 중그룹 신규버튼

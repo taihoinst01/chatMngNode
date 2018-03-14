@@ -20,7 +20,13 @@
 
 
     <script type="text/javascript" src="/js/common/utterances.js"></script>
+    <style type="text/css">
+        .entityValDiv {
+            overflow-y: auto !important; 
+            max-height: 150px !important; 
+        }
 
+    </style>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -139,38 +145,44 @@
     <!-- 팝업_신규단어생성 -->
     <div class="modal fade" id="addEntityModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel" aria-hidden="true" >
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close addEntityModalClose" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title" id="myModalLabel"><%= __('ADD_NEW_WORD') %></h4>
-                </div>
-                <div class="modal-body">
-                    <form name="entityInsertForm" id="entityInsertForm" method="post">
-                        <div class="form-group" >
-                            <label><%= __('WORD_DEFINITION') %><span class="nec_ico">*</span></label>
-                            <input type="text" name="entityDefine" id="entityDefine" class="form-control" onkeyup="entityValidation();" placeholder=" <%= __('Please_enter') %>">
+                <div class="modal-content" style="min-height: 450px; max-height: 550px;">
+                        <div class="modal-header">
+                              <button type="button" class="close addEntityModalClose" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                              <h4 class="modal-title" id="myModalLabel"><%= __('Create_new_Entity_Set') %></h4>
                         </div>
-                        <div class="form-group" >
-                            <label><%= __('SYNONYM') %><span class="nec_ico">*</span></label>
-                            <input type="text" name="entityValue" id="entityValue" class="form-control" onkeyup="entityValidation();" placeholder=" <%= __('Please_enter') %>">
+                        <form name="appInsertForm" id="appInsertForm" method="post">
+                        <div class="modal-body">
+                              <div class="form-group" >
+                                  <label><%= __('Entity definition') %><span class="nec_ico">*</span></label>
+                                  <input name="entityDefine" id="entityDefine" type="text" class="form-control" placeholder=" <%= __('Please_enter') %>" onkeyup="dialogValidation();">
+                              </div>
+                              <div class="form-group" >
+                                  <label><%= __('Entity value') %><span class="nec_ico">*</span></label>
+                                  <button type="button" class="btn btn_01" id="addEntityValBtn" ><%= __('ADD') %></button>
+                                  <div class="entityValDiv" >
+                                      <div style="margin-top:4px;">
+                                          <input name="entityValue" id="entityValue" type="text" tabindex="1" class="form-control" style=" float: left; width:80%;" placeholder=" <%= __('Please_enter') %>" onkeyup="entityValidation();">
+                                          <a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a>
+                                          <!--<button type="button" class="btn btn_03" style=" margin: 4px 0 0 4px;" name="delEntityBtn" ><%= __('DELETE') %></button>-->
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="form-group" >
+                                  <label>API_GROUP<span class="nec_ico">*</span></label>
+                                  <select id="apiGroup" name="apiGroup" class="form-control"> 
+                                      <!--<option value="COMMON">COMMON</option>-->
+                                  </select>
+                              </div>
+                              <div class="nec fr"><span class="nec_ico">*</span><%= __('IS_REQUIRED') %></div>
                         </div>
-                        <div class="form-group" >
-                            <label>API_GROUP<span class="nec_ico">*</span></label>
-                            <select name="apiGroup" id="apiGroup" class="form-control"> 
-                                <!--<option value="COMMON">COMMON</option>-->
-                                <!--<option value="api testdrive">api testdrive</option>-->
-                            </select>
+                        </form>                                                                    
+                        <div class="modal-footer">
+                              <div class="btn_wrap">
+                                 <button type="button" class="btn btn_01" id="btnAddDlg" onclick="insertEntity()"><%= __('CREAT') %></button>
+                                 <button type="button" class="btn btn-default addDialogCancel"  data-dismiss="modal"><%= __('CANCEL') %></button>
+                              </div>
                         </div>
-                    </form>
-                    <div class="nec fr"><span class="nec_ico">*</span> <%= __('IS_REQUIRED') %></div>
                 </div>
-                <div class="modal-footer">
-                    <div class="btn_wrap">
-                        <button type="button" id="addEntityBtn" class="btn btn_01" onclick="insertEntity()" ><%= __('ADD') %></button>
-                        <button type="button" class="btn btn-default addEntityModalClose"  data-dismiss="modal"><%= __('CANCEL') %></button>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>    
     <!-- //팝업_신규단어생성 -->
@@ -263,7 +275,7 @@
                                 </div> 
                                 <div class="clear-both"></div>
                                 <div class="form-group" >
-                                    <label><%= __('explanation') %><span class="nec_ico">*</span> </label>
+                                    <label><%= __('explanation') %></label>
                                     <textarea class="form-control" name="description" id="description" rows="3" placeholder="<%= __('Please_enter') %>"></textarea>
                                 </div>  
                             </form>
@@ -292,18 +304,18 @@
                                 <!-- 텍스트 타입 -->
                                 <div class="textLayout" style="display: none;">                                                         
                                     <div class="form-group">
-                                        <label><%= __('DIALOG_BOX_TITLE') %><span class="nec_ico">*</span></label>
+                                        <label><%= __('DIALOG_BOX_TITLE') %></label>
                                         <input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="<%= __('Please_enter') %>">
                                     </div>                                                                                        
                                     <div class="form-group">
-                                        <label><%= __('DIALOG_BOX_CONTENTS') %><span class="nec_ico">*</span></label>
+                                        <label><%= __('DIALOG_BOX_CONTENTS') %></label>
                                         <input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="<%= __('Please_enter') %>">
                                     </div>                                     
                                 </div>
                                 <!--카드 타입 -->
                                 <div class="carouselLayout" style="display:none;">                                                               
                                     <div class="form-group">
-                                        <label><%= __('IMAGE_URL') %> <span class="nec_ico">*</span></label>
+                                        <label><%= __('IMAGE_URL') %></label>
                                         <input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="<%= __('Please_enter') %>">
                                     </div>
                                     <div class="modal_con btnInsertDiv">
@@ -378,7 +390,7 @@
                                 <!-- 미디어 타입 -->
                                 <div class="mediaLayout" style="display:none;" id="dialog3">                                                                
                                     <div class="form-group">
-                                        <label><%= __('IMAGE_URL') %> <span class="nec_ico">*</span></label>
+                                        <label><%= __('IMAGE_URL') %></label>
                                         <input type="text" class="form-control" placeholder="<%= __('Please_enter') %>">
                                     </div>
                                     <div class="form-group">
