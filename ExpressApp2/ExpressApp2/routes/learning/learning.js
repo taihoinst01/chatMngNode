@@ -983,27 +983,14 @@ router.post('/addEntityValue', function (req, res) {
 //엔티티 추가
 router.post('/insertEntity', function (req, res) {
     
-    //var entityDefine = req.body.entityDefine;
-    //var entityValue = req.body.entityValueList;
-    //var apiGroup = req.body.apiGroup;
-    var entityList = JSON.parse(req.body.entityObj);
+    var entityDefine = req.body.entityDefine;
+    var entityValue = req.body.entityValue;
+    var apiGroup = req.body.apiGroup;
     (async () => {
         try {
-            var entityInputStr = "";
-            entityInputStr += " SELECT COUNT(*) as count FROM TBL_COMMON_ENTITY_DEFINE \n";
-            entityInputStr += "  WHERE 1=1 \n";
-            entityInputStr += "    AND ENTITY = '" + entityList[0].entityDefine + "' \n";
-            entityInputStr += "    AND API_GROUP = '" + entityList[0].apiGroup + "' \n";
-            entityInputStr += "    AND ( ";
-            for ( var i=0; i< entityList.length; i++) {
-                if ( i !== 0) {entityInputStr += "     OR "}
-                    entityInputStr += "ENTITY_VALUE = '" + entityList[i].entityValue + "' \n";
-            }
-            entityInputStr += "); \n";
+            
             let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
 
-            let result0 = await pool.request().query(entityInputStr);  
-            /*
             var selectQuery  = ' SELECT COUNT(*) as count FROM TBL_COMMON_ENTITY_DEFINE ';
                 selectQuery += ' WHERE ENTITY_VALUE = @entityValue ';
                 selectQuery += ' AND ENTITY = @entityDefine ';
@@ -1013,18 +1000,18 @@ router.post('/insertEntity', function (req, res) {
             .input('entityDefine', sql.NVarChar, entityDefine)
             .input('apiGroup', sql.NVarChar, apiGroup)
             .query(selectQuery);  
-            */
+
             let rows = result0.recordset;
 
             if(rows[0].count == 0){
-
-                var entityInputStr = "";
-                for ( var i=0; i< entityList.length; i++) {
-                    entityInputStr += " INSERT INTO tbl_common_entity_define(ENTITY, ENTITY_VALUE, API_GROUP) \n";
-                    entityInputStr += " VALUES ('" + entityList[i].entityDefine + "', '" + entityList[i].entityValue + "', '" + entityList[i].apiGroup + "'); \n";
-                }
+                var insertQueryString1 = 'INSERT INTO tbl_common_entity_define(ENTITY, ENTITY_VALUE, API_GROUP) VALUES ' +
+                        '(@entityDefine, @entityValue, @apiGroup)';
                 
-                let result1 = await pool.request().query(entityInputStr);  
+                let result1 = await pool.request()
+                    .input('entityDefine', sql.NVarChar, entityDefine)
+                    .input('entityValue', sql.NVarChar, entityValue)
+                    .input('apiGroup', sql.NVarChar, apiGroup)
+                    .query(insertQueryString1);  
             
                 res.send({status:200 , message:'insert Success'});
             }else{
