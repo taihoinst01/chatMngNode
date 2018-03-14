@@ -476,7 +476,7 @@ text-align:center;}
 
 /* from bot   주위 */
 .wc-message-from-bot {
-  float: left;
+  /* float: left;*/
   margin-left: 8px;
   margin-bottom: 20px;
 }

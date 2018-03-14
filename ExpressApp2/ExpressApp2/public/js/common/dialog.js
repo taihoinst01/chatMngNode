@@ -210,7 +210,7 @@ $(document).ready(function(){
             insertForm += '<div class="form-group" >';
             insertForm += '<form name="dialogLayout" id="dialogLayout">';
 
-            insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span> </label>';
+            insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span></label>';
             insertForm += '<select class="form-control" name="dlgType">';
             insertForm += '<option value="2">' + language.TEXT_TYPE + '</option>';
             insertForm += '<option value="3">' + language.CARD_TYPE + '</option>';
@@ -222,11 +222,11 @@ $(document).ready(function(){
             insertForm += '<div class="btn_wrap" style="clear:both">';
             insertForm += '</div>'
             insertForm += '<div class="form-group">';
-            insertForm += '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>';
+            insertForm += '<label>' + language.DIALOG_BOX_TITLE + '</label>';
             insertForm += '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder=" ' + language.Please_enter + '">';
             insertForm += '</div>';
             insertForm += '<div class="form-group">';
-            insertForm += '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>';
+            insertForm += '<label>' + language.DIALOG_BOX_CONTENTS + '</label>';
             insertForm += '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder=" ' + language.Please_enter + ' ">';
             insertForm += '</div>';
             insertForm += '</div>';
@@ -414,7 +414,7 @@ $(document).ready(function(){
 
         carouselForm =  '<div class="carouselLayout">' +                                                               
         '<div class="form-group">' +  
-        '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +  
+        '<label>' + language.IMAGE_URL + '</label>' +  
         '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
         '</div>' +  
         '<div class="modal_con btnInsertDiv">' +  
@@ -1010,18 +1010,18 @@ $(document).on('click', '.addCarouselBtn', function(e){
 
     dlgForm = '<div class="textLayout">' +                                                         
     '<div class="form-group">' + 
-    '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>' + 
+    '<label>' + language.DIALOG_BOX_TITLE + '</label>' + 
     '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="' + language.Please_enter + '">' + 
     '</div>' +                                                                                         
     '<div class="form-group">' + 
-    '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>' + 
+    '<label>' + language.DIALOG_BOX_CONTENTS + '</label>' + 
     '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="' + language.Please_enter + '">' + 
     '</div>' +  
     '</div>';
 
     carouselForm =  '<div class="carouselLayout">' +                                                               
     '<div class="form-group">' +  
-    '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +  
+    '<label>' + language.IMAGE_URL + '</label>' +  
     '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
     '</div>' +  
     '<div class="modal_con btnInsertDiv">' +  
@@ -1036,40 +1036,44 @@ $(document).on('click', '.addCarouselBtn', function(e){
     '<div class="clear-both"></div>' +                                                                 
     '</div>';
     
-    var idx =  $(".addCarouselBtn:visible").index(this);
-    var jdx = $('select[name=dlgType]').index(( $(".addCarouselBtn:visible").eq(idx).parents('form[name=dialogLayout]').find('select[name=dlgType]') ));
-    //$('.addCarouselBtn').eq(0).parent().parent().remove();
-    //$(this).parents('.insertForm').after( $newInsertForm);  
-    //<div id="textLayout" style="display: block;">  </div>
-    //var caraousHtml = '<div class="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>';
-    var dlgFormHtml = '<div class="textLayout" style="display: block;">' + dlgForm + '</div>';
-    $(this).parent().before('<div class="clear-both"></div>').before(dlgFormHtml).before(carouselForm);
-    //$(this).parents('form[name=dialogLayout] .deleteInsertFormDiv').before('<div class="clear-both"></div>').after(dlgFormHtml).append(carouselForm);
-    //$(this).parents('.insertForm').next().find('.clear-both').after($newDlgForm);
-    var claerLen = $(this).parents('form[name=dialogLayout]').children('.clear-both').length-1;
-    $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().css('display', 'block');
-    $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().next().css('display', 'block');
-    //$(this).parent().parent().remove();
-    //$(this).parent().css('display', 'none');
-    $(this).parents('form[name=dialogLayout]').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
+    if($(this).parents('.insertForm').find('.carouselLayout').length == 10) {
+        alert("카드는 10개까지 추가가 가능합니다.");
+    } else {
+        var idx =  $(".addCarouselBtn:visible").index(this);
+        var jdx = $('select[name=dlgType]').index(( $(".addCarouselBtn:visible").eq(idx).parents('form[name=dialogLayout]').find('select[name=dlgType]') ));
+        //$('.addCarouselBtn').eq(0).parent().parent().remove();
+        //$(this).parents('.insertForm').after( $newInsertForm);  
+        //<div id="textLayout" style="display: block;">  </div>
+        //var caraousHtml = '<div class="carouselLayout" style="display: block;">' + $carouselForm.html() + '</div>';
+        var dlgFormHtml = '<div class="textLayout" style="display: block;">' + dlgForm + '</div>';
+        $(this).parent().before('<div class="clear-both"></div>').before(dlgFormHtml).before(carouselForm);
+        //$(this).parents('form[name=dialogLayout] .deleteInsertFormDiv').before('<div class="clear-both"></div>').after(dlgFormHtml).append(carouselForm);
+        //$(this).parents('.insertForm').next().find('.clear-both').after($newDlgForm);
+        var claerLen = $(this).parents('form[name=dialogLayout]').children('.clear-both').length-1;
+        $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().css('display', 'block');
+        $(this).parents('form[name=dialogLayout]').children('.clear-both').eq(claerLen).next().next().css('display', 'block');
+        //$(this).parent().parent().remove();
+        //$(this).parent().css('display', 'none');
+        $(this).parents('form[name=dialogLayout]').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
 
-    var inputUttrHtml = '<li class="wc-carousel-item">';
-    inputUttrHtml += '<div class="wc-card hero">';
-    inputUttrHtml += '<div class="wc-container imgContainer" >';
-    inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/movieImg/teasure/02_teaser.jpg">';
-    inputUttrHtml += '</div>';
-    inputUttrHtml += '<h1>CARD_TITLE</h1>';
-    inputUttrHtml += '<p class="carousel">CARD_TEXT</p>';
-    inputUttrHtml += '<ul class="wc-card-buttons" style="padding-left:0px;"><li><button>BTN_1_TITLE</button></li></ul>';
-    inputUttrHtml += '</div>';
-    inputUttrHtml += '</li>';
+        var inputUttrHtml = '<li class="wc-carousel-item">';
+        inputUttrHtml += '<div class="wc-card hero">';
+        inputUttrHtml += '<div class="wc-container imgContainer" >';
+        inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/movieImg/teasure/02_teaser.jpg">';
+        inputUttrHtml += '</div>';
+        inputUttrHtml += '<h1>CARD_TITLE</h1>';
+        inputUttrHtml += '<p class="carousel">CARD_TEXT</p>';
+        inputUttrHtml += '<ul class="wc-card-buttons" style="padding-left:0px;"><li><button>BTN_1_TITLE</button></li></ul>';
+        inputUttrHtml += '</div>';
+        inputUttrHtml += '</li>';
 
-    var kdx = $('.insertForm').index($(this).parents('.insertForm'));
+        var kdx = $('.insertForm').index($(this).parents('.insertForm'));
 
-    $('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().append(inputUttrHtml);
-    
-    if ($('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().children().length > 2) {
-        $('#nextBtn'+ jdx).show();
+        $('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().append(inputUttrHtml);
+        
+        if ($('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().children().length > 2) {
+            $('#nextBtn'+ jdx).show();
+        }
     }
 });
 
@@ -1175,6 +1179,165 @@ function createDialog(){
     var idx = $('form[name=dialogLayout]').length;
     var array = [];
     var exit = false;
+
+    if($('select[name=luisId]').val().trim() === "") {
+        alert(language.Please_reset_the_group);
+        exit = true;
+        return false;
+    }
+    if(exit) return;
+    var luisIntent;
+    $('#appInsertForm').find('[name=luisIntent]').each(function() {
+        if($(this).attr('disabled') == undefined) {
+            luisIntent = $(this).val();
+            return false;
+        }
+    })
+    if(luisIntent.trim() === "") {
+        alert(language.Please_reset_the_group);
+        exit = true;
+        return false;
+    }
+    if(exit) return;
+    /*
+    if ($('#description').val().trim() === "" ) {
+        alert(language.Description_must_be_entered);
+        return false;
+    }
+    
+    $('.insertForm input[name=dialogTitle]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert(language.You_must_enter_a_Dialog_Title);
+            exit = true;
+            return false;
+        }
+    });
+
+    if(exit) return;
+    $('.insertForm input[name=dialogText]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert(language.You_must_enter_the_dialog_text);
+            exit = true;
+            return false;
+        }
+    });
+    
+    if(exit) return;
+    
+    $('.insertForm input[name=imgUrl]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert(language.ImageURL_must_be_entered);
+            exit = true;
+            return false;
+        }
+    });
+    */
+    if(exit) return;
+
+
+    for(var i = 0 ; i < idx ; i++) {
+        var tmp = $("form[name=dialogLayout]").eq(i).serializeArray();
+        var object  = {};
+        var carouselArr = [];
+        var objectCarousel = {};
+        if (tmp[0].value === "3") {
+            var btnTypeCount = 1;
+            var cButtonContentCount = 1;
+            var cButtonNameCount = 1;
+            for (var j = 1; j < tmp.length; j++) {
+                if(tmp[j].name == 'btnType') {
+                    tmp[j].name = 'btn'+ (btnTypeCount++) +'Type';
+                    if(btnTypeCount == 4) {
+                        btnTypeCount = 1;
+                    }
+                }
+                if(tmp[j].name == 'cButtonContent') {
+                    tmp[j].name = 'cButtonContent'+ (cButtonContentCount++);
+                    if(cButtonContentCount == 4) {
+                        cButtonContentCount = 1;
+                    }
+                }
+                if(tmp[j].name == 'cButtonName') {
+                    tmp[j].name = 'cButtonName'+ (cButtonNameCount++);
+                    if(cButtonNameCount == 4) {
+                        cButtonNameCount = 1;
+                    }
+                }
+                
+                if (typeof objectCarousel[tmp[j].name] !== "undefined" ) {
+                    carouselArr.push(objectCarousel);
+                    objectCarousel = {};
+                    btnTypeCount = 1;
+                    cButtonContentCount = 1;
+                    cButtonNameCount = 1;
+                } 
+
+                if(j === tmp.length-1){
+                    object[tmp[0].name] = tmp[0].value;
+                    objectCarousel[tmp[j].name] = tmp[j].value;    
+
+                    carouselArr.push(objectCarousel);
+                    objectCarousel = {};
+                    break;
+                }
+                object[tmp[0].name] = tmp[0].value;
+                objectCarousel[tmp[j].name] = tmp[j].value;
+            }
+            //carouselArr.push(objectCarousel);
+            object['carouselArr'] = carouselArr;
+        } else {
+            for (var j = 0; j < tmp.length; j++) {
+                object[tmp[j].name] = tmp[j].value;
+            }
+        }
+        
+        array[i] = JSON.stringify(object);//JSON.stringify(tmp);//tmp.substring(1, tmp.length-2);
+    }
+    //JSON.stringify($("form[name=appInsertForm]").serializeObject());
+    array[array.length] = JSON.stringify($("form[name=appInsertForm]").serializeObject());//JSON.stringify($("form[name=appInsertForm]"));
+
+    $.ajax({
+        url: '/learning/addDialog',
+        dataType: 'json',
+        type: 'POST',
+        data: {'data' : array, 'entities' : chkEntities},
+        success: function(data) {
+            alert(language.Added);
+
+            var inputUttrHtml = '';
+            for(var i = 0; i < data.list.length; i++) {
+                inputUttrHtml += '<input type="hidden" name="dlgId" value="' + data.list[i] + '"/>';
+            }
+            var luisId = $('#appInsertForm').find('#luisId')[0].value
+            var luisIntent;
+             $('#appInsertForm').find('[name=luisIntent]').each(function() {
+                if($(this).attr('disabled') == undefined) {
+                    luisIntent = $(this).val();
+                    return false;
+                }
+            })
+            $('.newMidBtn').click();
+            $('.cancelMidBtn').click();
+
+            inputUttrHtml += '<input type="hidden" name="luisId" value="' + luisId + '"/>';
+            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + luisIntent + '"/>';
+
+            var createDlgClone = $('.dialogView').children().clone();
+            $('.dialog_box').html('');
+            $('.dialog_box').append(createDlgClone);
+            $('.dialog_box').append(inputUttrHtml);
+            $('.createDlgModalClose').click();
+        }
+    });
+}
+
+
+/* 원본!!
+function createDialog(){
+
+    var idx = $('form[name=dialogLayout]').length;
+    var array = [];
+    var exit = false;
     if ($('#description').val().trim() === "" ) {
         alert(language.Description_must_be_entered);
         return false;
@@ -1242,7 +1405,7 @@ function createDialog(){
         }
     });
 }
-
+*/
 //selectbox 중그룹 및 소그룹 찾기 kh
 $(document).on('change', '.searchGroup', function(){
 
@@ -1753,7 +1916,7 @@ function openModalBox(target){
 
     carouselForm =  '<div class="carouselLayout">' +                                                               
                     '<div class="form-group">' +  
-                    '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +  
+                    '<label>' + language.IMAGE_URL + '</label>' +  
                     '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
                     '</div>' +  
                     '<div class="modal_con btnInsertDiv">' +  
@@ -1774,11 +1937,11 @@ function openModalBox(target){
 
     dlgForm = '<div class="textLayout">' +                                                         
               '<div class="form-group">' + 
-              '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>' + 
+              '<label>' + language.DIALOG_BOX_TITLE + '</label>' + 
               '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="' + language.Please_enter + '">' + 
               '</div>' +                                                                                         
               '<div class="form-group">' + 
-              '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>' + 
+              '<label>' + language.DIALOG_BOX_CONTENTS + '</label>' + 
               '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="' + language.Please_enter + '">' + 
               '</div>' +  
               '</div>';
@@ -1983,7 +2146,7 @@ function searchDialog(dlgID) {
 
     carouselForm =  '<div class="carouselLayout">' +                                                               
     '<div class="form-group">' +  
-    '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +  
+    '<label>' + language.IMAGE_URL + '</label>' +  
     '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
     '</div>' +  
     '<div class="modal_con btnInsertDiv">' +  
@@ -2004,11 +2167,11 @@ function searchDialog(dlgID) {
 
     dlgForm = '<div class="textLayout">' +                                                         
     '<div class="form-group">' + 
-    '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>' + 
+    '<label>' + language.DIALOG_BOX_TITLE + '</label>' + 
     '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="' + language.Please_enter + '">' + 
     '</div>' +                                                                                         
     '<div class="form-group">' + 
-    '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>' + 
+    '<label>' + language.DIALOG_BOX_CONTENTS + '</label>' + 
     '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="' + language.Please_enter + '">' + 
     '</div>' +  
     '</div>';
@@ -2333,4 +2496,6 @@ function updateDialog() {
 
     });
 }
+
+
 
