@@ -1985,6 +1985,7 @@ $(document).on('click', '.addCarouselBtn', function(e){
         //$(this).parent().parent().remove();
         //$(this).parent().css('display', 'none');
         $(this).parents('form[name=dialogLayout]').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
+<<<<<<< HEAD
     
         var inputUttrHtml = '<li class="wc-carousel-item">';
         inputUttrHtml += '<div class="wc-card hero">';
@@ -1999,6 +2000,22 @@ $(document).on('click', '.addCarouselBtn', function(e){
     
         var kdx = $('.insertForm').index($(this).parents('.insertForm'));
     
+=======
+    
+        var inputUttrHtml = '<li class="wc-carousel-item">';
+        inputUttrHtml += '<div class="wc-card hero">';
+        inputUttrHtml += '<div class="wc-container imgContainer" >';
+        inputUttrHtml += '<img src="https://bot.hyundai.com/assets/images/movieImg/teasure/02_teaser.jpg">';
+        inputUttrHtml += '</div>';
+        inputUttrHtml += '<h1>CARD_TITLE</h1>';
+        inputUttrHtml += '<p class="carousel">CARD_TEXT</p>';
+        inputUttrHtml += '<ul class="wc-card-buttons" style="padding-left:0px;"><li><button>BTN_1_TITLE</button></li></ul>';
+        inputUttrHtml += '</div>';
+        inputUttrHtml += '</li>';
+    
+        var kdx = $('.insertForm').index($(this).parents('.insertForm'));
+    
+>>>>>>> efa0eb0a2651775048120ebcf241f5c3b34c7db1
         $('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().append(inputUttrHtml);
         
         if ($('.dialogView').eq( jdx ).find('#slideDiv' + kdx).children().children().length > 2) {
