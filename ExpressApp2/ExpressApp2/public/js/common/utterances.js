@@ -935,6 +935,7 @@ function createDialog(){
         return false;
     }
     if(exit) return;
+    /*
     var luisIntent;
     $('#appInsertForm').find('[name=luisIntent]').each(function() {
         if($(this).attr('disabled') == undefined) {
@@ -948,6 +949,7 @@ function createDialog(){
         return false;
     }
     if(exit) return;
+    */
     /*
     if ($('#description').val().trim() === "" ) {
         alert(language.Description_must_be_entered);
