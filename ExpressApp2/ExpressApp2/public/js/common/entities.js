@@ -10,6 +10,7 @@ var language;
     });
 })(jQuery);
 
+
 $(document).ready(function(){
 
     entitiesAjax();
@@ -31,14 +32,33 @@ $(document).ready(function(){
 
     $('.addDialogCancel').click(function(){
         $('#appInsertForm')[0].reset();
+        var inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='dialogValidation();'>";
+        inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
+        $('.entityValDiv').html(inputEntityStr);
     });
     //** 모달창 끝 */
 
     //생성버튼클릭시 다른div hidden
     $('#entites').click(function() {
-        $('.cancelEntityValueBtn').trigger('click')
+        $('.cancelEntityValueBtn').trigger('click');
+        //엔티티 추가 모달 초기 설정
+        dialogValidation();
         //$('.close').trigger('click')
     });
+});
+
+$(document).on("click", "#addEntityValBtn", function(e){
+    inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='dialogValidation();'>";
+    inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
+    $('.entityValDiv').append(inputEntityStr);
+});
+
+$(document).on("click", "a[name=delEntityBtn]", function(e){
+    if ($('.entityValDiv  input[name=entityValue]').length < 2) {
+        alert('1개 이상 입력해야 합니다.');
+    } else {
+        $(this).parent().remove();
+    }
 });
 
 $(document).on("click", ".more", function(e){
@@ -290,10 +310,17 @@ function wrapWindowByMask(){ //화면의 높이와 너비를 구한다.
 //모달창 입력값에 따른 save 버튼 활성화 처리
 function dialogValidation(){
     
-    var defineText = $('#entityDefine').val();
-    var valueText = $('#entityValue').val();
+    var defineText = $('#entityDefine').val().trim();
+    var valueText = true;
     
-    if(defineText != "" && valueText != "") {
+    $('.entityValDiv  input[name=entityValue]').each(function() {
+        if ($(this).val().trim() === "") {
+            valueText = false;
+            return;
+        }
+    });
+
+    if(defineText != "" && valueText) {
         $('#btnAddDlg').removeClass("disable");
         $('#btnAddDlg').attr("disabled", false);
     } else {
@@ -310,16 +337,50 @@ function insertEntity(){
         alert(language.Please_enter);
         return false;
     }
-    if ($('#entityValue').val().trim() === "") {
+    var valueText = false;
+    
+    $('.entityValDiv input[name=entityValue]').each(function() {
+        if ($(this).val().trim() === "") {
+            valueText = true;
+            return;
+        }
+    });
+
+    if (valueText) {
         alert(language.Please_enter);
-        return false;
+        return ;
+    }
+
+    
+    //
+    var entityDefineVal = $('#entityDefine').val().trim();
+    var apiGroupVal = $('#apiGroup :selected').val();
+    var entityValueList = [];
+    $('.entityValDiv input[name=entityValue]').each(function() {
+        
+        for (var i=0; i<entityValueList.length; i++) {
+            if ( entityValueList[i].entityValue === $(this).val().trim()) {
+                valueText = true;
+            }
+        }
+
+        var obj = new Object();
+        obj.entityDefine = entityDefineVal;
+        obj.apiGroup = apiGroupVal;
+        obj.entityValue = $(this).val().trim();
+        entityValueList.push(obj);
+    });
+
+    if (valueText) {
+        alert(language.DUPLICATE_ENTITIES_EXIST);
+        return ;
     }
 
     $.ajax({
         url: '/learning/insertEntity',
         dataType: 'json',
         type: 'POST',
-        data: $('#appInsertForm').serializeObject(),
+        data: {entityObj : JSON.stringify(entityValueList)},//$('#appInsertForm').serializeObject(),
         success: function(data) {
             if(data.status == 200){
                 $('.addDialogCancel').click();

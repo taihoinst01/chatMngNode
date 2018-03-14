@@ -25,8 +25,33 @@ $(document).ready(function(){
     entityValidation();
     //엔티티추가 모달 selectbox 설정
     selectApiGroup();
+    
+    $('.addDialogCancel').click(function(){
+        $('#appInsertForm')[0].reset();
+        var inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='dialogValidation();'>";
+        inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
+        $('.entityValDiv').html(inputEntityStr);
+    });
+    
+    
+    $(document).on("click", "a[name=delEntityBtn]", function(e){
+        if ($('.entityValDiv  input[name=entityValue]').length < 2) {
+            alert('1개 이상 입력해야 합니다.');
+        } else {
+            $(this).parent().remove();
+        }
+    });
 
 });
+
+
+$(document).on("click", "#addEntityValBtn", function(e){
+    inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='dialogValidation();'>";
+    inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
+    $('.entityValDiv').append(inputEntityStr);
+});
+
+
 // Utterance 삭제
 $(document).on('click', '.utterDelete', function() {
 
@@ -1996,38 +2021,65 @@ $(document).on('click', '.addCarouselBtn', function(e){
 //엔티티 추가
 function insertEntity(){
 
-    var entityDefine = $('input[name=entityDefine]').val();
-    var entityValue = $('input[name=entityValue]').val();
-
-    if((entityDefine == "" || entityDefine == null || entityDefine == undefined) 
-            && (entityValue == "" || entityValue == null || entityValue == undefined)) {
-            alert(language.Please_enter);
-    } else {
-
-        $.ajax({
-            url: '/learning/insertEntity',
-            dataType: 'json',
-            type: 'POST',
-            data: $('#entityInsertForm').serialize(),
-            success: function(data) {
-                if(data.status == 200){
-                    $('.addEntityModalClose').click();
-                    alert(language.Added);
-                    //var originalUtter = [];
-                    //$('input[name=hiddenUtter]').each(function() {
-                    //    originalUtter.push($(this).val());
-                    //});
-                    //$('.recommendTbl').find('tbody').html('');
-                    //$('.pagination').html('');
-                    //utterInput(originalUtter);
-                } else if(data.status == 'Duplicate') {
-                    alert(language.DUPLICATE_ENTITIES_EXIST);
-                } else {
-                    alert(language.It_failed);
-                }
-            }
-        });
+    if ($('#entityDefine').val().trim() === "") {
+        alert(language.Please_enter);
+        return false;
     }
+    var valueText = false;
+    
+    $('.entityValDiv input[name=entityValue]').each(function() {
+        if ($(this).val().trim() === "") {
+            valueText = true;
+            return;
+        }
+    });
+
+    if (valueText) {
+        alert(language.Please_enter);
+        return ;
+    }
+
+    var entityDefineVal = $('#entityDefine').val().trim();
+    var apiGroupVal = $('#apiGroup :selected').val();
+    var entityValueList = [];
+    $('.entityValDiv input[name=entityValue]').each(function() {
+        
+        for (var i=0; i<entityValueList.length; i++) {
+            if ( entityValueList[i].entityValue === $(this).val().trim()) {
+                valueText = true;
+            }
+        }
+
+        var obj = new Object();
+        obj.entityDefine = entityDefineVal;
+        obj.apiGroup = apiGroupVal;
+        obj.entityValue = $(this).val().trim();
+        entityValueList.push(obj);
+    });
+
+    if (valueText) {
+        alert(language.DUPLICATE_ENTITIES_EXIST);
+        return ;
+    }
+
+    $.ajax({
+        url: '/learning/insertEntity',
+        dataType: 'json',
+        type: 'POST',
+        data: {entityObj : JSON.stringify(entityValueList)},//$('#appInsertForm').serializeObject(),
+        success: function(data) {
+            if(data.status == 200){
+                $('.addDialogCancel').click();
+                alert(language.Added);
+                entitiesAjax();
+            } else if(data.status == 'Duplicate') {
+                alert(language.DUPLICATE_ENTITIES_EXIST);
+            } else {
+                alert(language.It_failed);
+            }
+        }
+    });
+    
 }
 
 //다이얼로그 생성 모달창 - 중그룹 신규버튼
