@@ -1778,7 +1778,7 @@ router.post('/addDialog',function(req,res){
             var insertTblCarousel = 'INSERT INTO TBL_DLG_CARD(DLG_ID,CARD_TITLE,CARD_TEXT,IMG_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_ORDER_NO,USE_YN) VALUES ' +
             '(@dlgId,@dialogTitle,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardOrderNo,\'Y\')';
             var insertTblDlgMedia = 'INSERT INTO TBL_DLG_MEDIA(DLG_ID,CARD_TITLE,CARD_TEXT,MEDIA_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_VALUE,USE_YN) VALUES ' +
-            '(@dlgId,@dialogTitle,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardValue,\'Y\')';
+            '(@dlgId,@dialogTitle,@dialogText,@mediaImgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardValue,\'Y\')';
 
             var luisId = array[array.length - 1]["luisId"];
             var luisIntent = array[array.length - 1]["luisIntent"];
@@ -1803,17 +1803,19 @@ router.post('/addDialog',function(req,res){
                     .query(insertTblDlg);
                 }
                 */
+
+               let result2 = await pool.request()
+               .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+               .input('dialogText', sql.NVarChar, (description.trim() == '' ? null: description.trim()))
+               .input('dlgType', sql.NVarChar, array[i]["dlgType"])
+               .input('dialogOrderNo', sql.Int, (i+1))
+               .input('luisId', sql.NVarChar, luisId)
+               .input('luisIntent', sql.NVarChar, luisIntent)  
+               .query(insertTblDlg);
+               //.input('luisEntities', sql.NVarChar, (typeof luisEntities ==="string" ? luisEntities:luisEntities[j]))
+
                 if(array[i]["dlgType"] == "2") {
-
-                    let result2 = await pool.request()
-                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
-                    .input('dialogText', sql.NVarChar, description)
-                    .input('dlgType', sql.NVarChar, array[i]["dlgType"])
-                    .input('dialogOrderNo', sql.Int, (i+1))
-                    .input('luisId', sql.NVarChar, luisId)
-                    .input('luisIntent', sql.NVarChar, luisIntent)
-                    .query(insertTblDlg);
-
+                    
                     /*
                     let result3 = await pool.request()
                     .query(selectTextDlgId)
@@ -1822,7 +1824,7 @@ router.post('/addDialog',function(req,res){
 
                     let result4 = await pool.request()
                     .input('dlgId', sql.Int, dlgId[0].DLG_ID)
-                    .input('dialogTitle', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('dialogTitle', sql.NVarChar, (array[i]["dialogTitle"].trim() == '' ? null: array[i]["dialogTitle"].trim()) )
                     .input('dialogText', sql.NVarChar, array[i]["dialogText"])
                     .query(inserTblDlgText);                    
 
@@ -1838,15 +1840,22 @@ router.post('/addDialog',function(req,res){
                     .input('luisEntities', sql.NVarChar, luisEntities)
                     .query(insertTblDlg);
                     */
+
                     for (var j=0; j<array[i].carouselArr.length; j++) {
                         var carTmp = array[i].carouselArr[j];
                         
-                        //carTmp["btn1Type"] = (carTmp["cButtonContent1"] != "") ? carTmp["btn1Type"] : "";
-                        //carTmp["btn2Type"] = (carTmp["cButtonContent2"] != "") ? carTmp["btn2Type"] : "";
-                        //carTmp["btn3Type"] = (carTmp["cButtonContent3"] != "") ? carTmp["btn3Type"] : "";
-                        //carTmp["btn4Type"] = (carTmp["cButtonContent4"] != "") ? carTmp["btn4Type"] : "";
-
+                        // 공백은 Null 처리
+                        for(var key in carTmp){
+                            //console.log("캐러절 key : " + key + " value : " + carTmp[key]);
+                            carTmp[key] = carTmp[key].trim();
+                            
+                            if(carTmp[key].trim() == '') {
+                                carTmp[key] = null;
+                            }
+                        }
+                    
                         let result2 = await pool.request()
+                        .input('typeDlgId', sql.NVarChar, array[i].dlgType)
                         .input('dlgId', sql.Int, dlgId[0].DLG_ID)
                         .input('dialogTitle', sql.NVarChar, carTmp["dialogTitle"])
                         .input('dialogText', sql.NVarChar, carTmp["dialogText"])
@@ -1865,6 +1874,27 @@ router.post('/addDialog',function(req,res){
                         .input('buttonContent4', sql.NVarChar, carTmp["cButtonContent4"])
                         .input('cardOrderNo', sql.Int, (j+1))
                         .query(insertTblCarousel);
+                        /*
+                        let result2 = await pool.request()
+                        .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                        .input('dialogTitle', sql.NVarChar, (carTmp["dialogTitle"] == '' ? null : carTmp["dialogTitle"]))
+                        .input('dialogText', sql.NVarChar, carTmp["dialogText"])
+                        .input('imgUrl', sql.NVarChar, carTmp["imgUrl"])
+                        .input('btn1Type', sql.NVarChar, carTmp["btn1Type"])
+                        .input('buttonName1', sql.NVarChar, (carTmp["cButtonName1"] == '' ? null : carTmp["cButtonName1"]))
+                        .input('buttonContent1', sql.NVarChar, (carTmp["cButtonContent1"] == '' ? null : carTmp["cButtonContent1"]))
+                        .input('btn2Type', sql.NVarChar, carTmp["btn2Type"])
+                        .input('buttonName2', sql.NVarChar, (carTmp["cButtonName2"] == '' ? null : carTmp["cButtonName2"]))
+                        .input('buttonContent2', sql.NVarChar, (carTmp["cButtonContent2"] == '' ? null : carTmp["cButtonContent2"]))
+                        .input('btn3Type', sql.NVarChar, (carTmp["btn3Type"] == '' ? null : carTmp["btn3Type"]))
+                        .input('buttonName3', sql.NVarChar, (carTmp["cButtonName3"] == '' ? null : carTmp["cButtonName3"]))
+                        .input('buttonContent3', sql.NVarChar, carTmp["cButtonContent3"])
+                        .input('btn4Type', sql.NVarChar, carTmp["btn4Type"])
+                        .input('buttonName4', sql.NVarChar, (carTmp["cButtonName4"] == '' ? null : carTmp["cButtonName4"]))
+                        .input('buttonContent4', sql.NVarChar, (carTmp["cButtonContent4"] == '' ? null : carTmp["cButtonContent4"]))
+                        .input('cardOrderNo', sql.Int, (j+1))
+                        .query(insertTblCarousel);
+                        */
 
                     }
 
@@ -1891,21 +1921,31 @@ router.post('/addDialog',function(req,res){
                     let mediaDlgId = result3.recordset;
                     */
 
+                    // 공백은 Null 처리
+                    for(var key in array[i]){
+                        //console.log("카드 key : " + key + " value : " + array[i]);
+                        array[i][key] = array[i][key].trim();
+                        
+                        if(array[i][key].trim() == '') {
+                            array[i][key] = null;
+                        }
+                    }
+
                     let result4 = await pool.request()
                     .input('dlgId', sql.Int, dlgId[0].DLG_ID)
                     .input('dialogTitle', sql.NVarChar, array[i]["dialogTitle"])
                     .input('dialogText', sql.NVarChar, array[i]["dialogText"])
-                    .input('imgUrl', sql.NVarChar, array[i]["imgUrl"])
+                    .input('mediaImgUrl', sql.NVarChar, array[i]["mediaImgUrl"])
                     .input('btn1Type', sql.NVarChar, array[i]["btn1Type"])
                     .input('buttonName1', sql.NVarChar, array[i]["mButtonName1"])
                     .input('buttonContent1', sql.NVarChar, array[i]["mButtonContent1"])
-                    .input('btn2Type', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('btn2Type', sql.NVarChar, array[i]["btn2Type"])
                     .input('buttonName2', sql.NVarChar, array[i]["mButtonName2"])
                     .input('buttonContent2', sql.NVarChar, array[i]["mButtonContent2"])
-                    .input('btn3Type', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('btn3Type', sql.NVarChar, array[i]["btn3Type"])
                     .input('buttonName3', sql.NVarChar, array[i]["mButtonName3"])
                     .input('buttonContent3', sql.NVarChar, array[i]["mButtonContent3"])
-                    .input('btn4Type', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('btn4Type', sql.NVarChar, array[i]["btn4Type"])
                     .input('buttonName4', sql.NVarChar, array[i]["mButtonName4"])
                     .input('buttonContent4', sql.NVarChar, array[i]["mButtonContent4"])
                     .input('cardValue', sql.NVarChar, array[i]["mediaUrl"])

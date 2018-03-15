@@ -234,7 +234,11 @@
 	"A big group": "A big group",
 	"Middle group": "Middle group",
 	"Small group": "Small group",
-	"SUCCESS" : "SUCCESS",
-	"FAIL" : "FAIL",
-	"Group": "Group"
+	"SUCCESS": "SUCCESS",
+	"FAIL": "FAIL",
+	"Group": "Group",
+	"Please_enter_a_title": "Please enter a title",
+	"Please_enter_your_content": "Please enter your content",
+	"DELETE_DIALOG": "DELETE DIALOG",
+	"DELETE_CARD": "DELETE CARD"
 }

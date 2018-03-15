@@ -453,7 +453,7 @@
                                         <input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="<%= __('Please_enter') %>">
                                     </div>                                                                                        
                                     <div class="form-group">
-                                        <label><%= __('DIALOG_BOX_CONTENTS') %></label>
+                                        <label><%= __('DIALOG_BOX_CONTENTS') %><span class="nec_ico">*</span></label>
                                         <input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="<%= __('Please_enter') %>">
                                     </div>                                     
                                 </div>
@@ -535,7 +535,7 @@
                                 <!-- 미디어 타입 -->
                                 <div class="mediaLayout" style="display:none;" id="dialog3">                                                                
                                     <div class="form-group">
-                                        <label><%= __('IMAGE_URL') %></label>
+                                        <label><%= __('IMAGE_URL') %><span class="nec_ico">*</span></label>
                                         <input type="text" class="form-control" placeholder="<%= __('Please_enter') %>">
                                     </div>
                                     <div class="form-group">
@@ -636,6 +636,7 @@
                                             <div>
                                                 <div class="format-markdown">
                                                     <div class="textMent">
+                                                        <h1 class="textTitle">제목을 입력하세요.</h1>
                                                         <p>
                                                             <%= __('Please_enter') %>
                                                         </p>
