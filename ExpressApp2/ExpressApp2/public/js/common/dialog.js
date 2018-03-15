@@ -504,12 +504,9 @@ $(document).ready(function(){
         $('.insertForm:eq(' + idx + ')').find('.clear-both').each(function( index) {
         $('.insertForm:eq(' + idx + ') form').find('.addCarouselBtnDiv').remove();
             if ( index != 0 ) {
-                if ($('.insertForm').length > 1) {
-
-                    $(this).next().remove();
-                    $(this).remove();
-                }
-            } 
+                $(this).next().remove();
+                $(this).remove();
+            }  
         });
 
         if($(e.target).val() == "2") {

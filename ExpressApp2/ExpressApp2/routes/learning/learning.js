@@ -2109,6 +2109,7 @@ router.post('/updateDialog', function (req, res) {
     var array = [];
     var queryText = "";
     var tblDlgId = [];
+    var order = [];
     if( typeof data == "string"){
         console.log("data is string");
         var json = JSON.parse(data);
@@ -2140,14 +2141,18 @@ router.post('/updateDialog', function (req, res) {
     var delDlgMediaQuery = "DELETE FROM TBL_DLG_MEDIA WHERE DLG_ID = @dlgId";
     var delDlgQuery = "DELETE FROM TBL_DLG WHERE DLG_ID = @dlgId"
     
-    var selDlgQuery = "SELECT DLG_ID, DLG_LANG, DLG_GROUP, DLG_TYPE, DLG_ORDER_NO\n";
+    var selDlgQuery = "SELECT DLG_ID, DLG_LANG, DLG_GROUP, DLG_TYPE, DLG_ORDER_NO, GROUPS\n";
     selDlgQuery += "FROM TBL_DLG\n";
     selDlgQuery += "WHERE DLG_ID = @dlgId";
 
-    var updDlgRelationQuery = "UPDATE TBL_DLG_RELATION_LUIS SET LUIS_ID = @luisId, LUIS_INTENT = @luisIntent WHERE DLG_ID = @dlgId";
+    var selDlgGroupSQuery = "SELECT DLG_ID, DLG_LANG, DLG_GROUP, DLG_TYPE, DLG_ORDER_NO, GROUPS\n";
+    selDlgGroupSQuery += "FROM TBL_DLG\n";
+    selDlgGroupSQuery += "WHERE GROUPS = @groupS \n"
+    selDlgGroupSQuery += "ORDER BY DLG_ORDER_NO";
 
     var updDlgOrderQuery = "UPDATE TBL_DLG SET DLG_ORDER_NO = @order WHERE DLG_ID = @dlgId";
 
+    //var updDlgRelationQuery = "UPDATE TBL_DLG_RELATION_LUIS SET LUIS_ID = @luisId, LUIS_INTENT = @luisIntent WHERE DLG_ID = @dlgId";
     (async () => {
         try {
 
@@ -2178,6 +2183,15 @@ router.post('/updateDialog', function (req, res) {
                 .query(selDlgQuery);
 
             let selDlg = selDlgRes.recordset;
+
+            let selDlgGroupS = await pool.request()
+                .input('groupS', sql.NVarChar, selDlg[0].GROUPS)
+                .query(selDlgGroupSQuery);
+
+            for(var gNum = 0; gNum < selDlgGroupS.recordset.length; gNum++) {
+                order.push(selDlgGroupS.recordset[gNum].DLG_ID);
+            }
+
             //selDlg[0].DLG_ID
             //tbl_dlg 삭제
             let delDlg = await pool.request()
@@ -2255,8 +2269,6 @@ router.post('/updateDialog', function (req, res) {
 
                     }
 
-                    tblDlgId.push(dlgId[0].DLG_ID);
-
                 } else if(array[i]["dlgType"] == "4") {
 
                     let result4 = await pool.request()
@@ -2279,7 +2291,6 @@ router.post('/updateDialog', function (req, res) {
                     .input('cardValue', sql.NVarChar, array[i]["mediaUrl"])
                     .query(insertTblDlgMedia)
 
-                    tblDlgId.push(dlgId[0].DLG_ID);
                 }
 
                 if(i != 0){
@@ -2291,17 +2302,39 @@ router.post('/updateDialog', function (req, res) {
                         .query(insertTblRelation)
                 }
 
-                tblDlgId.push( i == 0 ? dlgIdReq : dlgId[0].DLG_ID);   
+                tblDlgId.push( i == 0 ? parseInt(dlgIdReq) : dlgId[0].DLG_ID);   
             }
 
-            /*
-            for(var i = 0; i < tblDlgId.length; i++) {
-                let updDlgOrder = await pool.request()
-                    .input('order', sql.NVarChar, luisId)
-                    .input('dlgId', sql.NVarChar, luisIntent)
-                    .query(updDlgOrderQuery);
+
+            for(var oNum = 0 ; oNum < order.length; oNum++) {
+                if(order[oNum] == tblDlgId[0]) {
+                    order.splice(oNum,1);
+                    order.splice(oNum,0,tblDlgId);
+                    break;
+                }
             }
-            */
+
+            console.log(order);
+
+            var orderCount = 1;
+
+            for(var i = 0; i < order.length; i++) {
+
+                if(Array.isArray(order[i])) {
+                    for(var j = 0; j < order[i].length; j++) {
+                        let updDlgOrder = await pool.request()
+                        .input('order', sql.NVarChar, orderCount++)
+                        .input('dlgId', sql.NVarChar, order[i][j])
+                        .query(updDlgOrderQuery);
+                    }
+                } else {
+                    let updDlgOrder = await pool.request()
+                    .input('order', sql.NVarChar, orderCount++)
+                    .input('dlgId', sql.NVarChar, order[i])
+                    .query(updDlgOrderQuery);
+                }
+            }
+
             res.send({"res":true});
         
         } catch (err) {
