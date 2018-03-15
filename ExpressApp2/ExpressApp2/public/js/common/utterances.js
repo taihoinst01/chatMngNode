@@ -775,7 +775,7 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<h1>' + language.Please_enter_a_title + '</h1>';
         insertHtml += '<p class="dlgMediaText">' + language.Please_enter_your_content + '</p>';
         insertHtml += '<ul class="wc-card-buttons" style="padding-left: 0px;">';
-        insertHtml += '</ul>';
+        insertHtml += '<li><button>BTN_1_TITLE</button></li></ul>';
         insertHtml += '</div>';
         insertHtml += '</li></ul></div></div>';
         insertHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
@@ -979,6 +979,7 @@ function createDialog(){
     
     if(exit) return;
 
+    /*
     $('.insertForm input[name=imgUrl]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.ImageURL_must_be_entered);
@@ -986,7 +987,8 @@ function createDialog(){
             return false;
         }
     });
-   
+   */
+  
     if(exit) return;
 
     $('.insertForm input[name=mediaImgUrl]').each(function(index) {
@@ -1107,7 +1109,7 @@ function createDialog(){
         url: '/learning/addDialog',
         dataType: 'json',
         type: 'POST',
-        data: {'data' : array, 'entities' : chkEntities},
+        data: {'data' : array/*, 'entities' : chkEntities*/},
         success: function(data) {
             alert(language.Added);
 
@@ -1946,6 +1948,11 @@ $(document).on('click', '.carouseBtn',function(e){
                 '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
                 '</tr>'
                 $(this).parent().prev().prev().prev().find('.cardCopyTbl tbody').append(inputTrHtml);
+
+
+
+
+
     } else {
         alert("버튼은 4개까지 추가할 수 있습니다.");
     }
@@ -2041,11 +2048,18 @@ $(document).on('click', '.addMediaBtn',function(e){
     
     var inputHtml = '<label>' + language.BUTTON + '</label></div>' +
                     '<div class="form-group col-md-13"  style="padding-left:0; margin-top: 0px;">' +
-                    '<table class="mediaCopyTbl" style="width:100%">' + '<col width="46%"><col width="1%"><col width="46%">' +
-                    '<col width="1%"><col width="6%"><thead><tr>' +
+                    '<table class="mediaCopyTbl" style="width:100%"><col width="21%">' +
+                    '<col width="1%"><col width="35%"><col width="1%"><col width="35%"><col width="1%"><col width="6%">' +
+                    '<thead><tr><th>' + language.Type + '</th><th></th>' +
                     '<th>' + language.NAME + '</th><th></th><th>' + language.CONTENTS + '</th>' +
                     '<th></th><th></th></tr></thead><tbody>' +
-                    '<tr><td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '">' +
+                    '<tr><td>' +
+                    '<select class="form-control" name="btnType">' +
+                    '<option value="imBack" selected>imBack</option>' +
+                    '<option value="openURL">openURL</option>' +
+                    '</select>' +
+                    '</td><td></td>' +
+                    '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '">' +
                     '</td><td></td><td>' +
                     '<input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '">' +
                     '</td><td></td><td>' +
@@ -2061,6 +2075,12 @@ $(document).on('click', '.addMediaBtn',function(e){
     if(trLength >= 1 && trLength < 4) {
         
         var inputTrHtml = '<tr>'+
+                '<td>' +
+                '<select class="form-control" name="btnType">' +
+                '<option value="imBack" selected>imBack</option>' +
+                '<option value="openURL">openURL</option>' +
+                '</select>' +
+                '</td><td></td>' +
                 '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
                 '<td></td><td><input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
                 '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
