@@ -1,4 +1,13 @@
 <!-- Left Menu Side -->
+<style type="text/css">
+    .preload * {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+    }
+</style>
+
 
 <aside class="main-sidebar">
     <section class="sidebar">
@@ -152,6 +161,9 @@
 <div class="control-sidebar-bg" style="max-height: 800px; top: 50px;">
 </div>
 
+<div class="modal fade" id="loadingBar" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <img src="/image/ajax_loader.gif" style="width:50px; height:50px;" id="loadingImg">
+</div>
 
   <script>
 
@@ -224,9 +236,9 @@
             $.ajax({
                 url: "/admin/trainApp",
                 type: "post"
-/*
                 , timeout: 0
                 , beforeSend: function () {
+
                     var width = 0;
                     var height = 0;
                     var left = 0;
@@ -235,28 +247,17 @@
                     width = 50;
                     height = 50;
 
-
                     top = ( $(window).height() - height ) / 2 + $(window).scrollTop();
                     left = ( $(window).width() - width ) / 2 + $(window).scrollLeft();
 
-        
-
-                    if($("#div_ajax_load_image").length != 0) {
-                            $("#div_ajax_load_image").css({
-                                    "top": top+"px",
-                                    "left": left+"px"
-                            });
-                            $("#div_ajax_load_image").show();
-                    }
-                    else {
-                            $('body').append('<div id="div_ajax_load_image" style="position:absolute; top:' + top + 'px; left:' + left + 'px; width:' + width + 'px; height:' + height + 'px; z-index:9999; background:#f0f0f0; filter:alpha(opacity=50); opacity:alpha*0.5; margin:auto; padding:0; "><img src="/image/ajax_loader.gif" style="width:50px; height:50px;"></div>');
-                    }
-
+                    $("#loadingBar").addClass("in");
+                    $("#loadingImg").css({position:'absolute'}).css({left:left,top:top});
+                    $("#loadingBar").css("display","block");
                 }
                 , complete: function () {
-                                $("#div_ajax_load_image").hide();
+                    $("#loadingBar").removeClass("in");
+                    $("#loadingBar").css("display","none");      
                 }
-*/
             }).done(function(data) {
                 if (data.result === 400) {
                     $('#trainResultTag').text(data.message);
@@ -265,7 +266,7 @@
                     $('#trainResultTag').text(data.message);
                     //alert(data.message);
                 } else if (data.result === 402) {
-                    $('#trainResultTag').text("Luis App의 공간이 없습니다. Luis App을 만들어야 합니다.");
+                    $('#trainResultTag').text("Luis App의 공간이 없습니다. 관리자에게 문의하여 Luis App을 만들어야 합니다.");
                 } else { //200
                     var result = data.resultValue;
                     //alert("학습을 완료하였습니다.");

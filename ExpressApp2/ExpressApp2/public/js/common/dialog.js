@@ -2487,14 +2487,49 @@ function updateDialog() {
         var carouselArr = [];
         var objectCarousel = {};
         if (tmp[0].value === "3") {
+            var btnTypeCount = 1;
+            var cButtonContentCount = 1;
+            var cButtonNameCount = 1;
             for (var j = 1; j < tmp.length; j++) {
-                if (typeof objectCarousel[tmp[j].name] !== "undefined" || j === tmp.length-1) {
+                if(tmp[j].name == 'btnType') {
+                    tmp[j].name = 'btn'+ (btnTypeCount++) +'Type';
+                    if(btnTypeCount == 4) {
+                        btnTypeCount = 1;
+                    }
+                }
+                if(tmp[j].name == 'cButtonContent') {
+                    tmp[j].name = 'cButtonContent'+ (cButtonContentCount++);
+                    if(cButtonContentCount == 4) {
+                        cButtonContentCount = 1;
+                    }
+                }
+                if(tmp[j].name == 'cButtonName') {
+                    tmp[j].name = 'cButtonName'+ (cButtonNameCount++);
+                    if(cButtonNameCount == 4) {
+                        cButtonNameCount = 1;
+                    }
+                }
+                
+                if (typeof objectCarousel[tmp[j].name] !== "undefined" ) {
                     carouselArr.push(objectCarousel);
                     objectCarousel = {};
+                    btnTypeCount = 1;
+                    cButtonContentCount = 1;
+                    cButtonNameCount = 1;
                 } 
+
+                if(j === tmp.length-1){
+                    object[tmp[0].name] = tmp[0].value;
+                    objectCarousel[tmp[j].name] = tmp[j].value;    
+
+                    carouselArr.push(objectCarousel);
+                    objectCarousel = {};
+                    break;
+                }
                 object[tmp[0].name] = tmp[0].value;
                 objectCarousel[tmp[j].name] = tmp[j].value;
             }
+            //carouselArr.push(objectCarousel);
             object['carouselArr'] = carouselArr;
         } else {
             for (var j = 0; j < tmp.length; j++) {
