@@ -988,6 +988,15 @@ router.post('/insertEntity', function (req, res) {
     //var entityValue = req.body.entityValueList;
     //var apiGroup = req.body.apiGroup;
     var entityList = req.body;
+    var entityTemp = [];
+    if (entityList.entityDefine) {
+        var tmpObj = new Object();
+        tmpObj.entityDefine = entityList.entityDefine;
+        tmpObj.apiGroup = entityList.apiGroup;
+        tmpObj.entityValue = entityList.entityValue;
+        entityTemp.push(tmpObj);
+        entityList = entityTemp;
+    }
     //var entityList = JSON.parse(req.body.entityObj);
     (async () => {
         try {
