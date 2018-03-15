@@ -93,7 +93,7 @@ $(document).on('click', '.utterDelete', function() {
     
 
 
-    $('.dialog_box').html("");
+    $('#dlgViewDiv').html("");
     $('input[name=tableAllChk]').parent().iCheck('uncheck');
 
     pagingFnc();
@@ -292,7 +292,7 @@ $(document).ready(function(){
         if (e.keyCode == 13){	//	Enter Key
 
             //$("#entityUtteranceTextTable tbody").html("");
-            $('.dialog_box').html('');
+            $('#dlgViewDiv').html('');
 
             $('input[name=iptUtterance]').attr('readonly',true);
             var queryText = $(this).val();
@@ -309,6 +309,9 @@ $(document).ready(function(){
     // Utterance Learn
     $('#utterLearn').click(function(){
 
+        
+
+        /*
         var chkBoxFlag1 = false;
         var chkBoxFlag2 = false;
 
@@ -322,9 +325,46 @@ $(document).ready(function(){
         if($('input[name=dlgBoxChk]').parent().hasClass('checked') == true) {
             chkBoxFlag2 = true;
         }
+        */
+        ///////////////////////////////////////////////////////////
 
 
-        if(chkBoxFlag1 == true && chkBoxFlag2 == true) {
+        /*
+        checkFlag 체크된 추천문장이 있는지 없는지
+        0 : 다이얼로그 생성 가능
+        1 : 다이얼로그 생성 불가능(체크된 추천문장중 학습이 안된 엔티티가 존재함)
+        2 : 다이얼로그 생성 불가능(체크된 추천문장이 없음)   
+        3 : 다이얼로그 생성 불가능(대화상자창에 다이얼로그가 없음)
+        */
+        var checkFlag = 2;  
+        chkEntities = [];
+        $('input[name=tableCheckBox]').each(function() {
+            if($(this).parent().hasClass('checked') == true) {
+                
+                var $entityValue = $(this).parent().parent().next().find('input[name=entity]').val();
+
+                if($entityValue == "") {
+                    checkFlag = 1;                   
+                    return false;
+                }
+
+                checkFlag = 0;
+                chkEntities.push($entityValue);
+            }
+        })
+
+      
+        
+        if(checkFlag == 1) {
+
+            alert("다이얼로그 생성 불가능(선택된 추천문장중 학습이 안된 엔티티가 존재합니다. 학습을 시켜주세요.)");
+        } else if(checkFlag == 2) {
+
+            alert("선택한 학습 추천 문장이 없습니다. 학습 추천을 선택해주세요.");
+        } else if(checkFlag == 3) {
+  
+            alert("선택한 학습 추천 문장이 없습니다. 학습 추천을 선택해주세요.");
+        } else {
 
             var inputEntity = $('input[name=entity]');
             entities = new Array();
@@ -340,14 +380,15 @@ $(document).ready(function(){
                 return dlgId;
             });
 
-            var luisId = $('.dialog_box').find($('input[name=luisId]'))[0].value;
-            var luisIntent = $('.dialog_box').find($('input[name=luisIntent]'))[0].value;
+            var luisId = $('#dlgViewDiv').find($('input[name=luisId]'))[0].value;
+            var luisIntent = $('#dlgViewDiv').find($('input[name=luisIntent]'))[0].value;
 
             $.ajax({
                 url: '/learning/learnUtterAjax',
                 dataType: 'json',
                 type: 'POST',
-                data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent},
+                data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent
+            },
                 success: function(result) {
                     if(result['result'] == true) {
                         alert(language.Added);
@@ -355,7 +396,7 @@ $(document).ready(function(){
                         $('input[name=tableAllChk]').parent().iCheck('uncheck');
 
                         $('.recommendTbl tbody').html('');
-                        $('.dialog_box').html('');
+                        $('#dlgViewDiv').html('');
     
                         $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
                         $('.pagination').html('');
@@ -364,9 +405,7 @@ $(document).ready(function(){
                     }
                 }
             });
-        } else {
-            alert("학습하고자 하는 것을 체크해주세요");
-        }
+        } 
 
     });
 
@@ -655,7 +694,7 @@ $(document).ready(function(){
 //utter td 클릭
 $(document).on('click','.clickUtter',function(event){
     var utter = $(this).find('input[name=entity]').val();
-    $('.dialog_box').html(dlgMap[utter]);
+    $('#dlgViewDiv').html(dlgMap[utter]);
 });
 
 //intent selbox 선택
@@ -889,7 +928,7 @@ function insertDialog(){
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
                 inputUttrHtml += '<input name="dlgChk" class="tweak-input"  onclick="" type="checkbox"/> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" ><input type="hidden" name="' + data.DLG_ID + '" value="' + data.DLG_ID + '" />' + data.CARD_TEXT + '</td></tr>';
-                $('dialog_box').prepend(inputUttrHtml);                    
+                $('#dlgViewDiv').prepend(inputUttrHtml);                    
                 $('.createDlgModalClose').click();
             }
         }
@@ -979,7 +1018,7 @@ function createDialog(){
     
     if(exit) return;
 
-    
+    /*
     $('.insertForm input[name=imgUrl]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.ImageURL_must_be_entered);
@@ -987,7 +1026,7 @@ function createDialog(){
             return false;
         }
     });
-   
+   */
 
     if(exit) return;
 
@@ -1118,11 +1157,11 @@ function createDialog(){
             for(var i = 0; i < data.list.length; i++) {
                 inputUttrHtml += '<input type="hidden" name="dlgId" value="' + data.list[i] + '"/>';
             }
-            var luisId = $('#appInsertForm').find('#luisId')[0].value
-            var luisIntent;
-             $('#appInsertForm').find('[name=luisIntent]').each(function() {
+            var largeGroup = $('#appInsertForm').find('#largeGroup')[0].value
+            var middleGroup;
+             $('#appInsertForm').find('[name=middleGroup]').each(function() {
                 if($(this).attr('disabled') == undefined) {
-                    luisIntent = $(this).val();
+                    middleGroup = $(this).val();
                     return false;
                 }
             })
@@ -1133,9 +1172,9 @@ function createDialog(){
             inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + luisIntent + '"/>';
 
             var createDlgClone = $('.dialogView').children().clone();
-            $('.dialog_box').html('');
-            $('.dialog_box').append(createDlgClone);
-            $('.dialog_box').append(inputUttrHtml);
+            $('#dlgViewDiv').html('');
+            $('#dlgViewDiv').append(createDlgClone);
+            $('#dlgViewDiv').append(inputUttrHtml);
             $('.createDlgModalClose').click();
         }
     });
@@ -1268,7 +1307,7 @@ function selectDlgListAjax(entity) {
             }//<a href="#" class="btn b02  btn-small js-modal-close">Cancel</a>
             //$('#dlgListTable').find('tbody').empty();
 
-            $('.dialog_box').prepend(inputUttrHtml);
+            $('#dlgViewDiv').prepend(inputUttrHtml);
 
             //dlg 기억.
             var utter ="";
@@ -1844,8 +1883,8 @@ function selectDialog() {
         var chk = $(this).parent().hasClass('checked');
         if(chk == true) {
             var cloneDlg = $(this).parent().parent().next().children().clone();
-            $('.dialog_box').html('');
-            $('.dialog_box').append(cloneDlg);
+            $('#dlgViewDiv').html('');
+            $('#dlgViewDiv').append(cloneDlg);
             $('.previous').hide();
             $('.next').show();
             $('.searchDialogClose').click();
@@ -2250,14 +2289,14 @@ function getGroupSeelectBox() {
                 groupHtml += '<option value="' + groupL[i].GROUPL + '">' + groupL[i].GROUPL + '</option>';
             }
 
-            $("#luisId").html(groupHtml);
+            $("#largeGroup").html(groupHtml);
 
             groupHtml = "";
             for(var i = 0; i < groupM.length; i++ ) {
                 groupHtml += '<option value="' + groupM[i].GROUPM + '">' + groupM[i].GROUPM + '</option>';
             }
 
-            $("#luisIntent").html(groupHtml);
+            $("#middleGroup").html(groupHtml);
 
         }
     });
