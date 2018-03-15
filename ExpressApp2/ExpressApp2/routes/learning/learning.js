@@ -2166,6 +2166,8 @@ router.post('/updateDialog', function (req, res) {
 
     var updDlgRelationQuery = "UPDATE TBL_DLG_RELATION_LUIS SET LUIS_ID = @luisId, LUIS_INTENT = @luisIntent WHERE DLG_ID = @dlgId";
 
+    var updDlgOrderQuery = "UPDATE TBL_DLG SET DLG_ORDER_NO = @order WHERE DLG_ID = @dlgId";
+
     (async () => {
         try {
 
@@ -2309,9 +2311,17 @@ router.post('/updateDialog', function (req, res) {
                         .query(insertTblRelation)
                 }
 
-                tblDlgId.push(dlgId[0].DLG_ID);
-
+                tblDlgId.push( i == 0 ? dlgIdReq : dlgId[0].DLG_ID);   
             }
+
+            /*
+            for(var i = 0; i < tblDlgId.length; i++) {
+                let updDlgOrder = await pool.request()
+                    .input('order', sql.NVarChar, luisId)
+                    .input('dlgId', sql.NVarChar, luisIntent)
+                    .query(updDlgOrderQuery);
+            }
+            */
             res.send({"res":true});
         
         } catch (err) {
