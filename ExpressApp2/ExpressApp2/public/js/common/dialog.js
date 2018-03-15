@@ -1344,7 +1344,8 @@ function createDialog(){
     });
     
     if(exit) return;
-    
+
+    /*
     $('.insertForm input[name=imgUrl]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.ImageURL_must_be_entered);
@@ -1354,7 +1355,7 @@ function createDialog(){
     });
     
     if(exit) return;
-
+    */
     $('.insertForm input[name=mediaImgUrl]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.ImageURL_must_be_entered);
@@ -1453,7 +1454,7 @@ function createDialog(){
         url: '/learning/addDialog',
         dataType: 'json',
         type: 'POST',
-        data: {'data' : array, 'entities' : chkEntities},
+        data: {'data' : array, /*'entities' : chkEntities*/},
         success: function(data) {
             alert(language.Added);
 
@@ -1461,9 +1462,9 @@ function createDialog(){
             for(var i = 0; i < data.list.length; i++) {
                 inputUttrHtml += '<input type="hidden" name="dlgId" value="' + data.list[i] + '"/>';
             }
-            var luisId = $('#appInsertForm').find('#luisId')[0].value
-            var luisIntent;
-             $('#appInsertForm').find('[name=luisIntent]').each(function() {
+            var largeGroup = $('#appInsertForm').find('#largeGroup')[0].value
+            var middleGroup;
+             $('#appInsertForm').find('[name=middleGroup]').each(function() {
                 if($(this).attr('disabled') == undefined) {
                     luisIntent = $(this).val();
                     return false;
@@ -1472,8 +1473,8 @@ function createDialog(){
             $('.newMidBtn').click();
             $('.cancelMidBtn').click();
 
-            inputUttrHtml += '<input type="hidden" name="luisId" value="' + luisId + '"/>';
-            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + luisIntent + '"/>';
+            inputUttrHtml += '<input type="hidden" name="largeGroup" value="' + largeGroup + '"/>';
+            inputUttrHtml += '<input type="hidden" name="middleGroup" value="' + middleGroup + '"/>';
 
             var createDlgClone = $('.dialogView').children().clone();
             $('.dialog_box').html('');
@@ -2763,6 +2764,33 @@ function updateDialog() {
 
     });
 }
+
+//다이얼로그 생성 모달창 - 중그룹 신규버튼
+$(document).on('click', '.newMidBtn, .cancelMidBtn', function() {
+
+    var $iptMiddleGroup = $('input[name=middleGroup]');
+    var $selectMiddleGroup = $('select[name=middleGroup]');
+
+    if($(this).hasClass('newMidBtn')) {
+        $('.newMidBtn').hide();
+        $('.cancelMidBtn').show();
+
+        $iptMiddleGroup.show();
+        $iptMiddleGroup.removeAttr('disabled');
+
+        $selectMiddleGroup.hide();
+        $selectMiddleGroup.attr('disabled', 'disabled');
+    } else {
+        $('.newMidBtn').show();
+        $('.cancelMidBtn').hide();
+
+        $selectMiddleGroup.show();
+        $selectMiddleGroup.removeAttr('disabled');
+
+        $iptMiddleGroup.hide();
+        $iptMiddleGroup.attr('disabled', 'disabled');
+    }
+})
 
 
 

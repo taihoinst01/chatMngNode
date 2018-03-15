@@ -109,7 +109,7 @@
                                 <div class="dialog_wrap">
                                     <div class="dialog_l"><input type="checkbox" name="dlgBoxChk" class="flat-red"></div>
                                     <div class="dialog_r">
-                                        <div class="dialog_box"> <!-- 챗팅창 --></div>
+                                        <div class="dialog_box" id="dlgViewDiv"> <!-- 챗팅창 --></div>
                                     </div>
                                 </div>                             
                             </div> 
@@ -258,7 +258,7 @@
                                 <h5><span class="col01 fa fa-chevron-right"></span> <%= __('GROUP_INFORMATION') %></h5>          
                                 <div class="form-group col-md-6"   style="padding:0" >
                                     <label><%= __('Large_group') %><span class="nec_ico">*</span></label>
-                                    <select class="form-control" id="luisId" name="luisId"> 
+                                    <select class="form-control" id="largeGroup" name="largeGroup"> 
                                         <option value="">선택</option>
                                     </select>
                                 </div> 
@@ -268,10 +268,10 @@
                                     </label>
                                     <button type="button" class="btn btn-block btn-default btn-xs fr newMidBtn"><%= __('NEW') %></button>
                                     <button type="button" class="btn btn-default btn-xs fr cancelMidBtn" style="display: none;"><%= __('CANCEL') %></button>
-                                    <select class="form-control" id="luisIntent" name="luisIntent"> 
+                                    <select class="form-control" id="middleGroup" name="middleGroup"> 
                                         <option value="">선택</option>
                                     </select>
-                                    <input type="text" name="luisIntent" class="form-control" style="display: none;" disabled></input>
+                                    <input type="text" name="middleGroup" class="form-control" style="display: none;" disabled></input>
                                 </div> 
                                 <div class="clear-both"></div>
                                 <div class="form-group" >
