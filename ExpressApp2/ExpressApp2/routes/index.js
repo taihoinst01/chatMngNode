@@ -449,7 +449,7 @@ router.post('/admin/trainApp', function (req, res){
     
     var updateEntityQuery = "UPDATE TBL_COMMON_ENTITY_DEFINE\n";
     updateEntityQuery += "SET TRAIN_FLAG = 'Y'\n";
-    updateEntityQuery += "WHERE ENTITY_VALUE in ( @entityValue )";
+    updateEntityQuery += "WHERE ENTITY_VALUE IN ( @entityValue )";
 
     (async () => {
         try {
@@ -498,7 +498,7 @@ router.post('/admin/trainApp', function (req, res){
                         // luis hierarchicalentities count check
                         var entityResult = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities/'+ entityId , options);
                         
-                        if(entityResult.body.length <= 10) {
+                        if(entityResult.body.children.length < 10) {
                             options.payload = { "name" :  entity };
                             // add hierarchicalentities
                             var entityCreateResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities/'+ entityId + '/children', options);
@@ -515,10 +515,10 @@ router.post('/admin/trainApp', function (req, res){
                             //get entity name
                             var getEntityName = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/hierarchicalentities?take=500' , options);
                             var addEntity;
-                            for(var i = 0; i < getEntityName.body.length; i++) {
-                                for(var j = 0 ; j < getEntityName.body[i].children.length; j++) {
-                                    if( getEntityName.body[i].children[j].name == entity ) {
-                                        addEntity=getEntityName.body[i].name + "::" + entity;
+                            for(var k = 0; k < getEntityName.body.length; k++) {
+                                for(var j = 0 ; j < getEntityName.body[k].children.length; j++) {
+                                    if( getEntityName.body[k].children[j].name == entity ) {
+                                        addEntity=getEntityName.body[k].name + "::" + entity;
                                     }
                                 }
                             }
@@ -531,7 +531,7 @@ router.post('/admin/trainApp', function (req, res){
                                     {
                                         "entityName": addEntity,
                                         "startCharIndex" : 0,
-                                        "endCharIndex": entity.length-1
+                                        "endCharIndex": entityValue.length-1
                                     }
                                 ]
                             }
@@ -541,24 +541,72 @@ router.post('/admin/trainApp', function (req, res){
                         } else {
                             res.send({result:402});
                         }
-                        entityArray.push(entityValue);
+                        
                     } else {
                         //create luis app 
                         res.send({result:402});
                     }
-
+                    entityArray.push(entityValue);
                 }
 
+                var client = new Client();
+
+                client.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train', options, function (data, response) {
+                    var count = 0;
+
+                    var repeat = setInterval(function(){
+                        var traninResultGet = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train' , options);
+
+                        for(var trNum = 0; trNum < traninResultGet.body.length; trNum++) {
+                            if(traninResultGet.body[trNum].details.status == "Fail") {
+                                res.send({result:400});
+                            }
+                            if(traninResultGet.body[trNum].details.status == "InProgress") {
+                                break;
+                            }
+                            count++;
+
+                            if(traninResultGet.body.length == count) {
+                                var pubOption = {
+                                    headers: {
+                                        'Ocp-Apim-Subscription-Key': subsKey,
+                                        'Content-Type':'application/json'
+                                    },
+                                    payload:{
+                                        'versionId': '0.1',
+                                        'isStaging': false,
+                                        'region': 'westus'
+                                    }
+                                }
+    
+                                var publishResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/publish' , pubOption);
+    
+                                var str = "";
+    
+                                for(var entityNum = 0 ; entityNum < entityArray.length; entityNum++) {
+                                    str += "'" + entityArray[entityNum] + "',";
+                                }
+                
+                                str = str.slice(0,-1);
+    
+                                var updQuery = "UPDATE TBL_COMMON_ENTITY_DEFINE SET TRAIN_FLAG = 'Y' WHERE ENTITY_VALUE IN (" + str + ")";
+    
+                                statusRes = false;
+    
+                                res.send({result:200});
+                            }
+                        }
+
+
+                    },1000);
+              
+                });
+
                 // luis train
-                var trainResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train' , options);
+                //var trainResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train' , options);
+
+                //var traninResultGet = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train' , options);
                 // luis publish
-                var publishResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/publish' , options);
-
-                let updateEntity = await dbPool.request()
-                    .input('entityValue', sql.NVarChar, entityArray)
-                    .query(updateEntityQuery);
-
-                res.send({result:200});
             }
         } catch (err) {
             console.log(err)
