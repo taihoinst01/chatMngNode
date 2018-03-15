@@ -1417,7 +1417,7 @@ router.post('/learnUtterAjax', function (req, res) {
     }
 
     
-    var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId; \n";
+    var updateTblDlg = "UPDATE TBL_DLG SET GroupS = @entities WHERE DLG_ID = @dlgId; \n";
 
     (async () => {
         try {
