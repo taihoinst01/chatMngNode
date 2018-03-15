@@ -41,11 +41,11 @@
                     
                           <div class="modal-body search_op">
                                 <div class="form-group col-md-10"  style="padding-left:0" >
-                                    <input name="iptentites" id="iptentites" type="text" class="form-control" placeholder="<%= __('Description 2') %>" onkeypress="if(event.keyCode==13) {searchEntities(); return false;}">
+                                    <input name="iptentities" id="iptentities" type="text" class="form-control" placeholder="<%= __('Description 2') %>" onkeypress="if(event.keyCode==13) {searchEntities(); return false;}">
                                 </div>             
                                 <div class="form-group col-md-2 " style="float:right; text-align:right">
-                                    <button id="searchEntites" type="button" class="btn btn_01 " onclick="searchEntities();"><%= __('SEARCH') %></button> 
-                                    <button id="entites" type="button" class="btn btn-default"  data-toggle="modal" data-target="#create_dlg"><%= __('CREAT') %></button>
+                                    <button id="searchentities" type="button" class="btn btn_01 " onclick="searchEntities();"><%= __('SEARCH') %></button> 
+                                    <button id="entities" type="button" class="btn btn-default"  data-toggle="modal" data-target="#create_dlg"><%= __('CREAT') %></button>
                                 </div>
                              </div>                                         
 
@@ -58,7 +58,7 @@
                                             <th><%= __('Entity value') %></th>
                                             <th>API_GROUP</th>
                                         </tr>
-                                        <tbody id="entitesTbltbody">
+                                        <tbody id="entitiesTbltbody">
                                         </tbody>
                                 </table>
                             </div> 
@@ -90,14 +90,14 @@
                                   <div class="modal-body">
                                         <div class="form-group" >
                                             <label><%= __('Entity definition') %><span class="nec_ico">*</span></label>
-                                            <input name="entityDefine" id="entityDefine" type="text" class="form-control" placeholder=" <%= __('Please_enter') %>" onkeyup="dialogValidation();">
+                                            <input name="entityDefine" id="entityDefine" type="text" class="form-control" tabindex="1" placeholder=" <%= __('Please_enter') %>" onkeyup="dialogValidation();">
                                         </div>
                                         <div class="form-group" >
                                             <label><%= __('Entity value') %><span class="nec_ico">*</span></label>
                                             <button type="button" class="btn btn_01" id="addEntityValBtn" ><%= __('ADD') %></button>
                                             <div class="entityValDiv" >
                                                 <div style="margin-top:4px;">
-                                                    <input name="entityValue" id="entityValue" type="text" tabindex="1" class="form-control" style=" float: left; width:80%;" placeholder=" <%= __('Please_enter') %>" onkeyup="dialogValidation();">
+                                                    <input name="entityValue" id="entityValue" type="text" tabindex="2" class="form-control" style=" float: left; width:80%;" placeholder=" <%= __('Please_enter') %>" onkeyup="dialogValidation();">
                                                     <a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a>
                                                     <!--<button type="button" class="btn btn_03" style=" margin: 4px 0 0 4px;" name="delEntityBtn" ><%= __('DELETE') %></button>-->
                                                 </div>

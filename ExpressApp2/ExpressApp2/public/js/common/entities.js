@@ -39,17 +39,23 @@ $(document).ready(function(){
     //** 모달창 끝 */
 
     //생성버튼클릭시 다른div hidden
-    $('#entites').click(function() {
+    $('#entities').click(function() {
         $('.cancelEntityValueBtn').trigger('click');
         //엔티티 추가 모달 초기 설정
         dialogValidation();
         //$('.close').trigger('click')
+        setTimeout(function (){
+            $('#create_dlg').find("input:visible:first").focus();
+            //$('#entityDefine').focus();
+        }, 500);
     });
+
+
 });
 
 //entity 추가 start --
 $(document).on("click", "#addEntityValBtn", function(e){
-    var entityLength = $('.entityValDiv  input[name=entityValue]').length;
+    var entityLength = $('.entityValDiv  input[name=entityValue]').length+1;
     inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' tabindex='" + entityLength + "' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='dialogValidation();'>";
     inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
     $('.entityValDiv').append(inputEntityStr);
@@ -86,6 +92,7 @@ $(document).on("click", ".more", function(e){
 
         $(e.target).addClass('close').removeClass('more');
         $(e.target).parent().find(".board").css('visibility', 'visible');
+        $(e.target).parent().find(".board input[name=entityValue]").focus();
      }
 });
 
@@ -112,7 +119,7 @@ function entitiesAjax(){
         url: '/learning/entities',
         isloading: true,
         success: function(data) {
-            $('#entitesTbltbody').html('');
+            $('#entitiesTbltbody').html('');
             var item = '';
             if(data.list.length > 0){
                 for(var i = 0; i < data.list.length; i++){
@@ -143,7 +150,7 @@ function entitiesAjax(){
                         '</tr>';
             }
             
-            $('#entitesTbltbody').append(item);
+            $('#entitiesTbltbody').append(item);
             $('#pagination').html('').append(data.pageList);
         }
     });
@@ -217,7 +224,7 @@ function addEntityValueAjax(addValues) {
         success: function(data) {
             if(data.status == 200){
                 alert(language.Added);
-                $("#iptentites").val(addValues.entityValue);
+                $("#iptentities").val(addValues.entityValue);
                 searchEntities();
             } else if(data.status == 'Duplicate') {
                 alert(language.DUPLICATE_ENTITIES_EXIST);
@@ -231,13 +238,13 @@ function addEntityValueAjax(addValues) {
 //엔티티 검색
 function searchEntities() {
 
-    if($("#iptentites").val() == '' || $("#iptentites").val() == null) {
+    if($("#iptentities").val() == '' || $("#iptentities").val() == null) {
         $('#currentPage').val(1);
         entitiesAjax();
     } else {
         params = {
             'currentPage' : 1,
-            'searchEntities' : $('#iptentites').val()
+            'searchEntities' : $('#iptentities').val()
         };
         $.tiAjax({
             type: 'POST',
@@ -245,7 +252,7 @@ function searchEntities() {
             url: '/learning/searchEntities',
             isloading: true,
             success: function(data) {
-                $('#entitesTbltbody').html('');
+                $('#entitiesTbltbody').html('');
                 var item = '';
                 if(data.list.length > 0){
                     for(var i = 0; i < data.list.length; i++){
@@ -276,7 +283,7 @@ function searchEntities() {
                                 '<td colspan="4">' + language.NO_DATA + '</td>' +
                             '</tr>';
                 }
-                $('#entitesTbltbody').append(item);
+                $('#entitiesTbltbody').append(item);
                 $('#pagination').html('').append(data.pageList);
             }
         });
