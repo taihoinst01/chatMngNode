@@ -294,6 +294,7 @@ router.post('/nodeQuery', function (req, res) {
         selectQuery += "                , ISNULL(CA.BTN_1_CONTEXT,'') AS cardBtnResult \n";
         selectQuery += "                , ISNULL(ME.CARD_TITLE,'') AS mediaResult \n";
         selectQuery += "                , ISNULL(ME.BTN_1_CONTEXT,'') AS mediaBtnResult \n";
+        selectQuery += "                , ISNULL(AN.TRAIN_FLAG, 'Y') AS TRAIN_FLAG \n";
         selectQuery += "              FROM ( \n";
         selectQuery += "     SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS 영어질문, COUNT(*) AS 질문수, REG_DATE AS Dimdate, CHANNEL \n";
         selectQuery += "     FROM TBL_HISTORY_QUERY \n";
@@ -309,7 +310,7 @@ router.post('/nodeQuery', function (req, res) {
         selectQuery += "     GROUP BY CUSTOMER_COMMENT_KR, REG_DATE, CHANNEL \n";
         selectQuery += ") HI \n";
         selectQuery += "LEFT OUTER JOIN TBL_QUERY_ANALYSIS_RESULT AN \n";
-        selectQuery += "     ON REPLACE(REPLACE(LOWER(HI.CUSTOMER_COMMENT_KR),'.',''),'?','') = LOWER(AN.QUERY) \n";
+        selectQuery += "     ON dbo.fn_replace_regex(HI.CUSTOMER_COMMENT_KR) = LOWER(AN.QUERY) \n";
         selectQuery += "LEFT OUTER JOIN (SELECT LUIS_INTENT,LUIS_ENTITIES,MIN(DLG_ID) AS DLG_ID FROM TBL_DLG_RELATION_LUIS GROUP BY LUIS_INTENT, LUIS_ENTITIES) RE \n";
         selectQuery += "     ON AN.LUIS_INTENT = RE.LUIS_INTENT \n";
         selectQuery += "     AND AN.LUIS_ENTITIES = RE.LUIS_ENTITIES \n";
@@ -321,7 +322,7 @@ router.post('/nodeQuery', function (req, res) {
         selectQuery += "     ON DL.DLG_ID = CA.DLG_ID \n";
         selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_MEDIA) ME \n";
         selectQuery += "     ON DL.DLG_ID = ME.DLG_ID \n";
-        selectQuery += ") AA  WHERE (RESULT = '' OR RESULT IN ('D','N') ) \n ) tbp \n" +
+        selectQuery += ") AA  WHERE (RESULT = '' OR RESULT IN ('D','N') ) AND TRAIN_FLAG = 'N' \n ) tbp \n" +
                     " WHERE 1=1 \n" +
                     " AND PAGEIDX = " + currentPage + "; \n";
     

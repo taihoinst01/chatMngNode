@@ -37,7 +37,13 @@ $(document).ready(function(){
         entityValidation();
     });
     
-    
+    $('#entities').click(function() {
+        setTimeout(function (){
+            $('#addEntityModal').find("input:visible:first").focus();
+            //$('#entityDefine').focus();
+        }, 500);
+    });
+
     $(document).on("click", "a[name=delEntityBtn]", function(e){
         if ($('.entityValDiv  input[name=entityValue]').length < 2) {
             alert('1개 이상 입력해야 합니다.');
@@ -54,7 +60,7 @@ $(document).ready(function(){
 
 
 $(document).on("click", "#addEntityValBtn", function(e){
-    var entityLength = $('.entityValDiv  input[name=entityValue]').length;
+    var entityLength = $('.entityValDiv  input[name=entityValue]').length+1;
     inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' tabindex='" + entityLength + "' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='entityValidation();'>";
     inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
     $('.entityValDiv').append(inputEntityStr);
@@ -390,16 +396,32 @@ $(document).ready(function(){
                 dlgId.push(inputDlgId[n].value);
                 return dlgId;
             });
+            var inputUtterArray = new Array();
+            $('#utterTableBody tr').each(function() {
+                if ( $(this).find('div').hasClass('checked') ) {
+                    inputUtterArray.push($(this).find('input[name=hiddenUtter]').val());
+                }
+            });
 
+<<<<<<< HEAD
+            var luisId = $('.dialog_box').find($('input[name=luisId]'))[0].value;
+            var luisIntent = $('.dialog_box').find($('input[name=luisIntent]'))[0].value;
+            var utterQuery = $('');
+=======
             var luisId = $('#dlgViewDiv').find($('input[name=luisId]'))[0].value;
             var luisIntent = $('#dlgViewDiv').find($('input[name=luisIntent]'))[0].value;
 
+>>>>>>> 13faeed98b593bb971627d6b93f29e507dd425eb
             $.ajax({
                 url: '/learning/learnUtterAjax',
                 dataType: 'json',
                 type: 'POST',
+<<<<<<< HEAD
+                data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent, 'utters' : inputUtterArray},
+=======
                 data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent
             },
+>>>>>>> 13faeed98b593bb971627d6b93f29e507dd425eb
                 success: function(result) {
                     if(result['result'] == true) {
                         alert(language.Added);
