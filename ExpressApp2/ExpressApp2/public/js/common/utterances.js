@@ -309,8 +309,6 @@ $(document).ready(function(){
     // Utterance Learn
     $('#utterLearn').click(function(){
 
-        
-
         /*
         var chkBoxFlag1 = false;
         var chkBoxFlag2 = false;
@@ -336,7 +334,13 @@ $(document).ready(function(){
         2 : 다이얼로그 생성 불가능(체크된 추천문장이 없음)   
         3 : 다이얼로그 생성 불가능(대화상자창에 다이얼로그가 없음)
         */
-        var checkFlag = 2;  
+        
+        /*
+        var exit = false;
+
+    
+        var utterCheckFlag = 0;  
+
         chkEntities = [];
         $('input[name=tableCheckBox]').each(function() {
             if($(this).parent().hasClass('checked') == true) {
@@ -344,17 +348,23 @@ $(document).ready(function(){
                 var $entityValue = $(this).parent().parent().next().find('input[name=entity]').val();
 
                 if($entityValue == "") {
-                    checkFlag = 1;                   
+                    alert("선택된 추천문장중 학습이 안된 엔티티가 존재합니다. 신규 단어추가를 해주세요.");
+                    exit = true;                   
                     return false;
                 }
-
-                checkFlag = 0;
                 chkEntities.push($entityValue);
             }
         })
+        if(exit) return;
 
-      
-        
+        if($('#dlgViewDiv').children().length == 0) {
+            exit = true;
+            alert("대화상자창에 학습할 대화상자가 없습니다. 대화상자를 추가 해주세요.");
+        }
+        if(exit) return;
+
+
+
         if(checkFlag == 1) {
 
             alert("다이얼로그 생성 불가능(선택된 추천문장중 학습이 안된 엔티티가 존재합니다. 학습을 시켜주세요.)");
@@ -363,8 +373,9 @@ $(document).ready(function(){
             alert("선택한 학습 추천 문장이 없습니다. 학습 추천을 선택해주세요.");
         } else if(checkFlag == 3) {
   
-            alert("선택한 학습 추천 문장이 없습니다. 학습 추천을 선택해주세요.");
-        } else {
+            alert("대화상자창에 학습할 대화상자가 없습니다. 대화상자를 추가 해주세요.");
+        }
+        */ 
 
             var inputEntity = $('input[name=entity]');
             entities = new Array();
@@ -405,7 +416,7 @@ $(document).ready(function(){
                     }
                 }
             });
-        } 
+        
 
     });
 
@@ -1072,19 +1083,19 @@ function createDialog(){
             for (var j = 1; j < tmp.length; j++) {
                 if(tmp[j].name == 'btnType') {
                     tmp[j].name = 'btn'+ (btnTypeCount++) +'Type';
-                    if(btnTypeCount == 4) {
+                    if(btnTypeCount == 5) {
                         btnTypeCount = 1;
                     }
                 }
                 if(tmp[j].name == 'cButtonContent') {
                     tmp[j].name = 'cButtonContent'+ (cButtonContentCount++);
-                    if(cButtonContentCount == 4) {
+                    if(cButtonContentCount == 5) {
                         cButtonContentCount = 1;
                     }
                 }
                 if(tmp[j].name == 'cButtonName') {
                     tmp[j].name = 'cButtonName'+ (cButtonNameCount++);
-                    if(cButtonNameCount == 4) {
+                    if(cButtonNameCount == 5) {
                         cButtonNameCount = 1;
                     }
                 }
@@ -1168,8 +1179,8 @@ function createDialog(){
             $('.newMidBtn').click();
             $('.cancelMidBtn').click();
 
-            inputUttrHtml += '<input type="hidden" name="luisId" value="' + luisId + '"/>';
-            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + luisIntent + '"/>';
+            inputUttrHtml += '<input type="hidden" name="luisId" value="' + largeGroup + '"/>';
+            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + middleGroup + '"/>';
 
             var createDlgClone = $('.dialogView').children().clone();
             $('#dlgViewDiv').html('');
