@@ -2261,7 +2261,7 @@ router.post('/updateDialog', function (req, res) {
                     .input('dlgId', sql.Int, i==0?dlgIdReq:dlgId[0].DLG_ID)
                     .input('dialogTitle', sql.NVarChar, array[i]["dialogTitle"])
                     .input('dialogText', sql.NVarChar, array[i]["dialogText"])
-                    .input('imgUrl', sql.NVarChar, array[i]["imgUrl"])
+                    .input('imgUrl', sql.NVarChar, array[i]["mediaImgUrl"])
                     .input('btn1Type', sql.NVarChar, array[i]["btn1Type"])
                     .input('buttonName1', sql.NVarChar, array[i]["mButtonName1"])
                     .input('buttonContent1', sql.NVarChar, array[i]["mButtonContent1"])
