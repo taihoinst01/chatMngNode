@@ -392,25 +392,14 @@ $(document).ready(function(){
                 }
             });
 
-<<<<<<< HEAD
-            var luisId = $('.dialog_box').find($('input[name=luisId]'))[0].value;
-            var luisIntent = $('.dialog_box').find($('input[name=luisIntent]'))[0].value;
-            var utterQuery = $('');
-=======
             var luisId = $('#dlgViewDiv').find($('input[name=luisId]'))[0].value;
             var luisIntent = $('#dlgViewDiv').find($('input[name=luisIntent]'))[0].value;
 
->>>>>>> 13faeed98b593bb971627d6b93f29e507dd425eb
             $.ajax({
                 url: '/learning/learnUtterAjax',
                 dataType: 'json',
                 type: 'POST',
-<<<<<<< HEAD
                 data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent, 'utters' : inputUtterArray},
-=======
-                data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent
-            },
->>>>>>> 13faeed98b593bb971627d6b93f29e507dd425eb
                 success: function(result) {
                     if(result['result'] == true) {
                         alert(language.Added);
