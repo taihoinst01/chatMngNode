@@ -272,7 +272,7 @@
                                     <div class="form-group" >                                  
                                         <form name="dialogLayout" id="dialogLayout">
                                                                             
-                                            <label><%= __('DIALOG_BOX_TYPE') %><span class="nec_ico">*</span> </label>
+                                            <label><%= __('DIALOG_BOX_TYPE') %><span class="nec_ico">*</span></label>
                                             <select class="form-control" name="dlgType"> 
                                                 <option value="2"><%= __('TEXT_TYPE') %></option>
                                                 <option value="3"><%= __('CARD_TYPE') %></option>
@@ -286,7 +286,7 @@
 
                                 <!-- 다이얼로그 삭제 버튼 -->
                                 <div class="btn_wrap deleteInsertFormDiv" style="clear:both; display:none;" >
-                                    <button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제</button> 
+                                    <button type="button" class="btn btn-default deleteInsertForm"><%= __('DELETE_DIALOG') %></button> 
                                 </div> 
 
                                 <!-- 텍스트 타입 -->
@@ -296,7 +296,7 @@
                                         <input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="<%= __('Please_enter') %>">
                                     </div>                                                                                        
                                     <div class="form-group">
-                                        <label><%= __('DIALOG_BOX_CONTENTS') %></label>
+                                        <label><%= __('DIALOG_BOX_CONTENTS') %><span class="nec_ico">*</span></label>
                                         <input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="<%= __('Please_enter') %>">
                                     </div>                                     
                                 </div>
@@ -312,7 +312,7 @@
                                     </div>
                                     <div class="clear-both"></div>
                                     <div class="btn_wrap" style="clear:both" >
-                                        <button type="button" class="btn btn-default deleteCard">카드삭제</button> 
+                                        <button type="button" class="btn btn-default deleteCard"><%= __('DELETE_CARD') %></button> 
                                     </div> 
                                     <div class="btn_wrap" style="clear:both" >
                                         <button type="button" class="btn btn-default carouseBtn"><%= __('INSERT_MORE_BUTTON') %></button> 
@@ -375,36 +375,62 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div id="mediaBtnCopyDiv" style="display:none;">
+                                    <div class="mediaBtnCopyDiv" >
+                                        <div>
+                                                <label><%= __("BUTTON") %></label>
+                                        </div>
+
+                                        <div class="form-group col-md-13"  style="padding-left:0; margin-top: 0px;">
+                                            <table class="mediaCopyTbl" style="width:100%">
+                                                <col width="46%">
+                                                <col width="1%">
+                                                <col width="46%">
+                                                <col width="1%">
+                                                <col width="6%">
+                                                <thead>
+                                                    <tr>
+                                                        <th><%= __("NAME") %></th>
+                                                        <th></th>
+                                                        <th><%= __("CONTENTS") %></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <input type="text" name="mButtonName" class="form-control" placeholder="<%= __('Please_enter') %>">
+                                                        </td>
+                                                        <td></td>
+                                                        <td>
+                                                            <input type="text" name="mButtonContent" class="form-control" placeholder="<%= __('Please_enter') %>">
+                                                        </td>
+                                                        <td></td>
+                                                        <td>
+                                                            <a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a>
+                                                        </td>
+                                                    </tr>                                                  
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- 미디어 타입 -->
                                 <div class="mediaLayout" style="display:none;" id="dialog3">                                                                
                                     <div class="form-group">
-                                        <label><%= __('IMAGE_URL') %></label>
-                                        <input type="text" class="form-control" placeholder="<%= __('Please_enter') %>">
+                                        <label><%= __('IMAGE_URL') %><span class="nec_ico">*</span></label>
+                                        <input type="text" name="mediaImgUrl"class="form-control" placeholder="<%= __('Please_enter') %>">
                                     </div>
                                     <div class="form-group">
-                                        <label><%= __('MEDIA_URL') %> <span class="nec_ico">*</span></label>
-                                        <input type="text" class="form-control" placeholder="<%= __('Please_enter') %>">
+                                        <label><%= __('MEDIA_URL') %></label>
+                                        <input type="text" name="mediaUrl"class="form-control" placeholder="<%= __('Please_enter') %>">
                                     </div>    
-                                    <div class="modal_con">
-                                        <div class="form-group col-md-5" style="padding-left:0">
-                                            <label><%= __('BUTTON_NAME') %> </label>
-                                            <input type="text" class="form-control mediaBtnName" name="mButtonName1" placeholder="<%= __('Please_enter') %>">
-                                            <input type="text" class="form-control mediaBtnName" name="mButtonName2" style="display:none;" placeholder="<%= __('Please_enter') %>" disabled>
-                                            <input type="text" class="form-control mediaBtnName" name="mButtonName3" style="display:none;" placeholder="<%= __('Please_enter') %>" disabled>
-                                            <input type="text" class="form-control mediaBtnName" name="mButtonName4" style="display:none;" placeholder="<%= __('Please_enter') %>" disabled>
-                                        </div>
-                                        <div class="form-group col-md-6" style="padding:0">
-                                            <label><%= __('BUTTON_CONTENTS') %> </label>
-                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent1" placeholder="<%= __('Please_enter') %>">
-                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent2" style="display:none;" placeholder="<%= __('Please_enter') %>" disabled>
-                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent3" style="display:none;" placeholder="<%= __('Please_enter') %>" disabled>
-                                            <input type="text" class="form-control mediaBtnContent" name="mButtonContent4" style="display:none;" placeholder="<%= __('Please_enter') %>" disabled>
-                                        </div>
-                                        <a href="#"  class="btn_delete" ><span class="fa fa-trash"></span></a>
+                                    <div class="modal_con btnInsertDiv">
+
                                     </div>
-                                    <div class="btn_wrap" style="clear:both" >
-                                        <button type="button" class="btn btn-default deleteCard">카드삭제</button> 
-                                    </div> 
                                     <div class="btn_wrap" style="clear:both" >
                                         <button type="button" class="btn btn-default addMediaBtn" ><%= __('INSERT_MORE_BUTTON') %></button> 
                                     </div>                                                                                                                                                        
@@ -477,10 +503,11 @@
                                         <div class="wc-message-content">
                                             <svg class="wc-message-callout"></svg>
                                             <div>
-                                                <div class="format-markdown">
+                                                <div class="format-markdown textTypeView">
                                                     <div class="textMent">
+                                                        <h1 class="textTitle"><%= __('Please_enter_a_title') %></h1>
                                                         <p>
-                                                            <%= __('Please_enter') %>
+                                                            <%= __('Please_enter_your_content') %>
                                                         </p>
                                                     </div>
                                                 </div>

@@ -77,9 +77,9 @@
 	"Added": "추가하였습니다.",
 	"It_failed": "실패하였습니다.",
 	"NoEntity": "엔티티 없음",
-	"Description_must_be_entered": "description을 입력해야 합니다.",
-	"You_must_enter_a_Dialog_Title": "Dialog Title을 입력해야 합니다.",
-	"You_must_enter_the_dialog_text": "Dialog Text을 입력해야 합니다.",
+	"Description_must_be_entered": "설명을 입력해야 합니다.",
+	"You_must_enter_a_Dialog_Title": "대화상자 제목을 입력해야 합니다.",
+	"You_must_enter_the_dialog_text": "대화상자 내용을 입력해야 합니다.",
 	"ImageURL_must_be_entered": "Image URL을 입력해야 합니다.",
 	"Please_select_a_dialogue": "다이얼로그를 선택해주세요",
 	"Select_search_word_or_group": "검색어 또는 그룹을 선택해주세요",
@@ -239,5 +239,9 @@
 	"ADMIN_SETTING": "관리자 설정",
 	"CHATBOT_MNG": "챗봇 관리",
 	"APP_LIST": "앱 목록",
-	"Midium_group": "Midium_group"
+	"Midium_group": "Midium_group",
+	"Please_enter_a_title": "제목을 입력하세요",
+	"Please_enter_your_content": "내용을 입력하세요",
+	"DELETE_DIALOG": "다이얼로그 삭제",
+	"DELETE_CARD": "카드 삭제"
 }
