@@ -439,7 +439,7 @@ $(document).ready(function(){
         dialogView += '<div>';
         dialogView += '<div class="format-markdown">';
         dialogView += '<div class="textMent">';
-        dialogView += '<h1 class="textTitle">제목을 입력하세요.</h1>';
+        dialogView += '<h1 class="textTitle">' + language.Please_enter_a_title + '</h1>';
         dialogView += '<p>' + language.Please_enter + '</p>';
         dialogView += '</div>';
         dialogView += '</div>';
@@ -979,7 +979,7 @@ function createDialog(){
     
     if(exit) return;
 
-    /*
+    
     $('.insertForm input[name=imgUrl]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.ImageURL_must_be_entered);
@@ -987,8 +987,8 @@ function createDialog(){
             return false;
         }
     });
-   */
-  
+   
+
     if(exit) return;
 
     $('.insertForm input[name=mediaImgUrl]').each(function(index) {
@@ -998,6 +998,7 @@ function createDialog(){
             return false;
         }
     });
+
     if(exit) return;
 
 
@@ -1964,7 +1965,7 @@ $(document).on('click', '.deleteInsertForm',function(e){
 
     insertFormLength = $('.insertForm').length;
     if(insertFormLength == 1) {
-        alert("다이얼로그는 기본으로 1개는 가지고 있어야 합니다.");
+        alert(language.You_must_have_one_dialog_by_default);
     } else {
         var idx = $(".deleteInsertForm").index(this);
         if(idx == 0) {
@@ -1995,7 +1996,7 @@ $(document).on('click', '.deleteCard',function(e){
     if(insertFormLength == 1) {
 
         if(carouselLayoutLength == 1) {
-            alert("카드는 1개 이상 가지고 있어야 합니다. 카드를 완전히 삭제 하고 싶으신 경우에는 다이얼로그 삭제 버튼을 눌러주세요.");
+            alert(language.You_must_have_at_least_one_card);
 
         } else {
 
@@ -2012,7 +2013,7 @@ $(document).on('click', '.deleteCard',function(e){
     } else {
 
         if(carouselLayoutLength == 1) {
-            alert("카드는 1개 이상 가지고 있어야 합니다. 카드를 완전히 삭제 하고 싶으신 경우에는 다이얼로그 삭제 버튼을 눌러주세요.");
+            alert(language.You_must_have_at_least_one_card);
         } else {
 
             if($('.dialogView').eq(insertFormIdx).find('.slideDiv .wc-carousel-item').length == 3) {
@@ -2087,7 +2088,7 @@ $(document).on('click', '.addMediaBtn',function(e){
                 '</tr>'
                 $(this).parent().prev().find('tbody').append(inputTrHtml);
     } else {
-        alert("버튼은 4개까지 추가할 수 있습니다.");
+        alert(language.Up_to_4_buttons_can_be_added);
     }
 
 });
@@ -2099,7 +2100,7 @@ $(document).on('click', '.addCarouselBtn', function(e){
     //var $newCarouselForm = $carouselForm.clone();
     
     if($(this).parents('.insertForm').find('.carouselLayout').length == 10) {
-        alert("카드는 10개까지 추가가 가능합니다.");
+        alert(language.Up_to_10_cards_can_be_added);
     } else {
 
         var idx =  $(".addCarouselBtn:visible").index(this);

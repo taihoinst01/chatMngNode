@@ -231,7 +231,7 @@ $(document).ready(function(){
             insertForm += '</div>';
             insertForm += '</div>';
             insertForm += '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >';
-            insertForm += '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제</button>';
+            insertForm += '<button type="button" class="btn btn-default deleteInsertForm">' + language.DELETE_DIALOG + '</button>';
             insertForm += '</div>'; 
             insertForm += '</form>';
             insertForm += '</div>';
@@ -247,8 +247,8 @@ $(document).ready(function(){
             dialogView += '<div>';
             dialogView += '<div class="format-markdown">';
             dialogView += '<div class="textMent">';
-            dialogView += '<h1 class="textTitle">제목을 입력하세요.</h1>';
-            dialogView += '<p>' + language. Please_enter + '</p>';
+            dialogView += '<h1 class="textTitle">' + language. Please_enter_a_title + '</h1>';
+            dialogView += '<p>' + language. Please_enter_your_content + '</p>';
             dialogView += '</div>';
             dialogView += '</div>';
             dialogView += '</div>';
@@ -285,17 +285,24 @@ $(document).ready(function(){
     $(document).on('click', '.addMediaBtn',function(e){
         
         var inputHtml = '<label>' + language.BUTTON + '</label></div>' +
-                        '<div class="form-group col-md-13"  style="padding-left:0; margin-top: 0px;">' +
-                        '<table class="mediaCopyTbl" style="width:100%">' + '<col width="46%"><col width="1%"><col width="46%">' +
-                        '<col width="1%"><col width="6%"><thead><tr>' +
-                        '<th>' + language.NAME + '</th><th></th><th>' + language.CONTENTS + '</th>' +
-                        '<th></th><th></th></tr></thead><tbody>' +
-                        '<tr><td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '">' +
-                        '</td><td></td><td>' +
-                        '<input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '">' +
-                        '</td><td></td><td>' +
-                        '<a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a>' +
-                        '</td></tr></tbody></table></div></div></div>';
+                    '<div class="form-group col-md-13"  style="padding-left:0; margin-top: 0px;">' +
+                    '<table class="mediaCopyTbl" style="width:100%"><col width="21%">' +
+                    '<col width="1%"><col width="35%"><col width="1%"><col width="35%"><col width="1%"><col width="6%">' +
+                    '<thead><tr><th>' + language.Type + '</th><th></th>' +
+                    '<th>' + language.NAME + '</th><th></th><th>' + language.CONTENTS + '</th>' +
+                    '<th></th><th></th></tr></thead><tbody>' +
+                    '<tr><td>' +
+                    '<select class="form-control" name="btnType">' +
+                    '<option value="imBack" selected>imBack</option>' +
+                    '<option value="openURL">openURL</option>' +
+                    '</select>' +
+                    '</td><td></td>' +
+                    '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '">' +
+                    '</td><td></td><td>' +
+                    '<input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '">' +
+                    '</td><td></td><td>' +
+                    '<a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a>' +
+                    '</td></tr></tbody></table></div></div></div>';
                 
         $btnInsertDiv = $(this).parent().prev();
         if($btnInsertDiv.children().length == 0) {
@@ -306,13 +313,19 @@ $(document).ready(function(){
         if(trLength >= 1 && trLength < 4) {
             
             var inputTrHtml = '<tr>'+
-                    '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
-                    '<td></td><td><input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
-                    '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
-                    '</tr>'
-                    $(this).parent().prev().find('tbody').append(inputTrHtml);
+                '<td>' +
+                '<select class="form-control" name="btnType">' +
+                '<option value="imBack" selected>imBack</option>' +
+                '<option value="openURL">openURL</option>' +
+                '</select>' +
+                '</td><td></td>' +
+                '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                '<td></td><td><input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
+                '</tr>'
+                $(this).parent().prev().find('tbody').append(inputTrHtml);
         } else {
-            alert("버튼은 4개까지 추가할 수 있습니다.");
+            alert(language.Up_to_4_buttons_can_be_added);
         }
 
     });
@@ -461,7 +474,7 @@ $(document).ready(function(){
                         '</div>' +  
                         '<div class="clear-both"></div>' +  
                         '<div class="btn_wrap" style="clear:both" >' +  
-                        '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +   
+                        '<button type="button" class="btn btn-default deleteCard">' + language.DELETE_CARD + '</button>' +   
                         '</div>' +   
                         '<div class="btn_wrap" style="clear:both" >' +  
                         '<button type="button" class="btn btn-default carouseBtn">' + language.INSERT_MORE_BUTTON + '</button>' +   
@@ -522,7 +535,7 @@ $(document).ready(function(){
             insertHtml += '<div class="wc-message-content">';
             insertHtml += '<svg class="wc-message-callout"></svg>';
             insertHtml += '<div><div class="format-markdown"><div class="textMent">';
-            insertHtml += '<h1 class="textTitle">제목을 입력하세요.</h1>';
+            insertHtml += '<h1 class="textTitle">' + language.Please_enter_a_title + '</h1>';
             insertHtml += '<p>';
             insertHtml += language.Please_enter;
             insertHtml += '</p>';
@@ -547,8 +560,8 @@ $(document).ready(function(){
             insertHtml += '<div class="wc-container imgContainer">';
             insertHtml += '<img src="https://bot.hyundai.com/assets/images/movieImg/teasure/02_teaser.jpg">';
             insertHtml += '</div>';
-            insertHtml += '<h1>CARD_TITLE</h1>';
-            insertHtml += '<p class="carousel">CARD_TEXT</p>';
+            insertHtml += '<h1>' + language.Please_enter_a_title + '</h1>';
+            insertHtml += '<p class="carousel">' + language.Please_enter_your_content + '</p>';
             insertHtml += '<ul class="wc-card-buttons" style="padding-left: 0px;"><li><button>BTN_1_TITLE</button></li></ul>';
             insertHtml += '</div>';
             insertHtml += '</li>';
@@ -591,8 +604,10 @@ $(document).ready(function(){
             insertHtml += '<div class="hidden" alt="card_title"></div>';
             insertHtml += '<div class="hidden" alt="card_value"></div>';
             insertHtml += '</div>';
-            insertHtml += '<h1>media title</h1>';
+            insertHtml += '<h1>' + language.Please_enter_a_title + '</h1>';
+            insertHtml += '<p class="dlgMediaText">' + language.Please_enter_your_content + '</p>';
             insertHtml += '<ul class="wc-card-buttons" style="padding-left: 0px;">';
+            insertHtml += '<li><button>BTN_1_TITLE</button></li></ul>';
             insertHtml += '</ul>';
             insertHtml += '</div>';
             insertHtml += '</li></ul></div></div>';
@@ -609,7 +624,11 @@ $(document).ready(function(){
         $('#cardLayout').css('display','none');
         $('#appInsertForm')[0].reset();
         $('.insertForm').remove();
-        
+        $('#commonLayout hr').remove();
+        $('.btnInsertDiv').each(function() {
+            $(this).html("");  
+        })
+
         var insertForm = '';
         insertForm += '<div class="insertForm">';
         insertForm += '<div class="form-group" >';
@@ -641,7 +660,7 @@ $(document).ready(function(){
         dialogView += '<div>';
         dialogView += '<div class="format-markdown">';
         dialogView += '<div class="textMent">';
-        dialogView += '<h1 class="textTitle">제목을 입력하세요.</h1>';
+        dialogView += '<h1 class="textTitle">' + language.Please_enter_a_title + '</h1>';
         dialogView += '<p>' + language.Please_enter + '</p>';
         dialogView += '</div>';
         dialogView += '</div>';
@@ -983,12 +1002,15 @@ $(document).on('click', '.deleteInsertForm',function(e){
 
     insertFormLength = $('.insertForm').length;
     if(insertFormLength == 1) {
-        alert("다이얼로그는 기본으로 1개는 가지고 있어야 합니다.");
+        alert(language.You_must_have_one_dialog_by_default);
     } else {
         var idx = $(".deleteInsertForm").index(this);
+        if(idx == 0) {
+
+            $(this).parents('.insertForm').next().remove();
+        }
         $(".dialogView").eq(idx).remove();
         $(this).parents('.insertForm').prev().remove();
-        $(this).parents('.insertForm').next().remove();
         $(this).parents('.insertForm').remove();
     }
     $(this).parents('.insertForm'); 
@@ -1011,7 +1033,7 @@ $(document).on('click', '.deleteCard',function(e){
     if(insertFormLength == 1) {
 
         if(carouselLayoutLength == 1) {
-            alert("카드는 1개 이상 가지고 있어야 합니다. 카드를 완전히 삭제 하고 싶으신 경우에는 다이얼로그 삭제 버튼을 눌러주세요.");
+            alert(language.You_must_have_at_least_one_card);
 
         } else {
 
@@ -1028,7 +1050,7 @@ $(document).on('click', '.deleteCard',function(e){
     } else {
 
         if(carouselLayoutLength == 1) {
-            alert("카드는 1개 이상 가지고 있어야 합니다. 카드를 완전히 삭제 하고 싶으신 경우에는 다이얼로그 삭제 버튼을 눌러주세요.");
+            alert(language.You_must_have_at_least_one_card);
         } else {
             
             if($('.dialogView').eq(insertFormIdx).find('.slideDiv .wc-carousel-item').length == 3) {
@@ -1126,7 +1148,7 @@ $(document).on('click', '.addCarouselBtn', function(e){
     '</div>' +  
     '<div class="clear-both"></div>' +  
     '<div class="btn_wrap" style="clear:both" >' +  
-    '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +   
+    '<button type="button" class="btn btn-default deleteCard">' + language.DELETE_CARD + '</button>' +   
     '</div>' +   
     '<div class="btn_wrap" style="clear:both" >' +  
     '<button type="button" class="btn btn-default carouseBtn">' + language.INSERT_MORE_BUTTON + '</button>' +   
@@ -1135,7 +1157,7 @@ $(document).on('click', '.addCarouselBtn', function(e){
     '</div>';
     
     if($(this).parents('.insertForm').find('.carouselLayout').length == 10) {
-        alert("카드는 10개까지 추가가 가능합니다.");
+        alert(language.Up_to_10_cards_can_be_added);
     } else {
         var idx =  $(".addCarouselBtn:visible").index(this);
         var jdx = $('select[name=dlgType]').index(( $(".addCarouselBtn:visible").eq(idx).parents('form[name=dialogLayout]').find('select[name=dlgType]') ));
@@ -1278,6 +1300,7 @@ function createDialog(){
     var array = [];
     var exit = false;
 
+    /*
     if($('select[name=luisId]').val().trim() === "") {
         alert(language.Please_reset_the_group);
         exit = true;
@@ -1296,8 +1319,9 @@ function createDialog(){
         exit = true;
         return false;
     }
+    
     if(exit) return;
-    /*
+    
     if ($('#description').val().trim() === "" ) {
         alert(language.Description_must_be_entered);
         return false;
@@ -1312,6 +1336,8 @@ function createDialog(){
     });
 
     if(exit) return;
+    */
+
     $('.insertForm input[name=dialogText]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.You_must_enter_the_dialog_text);
@@ -1329,7 +1355,17 @@ function createDialog(){
             return false;
         }
     });
-    */
+    
+    if(exit) return;
+
+    $('.insertForm input[name=mediaImgUrl]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert(language.ImageURL_must_be_entered);
+            exit = true;
+            return false;
+        }
+    });
+    
     if(exit) return;
 
 
@@ -1383,6 +1419,28 @@ function createDialog(){
             }
             //carouselArr.push(objectCarousel);
             object['carouselArr'] = carouselArr;
+        } else if (tmp[0].value === "4") {
+
+            var btnTypeCount = 1;
+            var mButtonContentCount = 1;
+            var mButtonNameCount = 1;
+
+            for (var j = 0; j < tmp.length; j++) {
+
+                if(tmp[j].name == 'btnType') {
+                    tmp[j].name = 'btn'+ (btnTypeCount++) +'Type';
+                }
+                if(tmp[j].name == 'mButtonContent') {
+                    tmp[j].name = 'mButtonContent'+ (mButtonContentCount++);
+    
+                }
+                if(tmp[j].name == 'mButtonName') {
+                    tmp[j].name = 'mButtonName'+ (mButtonNameCount++);
+                }
+
+                object[tmp[j].name] = tmp[j].value;
+            }
+            
         } else {
             for (var j = 0; j < tmp.length; j++) {
                 object[tmp[j].name] = tmp[j].value;
@@ -2021,7 +2079,7 @@ function openModalBox(target){
                     '</div>' +  
                     '<div class="clear-both"></div>' +  
                     '<div class="btn_wrap" style="clear:both" >' +  
-                    '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +   
+                    '<button type="button" class="btn btn-default deleteCard">' + language.DELETE_CARD + '</button>' +   
                     '</div>' +   
                     '<div class="btn_wrap" style="clear:both" >' +  
                     '<button type="button" class="btn btn-default carouseBtn">' + language.INSERT_MORE_BUTTON + '</button>' +   
@@ -2059,7 +2117,7 @@ function openModalBox(target){
               '</div>';
 
     deleteInsertForm = '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >' +
-                       '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제</button>' +
+                       '<button type="button" class="btn btn-default deleteInsertForm">' + language.DELETE_DIALOG + '</button>' +
                        '</div>'
     //$dlgForm = $('#commonLayout .textLayout').eq(0).clone();
     //$carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
@@ -2265,7 +2323,7 @@ function searchDialog(dlgID) {
     '</div>' +  
     '<div class="clear-both"></div>' +  
     '<div class="btn_wrap" style="clear:both" >' +  
-    '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +   
+    '<button type="button" class="btn btn-default deleteCard">' + language.DELETE_CARD + '</button>' +   
     '</div>' +   
     '<div class="btn_wrap" style="clear:both" >' +  
     '<button type="button" class="btn btn-default carouseBtn">' + language.INSERT_MORE_BUTTON + '</button>' +   
@@ -2303,7 +2361,7 @@ function searchDialog(dlgID) {
     '</div>';
 
     deleteInsertForm = '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >' +
-    '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제</button>' +
+    '<button type="button" class="btn btn-default deleteInsertForm">' + language.DELETE_DIALOG + '</button>' +
     '</div>';
 
     var inputHtml = '<div><label>' + language.BUTTON + '</label></div>' +
