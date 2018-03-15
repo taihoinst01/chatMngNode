@@ -946,9 +946,11 @@ function createDialog(){
     var array = [];
     var exit = false;
 
+    /*
     if($('select[name=luisId]').val().trim() === "") {
         alert(language.Please_reset_the_group);
         exit = true;
+    
         return false;
     }
     if(exit) return;
@@ -965,7 +967,8 @@ function createDialog(){
         return false;
     }
     if(exit) return;
-
+    */
+   
     $('.insertForm input[name=dialogText]').each(function(index) {
         if ($(this).val().trim() === "") {
             alert(language.You_must_enter_the_dialog_text);
