@@ -1406,7 +1406,7 @@ router.post('/learnUtterAjax', function (req, res) {
     var queryText = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) "
                   + "VALUES( @luisId, @luisIntent, @entities, @dlgId, 'D', 'Y' )";   
     
-    //var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId";
+    var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId";
 
     (async () => {
         try {

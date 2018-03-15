@@ -396,13 +396,17 @@
 
                                         <div class="form-group col-md-13"  style="padding-left:0; margin-top: 0px;">
                                             <table class="mediaCopyTbl" style="width:100%">
-                                                <col width="46%">
+                                                <col width="21%">
                                                 <col width="1%">
-                                                <col width="46%">
+                                                <col width="35%">
+                                                <col width="1%">
+                                                <col width="35%">
                                                 <col width="1%">
                                                 <col width="6%">
                                                 <thead>
                                                     <tr>
+                                                        <th><%= __("Type") %></th>
+                                                        <th></th>
                                                         <th><%= __("NAME") %></th>
                                                         <th></th>
                                                         <th><%= __("CONTENTS") %></th>
@@ -412,6 +416,13 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
+                                                        <td>
+                                                            <select class="form-control" name="btnType"> 
+                                                                <option value="imBack" selected>imBack</option>
+                                                                <option value="openURL">openURL</option>
+                                                            </select>
+                                                        </td>
+                                                        <td></td>
                                                         <td>
                                                             <input type="text" name="mButtonName" class="form-control" placeholder="<%= __('Please_enter') %>">
                                                         </td>
