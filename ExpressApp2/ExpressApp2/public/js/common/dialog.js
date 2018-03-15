@@ -449,25 +449,37 @@ $(document).ready(function(){
     $(document).on('change','select[name=dlgType]',function(e){
 
         addCarouselForm  = '<div class="btn_wrap addCarouselBtnDiv" style="clear:both" >' +  
-        '<button type="button" class="btn btn-default addCarouselBtn">' + language.INSERT_MORE_CARDS + '</button>' +  
-        '</div>';
+                            '<button type="button" class="btn btn-default addCarouselBtn">' + language.INSERT_MORE_CARDS + '</button>' +  
+                            '</div>';
 
         carouselForm =  '<div class="carouselLayout">' +                                                               
-        '<div class="form-group">' +  
-        '<label>' + language.IMAGE_URL + '</label>' +  
-        '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
-        '</div>' +  
-        '<div class="modal_con btnInsertDiv">' +  
-        '</div>' +  
-        '<div class="clear-both"></div>' +  
-        '<div class="btn_wrap" style="clear:both" >' +  
-        '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +   
-        '</div>' +   
-        '<div class="btn_wrap" style="clear:both" >' +  
-        '<button type="button" class="btn btn-default carouseBtn">' + language.INSERT_MORE_BUTTON + '</button>' +   
-        '</div>' +                     
-        '<div class="clear-both"></div>' +                                                                 
-        '</div>';
+                        '<div class="form-group">' +  
+                        '<label>' + language.IMAGE_URL + '</label>' +  
+                        '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
+                        '</div>' +  
+                        '<div class="modal_con btnInsertDiv">' +  
+                        '</div>' +  
+                        '<div class="clear-both"></div>' +  
+                        '<div class="btn_wrap" style="clear:both" >' +  
+                        '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +   
+                        '</div>' +   
+                        '<div class="btn_wrap" style="clear:both" >' +  
+                        '<button type="button" class="btn btn-default carouseBtn">' + language.INSERT_MORE_BUTTON + '</button>' +   
+                        '</div>' +
+                        '<div class="clear-both"></div>' +
+                        '</div>';
+
+        mediaForm = '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +
+                    '<input type="text" name="mediaImgUrl" class="form-control" placeholder="' + language.Please_enter + '">' +
+                    '<div class="form-group">' +
+                    '<label>' + language.MEDIA_URL + '</label>' +
+                    '<input type="text" name="mediaUrl" class="form-control" placeholder="' + language.Please_enter + '">' +
+                    '</div>' +    
+                    '<div class="modal_con btnInsertDiv">' +
+                    '</div>' +
+                    '<div class="btn_wrap" style="clear:both" >' +
+                    '<button type="button" class="btn btn-default addMediaBtn" >' + language.INSERT_MORE_BUTTON + '</button>' +
+                    '<div class="clear-both"></div>';
 
         var idx = $("select[name=dlgType]").index(this);
         var insertHtml = "";
@@ -2021,18 +2033,18 @@ function openModalBox(target){
                     '<button type="button" class="btn btn-default addCarouselBtn">' + language.INSERT_MORE_CARDS + '</button>' +  
                     '</div>' 
 
-    mediaForm = '<div class="form-group">' +
+    mediaForm = '<div class="mediaLayout">' +
                 '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +
-                '<input type="text" class="form-control" placeholder="' + language.Please_enter + '">' +
-                '</div>' +
+                '<input type="text" name="mediaImgUrl" class="form-control" placeholder="' + language.Please_enter + '">' +
                 '<div class="form-group">' +
                 '<label>' + language.MEDIA_URL + '</label>' +
-                '<input type="text" class="form-control" placeholder="' + language.Please_enter + '">' +
+                '<input type="text" name="mediaUrl" class="form-control" placeholder="' + language.Please_enter + '">' +
                 '</div>' +    
                 '<div class="modal_con btnInsertDiv">' +
                 '</div>' +
                 '<div class="btn_wrap" style="clear:both" >' +
                 '<button type="button" class="btn btn-default addMediaBtn" >' + language.INSERT_MORE_BUTTON + '</button>' +
+                '<div class="clear-both"></div>' +
                 '</div>';
 
     dlgForm = '<div class="textLayout">' +                                                         
@@ -2263,7 +2275,21 @@ function searchDialog(dlgID) {
 
     addCarouselForm  = '<div class="btn_wrap addCarouselBtnDiv" style="clear:both" >' +  
                     '<button type="button" class="btn btn-default addCarouselBtn">' + language.INSERT_MORE_CARDS + '</button>' +  
-                    '</div>'
+                    '</div>';
+
+    mediaForm = '<div class="mediaLayout">' +
+        '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +
+        '<input type="text" name="mediaImgUrl" class="form-control" placeholder="' + language.Please_enter + '">' +
+        '<div class="form-group">' +
+        '<label>' + language.MEDIA_URL + '</label>' +
+        '<input type="text" name="mediaUrl" class="form-control" placeholder="' + language.Please_enter + '">' +
+        '</div>' +    
+        '<div class="modal_con btnInsertDiv">' +
+        '</div>' +
+        '<div class="btn_wrap" style="clear:both" >' +
+        '<button type="button" class="btn btn-default addMediaBtn" >' + language.INSERT_MORE_BUTTON + '</button>' +
+        '<div class="clear-both"></div>' +
+        '</div>';
 
     dlgForm = '<div class="textLayout">' +                                                         
     '<div class="form-group">' + 
@@ -2412,7 +2438,11 @@ function searchDialog(dlgID) {
                                     inputUttrHtml += '</ul>';
                                     inputUttrHtml += '</div>';
                                     inputUttrHtml += '</div>';
-                                    inputUttrHtml += '<button class="scroll next" style="display: none; height: 30px;" id="nextBtn0" onclick="nextBtn(0,this)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                                    if((tmp.dlg.length) > 2) {
+                                        inputUttrHtml += '<button class="scroll next" style="display: block; height: 30px;" id="nextBtn0" onclick="nextBtn(0,this)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                                    } else {
+                                        inputUttrHtml += '<button class="scroll next" style="display: none; height: 30px;" id="nextBtn0" onclick="nextBtn(0,this)"><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
+                                    }
                                     inputUttrHtml += '</div></div></div></div>';
                                 }
 
@@ -2490,8 +2520,9 @@ function searchDialog(dlgID) {
                                 inputUttrHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
                                 inputUttrHtml += '</div></div></div></div></div>';
                             
-                                $(".insertForm form").append($(".textLayout").clone(true));
-                                $(".insertForm form").append($(".mediaLayout").clone(true));
+                                $(".insertForm form").append(dlgForm);
+                                $(".insertForm form").append(mediaForm);
+                                $("#dialogLayout .mediaLayout").after(deleteInsertForm);
                                 $("#dialogLayout").eq(j).find("select[name=dlgType]").val("4").prop("selected",true);
                                 $("#dialogLayout").find(".textLayout").eq(j).css("display","block");
                                 $("#dialogLayout").find(".mediaLayout").eq(j).css("display","block");
@@ -2499,7 +2530,7 @@ function searchDialog(dlgID) {
                                 $("#dialogLayout").find(".textLayout").eq(j).find("input[name=dialogTitle]").val(tmp.dlg[j].CARD_TITLE);
                                 $("#dialogLayout").find(".textLayout").eq(j).find("input[name=dialogText]").val(tmp.dlg[j].CARD_TEXT);
 
-                                $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=imageUrl]").val(tmp.dlg[j].MEDIA_URL);
+                                $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mediaImgUrl]").val(tmp.dlg[j].MEDIA_URL);
                                 $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mediaUrl]").val(tmp.dlg[j].CARD_VALUE);
 
                                 $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonName1]").val(tmp.dlg[j].BTN_1_TITLE);
@@ -2631,6 +2662,28 @@ function updateDialog() {
             }
             //carouselArr.push(objectCarousel);
             object['carouselArr'] = carouselArr;
+        }  else if (tmp[0].value === "4") {
+
+            var btnTypeCount = 1;
+            var mButtonContentCount = 1;
+            var mButtonNameCount = 1;
+
+            for (var j = 0; j < tmp.length; j++) {
+
+                if(tmp[j].name == 'btnType') {
+                    tmp[j].name = 'btn'+ (btnTypeCount++) +'Type';
+                }
+                if(tmp[j].name == 'mButtonContent') {
+                    tmp[j].name = 'mButtonContent'+ (mButtonContentCount++);
+    
+                }
+                if(tmp[j].name == 'mButtonName') {
+                    tmp[j].name = 'mButtonName'+ (mButtonNameCount++);
+                }
+
+                object[tmp[j].name] = tmp[j].value;
+            }
+            
         } else {
             for (var j = 0; j < tmp.length; j++) {
                 object[tmp[j].name] = tmp[j].value;
