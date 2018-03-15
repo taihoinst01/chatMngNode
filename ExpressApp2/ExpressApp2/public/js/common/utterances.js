@@ -382,53 +382,72 @@ $(document).ready(function(){
             alert("대화상자창에 학습할 대화상자가 없습니다. 대화상자를 추가 해주세요.");
         }
         */ 
+        /*
+        var entitiyCheckFlag = 2; 
 
-            var inputEntity = $('input[name=entity]');
-            entities = new Array();
-            inputEntity.each(function(n) { 
-                entities.push(inputEntity[n].value);
-                return entities;
-            });
+        $('input[name=tableCheckBox]').each(function() {
+            if($(this).parent().hasClass('checked') == true) {
+                
+                var $entityValue = $(this).parent().parent().next().find('input[name=entity]').val();
 
-            var inputDlgId = $('input[name=dlgId]');
-            var dlgId = new Array();
-            inputDlgId.each(function(n) { 
-                dlgId.push(inputDlgId[n].value);
-                return dlgId;
-            });
-            
-            var inputUtterArray = new Array();
-            $('#utterTableBody tr').each(function() {
-                if ( $(this).find('div').hasClass('checked') ) {
-                    inputUtterArray.push($(this).find('input[name=hiddenUtter]').val());
+                if($entityValue == "") {
+                    alert("선택된 추천문장중 학습이 안된 엔티티가 존재합니다. 신규 단어추가를 해주세요.");
+                    exit = true;
+                    entitiyCheckFlag = 1;                    
+                    return false;
                 }
-            });
+                chkEntities.push($entityValue);
+            }
+        })
+        if(exit) return;
+*/
+        var inputEntity = $('input[name=entity]');
 
-            var utterQuery = $('');
-            var luisId = $('#dlgViewDiv').find($('input[name=luisId]'))[0].value;
-            var luisIntent = $('#dlgViewDiv').find($('input[name=luisIntent]'))[0].value;
+        var entities = new Array();
+        inputEntity.each(function(n) { 
+            entities.push(inputEntity[n].value);
+            return entities;
+        });
 
-            $.ajax({
-                url: '/learning/learnUtterAjax',
-                dataType: 'json',
-                type: 'POST',
-                data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent, 'utters' : inputUtterArray},
-                success: function(result) {
-                    if(result['result'] == true) {
-                        alert(language.Added);
-                        
-                        $('input[name=tableAllChk]').parent().iCheck('uncheck');
+        var inputDlgId = $('input[name=dlgId]');
+        var dlgId = new Array();
+        inputDlgId.each(function(n) { 
+            dlgId.push(inputDlgId[n].value);
+            return dlgId;
+        });
 
-                        $('.recommendTbl tbody').html('');
-                        $('#dlgViewDiv').html('');
-    
-                        $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
-                        $('.pagination').html('');
-                    }else{
-                        alert(language.It_failed);
-                    }
+        var inputUtterArray = new Array();
+        $('#utterTableBody tr').each(function() {
+            if ( $(this).find('div').hasClass('checked') ) {
+                inputUtterArray.push($(this).find('input[name=hiddenUtter]').val());
+            }
+        });
+
+        var utterQuery = $('');
+        var luisId = $('#dlgViewDiv').find($('input[name=luisId]'))[0].value;
+        var luisIntent = $('#dlgViewDiv').find($('input[name=luisIntent]'))[0].value;
+
+        $.ajax({
+            url: '/learning/learnUtterAjax',
+            dataType: 'json',
+            type: 'POST',
+            data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent, 'utters' : inputUtterArray},
+            success: function(result) {
+                if(result['result'] == true) {
+                    alert(language.Added);
+                    
+                    $('input[name=tableAllChk]').parent().iCheck('uncheck');
+
+                    $('.recommendTbl tbody').html('');
+                    $('#dlgViewDiv').html('');
+
+                    $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
+                    $('.pagination').html('');
+                }else{
+                    alert(language.It_failed);
                 }
-            });
+            }
+        });
         
 
     });

@@ -1417,7 +1417,7 @@ router.post('/learnUtterAjax', function (req, res) {
     }
 
     
-    var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId";
+    var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId; \n";
 
     (async () => {
         try {
@@ -1428,7 +1428,7 @@ router.post('/learnUtterAjax', function (req, res) {
             if(typeof dlgId == "string") {
                 result1 = await pool.request()
                                 .input('luisId', sql.NVarChar, luisId)
-                                .input('luisintent', sql.NVarChar, luisintent)
+                                .input('luisIntent', sql.NVarChar, luisIntent)
                                 .input('entities', sql.NVarChar, entities)
                                 .input('dlgId', sql.NVarChar, dlgId)
                                 .query(queryText);
@@ -1436,7 +1436,7 @@ router.post('/learnUtterAjax', function (req, res) {
                 for(var i = 0 ; i < dlgId.length; i++) {
                     result1 = await pool.request()
                                     .input('luisId', sql.NVarChar, luisId)
-                                    .input('luisintent', sql.NVarChar, luisintent)
+                                    .input('luisIntent', sql.NVarChar, luisIntent)
                                     .input('entities', sql.NVarChar, entities)
                                     .input('dlgId', sql.NVarChar, dlgId[i])
                                     .query(queryText);
@@ -1470,7 +1470,7 @@ router.post('/learnUtterAjax', function (req, res) {
                 queryText += updateQueryText
                 result1 = await pool.request()
                                 .input('luisId', sql.NVarChar, luisId)
-                                .input('luisintent', sql.NVarChar, luisintent)
+                                .input('luisIntent', sql.NVarChar, luisIntent)
                                 .input('entities', sql.NVarChar, entities)
                                 .input('dlgId', sql.NVarChar, dlgId)
                                 .query(queryText);
@@ -1483,7 +1483,7 @@ router.post('/learnUtterAjax', function (req, res) {
 
                     result1 = await pool.request()
                                     .input('luisId', sql.NVarChar, luisId)
-                                    .input('luisintent', sql.NVarChar, luisintent)
+                                    .input('luisIntent', sql.NVarChar, luisIntent)
                                     .input('entities', sql.NVarChar, entities)
                                     .input('dlgId', sql.NVarChar, dlgId[i])
                                     .query(queryText);
