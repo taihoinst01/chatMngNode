@@ -19,8 +19,11 @@ $(document).ready(function(){
     }
     
     //새로운 다이얼로그 생성 모달창에 필요한 luisId 가져오기
-    getLuisInfo('luisId');
-    
+    //getLuisInfo('luisId');
+
+    //새로운 다이얼로그 생성 모달창에 필요한 그룹 가져오기
+    getGroupSeelectBox();
+
     //엔티티 추가 모달 초기 설정
     entityValidation();
     //엔티티추가 모달 selectbox 설정
@@ -52,6 +55,7 @@ $(document).ready(function(){
         }
     });
 
+    
 });
 
 
@@ -95,7 +99,7 @@ $(document).on('click', '.utterDelete', function() {
     
 
 
-    $('.dialog_box').html("");
+    $('#dlgViewDiv').html("");
     $('input[name=tableAllChk]').parent().iCheck('uncheck');
 
     pagingFnc();
@@ -294,7 +298,7 @@ $(document).ready(function(){
         if (e.keyCode == 13){	//	Enter Key
 
             //$("#entityUtteranceTextTable tbody").html("");
-            $('.dialog_box').html('');
+            $('#dlgViewDiv').html('');
 
             $('input[name=iptUtterance]').attr('readonly',true);
             var queryText = $(this).val();
@@ -311,6 +315,9 @@ $(document).ready(function(){
     // Utterance Learn
     $('#utterLearn').click(function(){
 
+        
+
+        /*
         var chkBoxFlag1 = false;
         var chkBoxFlag2 = false;
 
@@ -324,9 +331,46 @@ $(document).ready(function(){
         if($('input[name=dlgBoxChk]').parent().hasClass('checked') == true) {
             chkBoxFlag2 = true;
         }
+        */
+        ///////////////////////////////////////////////////////////
 
 
-        if(chkBoxFlag1 == true && chkBoxFlag2 == true) {
+        /*
+        checkFlag 체크된 추천문장이 있는지 없는지
+        0 : 다이얼로그 생성 가능
+        1 : 다이얼로그 생성 불가능(체크된 추천문장중 학습이 안된 엔티티가 존재함)
+        2 : 다이얼로그 생성 불가능(체크된 추천문장이 없음)   
+        3 : 다이얼로그 생성 불가능(대화상자창에 다이얼로그가 없음)
+        */
+        var checkFlag = 2;  
+        chkEntities = [];
+        $('input[name=tableCheckBox]').each(function() {
+            if($(this).parent().hasClass('checked') == true) {
+                
+                var $entityValue = $(this).parent().parent().next().find('input[name=entity]').val();
+
+                if($entityValue == "") {
+                    checkFlag = 1;                   
+                    return false;
+                }
+
+                checkFlag = 0;
+                chkEntities.push($entityValue);
+            }
+        })
+
+      
+        
+        if(checkFlag == 1) {
+
+            alert("다이얼로그 생성 불가능(선택된 추천문장중 학습이 안된 엔티티가 존재합니다. 학습을 시켜주세요.)");
+        } else if(checkFlag == 2) {
+
+            alert("선택한 학습 추천 문장이 없습니다. 학습 추천을 선택해주세요.");
+        } else if(checkFlag == 3) {
+  
+            alert("선택한 학습 추천 문장이 없습니다. 학습 추천을 선택해주세요.");
+        } else {
 
             var inputEntity = $('input[name=entity]');
             entities = new Array();
@@ -348,14 +392,25 @@ $(document).ready(function(){
                 }
             });
 
+<<<<<<< HEAD
             var luisId = $('.dialog_box').find($('input[name=luisId]'))[0].value;
             var luisIntent = $('.dialog_box').find($('input[name=luisIntent]'))[0].value;
             var utterQuery = $('');
+=======
+            var luisId = $('#dlgViewDiv').find($('input[name=luisId]'))[0].value;
+            var luisIntent = $('#dlgViewDiv').find($('input[name=luisIntent]'))[0].value;
+
+>>>>>>> 13faeed98b593bb971627d6b93f29e507dd425eb
             $.ajax({
                 url: '/learning/learnUtterAjax',
                 dataType: 'json',
                 type: 'POST',
+<<<<<<< HEAD
                 data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent, 'utters' : inputUtterArray},
+=======
+                data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent
+            },
+>>>>>>> 13faeed98b593bb971627d6b93f29e507dd425eb
                 success: function(result) {
                     if(result['result'] == true) {
                         alert(language.Added);
@@ -363,7 +418,7 @@ $(document).ready(function(){
                         $('input[name=tableAllChk]').parent().iCheck('uncheck');
 
                         $('.recommendTbl tbody').html('');
-                        $('.dialog_box').html('');
+                        $('#dlgViewDiv').html('');
     
                         $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
                         $('.pagination').html('');
@@ -372,9 +427,7 @@ $(document).ready(function(){
                     }
                 }
             });
-        } else {
-            alert("학습하고자 하는 것을 체크해주세요");
-        }
+        } 
 
     });
 
@@ -429,7 +482,7 @@ $(document).ready(function(){
         $('#cardLayout').css('display','none');
         $('#appInsertForm')[0].reset();
         $('.insertForm').remove();
-        
+        $('#commonLayout hr').remove();
         $('.btnInsertDiv').each(function() {
           $(this).html("");  
         })
@@ -447,6 +500,7 @@ $(document).ready(function(){
         dialogView += '<div>';
         dialogView += '<div class="format-markdown">';
         dialogView += '<div class="textMent">';
+        dialogView += '<h1 class="textTitle">' + language.Please_enter_a_title + '</h1>';
         dialogView += '<p>' + language.Please_enter + '</p>';
         dialogView += '</div>';
         dialogView += '</div>';
@@ -562,7 +616,7 @@ $(document).ready(function(){
             insertForm += '<div class="form-group" >';
             insertForm += '<form name="dialogLayout" id="dialogLayout">';
 
-            insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span> </label>';
+            insertForm += '<label>' + language.DIALOG_BOX_TYPE + '<span class="nec_ico">*</span></label>';
             insertForm += '<select class="form-control" name="dlgType">';
             insertForm += '<option value="2">' + language.TEXT_TYPE + '</option>';
             insertForm += '<option value="3">' + language.CARD_TYPE + '</option>';
@@ -574,7 +628,7 @@ $(document).ready(function(){
             insertForm += '<div class="btn_wrap" style="clear:both">';
             insertForm += '</div>'
             insertForm += '<div class="form-group">';
-            insertForm += '<label>' + language.DIALOG_BOX_TITLE + '<span class="nec_ico">*</span></label>';
+            insertForm += '<label>' + language.DIALOG_BOX_TITLE + '</label>';
             insertForm += '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder=" ' + language.Please_enter + '">';
             insertForm += '</div>';
             insertForm += '<div class="form-group">';
@@ -583,7 +637,7 @@ $(document).ready(function(){
             insertForm += '</div>';
             insertForm += '</div>';
             insertForm += '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >';
-            insertForm += '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제</button>';
+            insertForm += '<button type="button" class="btn btn-default deleteInsertForm">' + language.DELETE_DIALOG + '</button>';
             insertForm += '</div>'; 
             insertForm += '</form>';
             insertForm += '</div>';
@@ -599,7 +653,8 @@ $(document).ready(function(){
             dialogView += '<div>';
             dialogView += '<div class="format-markdown">';
             dialogView += '<div class="textMent">';
-            dialogView += '<p>' + language. Please_enter + '</p>';
+            dialogView += '<h1 class="textTitle">' + language. Please_enter_a_title + '</h1>';
+            dialogView += '<p>' + language. Please_enter_your_content + '</p>';
             dialogView += '</div>';
             dialogView += '</div>';
             dialogView += '</div>';
@@ -661,7 +716,7 @@ $(document).ready(function(){
 //utter td 클릭
 $(document).on('click','.clickUtter',function(event){
     var utter = $(this).find('input[name=entity]').val();
-    $('.dialog_box').html(dlgMap[utter]);
+    $('#dlgViewDiv').html(dlgMap[utter]);
 });
 
 //intent selbox 선택
@@ -697,7 +752,8 @@ $(document).on('change','select[name=dlgType]',function(e){
         $('.insertForm:eq(' + idx + ') .carouselLayout').find('.addCarouselBtn:last').closest('div').css('display', 'inline-block');
     } else if($(e.target).val() == "4") {
         //var mediaForm = '<div id="mediaLayout" style="display: block;">' + $mediaForm.html() + '</div>'
-        $('.insertForm:eq(' + idx + ') form').append('<div class="mediaLayout" style="display:none;">' + mediaForm + '</div>') ;
+        $('.insertForm:eq(' + idx + ') form .deleteInsertFormDiv').before('<div class="mediaLayout" style="display:none;">' + mediaForm + '</div>');
+        //$('.insertForm:eq(' + idx + ') form').append('<div class="mediaLayout" style="display:none;">' + mediaForm + '</div>') ;
         $('.insertForm:eq(' + idx + ') .mediaLayout').css('display', 'block');
         $('.insertForm:eq(' + idx + ') .mediaLayout').find('.addMediaBtn:last').closest('div').css('display', 'inline-block');
     }
@@ -708,8 +764,9 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<div class="wc-message-content">';
         insertHtml += '<svg class="wc-message-callout"></svg>';
         insertHtml += '<div><div class="format-markdown"><div class="textMent">';
+        insertHtml += '<h1 class="textTitle">' + language.Please_enter_a_title + '</h1>';
         insertHtml += '<p>';
-        insertHtml += language.Please_enter;
+        insertHtml += language.Please_enter_your_content;
         insertHtml += '</p>';
         insertHtml += '</div></div></div></div></div>';
 
@@ -732,8 +789,8 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<div class="wc-container imgContainer">';
         insertHtml += '<img src="https://bot.hyundai.com/assets/images/movieImg/teasure/02_teaser.jpg">';
         insertHtml += '</div>';
-        insertHtml += '<h1>CARD_TITLE</h1>';
-        insertHtml += '<p class="carousel">CARD_TEXT</p>';
+        insertHtml += '<h1>' + language.Please_enter_a_title + '</h1>';
+        insertHtml += '<p class="carousel">' + language.Please_enter_your_content + '</p>';
         insertHtml += '<ul class="wc-card-buttons" style="padding-left: 0px;"><li><button>BTN_1_TITLE</button></li></ul>';
         insertHtml += '</div>';
         insertHtml += '</li>';
@@ -776,9 +833,10 @@ $(document).on('change','select[name=dlgType]',function(e){
         insertHtml += '<div class="hidden" alt="card_title"></div>';
         insertHtml += '<div class="hidden" alt="card_value"></div>';
         insertHtml += '</div>';
-        insertHtml += '<h1>media title</h1>';
+        insertHtml += '<h1>' + language.Please_enter_a_title + '</h1>';
+        insertHtml += '<p class="dlgMediaText">' + language.Please_enter_your_content + '</p>';
         insertHtml += '<ul class="wc-card-buttons" style="padding-left: 0px;">';
-        insertHtml += '</ul>';
+        insertHtml += '<li><button>BTN_1_TITLE</button></li></ul>';
         insertHtml += '</div>';
         insertHtml += '</li></ul></div></div>';
         insertHtml += '<button class="scroll next" disabled=""><img src="https://bot.hyundai.com/assets/images/02_contents_carousel_btn_right_401x.png"></button>';
@@ -803,7 +861,7 @@ function dialogValidation(type){
     }
 }
 
-// 다이얼로그 생성 모달 (다이얼로그 타이틀 입력)
+// 다이얼로그생성모달 (다이얼로그 타이틀 입력)
 function writeDialogTitle(e) {
 
     //var idx = $('input[name=dialogTitle]').index(e);
@@ -818,7 +876,7 @@ function writeDialogTitle(e) {
         $('.dialogView').children().eq(icx).find('h1').html(e.value);
         //$('.dialogView h1').eq(idx).html(e.value);
     } else {
-        //$('.dialogView').children().eq(icx).find('.textMent p').html(e.value);
+        $('.dialogView').children().eq(icx).find('.textMent .textTitle').html(e.value);
     }
 }
 
@@ -835,7 +893,7 @@ function writeCarouselImg(e) {
     $('.dialogView').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('.imgContainer img').attr("src",e.value);
 }
 
-// 다이얼로그 생성 모달 (다이얼로그 텍스트 입력)
+// 다이얼로그 생성 모달 (다이얼로그 내용 입력)
 function writeDialog(e) {
     //var idx = $('textarea[name=dialogText]').index(e);
     
@@ -847,13 +905,21 @@ function writeDialog(e) {
         //$('.dialogView:eq(' + idx + ') .carousel').html(e.value);
         //var icx = $('#commonLayout').find('.insertForm').index($(e).parents('.insertForm'));
         var jcx = $(e).parents('.insertForm').find('input[name=dialogText]').index(e);
+        if($(e).parent().prev().find('input[name=dialogTitle]').val() == '') {
+            $('.dialogView').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('h1').text('');
+        }
         $('.dialogView').children().eq(icx).find('ul:eq(0)').children().eq(jcx).find('p').text(e.value);
+
+
     } else if($(e).parents('.insertForm').find('select[name=dlgType]').val() == 4) {
-        $('.dialogView h1').eq(idx).html(e.value);
+        $('.dialogView').children().eq(icx).find('.dlgMediaText').text(e.value);
     } else {
         //$('.dialogView .textMent p:eq(' + idx + ')').html(e.value);
         //$('.dialogView').children().eq(icx).find('.textMent p:eq(' + idx + ')').html(e.value);
-        $('.dialogView').children().eq(icx).find('.textMent p').html(e.value);
+        if($(e).parent().prev().find('input[name=dialogTitle]').val() == '') {
+            $('.dialogView').children().eq(icx).find('.textMent .textTitle').text('');
+        }
+        $('.dialogView').children().eq(icx).find('.textMent p').text(e.value);
     }
 
     //캐러졀 용
@@ -884,7 +950,7 @@ function insertDialog(){
                 inputUttrHtml += '<tr> <td> <div class="check-radio-tweak-wrapper" type="checkbox">';
                 inputUttrHtml += '<input name="dlgChk" class="tweak-input"  onclick="" type="checkbox"/> </div> </td>';
                 inputUttrHtml += '<td class="txt_left" ><input type="hidden" name="' + data.DLG_ID + '" value="' + data.DLG_ID + '" />' + data.CARD_TEXT + '</td></tr>';
-                $('dialog_box').prepend(inputUttrHtml);                    
+                $('#dlgViewDiv').prepend(inputUttrHtml);                    
                 $('.createDlgModalClose').click();
             }
         }
@@ -941,13 +1007,14 @@ function createDialog(){
     var array = [];
     var exit = false;
 
+    /*
     if($('select[name=luisId]').val().trim() === "") {
         alert(language.Please_reset_the_group);
         exit = true;
+    
         return false;
     }
     if(exit) return;
-    /*
     var luisIntent;
     $('#appInsertForm').find('[name=luisIntent]').each(function() {
         if($(this).attr('disabled') == undefined) {
@@ -962,6 +1029,40 @@ function createDialog(){
     }
     if(exit) return;
     */
+   
+    $('.insertForm input[name=dialogText]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert(language.You_must_enter_the_dialog_text);
+            exit = true;
+            return false;
+        }
+    });
+    
+    if(exit) return;
+
+    /*
+    $('.insertForm input[name=imgUrl]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert(language.ImageURL_must_be_entered);
+            exit = true;
+            return false;
+        }
+    });
+   */
+
+    if(exit) return;
+
+    $('.insertForm input[name=mediaImgUrl]').each(function(index) {
+        if ($(this).val().trim() === "") {
+            alert(language.ImageURL_must_be_entered);
+            exit = true;
+            return false;
+        }
+    });
+
+    if(exit) return;
+
+
     /*
     if ($('#description').val().trim() === "" ) {
         alert(language.Description_must_be_entered);
@@ -976,27 +1077,10 @@ function createDialog(){
         }
     });
 
-    if(exit) return;
-    $('.insertForm input[name=dialogText]').each(function(index) {
-        if ($(this).val().trim() === "") {
-            alert(language.You_must_enter_the_dialog_text);
-            exit = true;
-            return false;
-        }
-    });
+    if(exit) return;   
     
-    if(exit) return;
     
-    $('.insertForm input[name=imgUrl]').each(function(index) {
-        if ($(this).val().trim() === "") {
-            alert(language.ImageURL_must_be_entered);
-            exit = true;
-            return false;
-        }
-    });
     */
-    if(exit) return;
-
 
     for(var i = 0 ; i < idx ; i++) {
         var tmp = $("form[name=dialogLayout]").eq(i).serializeArray();
@@ -1048,11 +1132,35 @@ function createDialog(){
             }
             //carouselArr.push(objectCarousel);
             object['carouselArr'] = carouselArr;
+        } else if (tmp[0].value === "4") {
+
+            var btnTypeCount = 1;
+            var mButtonContentCount = 1;
+            var mButtonNameCount = 1;
+
+            for (var j = 0; j < tmp.length; j++) {
+
+                if(tmp[j].name == 'btnType') {
+                    tmp[j].name = 'btn'+ (btnTypeCount++) +'Type';
+                }
+                if(tmp[j].name == 'mButtonContent') {
+                    tmp[j].name = 'mButtonContent'+ (mButtonContentCount++);
+    
+                }
+                if(tmp[j].name == 'mButtonName') {
+                    tmp[j].name = 'mButtonName'+ (mButtonNameCount++);
+                }
+
+                object[tmp[j].name] = tmp[j].value;
+            }
+            
         } else {
             for (var j = 0; j < tmp.length; j++) {
                 object[tmp[j].name] = tmp[j].value;
             }
         }
+
+        
         
         array[i] = JSON.stringify(object);//JSON.stringify(tmp);//tmp.substring(1, tmp.length-2);
     }
@@ -1063,7 +1171,7 @@ function createDialog(){
         url: '/learning/addDialog',
         dataType: 'json',
         type: 'POST',
-        data: {'data' : array, 'entities' : chkEntities},
+        data: {'data' : array/*, 'entities' : chkEntities*/},
         success: function(data) {
             alert(language.Added);
 
@@ -1071,11 +1179,11 @@ function createDialog(){
             for(var i = 0; i < data.list.length; i++) {
                 inputUttrHtml += '<input type="hidden" name="dlgId" value="' + data.list[i] + '"/>';
             }
-            var luisId = $('#appInsertForm').find('#luisId')[0].value
-            var luisIntent;
-             $('#appInsertForm').find('[name=luisIntent]').each(function() {
+            var largeGroup = $('#appInsertForm').find('#largeGroup')[0].value
+            var middleGroup;
+             $('#appInsertForm').find('[name=middleGroup]').each(function() {
                 if($(this).attr('disabled') == undefined) {
-                    luisIntent = $(this).val();
+                    middleGroup = $(this).val();
                     return false;
                 }
             })
@@ -1086,9 +1194,9 @@ function createDialog(){
             inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + luisIntent + '"/>';
 
             var createDlgClone = $('.dialogView').children().clone();
-            $('.dialog_box').html('');
-            $('.dialog_box').append(createDlgClone);
-            $('.dialog_box').append(inputUttrHtml);
+            $('#dlgViewDiv').html('');
+            $('#dlgViewDiv').append(createDlgClone);
+            $('#dlgViewDiv').append(inputUttrHtml);
             $('.createDlgModalClose').click();
         }
     });
@@ -1221,7 +1329,7 @@ function selectDlgListAjax(entity) {
             }//<a href="#" class="btn b02  btn-small js-modal-close">Cancel</a>
             //$('#dlgListTable').find('tbody').empty();
 
-            $('.dialog_box').prepend(inputUttrHtml);
+            $('#dlgViewDiv').prepend(inputUttrHtml);
 
             //dlg 기억.
             var utter ="";
@@ -1491,7 +1599,7 @@ function openModalBox(target){
                     '</div>' +  
                     '<div class="clear-both"></div>' +  
                     '<div class="btn_wrap" style="clear:both" >' +  
-                    '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +   
+                    '<button type="button" class="btn btn-default deleteCard">' + language.DELETE_CARD + '</button>' +   
                     '</div>' +   
                     '<div class="btn_wrap" style="clear:both" >' +  
                     '<button type="button" class="btn btn-default carouseBtn">' + language.INSERT_MORE_BUTTON + '</button>' +   
@@ -1504,32 +1612,14 @@ function openModalBox(target){
                     '</div>' 
 
     mediaForm = '<div class="form-group">' +
-                '<label>' + language.IMAGE_URL + '</label>' +
-                '<input type="text" class="form-control" placeholder="' + language.Please_enter + '">' +
+                '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +
+                '<input type="text" name="mediaImgUrl" class="form-control" placeholder="' + language.Please_enter + '">' +
                 '</div>' +
                 '<div class="form-group">' +
                 '<label>' + language.MEDIA_URL + '</label>' +
-                '<input type="text" class="form-control" placeholder="' + language.Please_enter + '">' +
+                '<input type="text" name="mediaUrl"class="form-control" placeholder="' + language.Please_enter + '">' +
                 '</div>' +    
-                '<div class="modal_con">' +
-                '<div class="form-group col-md-5" style="padding-left:0">' +
-                '<label>' + language.BUTTON_NAME + '</label>' +
-                '<input type="text" class="form-control mediaBtnName" name="mButtonName1" placeholder="' + language.Please_enter + '">' +
-                '<input type="text" class="form-control mediaBtnName" name="mButtonName2" style="display:none;" placeholder="' + language.Please_enter + '" disabled>' +
-                '<input type="text" class="form-control mediaBtnName" name="mButtonName3" style="display:none;" placeholder="' + language.Please_enter + '" disabled>' +
-                '<input type="text" class="form-control mediaBtnName" name="mButtonName4" style="display:none;" placeholder="' + language.Please_enter + '" disabled>' +
-                '</div>' +
-                '<div class="form-group col-md-6" style="padding:0">' +
-                '<label>' + language.BUTTON_CONTENTS + '</label>' +
-                '<input type="text" class="form-control mediaBtnContent" name="mButtonContent1" placeholder="' + language.Please_enter + '">' +
-                '<input type="text" class="form-control mediaBtnContent" name="mButtonContent2" style="display:none;" placeholder="' + language.Please_enter + '" disabled>' +
-                '<input type="text" class="form-control mediaBtnContent" name="mButtonContent3" style="display:none;" placeholder="' + language.Please_enter + '" disabled>' +
-                '<input type="text" class="form-control mediaBtnContent" name="mButtonContent4" style="display:none;" placeholder="' + language.Please_enter + '" disabled>' +
-                '</div>' +
-                '<a href="#"  class="btn_delete" ><span class="fa fa-trash"></span></a>' +
-                '</div>' +
-                '<div class="btn_wrap" style="clear:both" >' +
-                '<button type="button" class="btn btn-default deleteCard">카드삭제</button>' +
+                '<div class="modal_con btnInsertDiv">' +
                 '</div>' +
                 '<div class="btn_wrap" style="clear:both" >' +
                 '<button type="button" class="btn btn-default addMediaBtn" >' + language.INSERT_MORE_BUTTON + '</button>' +
@@ -1541,13 +1631,13 @@ function openModalBox(target){
               '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="' + language.Please_enter + '">' + 
               '</div>' +                                                                                         
               '<div class="form-group">' + 
-              '<label>' + language.DIALOG_BOX_CONTENTS + '</label>' + 
+              '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>' + 
               '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="' + language.Please_enter + '">' + 
               '</div>' +  
               '</div>';
 
     deleteInsertForm = '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >' +
-                       '<button type="button" class="btn btn-default deleteInsertForm">다이얼로그삭제</button>' +
+                       '<button type="button" class="btn btn-default deleteInsertForm">' + language.DELETE_DIALOG + '</button>' +
                        '</div>'
     //$dlgForm = $('#commonLayout .textLayout').eq(0).clone();
     //$carouselForm = $('#commonLayout .carouselLayout').eq(0).clone();
@@ -1815,8 +1905,8 @@ function selectDialog() {
         var chk = $(this).parent().hasClass('checked');
         if(chk == true) {
             var cloneDlg = $(this).parent().parent().next().children().clone();
-            $('.dialog_box').html('');
-            $('.dialog_box').append(cloneDlg);
+            $('#dlgViewDiv').html('');
+            $('#dlgViewDiv').append(cloneDlg);
             $('.previous').hide();
             $('.next').show();
             $('.searchDialogClose').click();
@@ -1920,6 +2010,11 @@ $(document).on('click', '.carouseBtn',function(e){
                 '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
                 '</tr>'
                 $(this).parent().prev().prev().prev().find('.cardCopyTbl tbody').append(inputTrHtml);
+
+
+
+
+
     } else {
         alert("버튼은 4개까지 추가할 수 있습니다.");
     }
@@ -1931,12 +2026,15 @@ $(document).on('click', '.deleteInsertForm',function(e){
 
     insertFormLength = $('.insertForm').length;
     if(insertFormLength == 1) {
-        alert("다이얼로그는 기본으로 1개는 가지고 있어야 합니다.");
+        alert(language.You_must_have_one_dialog_by_default);
     } else {
         var idx = $(".deleteInsertForm").index(this);
+        if(idx == 0) {
+
+            $(this).parents('.insertForm').next().remove();
+        }
         $(".dialogView").eq(idx).remove();
         $(this).parents('.insertForm').prev().remove();
-        $(this).parents('.insertForm').next().remove();
         $(this).parents('.insertForm').remove();
     }
     $(this).parents('.insertForm'); 
@@ -1959,7 +2057,7 @@ $(document).on('click', '.deleteCard',function(e){
     if(insertFormLength == 1) {
 
         if(carouselLayoutLength == 1) {
-            alert("카드는 1개 이상 가지고 있어야 합니다. 카드를 완전히 삭제 하고 싶으신 경우에는 다이얼로그 삭제 버튼을 눌러주세요.");
+            alert(language.You_must_have_at_least_one_card);
 
         } else {
 
@@ -1976,7 +2074,7 @@ $(document).on('click', '.deleteCard',function(e){
     } else {
 
         if(carouselLayoutLength == 1) {
-            alert("카드는 1개 이상 가지고 있어야 합니다. 카드를 완전히 삭제 하고 싶으신 경우에는 다이얼로그 삭제 버튼을 눌러주세요.");
+            alert(language.You_must_have_at_least_one_card);
         } else {
 
             if($('.dialogView').eq(insertFormIdx).find('.slideDiv .wc-carousel-item').length == 3) {
@@ -2005,21 +2103,56 @@ $(document).on('click', '.btn_delete',function(e){
     $(this).parent().parent().remove();
 });
 
+
+
+//다이얼로그생성모달 - 미디어버튼추가
 $(document).on('click', '.addMediaBtn',function(e){
-
-    $(this).parent().parent().find($('.mediaBtnName')).each(function(index){
-
-        if($(this).css('display') === 'none') {
-
-            $(this).show();
-            $(this).parent().parent().find($('.mediaBtnContent')).eq(index).show();
-            return false; 
-        }
-    });
+    
+    var inputHtml = '<label>' + language.BUTTON + '</label></div>' +
+                    '<div class="form-group col-md-13"  style="padding-left:0; margin-top: 0px;">' +
+                    '<table class="mediaCopyTbl" style="width:100%"><col width="21%">' +
+                    '<col width="1%"><col width="35%"><col width="1%"><col width="35%"><col width="1%"><col width="6%">' +
+                    '<thead><tr><th>' + language.Type + '</th><th></th>' +
+                    '<th>' + language.NAME + '</th><th></th><th>' + language.CONTENTS + '</th>' +
+                    '<th></th><th></th></tr></thead><tbody>' +
+                    '<tr><td>' +
+                    '<select class="form-control" name="btnType">' +
+                    '<option value="imBack" selected>imBack</option>' +
+                    '<option value="openURL">openURL</option>' +
+                    '</select>' +
+                    '</td><td></td>' +
+                    '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '">' +
+                    '</td><td></td><td>' +
+                    '<input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '">' +
+                    '</td><td></td><td>' +
+                    '<a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a>' +
+                    '</td></tr></tbody></table></div></div></div>';
+               
+    $btnInsertDiv = $(this).parent().prev();
+    if($btnInsertDiv.children().length == 0) {
+        $btnInsertDiv.html(inputHtml);
+        return;
+    }
+    var trLength = $btnInsertDiv.find('tbody tr').length;
+    if(trLength >= 1 && trLength < 4) {
+        
+        var inputTrHtml = '<tr>'+
+                '<td>' +
+                '<select class="form-control" name="btnType">' +
+                '<option value="imBack" selected>imBack</option>' +
+                '<option value="openURL">openURL</option>' +
+                '</select>' +
+                '</td><td></td>' +
+                '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                '<td></td><td><input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
+                '</tr>'
+                $(this).parent().prev().find('tbody').append(inputTrHtml);
+    } else {
+        alert(language.Up_to_4_buttons_can_be_added);
+    }
 
 });
-
-//textLayout
 
 //다이얼로그생성 - 카드추가
 $(document).on('click', '.addCarouselBtn', function(e){
@@ -2028,7 +2161,7 @@ $(document).on('click', '.addCarouselBtn', function(e){
     //var $newCarouselForm = $carouselForm.clone();
     
     if($(this).parents('.insertForm').find('.carouselLayout').length == 10) {
-        alert("카드는 10개까지 추가가 가능합니다.");
+        alert(language.Up_to_10_cards_can_be_added);
     } else {
 
         var idx =  $(".addCarouselBtn:visible").index(this);
@@ -2161,16 +2294,37 @@ $(document).on('click', '.newMidBtn, .cancelMidBtn', function() {
     }
 })
 
-//다이얼로그 생성 모달창 - 중그룹 구하기
-$(document).on('change', 'select[name=luisId]', function(){
-
-    $('select[name=luisIntent] :first-child').nextAll().remove();
 
 
-    getLuisInfo('luisIntent', $('select[name=luisId]').val());
-    
-})
+function getGroupSeelectBox() {
+    $.ajax({
+        type: 'POST',
+        url: '/learning/getGroupSelectBox',
+        isloading: true,
+        success: function(data) {
+            var groupL = data.groupL;
+            var groupM = data.groupM;
 
+            var groupHtml = "";
+
+            for(var i = 0; i < groupL.length; i++ ) {
+                groupHtml += '<option value="' + groupL[i].GROUPL + '">' + groupL[i].GROUPL + '</option>';
+            }
+
+            $("#largeGroup").html(groupHtml);
+
+            groupHtml = "";
+            for(var i = 0; i < groupM.length; i++ ) {
+                groupHtml += '<option value="' + groupM[i].GROUPM + '">' + groupM[i].GROUPM + '</option>';
+            }
+
+            $("#middleGroup").html(groupHtml);
+
+        }
+    });
+}
+
+/*
 //TBL_DLG_RELATION_LUIS 테이블에서 LUIS_INTENT 가져오기
 function getLuisInfo(searchInfo, luisId) {
 
@@ -2202,6 +2356,9 @@ function getLuisInfo(searchInfo, luisId) {
         }
     });
 }
+*/
+
+
 //** 모달창 끝 */
 
 

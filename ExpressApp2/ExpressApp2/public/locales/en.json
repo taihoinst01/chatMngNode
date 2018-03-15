@@ -234,7 +234,15 @@
 	"A big group": "A big group",
 	"Middle group": "Middle group",
 	"Small group": "Small group",
-	"SUCCESS" : "SUCCESS",
-	"FAIL" : "FAIL",
-	"Group": "Group"
+	"SUCCESS": "SUCCESS",
+	"FAIL": "FAIL",
+	"Group": "Group",
+	"Please_enter_a_title": "Please enter a title",
+	"Please_enter_your_content": "Please enter your content",
+	"DELETE_DIALOG": "DELETE DIALOG",
+	"DELETE_CARD": "DELETE CARD",
+	"Up_to_4_buttons_can_be_added" : "Up to 4 buttons can be added",
+	"Up_to_10_cards_can_be_added": "Up to 10 cards can be added",
+	"You_must_have_one_dialog_by_default": "You must have one dialog by default",
+	"You_must_have_at_least_one_card": "You must have at least one card. If you want to delete the card completely, press the Delete Dialog button"
 }

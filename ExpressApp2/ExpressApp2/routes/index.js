@@ -474,11 +474,13 @@ router.post('/admin/trainApp', function (req, res){
                 }
             }
             
+            let dbPool = await appDbConnect.getAppConnection(appSql, req.session.appName, req.session.dbValue);
+
             if(appCount == false) {
                 //create luis app 
                 res.send({result:402});
             }else{
-                let dbPool = await appDbConnect.getAppConnection(appSql, req.session.appName, req.session.dbValue);
+                
                 let selectEntity = await dbPool.request()
                     .query(selectEntityQuery);
 
@@ -552,9 +554,9 @@ router.post('/admin/trainApp', function (req, res){
                 var client = new Client();
 
                 client.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train', options, function (data, response) {
-                    var count = 0;
 
                     var repeat = setInterval(function(){
+                        var count = 0;
                         var traninResultGet = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train' , options);
 
                         for(var trNum = 0; trNum < traninResultGet.body.length; trNum++) {
@@ -580,18 +582,8 @@ router.post('/admin/trainApp', function (req, res){
                                 }
     
                                 var publishResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/publish' , pubOption);
-    
-                                var str = "";
-    
-                                for(var entityNum = 0 ; entityNum < entityArray.length; entityNum++) {
-                                    str += "'" + entityArray[entityNum] + "',";
-                                }
-                
-                                str = str.slice(0,-1);
-    
-                                var updQuery = "UPDATE TBL_COMMON_ENTITY_DEFINE SET TRAIN_FLAG = 'Y' WHERE ENTITY_VALUE IN (" + str + ")";
-    
-                                statusRes = false;
+
+                                clearInterval(repeat);
     
                                 res.send({result:200});
                             }
@@ -602,6 +594,21 @@ router.post('/admin/trainApp', function (req, res){
               
                 });
 
+                var str = "";
+    
+                for(var entityNum = 0 ; entityNum < entityArray.length; entityNum++) {
+                    str += "'" + entityArray[entityNum] + "',";
+                }
+
+                str = str.slice(0,-1);
+
+                var updQuery = "UPDATE TBL_COMMON_ENTITY_DEFINE SET TRAIN_FLAG = 'Y' WHERE ENTITY_VALUE IN (" + str + ")";
+
+                if(str != null && str != ""){
+                    let updateEntity = await dbPool.request()
+                        .input('entityValue', sql.NVarChar, str)
+                        .query(updQuery);
+                }
                 // luis train
                 //var trainResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train' , options);
 

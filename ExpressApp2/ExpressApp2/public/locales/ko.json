@@ -77,9 +77,9 @@
 	"Added": "추가하였습니다.",
 	"It_failed": "실패하였습니다.",
 	"NoEntity": "엔티티 없음",
-	"Description_must_be_entered": "description을 입력해야 합니다.",
-	"You_must_enter_a_Dialog_Title": "Dialog Title을 입력해야 합니다.",
-	"You_must_enter_the_dialog_text": "Dialog Text을 입력해야 합니다.",
+	"Description_must_be_entered": "설명을 입력해야 합니다.",
+	"You_must_enter_a_Dialog_Title": "대화상자 제목을 입력해야 합니다.",
+	"You_must_enter_the_dialog_text": "대화상자 내용을 입력해야 합니다.",
 	"ImageURL_must_be_entered": "Image URL을 입력해야 합니다.",
 	"Please_select_a_dialogue": "다이얼로그를 선택해주세요",
 	"Select_search_word_or_group": "검색어 또는 그룹을 선택해주세요",
@@ -239,5 +239,13 @@
 	"ADMIN_SETTING": "관리자 설정",
 	"CHATBOT_MNG": "챗봇 관리",
 	"APP_LIST": "앱 목록",
-	"Midium_group": "Midium_group"
+	"Midium_group": "Midium_group",
+	"Please_enter_a_title": "제목을 입력하세요",
+	"Please_enter_your_content": "내용을 입력하세요",
+	"DELETE_DIALOG": "다이얼로그 삭제",
+	"DELETE_CARD": "카드 삭제",
+	"Up_to_4_buttons_can_be_added": "버튼은 4개까지 추가 가능합니다",
+	"Up_to_10_cards_can_be_added": "카드는 10개까지 추가 가능합니다",
+	"You_must_have_one_dialog_by_default": "다이얼로그는 기본으로 1개 가지고 있어야합니다",
+	"You_must_have_at_least_one_card": "카드는 1개 이상 가지고 있어야 합니다. 카드를 완전히 삭제 하고 싶으신 경우에는 다이얼로그 삭제 버튼을 눌러주세요"
 }

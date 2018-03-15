@@ -1416,7 +1416,8 @@ router.post('/learnUtterAjax', function (req, res) {
         }
     }
 
-    //var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId";
+    
+    var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId";
 
     (async () => {
         try {
@@ -1442,9 +1443,8 @@ router.post('/learnUtterAjax', function (req, res) {
                 }
             }*/
 
-            var entityLen = (typeof entities ==="string" ? 1:entities.length);
-            var dlgLen = (typeof dlgId ==="string" ? 1:dlgId.length);
-            for(var i = 0 ; i < entityLen; i++) {
+            /*
+            for(var i = 0 ; i < (typeof entities ==="string" ? 1:entities.length); i++) {
 
                 for(var j = 0 ; j <dlgLen; j++){
                     if (j === dlgLen-1) {
@@ -1456,14 +1456,40 @@ router.post('/learnUtterAjax', function (req, res) {
                                     .input('entities', sql.NVarChar, (typeof entities ==="string" ? entities:entities[i]))
                                     .input('dlgId', sql.NVarChar, (typeof dlgId ==="string" ? dlgId:dlgId[j]))
                                     .query(queryText);
-                    /*
+                    
                     result2 = await pool.request()
                                     .input('entities', sql.NVarChar, (typeof entities ==="string" ? entities:entities[i]))
                                     .input('dlgId', sql.NVarChar, (typeof dlgId ==="string" ? dlgId:dlgId[j]))
                                     .query(updateTblDlg);
-                    */
+                    
                 }
             }
+            */
+
+           if(typeof dlgId == "string") {
+                queryText += updateQueryText
+                result1 = await pool.request()
+                                .input('luisId', sql.NVarChar, luisId)
+                                .input('luisintent', sql.NVarChar, luisintent)
+                                .input('entities', sql.NVarChar, entities)
+                                .input('dlgId', sql.NVarChar, dlgId)
+                                .query(queryText);
+            } else {
+                for(var i = 0 ; i < dlgId.length; i++) {
+
+                    if (i === dlgId.length-1) {
+                        queryText += updateQueryText
+                    }
+
+                    result1 = await pool.request()
+                                    .input('luisId', sql.NVarChar, luisId)
+                                    .input('luisintent', sql.NVarChar, luisintent)
+                                    .input('entities', sql.NVarChar, entities)
+                                    .input('dlgId', sql.NVarChar, dlgId[i])
+                                    .query(queryText);
+                }
+            }
+
             console.log(result1);
             //console.log(result2);
             let rows = result1.rowsAffected;
@@ -1749,7 +1775,7 @@ router.post('/searchDialog',function(req,res){
 router.post('/addDialog',function(req,res){
 
     var data = req.body['data[]'];
-    var luisEntities = req.body['entities[]'];
+    //var luisEntities = req.body['entities[]'];
     var array = [];
     var queryText = "";
     var tblDlgId = [];
@@ -1787,18 +1813,18 @@ router.post('/addDialog',function(req,res){
             //var selectCarouselDlgId = 'SELECT ISNULL(MAX(CARD_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_CARD';
             //var selectMediaDlgId = 'SELECT ISNULL(MAX(MEDIA_DLG_ID)+1,1) AS TYPE_DLG_ID FROM TBL_DLG_MEDIA';
             var insertTblDlg = 'INSERT INTO TBL_DLG(DLG_ID,DLG_NAME,DLG_DESCRIPTION,DLG_LANG,DLG_TYPE,DLG_ORDER_NO,USE_YN, GroupL, GroupM, DLG_GROUP) VALUES ' +
-            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dialogOrderNo,\'Y\', @luisId, @luisIntent, 2)';
+            '(@dlgId,@dialogText,@dialogText,\'KO\',@dlgType,@dialogOrderNo,\'Y\', @largeGroup, @middleGroup, 2)';
             var inserTblDlgText = 'INSERT INTO TBL_DLG_TEXT(DLG_ID,CARD_TITLE,CARD_TEXT,USE_YN) VALUES ' +
             '(@dlgId,@dialogTitle,@dialogText,\'Y\')';
             var insertTblCarousel = 'INSERT INTO TBL_DLG_CARD(DLG_ID,CARD_TITLE,CARD_TEXT,IMG_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_ORDER_NO,USE_YN) VALUES ' +
             '(@dlgId,@dialogTitle,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardOrderNo,\'Y\')';
             var insertTblDlgMedia = 'INSERT INTO TBL_DLG_MEDIA(DLG_ID,CARD_TITLE,CARD_TEXT,MEDIA_URL,BTN_1_TYPE,BTN_1_TITLE,BTN_1_CONTEXT,BTN_2_TYPE,BTN_2_TITLE,BTN_2_CONTEXT,BTN_3_TYPE,BTN_3_TITLE,BTN_3_CONTEXT,BTN_4_TYPE,BTN_4_TITLE,BTN_4_CONTEXT,CARD_VALUE,USE_YN) VALUES ' +
-            '(@dlgId,@dialogTitle,@dialogText,@imgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardValue,\'Y\')';
+            '(@dlgId,@dialogTitle,@dialogText,@mediaImgUrl,@btn1Type,@buttonName1,@buttonContent1,@btn2Type,@buttonName2,@buttonContent2,@btn3Type,@buttonName3,@buttonContent3,@btn4Type,@buttonName4,@buttonContent4,@cardValue,\'Y\')';
 
-            var luisId = array[array.length - 1]["luisId"];
-            var luisIntent = array[array.length - 1]["luisIntent"];
-            var sourceType = array[array.length - 1]["sourceType"];
+            var largeGroup = array[array.length - 1]["largeGroup"];
+            var middleGroup = array[array.length - 1]["middleGroup"];
             var description = array[array.length - 1]["description"];
+            //var sourceType = array[array.length - 1]["sourceType"];
 
             for(var i = 0; i < (array.length-1); i++) {
 
@@ -1818,17 +1844,19 @@ router.post('/addDialog',function(req,res){
                     .query(insertTblDlg);
                 }
                 */
+
+               let result2 = await pool.request()
+               .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+               .input('dialogText', sql.NVarChar, (description.trim() == '' ? null: description.trim()))
+               .input('dlgType', sql.NVarChar, array[i]["dlgType"])
+               .input('dialogOrderNo', sql.Int, (i+1))
+               .input('largeGroup', sql.NVarChar, largeGroup)
+               .input('middleGroup', sql.NVarChar, middleGroup)  
+               .query(insertTblDlg);
+               //.input('luisEntities', sql.NVarChar, (typeof luisEntities ==="string" ? luisEntities:luisEntities[j]))
+
                 if(array[i]["dlgType"] == "2") {
-
-                    let result2 = await pool.request()
-                    .input('dlgId', sql.Int, dlgId[0].DLG_ID)
-                    .input('dialogText', sql.NVarChar, description)
-                    .input('dlgType', sql.NVarChar, array[i]["dlgType"])
-                    .input('dialogOrderNo', sql.Int, (i+1))
-                    .input('luisId', sql.NVarChar, luisId)
-                    .input('luisIntent', sql.NVarChar, luisIntent)
-                    .query(insertTblDlg);
-
+                    
                     /*
                     let result3 = await pool.request()
                     .query(selectTextDlgId)
@@ -1837,7 +1865,7 @@ router.post('/addDialog',function(req,res){
 
                     let result4 = await pool.request()
                     .input('dlgId', sql.Int, dlgId[0].DLG_ID)
-                    .input('dialogTitle', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('dialogTitle', sql.NVarChar, (array[i]["dialogTitle"].trim() == '' ? null: array[i]["dialogTitle"].trim()) )
                     .input('dialogText', sql.NVarChar, array[i]["dialogText"])
                     .query(inserTblDlgText);                    
 
@@ -1853,15 +1881,22 @@ router.post('/addDialog',function(req,res){
                     .input('luisEntities', sql.NVarChar, luisEntities)
                     .query(insertTblDlg);
                     */
+
                     for (var j=0; j<array[i].carouselArr.length; j++) {
                         var carTmp = array[i].carouselArr[j];
                         
-                        //carTmp["btn1Type"] = (carTmp["cButtonContent1"] != "") ? carTmp["btn1Type"] : "";
-                        //carTmp["btn2Type"] = (carTmp["cButtonContent2"] != "") ? carTmp["btn2Type"] : "";
-                        //carTmp["btn3Type"] = (carTmp["cButtonContent3"] != "") ? carTmp["btn3Type"] : "";
-                        //carTmp["btn4Type"] = (carTmp["cButtonContent4"] != "") ? carTmp["btn4Type"] : "";
-
+                        // 공백은 Null 처리
+                        for(var key in carTmp){
+                            //console.log("캐러절 key : " + key + " value : " + carTmp[key]);
+                            carTmp[key] = carTmp[key].trim();
+                            
+                            if(carTmp[key].trim() == '') {
+                                carTmp[key] = null;
+                            }
+                        }
+                    
                         let result2 = await pool.request()
+                        .input('typeDlgId', sql.NVarChar, array[i].dlgType)
                         .input('dlgId', sql.Int, dlgId[0].DLG_ID)
                         .input('dialogTitle', sql.NVarChar, carTmp["dialogTitle"])
                         .input('dialogText', sql.NVarChar, carTmp["dialogText"])
@@ -1880,6 +1915,27 @@ router.post('/addDialog',function(req,res){
                         .input('buttonContent4', sql.NVarChar, carTmp["cButtonContent4"])
                         .input('cardOrderNo', sql.Int, (j+1))
                         .query(insertTblCarousel);
+                        /*
+                        let result2 = await pool.request()
+                        .input('dlgId', sql.Int, dlgId[0].DLG_ID)
+                        .input('dialogTitle', sql.NVarChar, (carTmp["dialogTitle"] == '' ? null : carTmp["dialogTitle"]))
+                        .input('dialogText', sql.NVarChar, carTmp["dialogText"])
+                        .input('imgUrl', sql.NVarChar, carTmp["imgUrl"])
+                        .input('btn1Type', sql.NVarChar, carTmp["btn1Type"])
+                        .input('buttonName1', sql.NVarChar, (carTmp["cButtonName1"] == '' ? null : carTmp["cButtonName1"]))
+                        .input('buttonContent1', sql.NVarChar, (carTmp["cButtonContent1"] == '' ? null : carTmp["cButtonContent1"]))
+                        .input('btn2Type', sql.NVarChar, carTmp["btn2Type"])
+                        .input('buttonName2', sql.NVarChar, (carTmp["cButtonName2"] == '' ? null : carTmp["cButtonName2"]))
+                        .input('buttonContent2', sql.NVarChar, (carTmp["cButtonContent2"] == '' ? null : carTmp["cButtonContent2"]))
+                        .input('btn3Type', sql.NVarChar, (carTmp["btn3Type"] == '' ? null : carTmp["btn3Type"]))
+                        .input('buttonName3', sql.NVarChar, (carTmp["cButtonName3"] == '' ? null : carTmp["cButtonName3"]))
+                        .input('buttonContent3', sql.NVarChar, carTmp["cButtonContent3"])
+                        .input('btn4Type', sql.NVarChar, carTmp["btn4Type"])
+                        .input('buttonName4', sql.NVarChar, (carTmp["cButtonName4"] == '' ? null : carTmp["cButtonName4"]))
+                        .input('buttonContent4', sql.NVarChar, (carTmp["cButtonContent4"] == '' ? null : carTmp["cButtonContent4"]))
+                        .input('cardOrderNo', sql.Int, (j+1))
+                        .query(insertTblCarousel);
+                        */
 
                     }
 
@@ -1906,21 +1962,31 @@ router.post('/addDialog',function(req,res){
                     let mediaDlgId = result3.recordset;
                     */
 
+                    // 공백은 Null 처리
+                    for(var key in array[i]){
+                        //console.log("카드 key : " + key + " value : " + array[i]);
+                        array[i][key] = array[i][key].trim();
+                        
+                        if(array[i][key].trim() == '') {
+                            array[i][key] = null;
+                        }
+                    }
+
                     let result4 = await pool.request()
                     .input('dlgId', sql.Int, dlgId[0].DLG_ID)
                     .input('dialogTitle', sql.NVarChar, array[i]["dialogTitle"])
                     .input('dialogText', sql.NVarChar, array[i]["dialogText"])
-                    .input('imgUrl', sql.NVarChar, array[i]["imgUrl"])
+                    .input('mediaImgUrl', sql.NVarChar, array[i]["mediaImgUrl"])
                     .input('btn1Type', sql.NVarChar, array[i]["btn1Type"])
                     .input('buttonName1', sql.NVarChar, array[i]["mButtonName1"])
                     .input('buttonContent1', sql.NVarChar, array[i]["mButtonContent1"])
-                    .input('btn2Type', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('btn2Type', sql.NVarChar, array[i]["btn2Type"])
                     .input('buttonName2', sql.NVarChar, array[i]["mButtonName2"])
                     .input('buttonContent2', sql.NVarChar, array[i]["mButtonContent2"])
-                    .input('btn3Type', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('btn3Type', sql.NVarChar, array[i]["btn3Type"])
                     .input('buttonName3', sql.NVarChar, array[i]["mButtonName3"])
                     .input('buttonContent3', sql.NVarChar, array[i]["mButtonContent3"])
-                    .input('btn4Type', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('btn4Type', sql.NVarChar, array[i]["btn4Type"])
                     .input('buttonName4', sql.NVarChar, array[i]["mButtonName4"])
                     .input('buttonContent4', sql.NVarChar, array[i]["mButtonContent4"])
                     .input('cardValue', sql.NVarChar, array[i]["mediaUrl"])
@@ -2084,6 +2150,7 @@ router.post('/updateDialog', function (req, res) {
     var array = [];
     var queryText = "";
     var tblDlgId = [];
+    var order = [];
     if( typeof data == "string"){
         console.log("data is string");
         var json = JSON.parse(data);
@@ -2115,12 +2182,18 @@ router.post('/updateDialog', function (req, res) {
     var delDlgMediaQuery = "DELETE FROM TBL_DLG_MEDIA WHERE DLG_ID = @dlgId";
     var delDlgQuery = "DELETE FROM TBL_DLG WHERE DLG_ID = @dlgId"
     
-    var selDlgQuery = "SELECT DLG_ID, DLG_LANG, DLG_GROUP, DLG_TYPE, DLG_ORDER_NO\n";
+    var selDlgQuery = "SELECT DLG_ID, DLG_LANG, DLG_GROUP, DLG_TYPE, DLG_ORDER_NO, GROUPS\n";
     selDlgQuery += "FROM TBL_DLG\n";
     selDlgQuery += "WHERE DLG_ID = @dlgId";
 
-    var updDlgRelationQuery = "UPDATE TBL_DLG_RELATION_LUIS SET LUIS_ID = @luisId, LUIS_INTENT = @luisIntent WHERE DLG_ID = @dlgId";
+    var selDlgGroupSQuery = "SELECT DLG_ID, DLG_LANG, DLG_GROUP, DLG_TYPE, DLG_ORDER_NO, GROUPS\n";
+    selDlgGroupSQuery += "FROM TBL_DLG\n";
+    selDlgGroupSQuery += "WHERE GROUPS = @groupS \n"
+    selDlgGroupSQuery += "ORDER BY DLG_ORDER_NO";
 
+    var updDlgOrderQuery = "UPDATE TBL_DLG SET DLG_ORDER_NO = @order WHERE DLG_ID = @dlgId";
+
+    //var updDlgRelationQuery = "UPDATE TBL_DLG_RELATION_LUIS SET LUIS_ID = @luisId, LUIS_INTENT = @luisIntent WHERE DLG_ID = @dlgId";
     (async () => {
         try {
 
@@ -2151,6 +2224,15 @@ router.post('/updateDialog', function (req, res) {
                 .query(selDlgQuery);
 
             let selDlg = selDlgRes.recordset;
+
+            let selDlgGroupS = await pool.request()
+                .input('groupS', sql.NVarChar, selDlg[0].GROUPS)
+                .query(selDlgGroupSQuery);
+
+            for(var gNum = 0; gNum < selDlgGroupS.recordset.length; gNum++) {
+                order.push(selDlgGroupS.recordset[gNum].DLG_ID);
+            }
+
             //selDlg[0].DLG_ID
             //tbl_dlg 삭제
             let delDlg = await pool.request()
@@ -2228,15 +2310,13 @@ router.post('/updateDialog', function (req, res) {
 
                     }
 
-                    tblDlgId.push(dlgId[0].DLG_ID);
-
                 } else if(array[i]["dlgType"] == "4") {
 
                     let result4 = await pool.request()
                     .input('dlgId', sql.Int, i==0?dlgIdReq:dlgId[0].DLG_ID)
                     .input('dialogTitle', sql.NVarChar, array[i]["dialogTitle"])
                     .input('dialogText', sql.NVarChar, array[i]["dialogText"])
-                    .input('imgUrl', sql.NVarChar, array[i]["imgUrl"])
+                    .input('imgUrl', sql.NVarChar, array[i]["mediaImgUrl"])
                     .input('btn1Type', sql.NVarChar, array[i]["btn1Type"])
                     .input('buttonName1', sql.NVarChar, array[i]["mButtonName1"])
                     .input('buttonContent1', sql.NVarChar, array[i]["mButtonContent1"])
@@ -2252,7 +2332,6 @@ router.post('/updateDialog', function (req, res) {
                     .input('cardValue', sql.NVarChar, array[i]["mediaUrl"])
                     .query(insertTblDlgMedia)
 
-                    tblDlgId.push(dlgId[0].DLG_ID);
                 }
 
                 if(i != 0){
@@ -2264,9 +2343,39 @@ router.post('/updateDialog', function (req, res) {
                         .query(insertTblRelation)
                 }
 
-                tblDlgId.push(dlgId[0].DLG_ID);
-
+                tblDlgId.push( i == 0 ? parseInt(dlgIdReq) : dlgId[0].DLG_ID);   
             }
+
+
+            for(var oNum = 0 ; oNum < order.length; oNum++) {
+                if(order[oNum] == tblDlgId[0]) {
+                    order.splice(oNum,1);
+                    order.splice(oNum,0,tblDlgId);
+                    break;
+                }
+            }
+
+            console.log(order);
+
+            var orderCount = 1;
+
+            for(var i = 0; i < order.length; i++) {
+
+                if(Array.isArray(order[i])) {
+                    for(var j = 0; j < order[i].length; j++) {
+                        let updDlgOrder = await pool.request()
+                        .input('order', sql.NVarChar, orderCount++)
+                        .input('dlgId', sql.NVarChar, order[i][j])
+                        .query(updDlgOrderQuery);
+                    }
+                } else {
+                    let updDlgOrder = await pool.request()
+                    .input('order', sql.NVarChar, orderCount++)
+                    .input('dlgId', sql.NVarChar, order[i])
+                    .query(updDlgOrderQuery);
+                }
+            }
+
             res.send({"res":true});
         
         } catch (err) {
