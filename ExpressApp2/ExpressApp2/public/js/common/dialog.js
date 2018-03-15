@@ -1379,19 +1379,19 @@ function createDialog(){
             for (var j = 1; j < tmp.length; j++) {
                 if(tmp[j].name == 'btnType') {
                     tmp[j].name = 'btn'+ (btnTypeCount++) +'Type';
-                    if(btnTypeCount == 4) {
+                    if(btnTypeCount == 5) {
                         btnTypeCount = 1;
                     }
                 }
                 if(tmp[j].name == 'cButtonContent') {
                     tmp[j].name = 'cButtonContent'+ (cButtonContentCount++);
-                    if(cButtonContentCount == 4) {
+                    if(cButtonContentCount == 5) {
                         cButtonContentCount = 1;
                     }
                 }
                 if(tmp[j].name == 'cButtonName') {
                     tmp[j].name = 'cButtonName'+ (cButtonNameCount++);
-                    if(cButtonNameCount == 4) {
+                    if(cButtonNameCount == 5) {
                         cButtonNameCount = 1;
                     }
                 }
@@ -2388,6 +2388,38 @@ function searchDialog(dlgID) {
     '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
     '</tr>';
 
+    var inputMHtml = '<label>' + language.BUTTON + '</label></div>' +
+                    '<div class="form-group col-md-13"  style="padding-left:0; margin-top: 0px;">' +
+                    '<table class="mediaCopyTbl" style="width:100%"><col width="21%">' +
+                    '<col width="1%"><col width="35%"><col width="1%"><col width="35%"><col width="1%"><col width="6%">' +
+                    '<thead><tr><th>' + language.Type + '</th><th></th>' +
+                    '<th>' + language.NAME + '</th><th></th><th>' + language.CONTENTS + '</th>' +
+                    '<th></th><th></th></tr></thead><tbody>' +
+                    '<tr><td>' +
+                    '<select class="form-control" name="btnType">' +
+                    '<option value="imBack" selected>imBack</option>' +
+                    '<option value="openURL">openURL</option>' +
+                    '</select>' +
+                    '</td><td></td>' +
+                    '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '">' +
+                    '</td><td></td><td>' +
+                    '<input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '">' +
+                    '</td><td></td><td>' +
+                    '<a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a>' +
+                    '</td></tr></tbody></table></div></div></div>';
+
+    var inputMTrHtml = '<tr>'+
+                        '<td>' +
+                        '<select class="form-control" name="btnType">' +
+                        '<option value="imBack" selected>imBack</option>' +
+                        '<option value="openURL">openURL</option>' +
+                        '</select>' +
+                        '</td><td></td>' +
+                        '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                        '<td></td><td><input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                        '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
+                        '</tr>';
+
     $.ajax({
         url: '/learning/getDlgAjax',                //주소
         dataType: 'json',                  //데이터 형식
@@ -2528,21 +2560,21 @@ function searchDialog(dlgID) {
                                     $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent]:eq(0)").val(tmp.dlg[j].BTN_1_CONTEXT);
                                 }
                                 if(tmp.dlg[j].BTN_2_TYPE != null && tmp.dlg[j].BTN_2_TYPE != "") {
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".cardCopyTbl tbody").append(inputHtml);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".cardCopyTbl tbody").append(inputTrHtml);
 
                                     $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btnType]:eq(1)").val(tmp.dlg[j].BTN_2_TYPE).prop("selected",true);
                                     $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName]:eq(1)").val(tmp.dlg[j].BTN_2_TITLE);
                                     $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent]:eq(1)").val(tmp.dlg[j].BTN_2_CONTEXT);
                                 }
                                 if(tmp.dlg[j].BTN_3_TYPE != null && tmp.dlg[j].BTN_3_TYPE != "") {
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".cardCopyTbl tbody").append(inputHtml);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".cardCopyTbl tbody").append(inputTrHtml);
 
                                     $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btnType]:eq(2)").val(tmp.dlg[j].BTN_3_TYPE).prop("selected",true);
                                     $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName]:eq(2)").val(tmp.dlg[j].BTN_3_TITLE);
                                     $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonContent]:eq(2)").val(tmp.dlg[j].BTN_3_CONTEXT);
                                 }
                                 if(tmp.dlg[j].BTN_4_TYPE != null && tmp.dlg[j].BTN_4_TYPE != "") {
-                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".cardCopyTbl tbody").append(inputHtml);
+                                    $("#dialogLayout").find(".carouselLayout").eq(j).find(".cardCopyTbl tbody").append(inputTrHtml);
 
                                     $("#dialogLayout").find(".carouselLayout").eq(j).find("select[name=btnType]:eq(3)").val(tmp.dlg[j].BTN_4_TYPE).prop("selected",true);
                                     $("#dialogLayout").find(".carouselLayout").eq(j).find("input[name=cButtonName]:eq(3)").val(tmp.dlg[j].BTN_4_TITLE);
@@ -2589,8 +2621,37 @@ function searchDialog(dlgID) {
                                 $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mediaImgUrl]").val(tmp.dlg[j].MEDIA_URL);
                                 $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mediaUrl]").val(tmp.dlg[j].CARD_VALUE);
 
-                                $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonName1]").val(tmp.dlg[j].BTN_1_TITLE);
-                                $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonContent1]").val(tmp.dlg[j].BTN_1_CONTEXT);
+                                if(tmp.dlg[j].BTN_1_TYPE != null && tmp.dlg[j].BTN_1_TYPE != "") {
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find(".btnInsertDiv").append(inputMHtml);
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find("select[name=btnType]:eq(0)").val(tmp.dlg[j].BTN_1_TYPE).prop("selected",true);
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonName]:eq(0)").val(tmp.dlg[j].BTN_1_TITLE);
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonContent]:eq(0)").val(tmp.dlg[j].BTN_1_CONTEXT);
+                                }
+                                if(tmp.dlg[j].BTN_2_TYPE != null && tmp.dlg[j].BTN_2_TYPE != "") {
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find(".mediaCopyTbl tbody").append(inputMTrHtml);
+
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find("select[name=btnType]:eq(1)").val(tmp.dlg[j].BTN_2_TYPE).prop("selected",true);
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonName]:eq(1)").val(tmp.dlg[j].BTN_2_TITLE);
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonContent]:eq(1)").val(tmp.dlg[j].BTN_2_CONTEXT);
+                                }
+                                if(tmp.dlg[j].BTN_3_TYPE != null && tmp.dlg[j].BTN_3_TYPE != "") {
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find(".mediaCopyTbl tbody").append(inputMTrHtml);
+
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find("select[name=btnType]:eq(2)").val(tmp.dlg[j].BTN_3_TYPE).prop("selected",true);
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonName]:eq(2)").val(tmp.dlg[j].BTN_3_TITLE);
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonContent]:eq(2)").val(tmp.dlg[j].BTN_3_CONTEXT);
+                                }
+                                if(tmp.dlg[j].BTN_4_TYPE != null && tmp.dlg[j].BTN_4_TYPE != "") {
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find(".mediaCopyTbl tbody").append(inputMTrHtml);
+
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find("select[name=btnType]:eq(3)").val(tmp.dlg[j].BTN_4_TYPE).prop("selected",true);
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonName]:eq(3)").val(tmp.dlg[j].BTN_4_TITLE);
+                                    $("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonContent]:eq(3)").val(tmp.dlg[j].BTN_4_CONTEXT);
+                                }
+
+
+                                //$("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonName1]").val(tmp.dlg[j].BTN_1_TITLE);
+                                //$("#dialogLayout").find(".mediaLayout").eq(j).find("input[name=mButtonContent1]").val(tmp.dlg[j].BTN_1_CONTEXT);
                             }
                             $('#updateDlgId').val(tmp.dlg[j].DLG_ID);
                             $('#updateDlgType').val(tmp.dlg[j].DLG_TYPE);

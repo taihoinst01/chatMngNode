@@ -1417,7 +1417,7 @@ router.post('/learnUtterAjax', function (req, res) {
     }
 
     
-    var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId";
+    var updateTblDlg = "UPDATE TBL_DLG SET GroupS = @entities WHERE DLG_ID = @dlgId; \n";
 
     (async () => {
         try {
@@ -1428,7 +1428,7 @@ router.post('/learnUtterAjax', function (req, res) {
             if(typeof dlgId == "string") {
                 result1 = await pool.request()
                                 .input('luisId', sql.NVarChar, luisId)
-                                .input('luisintent', sql.NVarChar, luisintent)
+                                .input('luisIntent', sql.NVarChar, luisIntent)
                                 .input('entities', sql.NVarChar, entities)
                                 .input('dlgId', sql.NVarChar, dlgId)
                                 .query(queryText);
@@ -1436,7 +1436,7 @@ router.post('/learnUtterAjax', function (req, res) {
                 for(var i = 0 ; i < dlgId.length; i++) {
                     result1 = await pool.request()
                                     .input('luisId', sql.NVarChar, luisId)
-                                    .input('luisintent', sql.NVarChar, luisintent)
+                                    .input('luisIntent', sql.NVarChar, luisIntent)
                                     .input('entities', sql.NVarChar, entities)
                                     .input('dlgId', sql.NVarChar, dlgId[i])
                                     .query(queryText);
@@ -1470,7 +1470,7 @@ router.post('/learnUtterAjax', function (req, res) {
                 queryText += updateQueryText
                 result1 = await pool.request()
                                 .input('luisId', sql.NVarChar, luisId)
-                                .input('luisintent', sql.NVarChar, luisintent)
+                                .input('luisIntent', sql.NVarChar, luisIntent)
                                 .input('entities', sql.NVarChar, entities)
                                 .input('dlgId', sql.NVarChar, dlgId)
                                 .query(queryText);
@@ -1483,7 +1483,7 @@ router.post('/learnUtterAjax', function (req, res) {
 
                     result1 = await pool.request()
                                     .input('luisId', sql.NVarChar, luisId)
-                                    .input('luisintent', sql.NVarChar, luisintent)
+                                    .input('luisIntent', sql.NVarChar, luisIntent)
                                     .input('entities', sql.NVarChar, entities)
                                     .input('dlgId', sql.NVarChar, dlgId[i])
                                     .query(queryText);
@@ -2320,13 +2320,13 @@ router.post('/updateDialog', function (req, res) {
                     .input('btn1Type', sql.NVarChar, array[i]["btn1Type"])
                     .input('buttonName1', sql.NVarChar, array[i]["mButtonName1"])
                     .input('buttonContent1', sql.NVarChar, array[i]["mButtonContent1"])
-                    .input('btn2Type', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('btn2Type', sql.NVarChar, array[i]["btn2Type"])
                     .input('buttonName2', sql.NVarChar, array[i]["mButtonName2"])
                     .input('buttonContent2', sql.NVarChar, array[i]["mButtonContent2"])
-                    .input('btn3Type', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('btn3Type', sql.NVarChar, array[i]["btn3Type"])
                     .input('buttonName3', sql.NVarChar, array[i]["mButtonName3"])
                     .input('buttonContent3', sql.NVarChar, array[i]["mButtonContent3"])
-                    .input('btn4Type', sql.NVarChar, array[i]["dialogTitle"])
+                    .input('btn4Type', sql.NVarChar, array[i]["btn4Type"])
                     .input('buttonName4', sql.NVarChar, array[i]["mButtonName4"])
                     .input('buttonContent4', sql.NVarChar, array[i]["mButtonContent4"])
                     .input('cardValue', sql.NVarChar, array[i]["mediaUrl"])
