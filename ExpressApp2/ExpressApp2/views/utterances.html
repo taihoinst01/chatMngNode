@@ -45,7 +45,7 @@
             <section class="content-header">
                 <h1><%= __('UTTERANCE_SETTING') %></h1> 
                 <div class="btn_wrap02 fr" style="width:50%" >
-                    <button type="button" class="btn btn_01"  data-toggle="modal" data-target="#addEntityModal"><%= __('ADD_NEW_WORD') %></button> <button type="button" class="btn btn-default" id="utterLearn"><%= __('SENTENCE_DIALOG_BOX_LINKED_LEARNING') %></button>
+                    <button type="button" class="btn btn_01" id="entities" data-toggle="modal" data-target="#addEntityModal"><%= __('ADD_NEW_WORD') %></button> <button type="button" class="btn btn-default" id="utterLearn"><%= __('SENTENCE_DIALOG_BOX_LINKED_LEARNING') %></button>
                 </div>
             </section>
 
@@ -154,14 +154,14 @@
                         <div class="modal-body">
                               <div class="form-group" >
                                   <label><%= __('Entity definition') %><span class="nec_ico">*</span></label>
-                                  <input name="entityDefine" id="entityDefine" type="text" class="form-control" placeholder=" <%= __('Please_enter') %>" onkeyup="dialogValidation();">
+                                  <input name="entityDefine" id="entityDefine" type="text" tabindex="1" class="form-control" placeholder=" <%= __('Please_enter') %>" onkeyup="dialogValidation();">
                               </div>
                               <div class="form-group" >
                                   <label><%= __('Entity value') %><span class="nec_ico">*</span></label>
                                   <button type="button" class="btn btn_01" id="addEntityValBtn" ><%= __('ADD') %></button>
                                   <div class="entityValDiv" >
                                       <div style="margin-top:4px;">
-                                          <input name="entityValue" id="entityValue" type="text" tabindex="1" class="form-control" style=" float: left; width:80%;" placeholder=" <%= __('Please_enter') %>" onkeyup="entityValidation();">
+                                          <input name="entityValue" id="entityValue" type="text" tabindex="2" class="form-control" style=" float: left; width:80%;" placeholder=" <%= __('Please_enter') %>" onkeyup="entityValidation();">
                                           <a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a>
                                           <!--<button type="button" class="btn btn_03" style=" margin: 4px 0 0 4px;" name="delEntityBtn" ><%= __('DELETE') %></button>-->
                                       </div>

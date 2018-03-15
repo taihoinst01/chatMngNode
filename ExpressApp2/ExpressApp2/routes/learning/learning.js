@@ -34,8 +34,9 @@ router.post('/recommend', function (req, res) {
             "TBX.* \n"+
             "FROM ( \n"+
             "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES \n" +
-            "FROM TBL_QUERY_ANALYSIS_RESULT \n" + 
-            "WHERE (RESULT='D' OR RESULT='S') \n";
+            "  FROM TBL_QUERY_ANALYSIS_RESULT \n" + 
+            " WHERE (RESULT='D' OR RESULT='S') \n"+
+            "   AND TRAIN_FLAG = 'N' \n";
             
             if(selectType == 'yesterday'){
                 entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) like '%'+(select CONVERT(CHAR(10), (select dateadd(day,-1,getdate())), 23)) + '%'";
@@ -1404,8 +1405,17 @@ router.post('/learnUtterAjax', function (req, res) {
     dlgId = req.body['dlgId[]'];
 
     var queryText = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_ID,DLG_API_DEFINE,USE_YN) "
-                  + "VALUES( @luisId, @luisIntent, @entities, @dlgId, 'D', 'Y' )";   
-    
+                  + "VALUES( @luisId, @luisIntent, @entities, @dlgId, 'D', 'Y' ); \n";
+
+    var updateQueryText = "";
+    var utterArry;
+    if (req.body['utters[]']) {
+        utterArry = req.body['utters[]'];
+        for (var i=0; i<(typeof utterArry ==="string" ? 1:utterArry.length); i++) {    
+            updateQueryText += "UPDATE TBL_QUERY_ANALYSIS_RESULT SET TRAIN_FLAG = 'Y' WHERE QUERY = '" + (typeof utterArry ==="string" ? utterArry:utterArry[i]) + "'; \n";
+        }
+    }
+
     //var updateTblDlg = "UPDATE TBL_DLG SET GroupS = '@entities' WHERE DLG_ID = @dlgId";
 
     (async () => {
@@ -1432,9 +1442,14 @@ router.post('/learnUtterAjax', function (req, res) {
                 }
             }*/
 
-            for(var i = 0 ; i < (typeof entities ==="string" ? 1:entities.length); i++) {
+            var entityLen = (typeof entities ==="string" ? 1:entities.length);
+            var dlgLen = (typeof dlgId ==="string" ? 1:dlgId.length);
+            for(var i = 0 ; i < entityLen; i++) {
 
-                for(var j = 0 ; j < (typeof dlgId ==="string" ? 1:dlgId.length); j++){
+                for(var j = 0 ; j <dlgLen; j++){
+                    if (j === dlgLen-1) {
+                        queryText += updateQueryText
+                    }
                     result1 = await pool.request()
                                     .input('luisId', sql.NVarChar, luisId)
                                     .input('luisIntent', sql.NVarChar, luisIntent)
