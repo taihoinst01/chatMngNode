@@ -1226,8 +1226,8 @@ function createDialog(){
             $('.newMidBtn').click();
             $('.cancelMidBtn').click();
 
-            inputUttrHtml += '<input type="hidden" name="luisId" value="' + luisId + '"/>';
-            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + luisIntent + '"/>';
+            inputUttrHtml += '<input type="hidden" name="luisId" value="' + largeGroup + '"/>';
+            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + middleGroup + '"/>';
 
             var createDlgClone = $('.dialogView').children().clone();
             $('#dlgViewDiv').html('');
