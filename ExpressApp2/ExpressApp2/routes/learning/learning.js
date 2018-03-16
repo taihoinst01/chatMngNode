@@ -897,17 +897,21 @@ router.post('/entities', function (req, res) {
     (async () => {
         try {
          
-            var entitiesQueryString = "select tbp.* from                                                                    "    
-                                    + "(select ROW_NUMBER() OVER(ORDER BY api_group DESC) AS NUM,                           "
-                                    + "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT,                                         "
-                                    + "CEILING((ROW_NUMBER() OVER(ORDER BY api_group DESC))/ convert(numeric ,10)) PAGEIDX, " 
-                                    + "entity_value, entity, api_group from ( SELECT DISTINCT entity, API_GROUP , STUFF((   "
-                                    + "SELECT '[' + b.entity_value + ']' FROM TBL_COMMON_ENTITY_DEFINE b                    "
-                                    + "WHERE b.entity = a.entity FOR XML PATH('') ),1,1,'[') AS entity_value                "
-                                    + "FROM TBL_COMMON_ENTITY_DEFINE a where API_GROUP != 'OCR TEST'                        "
-                                    + "group by entity, API_GROUP)                                                          "
-                                    + "tbl_common_entity_define where api_group != 'OCR TEST') tbp                          "
-                                    + "WHERE PAGEIDX = @currentPage                                                         "
+            var entitiesQueryString = "SELECT tbp.* \n"    
+                                    + "  FROM ( SELECT ROW_NUMBER() OVER(ORDER BY api_group DESC) AS NUM, \n"
+                                    + "                COUNT('1') OVER(PARTITION BY '1') AS TOTCNT,  \n"
+                                    + "                CEILING((ROW_NUMBER() OVER(ORDER BY api_group DESC))/ convert(numeric ,10)) PAGEIDX, \n" 
+                                    + "                entity_value, entity, api_group \n"
+                                    + "           from (   \n"
+                                    + "                SELECT DISTINCT entity, API_GROUP ,  \n"
+                                    + "                       STUFF(( SELECT '[' + b.entity_value + ']' \n"
+                                    + "                                 FROM TBL_COMMON_ENTITY_DEFINE b \n"
+                                    + "                                WHERE b.entity = a.entity FOR XML PATH('') ),1,1,'[') AS entity_value  \n"
+                                    + "                  FROM TBL_COMMON_ENTITY_DEFINE a \n"
+                                    + "                 WHERE API_GROUP != 'OCR TEST' \n"
+                                    + "              GROUP BY entity, API_GROUP) tbl_common_entity_define \n"
+                                    + "         WHERE api_group != 'OCR TEST') tbp \n"
+                                    + "WHERE PAGEIDX = @currentPage; \n"
             
             let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1 = await pool.request().input('currentPage', sql.Int, currentPage).query(entitiesQueryString);
@@ -1527,8 +1531,10 @@ router.post('/learnUtterAjax', function (req, res) {
             }
             */
 
-            for(var j = 0 ; j <dlgId.length; j++){
-                if (j === dlgId.length-1) {
+
+
+            for(var j = 0 ; j < (typeof dlgId ==="string" ? 1:dlgId.length); j++){
+                if (j === ((typeof dlgId ==="string" ? 1:dlgId.length) - 1)) {
                     queryText += updateQueryText
                 }
                 result1 = await pool.request()

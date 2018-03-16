@@ -55,22 +55,43 @@ $(document).ready(function(){
 
 //entity 추가 start --
 $(document).on("click", "#addEntityValBtn", function(e){
-    var entityLength = $('.entityValDiv  input[name=entityValue]').length+1;
-    inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' tabindex='" + entityLength + "' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='dialogValidation();'>";
-    inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
-    $('.entityValDiv').append(inputEntityStr);
-    $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
-    dialogValidation();
+
+    if ($('#update_dlg').css('display') === 'none') {
+
+        var entityLength = $('.entityValDiv  input[name=entityValue]').length+1;
+        inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' tabindex='" + entityLength + "' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='dialogValidation();'>";
+        inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
+        $('.entityValDiv').append(inputEntityStr);
+        $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+        dialogValidation();
+    } else {
+
+        var entityLength = $('.updateEntityValDiv  input[name=entityValue]').length+1;
+        inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' tabindex='" + entityLength + "' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='dialogValidation();'>";
+        inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
+        $('.updateEntityValDiv').append(inputEntityStr);
+        $('.updateEntityValDiv  input[name=entityValue]').eq($('.updateEntityValDiv  input[name=entityValue]').length-1).focus();
+    }
 });
 
 $(document).on("click", "a[name=delEntityBtn]", function(e){
-    if ($('.entityValDiv  input[name=entityValue]').length < 2) {
-        alert('1개 이상 입력해야 합니다.');
-        $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+    if ($('#update_dlg').css('display') === 'none') {
+        if ($('.entityValDiv  input[name=entityValue]').length < 2) {
+            alert('1개 이상 입력해야 합니다.');
+            $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+        } else {
+            $(this).parent().remove();
+            $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+            dialogValidation();
+        }
     } else {
-        $(this).parent().remove();
-        $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
-        dialogValidation();
+        if ($('.updateEntityValDiv  input[name=entityValue]').length < 2) {
+            alert('1개 이상 입력해야 합니다.');
+            $('.updateEntityValDiv  input[name=entityValue]').eq($('.updateEntityValDiv  input[name=entityValue]').length-1).focus();
+        } else {
+            $(this).parent().remove();
+            $('.updateEntityValDiv  input[name=entityValue]').eq($('.updateEntityValDiv  input[name=entityValue]').length-1).focus();
+        }
     }
 });
 
@@ -78,7 +99,11 @@ $(document).on("keypress", ".modal-body input[name=entityValue]", function(e){
     if (e.keyCode === 13) {	//	Enter Key
         //var inputIndex = $('.entityValDiv  input[name=entityValue]').index($(this));
         $('#addEntityValBtn').trigger('click');
-        $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+        if ($('#update_dlg').css('display') === 'none') {
+            $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
+        } else {
+            $('.updateEntityValDiv  input[name=entityValue]').eq($('.updateEntityValDiv  input[name=entityValue]').length-1).focus();
+        }
     }
 });
 //entity 추가 end --
@@ -117,6 +142,56 @@ $(document).on("click", ".cancelEntityValueBtn", function(e){
     $(e.target).parent().parent().parent().parent().parent().find(".board").css('visibility', 'hidden');
 });
 
+//기존 entity 값 저장
+var originalEntityVal = {};
+$(document).on("click", "a[name=editEntityTag]", function(e){
+
+    originalEntityVal.entityDefine = $(this).text().trim();
+    originalEntityVal.api_group = $(this).parents('tr').find('td:last').text().trim();
+    
+    var entityValArr = [];
+
+    var allEntities = $(this).parents('td').next().find('span').text().trim();
+        
+    var entityValTxt = allEntities.substring(0, allEntities.length-1).split('[');
+    for (var i=1; i<entityValTxt.length; i++) {
+        
+        var valueTmp = entityValTxt[i].substring(0, entityValTxt[i].length-1);
+        entityValArr.push(valueTmp);
+    }
+
+    originalEntityVal.entityValue = entityValArr;
+
+    editEntityFnc(originalEntityVal);
+
+});
+
+function editEntityFnc(originalEntityVal) {
+    $('#updateEntityDefine').text(originalEntityVal.entityDefine);
+    
+    $('#updateApiGroup').children().each(function() {
+        if ($(this).val() === originalEntityVal.api_group) {
+            $(this).attr('selected', true);
+            return;
+        }
+    });
+
+    $('.updateEntityValDiv').html('');
+    var inputEntityStr = "";
+    var entityValArr = originalEntityVal.entityValue;
+    for (var i=0; i<entityValArr.length; i++) {
+
+        var entityLength = $('.updateEntityValDiv  input[name=entityValue]').length+1;
+        inputEntityStr += "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' tabindex='" + entityLength + "' type='text' value ='" + entityValArr[i] + "' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' >";
+        inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
+    }
+    $('.updateEntityValDiv').append(inputEntityStr);
+    $('.updateEntityValDiv  input[name=entityValue]').eq($('.updateEntityValDiv  input[name=entityValue]').length-1).focus();
+    
+    $('#updateEntityBtn').trigger('click');
+
+}
+
 function entitiesAjax(){
 
     params = {
@@ -134,6 +209,7 @@ function entitiesAjax(){
                 for(var i = 0; i < data.list.length; i++){
                     
                     item += '<tr>';
+                    //item += '<td><a href="#" name="editEntityTag">' + data.list[i].ENTITY + "</a></td>" ;
                     item += '<td>' + data.list[i].ENTITY + "</td>" ;
                     item += '<td><span class="fl">' + data.list[i].ENTITY_VALUE + "</span>";
                     item += '<a class="more fl"><span class="hc">+</span></a>';
@@ -150,6 +226,7 @@ function entitiesAjax(){
                     item += '</div>';
                     item += '</td>';
                     item += '<td>' + data.list[i].API_GROUP + '</td>';  
+                    //item += '<td>삭제자리</td>';  
                     item += '</tr>';
                 }
                 
@@ -266,6 +343,7 @@ function searchEntities() {
                 if(data.list.length > 0){
                     for(var i = 0; i < data.list.length; i++){
                         item += '<tr>';
+                        //item += '<td><a href="#" name="editEntityTag">' + data.list[i].ENTITY + "</a></td>" ;
                         item += '<td>' + data.list[i].ENTITY + "</td>" ;
                         item += '<td><span class="fl">' + data.list[i].ENTITY_VALUE + "</span>";
                         item += '<a class="more fl"><span class="hc">+</span></a>';
@@ -362,6 +440,66 @@ function dialogValidation(){
        
 }
 
+//엔티티 업데이트
+//originalEntityVal
+function updateEntity() {
+    
+
+    var valueText = false;
+    $('.updateEntityValDiv input[name=entityValue]').each(function() {
+        if ($(this).val().trim() === "") {
+            valueText = true;
+            return;
+        }
+    });
+
+    if (valueText) {
+        alert(language.Please_enter);
+        return ;
+    }
+
+    //
+    var apiGroupVal = $('#apiGroup :selected').val();
+    var entityValueList = [];
+    $('.updateEntityValDiv input[name=entityValue]').each(function() {
+        
+        for (var i=0; i<entityValueList.length; i++) {
+            if ( entityValueList[i].entityValue === $(this).val().trim()) {
+                valueText = true;
+            }
+        }
+        entityValueList.push($(this).val().trim());
+    });
+
+    if (valueText) {
+        alert(language.DUPLICATE_ENTITIES_EXIST);
+        return ;
+    }
+    originalEntityVal.entityValue = entityValueList;
+
+    $.ajax({
+        url: '/learning/updateEntity',
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify(entityValueList), //$('#appInsertForm').serializeObject(),
+        success: function(data) {
+            if(data.status == 200){
+                $('.updateEntityCancel').click();
+                alert(language.Added);
+                entitiesAjax();
+            } else if(data.status == 'Duplicate') {
+                alert(language.DUPLICATE_ENTITIES_EXIST);
+            } else {
+                alert(language.It_failed);
+            }
+        }
+    });
+
+
+
+}
+
 //엔티티 추가
 function insertEntity(){
 
@@ -443,6 +581,7 @@ function selectApiGroup() {
                     optionStr += '<option value="' + groupList[i].API_GROUP + '">' + groupList[i].API_GROUP + '</option>'
                 }
                 $('#apiGroup').html(optionStr);
+                $('#updateApiGroup').html(optionStr);
             }
         }
     });

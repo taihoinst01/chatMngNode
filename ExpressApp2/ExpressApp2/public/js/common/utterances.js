@@ -31,7 +31,7 @@ $(document).ready(function(){
     
     $('.addDialogCancel').click(function(){
         $('#appInsertForm')[0].reset();
-        var inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' tabindex='1' id='entityValue' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='entityValidation();'>";
+        var inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' tabindex='1' id='entityValue' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='entityValidation();' spellcheck='false' autocomplete='off'>";
         inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
         $('.entityValDiv').html(inputEntityStr);
         entityValidation();
@@ -61,7 +61,7 @@ $(document).ready(function(){
 
 $(document).on("click", "#addEntityValBtn", function(e){
     var entityLength = $('.entityValDiv  input[name=entityValue]').length+1;
-    inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' tabindex='" + entityLength + "' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='entityValidation();'>";
+    inputEntityStr = "<div style='margin-top:4px;'><input name='entityValue' id='entityValue' tabindex='" + entityLength + "' type='text' class='form-control' style=' float: left; width:80%;' placeholder='" + language.Please_enter + "' onkeyup='entityValidation();'  spellcheck='false' autocomplete='off'>";
     inputEntityStr += '<a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></div>';
     $('.entityValDiv').append(inputEntityStr);
     $('.entityValDiv  input[name=entityValue]').eq($('.entityValDiv  input[name=entityValue]').length-1).focus();
@@ -406,50 +406,87 @@ $(document).ready(function(){
             return entities;
         });
         */
+        /*
+        checkFlag 체크된 추천문장이 있는지 없는지
+        0 : 다이얼로그 생성 가능
+        1 : 다이얼로그 생성 불가능(체크된 추천문장중 학습이 안된 엔티티가 존재함)
+        2 : 다이얼로그 생성 불가능(체크된 추천문장이 없음)   
+        3 : 다이얼로그 생성 불가능(대화상자창에 다이얼로그가 없음)
+        */
+       
 
-        var entities = $('input[name=entity]').val();
-
-        var inputDlgId = $('input[name=dlgId]');
-        var dlgId = new Array();
-        inputDlgId.each(function(n) { 
-            dlgId.push(inputDlgId[n].value);
-            return dlgId;
-        });
-
-        var inputUtterArray = new Array();
-        $('#utterTableBody tr').each(function() {
-            if ( $(this).find('div').hasClass('checked') ) {
-                inputUtterArray.push($(this).find('input[name=hiddenUtter]').val());
+        var entitiyCheckFlag = true;  
+        var entitiyCheckCount = 0;
+        $('input[name=tableCheckBox]').each(function() {
+            if($(this).parent().hasClass('checked') == true) {               
+                entitiyCheckCount++; 
+                if($(this).parents('tr').find('input[name=entity]').val() == "") {
+                    entitiyCheckFlag = false;
+                } 
             }
-        });
-
-        var utterQuery = $('');
-        var luisId = $('#dlgViewDiv').find($('input[name=luisId]'))[0].value;
-        var luisIntent = $('#dlgViewDiv').find($('input[name=luisIntent]'))[0].value;
-
-        $.ajax({
-            url: '/learning/learnUtterAjax',
-            dataType: 'json',
-            type: 'POST',
-            data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent, 'utters' : inputUtterArray},
-            success: function(result) {
-                if(result['result'] == true) {
-                    alert(language.Added);
-                    
-                    $('input[name=tableAllChk]').parent().iCheck('uncheck');
-
-                    $('.recommendTbl tbody').html('');
-                    $('#dlgViewDiv').html('');
-
-                    $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
-                    $('.pagination').html('');
-                }else{
-                    alert(language.It_failed);
-                }
-            }
-        });
+        })
         
+        if(entitiyCheckCount == 0) {
+            alert("선택된 문장이 없습니다 문장을 선택해주세요.");
+        } else if(entitiyCheckCount > 1) {
+            alert("학습된 엔티티가 포함된 문장을 한개만 선택해주세요.");
+        } else if(entitiyCheckCount == 1) {
 
+            if(entitiyCheckFlag == false) {
+                alert("선택된 문장에 학습된 엔티티가 포함되어 있지 않습니다. 신규 단어 추가를 해주세요.")
+            } else {
+                
+                if($('input[name=dlgBoxChk]').parent().hasClass('checked') == true) {
+                    if($('#dlgViewDiv').children().length == 0){
+                        alert("선택된 대화상자창에 대화상자가 없습니다. 대화상자를 검색해서 추가 하시거나 생성해주세요.");
+                    } else {
+                        var entities = $('input[name=entity]').val();
+
+                        var inputDlgId = $('input[name=dlgId]');
+                        var dlgId = new Array();
+                        inputDlgId.each(function(n) { 
+                            dlgId.push(inputDlgId[n].value);
+                            return dlgId;
+                        });
+
+                        var inputUtterArray = new Array();
+                        $('#utterTableBody tr').each(function() {
+                            if ( $(this).find('div').hasClass('checked') ) {
+                                inputUtterArray.push($(this).find('input[name=hiddenUtter]').val());
+                            }
+                        });
+
+                        var utterQuery = $('');
+                        var luisId = $('#dlgViewDiv').find($('input[name=luisId]'))[0].value;
+                        var luisIntent = $('#dlgViewDiv').find($('input[name=luisIntent]'))[0].value;
+
+                        $.ajax({
+                            url: '/learning/learnUtterAjax',
+                            dataType: 'json',
+                            type: 'POST',
+                            data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent, 'utters' : inputUtterArray},
+                            success: function(result) {
+                                if(result['result'] == true) {
+                                    alert(language.Added);
+                                    
+                                    $('input[name=tableAllChk]').parent().iCheck('uncheck');
+
+                                    $('.recommendTbl tbody').html('');
+                                    $('#dlgViewDiv').html('');
+
+                                    $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
+                                    $('.pagination').html('');
+                                }else{
+                                    alert(language.It_failed);
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    alert("대화상자를 선택해주세요.");
+                } 
+            }
+        }
     });
 
     
@@ -650,11 +687,11 @@ $(document).ready(function(){
             insertForm += '</div>'
             insertForm += '<div class="form-group">';
             insertForm += '<label>' + language.DIALOG_BOX_TITLE + '</label>';
-            insertForm += '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder=" ' + language.Please_enter + '">';
+            insertForm += '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder=" ' + language.Please_enter + '" spellcheck="false" autocomplete="off">';
             insertForm += '</div>';
             insertForm += '<div class="form-group">';
             insertForm += '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>';
-            insertForm += '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder=" ' + language.Please_enter + ' ">';
+            insertForm += '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder=" ' + language.Please_enter + '" spellcheck="false" autocomplete="off">';
             insertForm += '</div>';
             insertForm += '</div>';
             insertForm += '<div class="btn_wrap deleteInsertFormDiv" style="clear:both;" >';
@@ -1614,7 +1651,7 @@ function openModalBox(target){
     carouselForm =  '<div class="carouselLayout">' +                                                               
                     '<div class="form-group">' +  
                     '<label>' + language.IMAGE_URL + '</label>' +  
-                    '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '">' +  
+                    '<input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="' + language.Please_enter + '"  spellcheck="false" autocomplete="off">' +  
                     '</div>' +  
                     '<div class="modal_con btnInsertDiv">' +  
                     '</div>' +  
@@ -1634,11 +1671,11 @@ function openModalBox(target){
 
     mediaForm = '<div class="form-group">' +
                 '<label>' + language.IMAGE_URL + '<span class="nec_ico">*</span></label>' +
-                '<input type="text" name="mediaImgUrl" class="form-control" placeholder="' + language.Please_enter + '">' +
+                '<input type="text" name="mediaImgUrl" class="form-control" placeholder="' + language.Please_enter + '"  spellcheck="false" autocomplete="off">' +
                 '</div>' +
                 '<div class="form-group">' +
                 '<label>' + language.MEDIA_URL + '</label>' +
-                '<input type="text" name="mediaUrl"class="form-control" placeholder="' + language.Please_enter + '">' +
+                '<input type="text" name="mediaUrl"class="form-control" placeholder="' + language.Please_enter + '" spellcheck="false" autocomplete="off">' +
                 '</div>' +    
                 '<div class="modal_con btnInsertDiv">' +
                 '</div>' +
@@ -1649,11 +1686,11 @@ function openModalBox(target){
     dlgForm = '<div class="textLayout">' +                                                         
               '<div class="form-group">' + 
               '<label>' + language.DIALOG_BOX_TITLE + '</label>' + 
-              '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="' + language.Please_enter + '">' + 
+              '<input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="' + language.Please_enter + '" spellcheck="false" autocomplete="off">' + 
               '</div>' +                                                                                         
               '<div class="form-group">' + 
               '<label>' + language.DIALOG_BOX_CONTENTS + '<span class="nec_ico">*</span></label>' + 
-              '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="' + language.Please_enter + '">' + 
+              '<input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="' + language.Please_enter + '" spellcheck="false" autocomplete="off">' + 
               '</div>' +  
               '</div>';
 
@@ -1788,8 +1825,8 @@ function searchDialog() {
                             inputUttrHtml += '<div><div class="format-markdown"><div class="textMent">';
                             inputUttrHtml += '<p>';
                             inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
-                            inputUttrHtml += '<input type="hidden" name="luisId" value="' + tmp.LUIS_ID + '"/>';
-                            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + tmp.LUIS_INTENT + '"/>';
+                            inputUttrHtml += '<input type="hidden" name="luisId" value="' + tmp.GroupL + '"/>';
+                            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + tmp.GroupM + '"/>';
                             inputUttrHtml += tmp.dlg[j].CARD_TEXT;
                             inputUttrHtml += '</p>';
                             inputUttrHtml += '</div></div></div></div></div>';
@@ -1809,8 +1846,8 @@ function searchDialog() {
                                 inputUttrHtml += '<div class="wc-hscroll" style="margin-bottom: 0px;" class="content" id="slideDiv' + (botChatNum) + '">';
                                 inputUttrHtml += '<ul style="padding-left: 0px;">';
                                 inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
-                                inputUttrHtml += '<input type="hidden" name="luisId" value="' + tmp.LUIS_ID + '"/>';
-                                inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + tmp.LUIS_INTENT + '"/>';
+                                inputUttrHtml += '<input type="hidden" name="luisId" value="' + tmp.GroupL + '"/>';
+                                inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + tmp.GroupM + '"/>';
                             }
                             inputUttrHtml += '<li class="wc-carousel-item">';
                             inputUttrHtml += '<div class="wc-card hero">';
@@ -1858,8 +1895,8 @@ function searchDialog() {
                             inputUttrHtml += '<div class="wc-card hero" style="width:70%">';
                             inputUttrHtml += '<div class="wc-card-div imgContainer">';
                             inputUttrHtml += '<input type="hidden" name="dlgId" value="' + tmp.dlg[j].DLG_ID + '"/>';
-                            inputUttrHtml += '<input type="hidden" name="luisId" value="' + tmp.LUIS_ID + '"/>';
-                            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + tmp.LUIS_INTENT + '"/>';
+                            inputUttrHtml += '<input type="hidden" name="luisId" value="' + tmp.GroupL + '"/>';
+                            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + tmp.GroupM + '"/>';
                             inputUttrHtml += '<img src="' + /* 이미지 url */ tmp.dlg[j].MEDIA_URL + '">';
                             inputUttrHtml += '<div class="playImg"></div>';
                             inputUttrHtml += '<div class="hidden" alt="' + tmp.dlg[j].CARD_TITLE + '"></div>';
@@ -2010,8 +2047,8 @@ $(document).on('click', '.carouseBtn',function(e){
                 '<tr>'+
                 '<td><select class="form-control" name="btnType"><option value="imBack" selected>imBack</option>' +
                 '<option value="openURL">openURL</option></select></td>' +
-                '<td></td><td><input type="text" name="cButtonName" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
-                '<td></td><td><input type="text" name="cButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                '<td></td><td><input type="text" name="cButtonName" class="form-control" placeholder="' + language.Please_enter + '" spellcheck="false" autocomplete="off"></td>' +
+                '<td></td><td><input type="text" name="cButtonContent" class="form-control" placeholder="' + language.Please_enter + '" spellcheck="false" autocomplete="off"></td>' +
                 '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
                 '</tr></tbody></table></div>';
                
@@ -2026,8 +2063,8 @@ $(document).on('click', '.carouseBtn',function(e){
         var inputTrHtml = '<tr>'+
                 '<td><select class="form-control" name="btnType"><option value="imBack" selected>imBack</option>' +
                 '<option value="openURL">openURL</option></select></td>' +
-                '<td></td><td><input type="text" name="cButtonName" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
-                '<td></td><td><input type="text" name="cButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                '<td></td><td><input type="text" name="cButtonName" class="form-control" placeholder="' + language.Please_enter + '" spellcheck="false" autocomplete="off"></td>' +
+                '<td></td><td><input type="text" name="cButtonContent" class="form-control" placeholder="' + language.Please_enter + '" spellcheck="false" autocomplete="off"></td>' +
                 '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
                 '</tr>'
                 $(this).parent().prev().prev().prev().find('.cardCopyTbl tbody').append(inputTrHtml);
@@ -2142,9 +2179,9 @@ $(document).on('click', '.addMediaBtn',function(e){
                     '<option value="openURL">openURL</option>' +
                     '</select>' +
                     '</td><td></td>' +
-                    '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '">' +
+                    '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '" spellcheck="false" autocomplete="off">' +
                     '</td><td></td><td>' +
-                    '<input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '">' +
+                    '<input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '" spellcheck="false" autocomplete="off">' +
                     '</td><td></td><td>' +
                     '<a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a>' +
                     '</td></tr></tbody></table></div></div></div>';
@@ -2164,8 +2201,8 @@ $(document).on('click', '.addMediaBtn',function(e){
                 '<option value="openURL">openURL</option>' +
                 '</select>' +
                 '</td><td></td>' +
-                '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
-                '<td></td><td><input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '"></td>' +
+                '<td><input type="text" name="mButtonName" class="form-control" placeholder="' + language.Please_enter + '" spellcheck="false" autocomplete="off"></td>' +
+                '<td></td><td><input type="text" name="mButtonContent" class="form-control" placeholder="' + language.Please_enter + '" spellcheck="false" autocomplete="off"></td>' +
                 '<td></td><td><a href="#" class="btn_delete" style="margin:0px;"><span class="fa fa-trash"></span></a></td>' +
                 '</tr>'
                 $(this).parent().prev().find('tbody').append(inputTrHtml);
