@@ -62,7 +62,7 @@
                                 <div class="box-header with-border"><h3 class="box-title"><%= __('Sentence_input') %></h3></div>
                                 <!-- 검색창 --> 
                                 <div class="form-group">
-                                    <input type="text" name="iptUtterance" class="form-control" placeholder="<%= __('Please_enter_a_sentence') %>">
+                                    <input type="text" name="iptUtterance" class="form-control" placeholder="<%= __('Please_enter_a_sentence') %>" spellcheck="false" autocomplete='off'>
                                 </div> 
                                 <!-- 학습 추천 테이블 --> 
                                 <div class="Tbl_wrap">
@@ -154,14 +154,14 @@
                         <div class="modal-body">
                               <div class="form-group" >
                                   <label><%= __('Entity definition') %><span class="nec_ico">*</span></label>
-                                  <input name="entityDefine" id="entityDefine" type="text" tabindex="1" class="form-control" placeholder=" <%= __('Please_enter') %>" onkeyup="dialogValidation();">
+                                  <input name="entityDefine" id="entityDefine" type="text" tabindex="1" class="form-control" placeholder=" <%= __('Please_enter') %>" onkeyup="dialogValidation();" spellcheck="false" autocomplete='off'>
                               </div>
                               <div class="form-group" >
                                   <label><%= __('Entity value') %><span class="nec_ico">*</span></label>
                                   <button type="button" class="btn btn_01" id="addEntityValBtn" ><%= __('ADD') %></button>
                                   <div class="entityValDiv" >
                                       <div style="margin-top:4px;">
-                                          <input name="entityValue" id="entityValue" type="text" tabindex="2" class="form-control" style=" float: left; width:80%;" placeholder=" <%= __('Please_enter') %>" onkeyup="entityValidation();">
+                                          <input name="entityValue" id="entityValue" type="text" tabindex="2" class="form-control" style=" float: left; width:80%;" placeholder=" <%= __('Please_enter') %>" onkeyup="entityValidation();" spellcheck="false" autocomplete='off'>
                                           <a href="#" name="delEntityBtn" class="entity_delete" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a>
                                           <!--<button type="button" class="btn btn_03" style=" margin: 4px 0 0 4px;" name="delEntityBtn" ><%= __('DELETE') %></button>-->
                                       </div>
@@ -199,7 +199,7 @@
                     <form name="searchForm" id="searchForm" method="post" onsubmit="return false">
                         <div class="form-group fl"  style="width:26%;">
                             <label><%= __('GROUP_INFORMATION') %></label>
-                            <input type="text" name="serachDlg" class="form-control" placeholder=" <%= __('Please_enter') %>">
+                            <input type="text" name="serachDlg" class="form-control" placeholder=" <%= __('Please_enter') %>" spellcheck="false" autocomplete='off'>
                         </div>             
                         <div class="form-group fl ml10"  style="width:20%;">
                             <label><%= __('Large_group') %></label>
@@ -276,7 +276,7 @@
                                 <div class="clear-both"></div>
                                 <div class="form-group" >
                                     <label><%= __('explanation') %></label>
-                                    <textarea class="form-control" name="description" id="description" rows="3" placeholder="<%= __('Please_enter') %>"></textarea>
+                                    <textarea class="form-control" name="description" id="description" rows="3" placeholder="<%= __('Please_enter') %>" spellcheck="false" autocomplete='off'></textarea>
                                 </div>  
                             </form>
                             <div id="commonLayout" class="dialog_w">
@@ -305,18 +305,18 @@
                                 <div class="textLayout" style="display: none;">                                                         
                                     <div class="form-group">
                                         <label><%= __('DIALOG_BOX_TITLE') %></label>
-                                        <input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="<%= __('Please_enter') %>">
+                                        <input type="text" name="dialogTitle" class="form-control" onkeyup="writeDialogTitle(this);" placeholder="<%= __('Please_enter') %>" spellcheck="false" autocomplete='off'>
                                     </div>                                                                                        
                                     <div class="form-group">
                                         <label><%= __('DIALOG_BOX_CONTENTS') %><span class="nec_ico">*</span></label>
-                                        <input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="<%= __('Please_enter') %>">
+                                        <input type="text" name="dialogText" class="form-control" onkeyup="writeDialog(this);" placeholder="<%= __('Please_enter') %>" spellcheck="false" autocomplete='off'>
                                     </div>                                     
                                 </div>
                                 <!--카드 타입 -->
                                 <div class="carouselLayout" style="display:none;">                                                               
                                     <div class="form-group">
                                         <label><%= __('IMAGE_URL') %></label>
-                                        <input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="<%= __('Please_enter') %>">
+                                        <input type="text" name="imgUrl" class="form-control" onkeyup="writeCarouselImg(this);" placeholder="<%= __('Please_enter') %>" spellcheck="false" autocomplete='off'>
                                     </div>
                                     <div class="modal_con btnInsertDiv">
                                         
@@ -371,11 +371,11 @@
                                                         </td>
                                                         <td></td>
                                                         <td>
-                                                            <input type="text" name="cButtonName" class="form-control" placeholder="<%= __('Please_enter') %>">
+                                                            <input type="text" name="cButtonName" class="form-control" placeholder="<%= __('Please_enter') %>" spellcheck="false" autocomplete='off'>
                                                         </td>
                                                         <td></td>
                                                         <td>
-                                                            <input type="text" name="cButtonContent" class="form-control" placeholder="<%= __('Please_enter') %>">
+                                                            <input type="text" name="cButtonContent" class="form-control" placeholder="<%= __('Please_enter') %>" spellcheck="false" autocomplete='off'>
                                                         </td>
                                                         <td></td>
                                                         <td>
@@ -424,11 +424,11 @@
                                                         </td>
                                                         <td></td>
                                                         <td>
-                                                            <input type="text" name="mButtonName" class="form-control" placeholder="<%= __('Please_enter') %>">
+                                                            <input type="text" name="mButtonName" class="form-control" placeholder="<%= __('Please_enter') %>" spellcheck="false" autocomplete='off'>
                                                         </td>
                                                         <td></td>
                                                         <td>
-                                                            <input type="text" name="mButtonContent" class="form-control" placeholder="<%= __('Please_enter') %>">
+                                                            <input type="text" name="mButtonContent" class="form-control" placeholder="<%= __('Please_enter') %>" spellcheck="false" autocomplete='off'>
                                                         </td>
                                                         <td></td>
                                                         <td>
@@ -445,11 +445,11 @@
                                 <div class="mediaLayout" style="display:none;" id="dialog3">                                                                
                                     <div class="form-group">
                                         <label><%= __('IMAGE_URL') %><span class="nec_ico">*</span></label>
-                                        <input type="text" name="mediaImgUrl"class="form-control" placeholder="<%= __('Please_enter') %>">
+                                        <input type="text" name="mediaImgUrl"class="form-control" placeholder="<%= __('Please_enter') %>" spellcheck="false" autocomplete='off'>
                                     </div>
                                     <div class="form-group">
                                         <label><%= __('MEDIA_URL') %></label>
-                                        <input type="text" name="mediaUrl"class="form-control" placeholder="<%= __('Please_enter') %>">
+                                        <input type="text" name="mediaUrl"class="form-control" placeholder="<%= __('Please_enter') %>" spellcheck="false" autocomplete='off'>
                                     </div>    
                                     <div class="modal_con btnInsertDiv">
 
@@ -478,25 +478,25 @@
                                     <div class="layout-float-left">
                                         <p class="texcon03">Button Name <span>(optional) </span></p>
                                         <p>
-                                            <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." />
-                                            <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" placeholder="Input name.." />
-                                            <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" placeholder="Input name.." />
-                                            <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" placeholder="Input name.." />
+                                            <input name="buttonName1" type="text" class="inbox02 btnBox" id="buttonName1" placeholder="Input name.." spellcheck="false" autocomplete='off'/>
+                                            <input name="buttonName2" type="text" class="inbox02 btnBox" id="buttonName2" placeholder="Input name.." spellcheck="false" autocomplete='off'/>
+                                            <input name="buttonName3" type="text" class="inbox02 btnBox" id="buttonName3" placeholder="Input name.." spellcheck="false" autocomplete='off'/>
+                                            <input name="buttonName4" type="text" class="inbox02 btnBox" id="buttonName4" placeholder="Input name.." spellcheck="false" autocomplete='off'/>
                                         </p>
                                     </div>
                                     <div class="layout-float-left-last">
                                         <p class="texcon03">Button Content <span>(optional) </span></p>
                                         <p>
-                                            <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." />
-                                            <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." />
-                                            <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." />
-                                            <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" placeholder="Input contents.." />
+                                            <input name="buttonContent1" type="text" class="inbox02 btnBox" id="buttonContent1" placeholder="Input contents.." spellcheck="false" autocomplete='off'/>
+                                            <input name="buttonContent2" type="text" class="inbox02 btnBox" id="buttonContent2" placeholder="Input contents.." spellcheck="false" autocomplete='off'/>
+                                            <input name="buttonContent3" type="text" class="inbox02 btnBox" id="buttonContent3" placeholder="Input contents.." spellcheck="false" autocomplete='off'/>
+                                            <input name="buttonContent4" type="text" class="inbox02 btnBox" id="buttonContent4" placeholder="Input contents.." spellcheck="false" autocomplete='off'/>
                                         </p>
                                     </div>
                                     <div class="clear-both"></div>
             
                                     <p class="texcon03">Image Url <span>(optional) </span></p>
-                                    <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:100%" placeholder="Input image url.." /></p>
+                                    <p><input name="imgUrl" type="text" class="inbox02" id="imgUrl" style="width:100%" placeholder="Input image url.." spellcheck="false" autocomplete='off'/></p>
                                 </div>
                                 <!--// media , carousal 일 경우 input box 추가 layout -->
 

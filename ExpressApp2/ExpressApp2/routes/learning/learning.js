@@ -1474,8 +1474,10 @@ router.post('/learnUtterAjax', function (req, res) {
             }
             */
 
-            for(var j = 0 ; j <dlgId.length; j++){
-                if (j === dlgId.length-1) {
+
+
+            for(var j = 0 ; j < (typeof dlgId ==="string" ? 1:dlgId.length); j++){
+                if (j === ((typeof dlgId ==="string" ? 1:dlgId.length) - 1)) {
                     queryText += updateQueryText
                 }
                 result1 = await pool.request()
