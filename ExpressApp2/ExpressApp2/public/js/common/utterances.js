@@ -437,33 +437,18 @@ $(document).ready(function(){
                     alert(language.Added);
                     
                     $('input[name=tableAllChk]').parent().iCheck('uncheck');
+
+                    $('.recommendTbl tbody').html('');
+                    $('#dlgViewDiv').html('');
+
+                    $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
+                    $('.pagination').html('');
+                }else{
+                    alert(language.It_failed);
                 }
-
-            var luisId = $('#dlgViewDiv').find($('input[name=luisId]'))[0].value;
-            var luisIntent = $('#dlgViewDiv').find($('input[name=luisIntent]'))[0].value;
-
-            $.ajax({
-                url: '/learning/learnUtterAjax',
-                dataType: 'json',
-                type: 'POST',
-                data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent, 'utters' : inputUtterArray},
-                success: function(result) {
-                    if(result['result'] == true) {
-                        alert(language.Added);
-                        
-                        $('input[name=tableAllChk]').parent().iCheck('uncheck');
-
-                        $('.recommendTbl tbody').html('');
-                        $('#dlgViewDiv').html('');
-    
-                        $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
-                        $('.pagination').html('');
-                    }else{
-                        alert(language.It_failed);
-                    }
-                }
-            });
-        } 
+            }
+        });
+        
 
     });
 
@@ -1130,19 +1115,19 @@ function createDialog(){
             for (var j = 1; j < tmp.length; j++) {
                 if(tmp[j].name == 'btnType') {
                     tmp[j].name = 'btn'+ (btnTypeCount++) +'Type';
-                    if(btnTypeCount == 4) {
+                    if(btnTypeCount == 5) {
                         btnTypeCount = 1;
                     }
                 }
                 if(tmp[j].name == 'cButtonContent') {
                     tmp[j].name = 'cButtonContent'+ (cButtonContentCount++);
-                    if(cButtonContentCount == 4) {
+                    if(cButtonContentCount == 5) {
                         cButtonContentCount = 1;
                     }
                 }
                 if(tmp[j].name == 'cButtonName') {
                     tmp[j].name = 'cButtonName'+ (cButtonNameCount++);
-                    if(cButtonNameCount == 4) {
+                    if(cButtonNameCount == 5) {
                         cButtonNameCount = 1;
                     }
                 }
