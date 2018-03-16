@@ -1555,8 +1555,8 @@ router.post('/deleteRecommend',function(req,res){
                 let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
                 for(var i = 0 ; i < arryseq.length; i ++)
                 {
-                   var deleteQueryString1 = "UPDATE TBL_QUERY_ANALYSIS_RESULT SET RESULT='T' WHERE seq='"+arryseq[i]+"'";
-                   let result5 = await pool.request().query(deleteQueryString1); 
+                   var deleteQueryString1 = "UPDATE TBL_QUERY_ANALYSIS_RESULT SET TRAIN_FLAG = 'Y' WHERE seq='"+arryseq[i]+"'";
+                   let result5 = await pool.request().query(deleteQueryString1);
                 }
                 res.send();
             }catch(err){
