@@ -92,13 +92,14 @@
                                                         <label><%= __('channel') %></label>
                                                         <select class="form-control" id="selChannel" name="selChannel" > 
                                                             <option value="all"><%= __('All') %></option>
-                                                            <% if (channelList) { 
+                                                            <% if (sid) {
+                                                                if (channelList) { 
                                                                     for (var i=0; i <channelList.length; i++) { %>
                                                                         <option value="<%=channelList[i].CHANNEL%>"><%=channelList[i].CHANNEL%></option>
                                                             <%      } 
                                                                 } else { %>
                                                                 
-                                                            <% } %>
+                                                            <% }  } %>
                                                         </select>
                                                    </div> 
                                                    <div class="col-lg-3 form-group fr mt50 txt_right ">                                                   

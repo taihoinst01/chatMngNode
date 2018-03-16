@@ -233,7 +233,7 @@ router.get('/list', function (req, res) {
     (async () => {
         try {
 
-            let pool = await dbConnect.getConnection(sql);
+            let pool = await dbConnect.getAppConnection(sql);
             let rslt = await pool.request()
                 .query(userListStr);
             rows = rslt.recordset
