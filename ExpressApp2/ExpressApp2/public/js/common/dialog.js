@@ -2825,6 +2825,10 @@ function updateDialog() {
         success: function(result) {
             alert('success');
             $('.createDlgModalClose').click();
+
+            var groupType =  $('.selected').text();
+            var sourceType = $('#tblSourceType').val();
+            selectDlgByTxt(groupType, sourceType);
         }
 
     });
