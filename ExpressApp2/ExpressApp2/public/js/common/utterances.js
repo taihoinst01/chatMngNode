@@ -401,13 +401,17 @@ $(document).ready(function(){
         })
         if(exit) return;
 */
+        /*
         var inputEntity = $('input[name=entity]');
-
+        
         var entities = new Array();
         inputEntity.each(function(n) { 
             entities.push(inputEntity[n].value);
             return entities;
         });
+        */
+
+        var entities = $('input[name=entity]').val();
 
         var inputDlgId = $('input[name=dlgId]');
         var dlgId = new Array();

@@ -1398,8 +1398,7 @@ router.post('/learnUtterAjax', function (req, res) {
     var luisId = req.body.luisId;
     var luisIntent = req.body.luisIntent;
 
-    var entities = [];
-    entities = req.body['entities[]'];
+    var entities = req.body.entities;
     
     var dlgId = [];
     dlgId = req.body['dlgId[]'];
@@ -1466,6 +1465,30 @@ router.post('/learnUtterAjax', function (req, res) {
             }
             */
 
+            for(var j = 0 ; j <dlgId.length; j++){
+                if (j === dlgId.length-1) {
+                    queryText += updateQueryText
+                }
+                result1 = await pool.request()
+                                .input('luisId', sql.NVarChar, luisId)
+                                .input('luisIntent', sql.NVarChar, luisIntent)
+                                .input('entities', sql.NVarChar, entities)
+                                .input('dlgId', sql.NVarChar, (typeof dlgId ==="string" ? dlgId:dlgId[j]))
+                                .query(queryText);
+                
+                result2 = await pool.request()
+                                .input('entities', sql.NVarChar, entities)
+                                .input('dlgId', sql.NVarChar, (typeof dlgId ==="string" ? dlgId:dlgId[j]))
+                                .query(updateTblDlg);
+                
+            }
+            
+            /*
+           result2 = await pool.request()
+           .input('entities', sql.NVarChar, (typeof entities ==="string" ? entities:entities[i]))
+           .input('dlgId', sql.NVarChar, (typeof dlgId ==="string" ? dlgId:dlgId[j]))
+           .query(updateTblDlg);
+
            if(typeof dlgId == "string") {
                 queryText += updateQueryText
                 result1 = await pool.request()
@@ -1489,6 +1512,7 @@ router.post('/learnUtterAjax', function (req, res) {
                                     .query(queryText);
                 }
             }
+            */
 
             console.log(result1);
             //console.log(result2);
@@ -1552,16 +1576,16 @@ router.post('/selectGroup',function(req,res){
                 selectValue1 = selectValue1.trim();
                 queryText = "SELECT DISTINCT GroupM AS 'GROUP'\n";
                 queryText += "FROM TBL_DLG\n";
-                queryText += "WHERE GroupL IS NOT NULL\n";
-                queryText += "AND GroupL LIKE '%" + selectValue1 + "%'";
+                queryText += "WHERE GroupM IS NOT NULL\n";
+                queryText += "AND GroupL = '" + selectValue1 + "'";
             } else if(selectId == "searchSmallGroup") {
                 selectValue1 = selectValue1.trim();
                 selectValue2 = selectValue2.trim();
                 queryText = "SELECT DISTINCT GroupS AS 'GROUP'\n";
                 queryText += "FROM TBL_DLG\n";
-                queryText += "WHERE GroupL IS NOT NULL\n";
-                queryText += "AND GroupL LIKE '%" + selectValue1 + "%'\n";
-                queryText += "AND GroupM LIKE '%" + selectValue2 + "%'";
+                queryText += "WHERE GroupS IS NOT NULL\n";
+                queryText += "AND GroupL = '" + selectValue1 + "'\n";
+                queryText += "AND GroupM = '" + selectValue2 + "'";
             }
 
             let result = await pool.request().query(queryText);
@@ -1580,12 +1604,13 @@ router.post('/selectGroup',function(req,res){
     })
 });
 
+/* 릴레이션 버전
 router.post('/searchDialog',function(req,res){
     var searchLargeGroup = req.body.searchLargeGroup;
     var searchMediumGroup = req.body.searchMediumGroup;
     var searchSmallGroup = req.body.searchSmallGroup;
     var serachDlg = req.body.serachDlg.trim();
-
+    
     var relationText = "SELECT RNUM, LUIS_ENTITIES, A.DLG_ID DLG_ID, B.DLG_TYPE, DLG_ORDER_NO, LUIS_ID, LUIS_INTENT \n";
         relationText += "FROM (\n";
         relationText += "SELECT RANK() OVER(ORDER BY LUIS_ENTITIES) AS RNUM, LUIS_ENTITIES, DLG_ID, LUIS_ID, LUIS_INTENT \n";
@@ -1770,7 +1795,193 @@ router.post('/searchDialog',function(req,res){
     })
 
 });
+*/
 
+router.post('/searchDialog',function(req,res){
+    var searchLargeGroup = req.body.searchLargeGroup;
+    var searchMediumGroup = req.body.searchMediumGroup;
+    var searchSmallGroup = req.body.searchSmallGroup;
+    var serachDlg = req.body.serachDlg.trim();
+
+    var tblDlgSearch = "SELECT RNUM, GroupS, DLG_ID, DLG_TYPE, DLG_ORDER_NO, GroupL, GroupM \n";
+    tblDlgSearch += "FROM (\n";
+    tblDlgSearch += "SELECT RANK() OVER(ORDER BY GroupS) AS RNUM, GroupS, DLG_ID, DLG_TYPE, DLG_ORDER_NO, GroupL, GroupM \n";
+    tblDlgSearch += "FROM TBL_DLG \n";
+    tblDlgSearch += "WHERE 1=1\n";
+    if(serachDlg) {
+
+        tblDlgSearch += "AND GroupS like '%" + serachDlg + "%'\n";
+    } else {
+        
+        if(searchLargeGroup) {
+            tblDlgSearch += "AND GroupL = '" + searchLargeGroup + "'\n";
+            if(searchMediumGroup) {
+                tblDlgSearch += "AND GroupM = '" + searchMediumGroup + "'\n";
+                if(searchSmallGroup) {
+                    tblDlgSearch += "AND GroupS = '" + searchSmallGroup + "'\n";
+                }
+            }
+        }
+    }
+    tblDlgSearch += ")A \n ORDER BY DLG_ID"
+
+    var dlgText = "SELECT DLG_ID, CARD_TITLE, CARD_TEXT, USE_YN, '2' AS DLG_TYPE \n"
+        dlgText += "FROM TBL_DLG_TEXT\n";
+        dlgText += "WHERE USE_YN = 'Y'\n"
+        dlgText += "AND DLG_ID IN (\n"
+        dlgText += "SELECT DISTINCT DLG_ID\n"
+        dlgText += "FROM TBL_DLG\n"
+        dlgText += "WHERE 1=1\n";
+
+        if(serachDlg) {
+        
+            dlgText += "AND GroupS like '%" + serachDlg + "%'\n";
+        } else {
+            if(searchLargeGroup) {
+                dlgText += "AND GroupL = '" + searchLargeGroup + "'\n";
+                if(searchMediumGroup) {
+                    dlgText += "AND GroupM = '" + searchMediumGroup + "'\n";
+                    if(searchSmallGroup) {
+                        dlgText += "AND GroupS = '" + searchSmallGroup + "'\n";
+                    }
+                }
+            }   
+        }
+        dlgText += ") \n ORDER BY DLG_ID";
+
+    var dlgCard = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, IMG_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n";
+        dlgCard += "BTN_2_TYPE, BTN_2_TITLE, BTN_2_CONTEXT,\n";
+        dlgCard += "BTN_3_TYPE, BTN_3_TITLE, BTN_3_CONTEXT,\n";
+        dlgCard += "BTN_4_TYPE, BTN_4_TITLE, BTN_4_CONTEXT,\n";
+        dlgCard += "CARD_ORDER_NO, CARD_VALUE,\n";
+        dlgCard += "USE_YN, '3' AS DLG_TYPE \n";
+        dlgCard += "FROM TBL_DLG_CARD\n";
+        dlgCard += "WHERE USE_YN = 'Y'\n";
+        dlgCard += "AND DLG_ID IN (\n";
+        dlgCard += "SELECT DISTINCT DLG_ID\n";
+        dlgCard += "FROM TBL_DLG\n";
+        dlgCard += "WHERE 1=1\n";
+
+        if(serachDlg) {
+        
+            dlgCard += "AND GroupS like '%" + serachDlg + "%'\n";
+        } else {
+
+            if(searchLargeGroup) {
+                dlgCard += "AND GroupL = '" + searchLargeGroup + "'\n";
+                if(searchMediumGroup) {
+                    dlgCard += "AND GroupM = '" + searchMediumGroup + "'\n";
+                    if(searchSmallGroup) {
+                        dlgCard += "AND GroupS = '" + searchSmallGroup + "'\n";
+                    }
+                }
+            }
+        }
+        dlgCard += ") \n ORDER BY DLG_ID";
+    
+    var dlgMedia = "SELECT DLG_ID, CARD_TEXT, CARD_TITLE, MEDIA_URL, BTN_1_TYPE, BTN_1_TITLE, BTN_1_CONTEXT,\n";
+        dlgMedia += "BTN_2_TYPE, BTN_2_TITLE, BTN_2_CONTEXT,\n";
+        dlgMedia += "BTN_3_TYPE, BTN_3_TITLE, BTN_3_CONTEXT,\n";
+        dlgMedia += "BTN_4_TYPE, BTN_4_TITLE, BTN_4_CONTEXT,\n";
+        dlgMedia += "CARD_VALUE,\n";
+        dlgMedia += "USE_YN, '4' AS DLG_TYPE \n";
+        dlgMedia += "FROM TBL_DLG_MEDIA\n";
+        dlgMedia += "WHERE USE_YN = 'Y'\n";
+        dlgMedia += "AND DLG_ID IN (\n";
+        dlgMedia += "SELECT DISTINCT DLG_ID\n";
+        dlgMedia += "FROM TBL_DLG\n";
+        dlgMedia += "WHERE 1=1\n";
+
+        if(serachDlg) {
+        
+            dlgMedia += "AND GroupS like '%" + serachDlg + "%'\n";
+        } else {
+
+            if(searchLargeGroup) {
+                dlgMedia += "AND GroupL = '" + searchLargeGroup + "'\n";
+                if(searchMediumGroup) {
+                    dlgMedia += "AND GroupM = '" + searchMediumGroup + "'\n";
+                    if(searchSmallGroup) {
+                        dlgMedia += "AND GroupS ='" + searchSmallGroup + "'\n";
+                    }
+                }
+            }
+        }
+        dlgMedia += ") \n ORDER BY DLG_ID";
+
+    (async () => {
+        try{
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
+
+            let dlgTextResult = await pool.request()
+                .query(dlgText);
+            let rowsText = dlgTextResult.recordset;
+
+            let dlgCardResult = await pool.request()
+                .query(dlgCard);
+            let rowsCard = dlgCardResult.recordset;
+
+            let dlgMediaResult = await pool.request()
+                .query(dlgMedia);
+            let rowsMedia = dlgMediaResult.recordset;
+            
+            let result1 = await pool.request()
+                .query(tblDlgSearch)
+            let rows = result1.recordset;
+            var result = [];
+            for(var i = 0; i < rows.length; i++){
+
+                var row = {};
+                row.RNUM = rows[i].RNUM;
+                row.GroupS = rows[i].GroupS;
+                row.DLG_ID = rows[i].DLG_ID;
+                row.DLG_TYPE = rows[i].DLG_TYPE;
+                row.DLG_ORDER_NO = rows[i].DLG_ORDER_NO;
+                row.GroupL = rows[i].GroupL;
+                row.GroupM = rows[i].GroupM;
+                row.dlg = [];
+                
+                let dlg_type = rows[i].DLG_TYPE;
+                if(dlg_type == 2){
+                    for(var j = 0; j < rowsText.length; j++){
+                        let textDlgId = rowsText[j].DLG_ID;
+                        if(row.DLG_ID == textDlgId){
+                            row.dlg.push(rowsText[j]);
+                        }
+                    }
+                }else if(dlg_type == 3){
+                    for(var j = 0; j < rowsCard.length; j++){
+                        var cardDlgId = rowsCard[j].DLG_ID;
+                        if(row.DLG_ID == cardDlgId){                       
+                            row.dlg.push(rowsCard[j]);
+                        }
+                    }
+                }else if(dlg_type == 4){
+                    for(var j = 0; j < rowsMedia.length; j++){
+                        var mediaDlgId = rowsMedia[j].DLG_ID;
+                        if(row.DLG_ID == mediaDlgId){
+                            row.dlg.push(rowsMedia[j]);
+                        }
+                    }
+                }
+                result.push(row);
+            }
+
+            res.send({list : result});
+        
+        }catch(err){
+            console.log(err);
+        }finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
+        sql.close();
+        console.log(err);
+    })
+
+});
 
 router.post('/addDialog',function(req,res){
 
@@ -1866,7 +2077,7 @@ router.post('/addDialog',function(req,res){
                     let result4 = await pool.request()
                     .input('dlgId', sql.Int, dlgId[0].DLG_ID)
                     .input('dialogTitle', sql.NVarChar, (array[i]["dialogTitle"].trim() == '' ? null: array[i]["dialogTitle"].trim()) )
-                    .input('dialogText', sql.NVarChar, array[i]["dialogText"])
+                    .input('dialogText', sql.NVarChar, (array[i]["dialogText"].trim() == '' ? null: array[i]["dialogText"].trim()) )
                     .query(inserTblDlgText);                    
 
                 } else if(array[i]["dlgType"] == "3") {
