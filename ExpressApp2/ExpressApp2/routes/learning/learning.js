@@ -35,7 +35,7 @@ router.post('/recommend', function (req, res) {
             "FROM ( \n"+
             "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES \n" +
             "  FROM TBL_QUERY_ANALYSIS_RESULT \n" + 
-            " WHERE (RESULT='D' OR RESULT='S') \n"+
+            " WHERE RESULT NOT IN ('H') \n"+
             "   AND TRAIN_FLAG = 'N' \n";
             
             if(selectType == 'yesterday'){

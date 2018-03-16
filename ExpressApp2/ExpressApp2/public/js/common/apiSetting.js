@@ -70,7 +70,7 @@ $(document).on('click','.editable-cell',function(e){
         
     } else {
         editCellText = $(this).text();
-        var inputHtml = '<input type="text" id="editCell" spellcheck="false" value="' + $(this).text() + '" style="width:80%"/>';
+        var inputHtml = '<input type="text" id="editCell" spellcheck="false" autocomplete="off" value="' + $(this).text() + '" style="width:80%"/>';
         $(this).html(inputHtml);
         $(this).attr('class', 'edit-cell');     
 
@@ -180,9 +180,9 @@ function addApi() {
     var addHtml = "";
     addHtml += '<tr><td>NEW</td>';
     addHtml += '<td><input type="checkbox" class="flat-red" name="tableCheckBox" ></td>'
-    addHtml += '<td><input type="text" name="new_Api_id" value="" style="width:80%"/></td>';
-    addHtml += '<td><input type="text" name="new_Api_url" value="" style="width:80%"/></td> ';
-    addHtml += '<td><input type="text" name="new_Api_desc" value="" style="width:80%"/></td> '
+    addHtml += '<td><input type="text" name="new_Api_id" spellcheck="false" autocomplete="off" value="" style="width:80%"/></td>';
+    addHtml += '<td><input type="text" name="new_Api_url" spellcheck="false" autocomplete="off" value="" style="width:80%"/></td> ';
+    addHtml += '<td><input type="text" name="new_Api_desc" spellcheck="false" autocomplete="off" value="" style="width:80%"/></td> '
     addHtml += '<td></td></tr>';
     $('#tableBodyId').prepend(addHtml);
 

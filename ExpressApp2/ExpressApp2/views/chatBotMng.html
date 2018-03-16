@@ -32,7 +32,7 @@
                                                 <div class="row search_op">
                                                     <div class="form-group col-lg-5"  >
                                                         <label class="fl mr10"><%= __('CHAT') %></label>
-                                                        <input type="text" class="form-control" name="searchName" id="searchName" placeholder="<%= __('Please_enter') %>" style="width:80%">
+                                                        <input type="text" class="form-control" name="searchName" id="searchName" autocomplete='off' spellcheck="false" placeholder="<%= __('Please_enter') %>" style="width:80%">
                                                     </div>  
                                                     <div class="form-group col-lg-2" style="text-align:left"  >
                                                         <button type="button" class="btn btn_01" id="searchBtn"><%= __('SEARCH') %></button>
@@ -125,7 +125,7 @@
 
                                             <div class="form-group" style="clear:both">
                                                 <label style=" margin-left: 2%;"><%= __('DESC') %></label>
-                                                <textarea style="width: 90%; margin: 0 5%;" class="form-control"  rows="10" id="appDes"></textarea>
+                                                <textarea style="width: 90%; margin: 0 5%;" class="form-control" autocomplete='off' spellcheck="false" rows="10" id="appDes"></textarea>
                                             </div> 
 
                                             <div class="modal-footer">
