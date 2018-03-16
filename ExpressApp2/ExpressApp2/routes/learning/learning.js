@@ -2141,6 +2141,93 @@ router.post('/getDlgAjax', function (req, res) {
     })
 });
 
+router.post('/deleteDialog', function (req, res) {
+    var dlgId = req.body.dlgId;
+
+    var selDlgQuery = "SELECT DLG_ID, DLG_TYPE, GROUPS FROM TBL_DLG WHERE DLG_ID = @dlgId";
+
+    var delDlgQuery = "DELETE FROM TBL_DLG WHERE DLG_ID = @dlgId";
+    var delDlgTextQuery = "DELETE FROM TBL_DLG_TEXT WHERE DLG_ID = @dlgId";
+    var delDlgCardQuery = "DELETE FROM TBL_DLG_CARD WHERE DLG_ID = @dlgId";
+    var delDlgMediaQuery = "DELETE FROM TBL_DLG_MEDIA WHERE DLG_ID = @dlgId";
+
+    var delRelationQuery = "DELETE FROM TBL_DLG_RELATION_LUIS WHERE DLG_ID = @dlgId";
+
+    var selDlgGroupSQuery = "SELECT DLG_ID FROM TBL_DLG WHERE GROUPS = @groupS ORDER BY DLG_ORDER_NO";
+
+    var updDlgOrderQuery = "UPDATE TBL_DLG SET DLG_ORDER_NO = @order WHERE DLG_ID = @dlgId";
+
+    var order = [];
+
+    (async () => {
+        try {
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
+
+            let selDlg = await pool.request()
+                .input('dlgId', sql.Int, dlgId)
+                .query(selDlgQuery);
+
+            let selDlgGroupS = await pool.request()
+                .input('groupS', sql.NVarChar, selDlg.recordset[0].GROUPS)
+                .query(selDlgGroupSQuery);
+
+            for(var i = 0; i < selDlgGroupS.recordset.length; i++) {
+                order.push(selDlgGroupS.recordset[i].DLG_ID);
+            }
+
+            if(selDlg.recordset[0].DLG_TYPE == 2) {
+                let delDlgText = await pool.request()
+                    .input('dlgId', sql.Int, dlgId)
+                    .query(delDlgTextQuery);
+            } else if(selDlg.recordset[0].DLG_TYPE == 3) {
+                let delDlgCard = await pool.request()
+                    .input('dlgId', sql.Int, dlgId)
+                    .query(delDlgCardQuery);
+            } else if(selDlg.recordset[0].DLG_TYPE == 4) {
+                let delDlgMedia = await pool.request()
+                    .input('dlgId', sql.Int, dlgId)
+                    .query(delDlgMediaQuery);
+            }
+
+            let delDlg = await pool.request()
+                .input('dlgId', sql.Int, dlgId)
+                .query(delDlgQuery);
+
+            let delRelation = await pool.request()
+                .input('dlgId', sql.Int, dlgId)
+                .query(delRelationQuery);
+
+            for(var i = 0; i < order.length; i++) {
+                if(order[i] == dlgId) {
+                    order.splice(i,1);
+                    break;
+                }
+            }
+
+            var orderCount = 1;
+
+            for(var i = 0; i < order.length; i++) {
+                let updDlgOrder = await pool.request()
+                .input('dlgId', sql.Int, order[i])
+                .input('order', sql.Int, orderCount++)
+                .query(updDlgOrderQuery);
+            }
+
+            res.send({"res":true});
+        
+        } catch (err) {
+            console.log(err);
+        } finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
+
+    })
+
+});
+
 router.post('/updateDialog', function (req, res) {
     var dlgIdReq = req.body.dlgId;
     var dlgType = req.body.dlgType;

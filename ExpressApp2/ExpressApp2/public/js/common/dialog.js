@@ -831,6 +831,7 @@ function searchIptDlg(page){
                             '<td>' + data.list[i].GroupS +'</td>' +
                             '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#myModal2"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
                             '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '<td><a href="#" onclick="deleteDialog('+ data.list[i].DLG_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
                             '</tr>';
                 }
 
@@ -1636,6 +1637,7 @@ function selectDlgByFilter(group){
                             '<td>' + data.list[i].GroupS +'</td>' +
                             '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#myModal2"   onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
                             '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
+                            '<td><a href="#" onclick="deleteDialog('+ data.list[i].DLG_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
                             '</tr>';
                 }
 
@@ -1944,7 +1946,9 @@ function selectDlgByTxt(groupType, sourceType){
                             '<td>' + data.list[i].GroupS +'</td>' +
                             '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#myModal2"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
                             '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
-                            '</tr>';
+                            '<td><a href="#" onclick="deleteDialog('+ data.list[i].DLG_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
+                            '</tr>' ;
+
                 }
 
                 if(data.groupList.length > 0) {
@@ -2820,6 +2824,21 @@ function updateDialog() {
 
         success: function(result) {
             alert('success');
+            $('.createDlgModalClose').click();
+        }
+
+    });
+}
+
+function deleteDialog(dlgId) {
+    $.ajax({
+        url: '/learning/deleteDialog',                //주소
+        dataType: 'json',                  //데이터 형식
+        type: 'POST',                      //전송 타입
+        data: {'dlgId':dlgId},      //데이터를 json 형식, 객체형식으로 전송
+
+        success: function(result) {
+            alert('delele complete');
             $('.createDlgModalClose').click();
         }
 
