@@ -397,21 +397,6 @@ $(document).ready(function(){
         })
         if(exit) return;
 
-<<<<<<< HEAD
-            var luisId = $('#dlgViewDiv').find($('input[name=luisId]'))[0].value;
-            var luisIntent = $('#dlgViewDiv').find($('input[name=luisIntent]'))[0].value;
-
-            $.ajax({
-                url: '/learning/learnUtterAjax',
-                dataType: 'json',
-                type: 'POST',
-                data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent, 'utters' : inputUtterArray},
-                success: function(result) {
-                    if(result['result'] == true) {
-                        alert(language.Added);
-                        
-                        $('input[name=tableAllChk]').parent().iCheck('uncheck');
-=======
         /*
         var inputEntity = $('input[name=entity]');
         
@@ -421,7 +406,6 @@ $(document).ready(function(){
             return entities;
         });
         */
->>>>>>> 018adf8c9fb80809b956f869b068edf46e171d0e
 
         var entities = $('input[name=entity]').val();
 
