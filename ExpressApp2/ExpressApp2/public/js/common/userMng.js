@@ -69,7 +69,7 @@ $(document).on('click','.editable-cell',function(e){
         
     } else {
         editCellText = $(this).text();
-        var inputHtml = '<input type="text" id="editCell" spellcheck="false" value="' + $(this).text() + '"/>';
+        var inputHtml = '<input type="text" id="editCell" spellcheck="false" spellcheck="false" autocomplete="off" value="' + $(this).text() + '"/>';
         $(this).html(inputHtml);
         $(this).attr('class', 'edit-cell');     
 
@@ -182,8 +182,8 @@ function initPassword(userId) {
 function addUser() {
     var addHtml = "";
     addHtml = '<tr><td>NEW</td><td><input type="checkbox" class="flat-red" name="tableCheckBox"></td>'
-    addHtml += '<td><input type="text" name="new_user_id" value="" /></td>';
-    addHtml += '<td><input type="text" name="new_user_name" value="" /></td> ';
+    addHtml += '<td><input type="text" name="new_user_id" spellcheck="false" autocomplete="off" value="" /></td>';
+    addHtml += '<td><input type="text" name="new_user_name" spellcheck="false" autocomplete="off" value="" /></td> ';
     addHtml += '<td></td>   <td></td>  <td></td>  <td></td>  <td></td>  <td></td></tr>'
 
     $('#tableBodyId').prepend(addHtml);

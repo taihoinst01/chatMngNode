@@ -326,7 +326,7 @@ router.post('/nodeQuery', function (req, res) {
         selectQuery += "     ON DL.DLG_ID = CA.DLG_ID \n";
         selectQuery += "LEFT OUTER JOIN (SELECT DLG_ID, CARD_TEXT, CARD_TITLE, BTN_1_CONTEXT FROM TBL_DLG_MEDIA) ME \n";
         selectQuery += "     ON DL.DLG_ID = ME.DLG_ID \n";
-        selectQuery += ") AA  WHERE (RESULT = '' OR RESULT IN ('D','N') ) AND TRAIN_FLAG = 'N' \n ) tbp \n" +
+        selectQuery += ") AA  WHERE  RESULT NOT IN ('H') AND TRAIN_FLAG = 'N' \n ) tbp \n" +
                     " WHERE 1=1 \n" +
                     " AND PAGEIDX = " + currentPage + "; \n";
     
