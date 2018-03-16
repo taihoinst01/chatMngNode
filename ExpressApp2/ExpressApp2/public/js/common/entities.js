@@ -74,7 +74,7 @@ $(document).on("click", "a[name=delEntityBtn]", function(e){
     }
 });
 
-$(document).on("keypress", "input[name=entityValue]", function(e){
+$(document).on("keypress", ".modal-body input[name=entityValue]", function(e){
     if (e.keyCode === 13) {	//	Enter Key
         //var inputIndex = $('.entityValDiv  input[name=entityValue]').index($(this));
         $('#addEntityValBtn').trigger('click');
@@ -130,7 +130,7 @@ function entitiesAjax(){
                     item += '<a class="more fl"><span class="hc">+</span></a>';
                     item += '<div class="board">';
                     item += '<ul>';
-                    item += '<form action="" method="post" name="entityForm">';
+                    item += '<form action="" method="post" onsubmit="return false;" name="entityForm">';
                     item += ' <li class="inp"><input name="entityValue" type="text" class="form-control fl"  style="width:60%;">';
                     item += '<button type="button" class="btn btn_01 mb05 addEntityValueBtn">저장</button> <button type="button" class="btn btn-default mb05 cancelEntityValueBtn">취소</button>';
                     item += '</li>';

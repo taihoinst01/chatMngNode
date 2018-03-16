@@ -13,6 +13,10 @@ var router = express.Router();
 /* GET users listing. */
 router.get('/', function (req, res) {
     req.session.menu = 'm2';
+    //로그인체크
+    if (!req.session.sid) {
+        res.render( 'board_new' );   
+    }
     if (typeof req.query.appName !== 'undefined') {
         req.session.appName = req.query.appName;
         req.session.subKey = luisConfig.subKey;
@@ -296,7 +300,7 @@ router.post('/nodeQuery', function (req, res) {
         selectQuery += "                , ISNULL(ME.BTN_1_CONTEXT,'') AS mediaBtnResult \n";
         selectQuery += "                , ISNULL(AN.TRAIN_FLAG, 'Y') AS TRAIN_FLAG \n";
         selectQuery += "              FROM ( \n";
-        selectQuery += "     SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS 영어질문, COUNT(*) AS 질문수, REG_DATE AS Dimdate, CHANNEL \n";
+        selectQuery += "     SELECT CUSTOMER_COMMENT_KR, MAX(CUSTOMER_COMMENT_EN) AS 영어질문, COUNT(*) AS 질문수, MAX(REG_DATE) AS Dimdate, CHANNEL  \n";
         selectQuery += "     FROM TBL_HISTORY_QUERY \n";
         selectQuery += "     WHERE 1=1 \n";
         selectQuery += "AND CONVERT(date, '" + startDate + "') <= CONVERT(date, REG_DATE)  AND  CONVERT(date, REG_DATE)   <= CONVERT(date, '" + endDate + "') \n";
@@ -307,7 +311,7 @@ router.post('/nodeQuery', function (req, res) {
             if (selChannel !== 'all') {
                 selectQuery += "AND	CHANNEL = '" + selChannel + "' \n";
             }
-        selectQuery += "     GROUP BY CUSTOMER_COMMENT_KR, REG_DATE, CHANNEL \n";
+        selectQuery += "     GROUP BY CUSTOMER_COMMENT_KR, CHANNEL \n";
         selectQuery += ") HI \n";
         selectQuery += "LEFT OUTER JOIN TBL_QUERY_ANALYSIS_RESULT AN \n";
         selectQuery += "     ON dbo.fn_replace_regex(HI.CUSTOMER_COMMENT_KR) = LOWER(AN.QUERY) \n";

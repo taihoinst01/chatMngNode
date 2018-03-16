@@ -315,6 +315,8 @@ $(document).ready(function(){
     // Utterance Learn
     $('#utterLearn').click(function(){
 
+        
+
         /*
         var chkBoxFlag1 = false;
         var chkBoxFlag2 = false;
@@ -340,13 +342,8 @@ $(document).ready(function(){
         2 : 다이얼로그 생성 불가능(체크된 추천문장이 없음)   
         3 : 다이얼로그 생성 불가능(대화상자창에 다이얼로그가 없음)
         */
-        
-        /*
-        var exit = false;
-
-    
-        var utterCheckFlag = 0;  
-
+       /*
+        var checkFlag = 2;  
         chkEntities = [];
         $('input[name=tableCheckBox]').each(function() {
             if($(this).parent().hasClass('checked') == true) {
@@ -354,23 +351,17 @@ $(document).ready(function(){
                 var $entityValue = $(this).parent().parent().next().find('input[name=entity]').val();
 
                 if($entityValue == "") {
-                    alert("선택된 추천문장중 학습이 안된 엔티티가 존재합니다. 신규 단어추가를 해주세요.");
-                    exit = true;                   
+                    checkFlag = 1;                   
                     return false;
                 }
+
+                checkFlag = 0;
                 chkEntities.push($entityValue);
             }
         })
-        if(exit) return;
 
-        if($('#dlgViewDiv').children().length == 0) {
-            exit = true;
-            alert("대화상자창에 학습할 대화상자가 없습니다. 대화상자를 추가 해주세요.");
-        }
-        if(exit) return;
-
-
-
+      
+        
         if(checkFlag == 1) {
 
             alert("다이얼로그 생성 불가능(선택된 추천문장중 학습이 안된 엔티티가 존재합니다. 학습을 시켜주세요.)");
@@ -379,28 +370,33 @@ $(document).ready(function(){
             alert("선택한 학습 추천 문장이 없습니다. 학습 추천을 선택해주세요.");
         } else if(checkFlag == 3) {
   
-            alert("대화상자창에 학습할 대화상자가 없습니다. 대화상자를 추가 해주세요.");
-        }
-        */ 
-        /*
-        var entitiyCheckFlag = 2; 
+            alert("선택한 학습 추천 문장이 없습니다. 학습 추천을 선택해주세요.");
+        } else {
 
-        $('input[name=tableCheckBox]').each(function() {
-            if($(this).parent().hasClass('checked') == true) {
-                
-                var $entityValue = $(this).parent().parent().next().find('input[name=entity]').val();
+            var inputEntity = $('input[name=entity]');
+            entities = new Array();
+            inputEntity.each(function(n) { 
+                entities.push(inputEntity[n].value);
+                return entities;
+            });
+            
 
-                if($entityValue == "") {
-                    alert("선택된 추천문장중 학습이 안된 엔티티가 존재합니다. 신규 단어추가를 해주세요.");
-                    exit = true;
-                    entitiyCheckFlag = 1;                    
-                    return false;
+            var inputDlgId = $('input[name=dlgId]');
+            var dlgId = new Array();
+            inputDlgId.each(function(n) { 
+                dlgId.push(inputDlgId[n].value);
+                return dlgId;
+            });
+            var inputUtterArray = new Array();
+            $('#utterTableBody tr').each(function() {
+                if ( $(this).find('div').hasClass('checked') ) {
+                    inputUtterArray.push($(this).find('input[name=hiddenUtter]').val());
                 }
                 chkEntities.push($entityValue);
             }
         })
         if(exit) return;
-*/
+
         /*
         var inputEntity = $('input[name=entity]');
         
@@ -441,18 +437,33 @@ $(document).ready(function(){
                     alert(language.Added);
                     
                     $('input[name=tableAllChk]').parent().iCheck('uncheck');
-
-                    $('.recommendTbl tbody').html('');
-                    $('#dlgViewDiv').html('');
-
-                    $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
-                    $('.pagination').html('');
-                }else{
-                    alert(language.It_failed);
                 }
-            }
-        });
-        
+
+            var luisId = $('#dlgViewDiv').find($('input[name=luisId]'))[0].value;
+            var luisIntent = $('#dlgViewDiv').find($('input[name=luisIntent]'))[0].value;
+
+            $.ajax({
+                url: '/learning/learnUtterAjax',
+                dataType: 'json',
+                type: 'POST',
+                data: {'entities':entities, 'dlgId':dlgId, 'luisId': luisId, 'luisIntent': luisIntent, 'utters' : inputUtterArray},
+                success: function(result) {
+                    if(result['result'] == true) {
+                        alert(language.Added);
+                        
+                        $('input[name=tableAllChk]').parent().iCheck('uncheck');
+
+                        $('.recommendTbl tbody').html('');
+                        $('#dlgViewDiv').html('');
+    
+                        $('input[name=dlgBoxChk]').parent().iCheck('uncheck');
+                        $('.pagination').html('');
+                    }else{
+                        alert(language.It_failed);
+                    }
+                }
+            });
+        } 
 
     });
 
@@ -1119,19 +1130,19 @@ function createDialog(){
             for (var j = 1; j < tmp.length; j++) {
                 if(tmp[j].name == 'btnType') {
                     tmp[j].name = 'btn'+ (btnTypeCount++) +'Type';
-                    if(btnTypeCount == 5) {
+                    if(btnTypeCount == 4) {
                         btnTypeCount = 1;
                     }
                 }
                 if(tmp[j].name == 'cButtonContent') {
                     tmp[j].name = 'cButtonContent'+ (cButtonContentCount++);
-                    if(cButtonContentCount == 5) {
+                    if(cButtonContentCount == 4) {
                         cButtonContentCount = 1;
                     }
                 }
                 if(tmp[j].name == 'cButtonName') {
                     tmp[j].name = 'cButtonName'+ (cButtonNameCount++);
-                    if(cButtonNameCount == 5) {
+                    if(cButtonNameCount == 4) {
                         cButtonNameCount = 1;
                     }
                 }
@@ -1215,8 +1226,8 @@ function createDialog(){
             $('.newMidBtn').click();
             $('.cancelMidBtn').click();
 
-            inputUttrHtml += '<input type="hidden" name="luisId" value="' + largeGroup + '"/>';
-            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + middleGroup + '"/>';
+            inputUttrHtml += '<input type="hidden" name="luisId" value="' + luisId + '"/>';
+            inputUttrHtml += '<input type="hidden" name="luisIntent" value="' + luisIntent + '"/>';
 
             var createDlgClone = $('.dialogView').children().clone();
             $('#dlgViewDiv').html('');
@@ -2295,8 +2306,8 @@ function insertEntity(){
 //다이얼로그 생성 모달창 - 중그룹 신규버튼
 $(document).on('click', '.newMidBtn, .cancelMidBtn', function() {
 
-    var $iptLuisIntent = $('input[name=middleGroup]');
-    var $selectLuisIntent = $('select[name=middleGroup]');
+    var $iptLuisIntent = $('input[name=luisIntent]');
+    var $selectLuisIntent = $('select[name=luisIntent]');
 
     if($(this).hasClass('newMidBtn')) {
         $('.newMidBtn').hide();
