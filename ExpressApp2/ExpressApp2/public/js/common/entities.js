@@ -90,16 +90,25 @@ $(document).on("click", ".more", function(e){
         $('.board').eq(  $('.board').index($(this).parent().children(":last"))  ).show();
         $('.fl.close').addClass('more').removeClass('close');  
 
+        $('.board input[name=entityValue]').val('');
+
         $(e.target).addClass('close').removeClass('more');
         $(e.target).parent().find(".board").css('visibility', 'visible');
         $(e.target).parent().find(".board input[name=entityValue]").focus();
      }
 });
 
+$(document).on("keyup", ".board input[name=entityValue]", function(e){
+    if (e.keyCode === 27) {	//	Enter Key
+        $(this).parents('.board').prev().trigger('click');
+    }
+});
+
 $(document).on("click", ".close", function(e){
     if($(e.target).hasClass('close')){
         $(e.target).addClass('more').removeClass('close');  
         $(e.target).parent().find(".board").css('visibility', 'hidden');
+        $('.board input[name=entityValue]').val('');
      }
 });
 
@@ -130,7 +139,7 @@ function entitiesAjax(){
                     item += '<a class="more fl"><span class="hc">+</span></a>';
                     item += '<div class="board">';
                     item += '<ul>';
-                    item += '<form action="" method="post" onsubmit="return false;" name="entityForm">';
+                    item += '<form action="" method="post" onsubmit="return false;" autocomplete="off" name="entityForm">';
                     item += ' <li class="inp"><input name="entityValue" type="text" class="form-control fl"  style="width:60%;">';
                     item += '<button type="button" class="btn btn_01 mb05 addEntityValueBtn">저장</button> <button type="button" class="btn btn-default mb05 cancelEntityValueBtn">취소</button>';
                     item += '</li>';

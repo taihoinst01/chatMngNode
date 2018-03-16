@@ -41,7 +41,7 @@
                     
                           <div class="modal-body search_op">
                                 <div class="form-group col-md-10"  style="padding-left:0" >
-                                    <input name="iptentities" id="iptentities" type="text" class="form-control" placeholder="<%= __('Description 2') %>" onkeypress="if(event.keyCode==13) {searchEntities(); return false;}">
+                                    <input name="iptentities" id="iptentities" type="text" class="form-control" autocomplete='off' placeholder="<%= __('Description 2') %>" onkeypress="if(event.keyCode==13) {searchEntities(); return false;}">
                                 </div>             
                                 <div class="form-group col-md-2 " style="float:right; text-align:right">
                                     <button id="searchentities" type="button" class="btn btn_01 " onclick="searchEntities();"><%= __('SEARCH') %></button> 
@@ -86,7 +86,7 @@
                                         <button type="button" class="close addEntityModalClose" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
                                         <h4 class="modal-title" id="myModalLabel"><%= __('Create_new_Entity_Set') %></h4>
                                   </div>
-                                  <form name="appInsertForm" id="appInsertForm" method="post">
+                                  <form name="appInsertForm" id="appInsertForm" autocomplete='off' method="post">
                                   <div class="modal-body">
                                         <div class="form-group" >
                                             <label><%= __('Entity definition') %><span class="nec_ico">*</span></label>
