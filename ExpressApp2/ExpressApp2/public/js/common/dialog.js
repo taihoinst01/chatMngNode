@@ -2745,19 +2745,19 @@ function updateDialog() {
             for (var j = 1; j < tmp.length; j++) {
                 if(tmp[j].name == 'btnType') {
                     tmp[j].name = 'btn'+ (btnTypeCount++) +'Type';
-                    if(btnTypeCount == 4) {
+                    if(btnTypeCount == 5) {
                         btnTypeCount = 1;
                     }
                 }
                 if(tmp[j].name == 'cButtonContent') {
                     tmp[j].name = 'cButtonContent'+ (cButtonContentCount++);
-                    if(cButtonContentCount == 4) {
+                    if(cButtonContentCount == 5) {
                         cButtonContentCount = 1;
                     }
                 }
                 if(tmp[j].name == 'cButtonName') {
                     tmp[j].name = 'cButtonName'+ (cButtonNameCount++);
-                    if(cButtonNameCount == 4) {
+                    if(cButtonNameCount == 5) {
                         cButtonNameCount = 1;
                     }
                 }
@@ -2840,6 +2840,9 @@ function deleteDialog(dlgId) {
         success: function(result) {
             alert('delele complete');
             $('.createDlgModalClose').click();
+            var groupType =  $('.selected').text();
+            var sourceType = $('#tblSourceType').val();
+            selectDlgByTxt(groupType, sourceType);
         }
 
     });
