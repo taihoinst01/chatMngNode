@@ -544,15 +544,10 @@ router.post('/selectChatAppList', function (req, res) {
                            " WHERE 1=1 \n" +
                            "   AND PAGEIDX = " + currentPage + "; \n";
 
-    var UserAppListStr = "SELECT tbp.* from \n" +
-                         "   (SELECT ROW_NUMBER() OVER(ORDER BY CHAT_ID DESC) AS NUM, \n" +
-                         "           COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
-                         "           CEILING((ROW_NUMBER() OVER(ORDER BY CHAT_ID DESC))/ convert(numeric ,10)) PAGEIDX, \n" +
-                        "            CHAT_ID, APP_ID\n" +
-                        "       FROM TBL_CHAT_RELATION_APP \n" +
-                        "      WHERE 1=1 \n" +
-                        "        AND CHAT_ID = '" + chatId + "') tbp  \n" + 
-                        " WHERE 1=1  \n";                
+    var UserAppListStr = " SELECT  CHAT_ID, APP_ID \n" +
+                         "   FROM TBL_CHAT_RELATION_APP  \n" +
+                         "  WHERE 1=1  \n"  +
+                         "    AND CHAT_ID = " + chatId + "  \n";          
     (async () => {
         try {
             let pool = await dbConnect.getConnection(sql);
@@ -614,7 +609,7 @@ router.post('/updateChatAppList', function (req, res) {
         saveDataStr += "INSERT INTO TBL_CHAT_RELATION_APP(CHAT_ID, APP_ID) " +
                     "     VALUES (" + chatId + ", '" + saveData[i] + "'); \n";    
         
-        saveDataStr += "UPDATE TBL_LUIS_APP SET CHATBOT_ID = " + chatId + " WHERE APP_ID = '" + saveData[i] + "'; \n";  
+        //saveDataStr += "UPDATE TBL_LUIS_APP SET CHATBOT_ID = " + chatId + " WHERE APP_ID = '" + saveData[i] + "'; \n";  
     }
     
     for (var i=0; i<removeData.length; i++) {
@@ -623,7 +618,7 @@ router.post('/updateChatAppList', function (req, res) {
                     "        AND CHAT_ID = " + chatId + " \n" +
                     "        AND APP_ID = '" + removeData[i].APP_ID.trim() + "'; \n ";     
         
-        removeDataStr += " UPDATE TBL_LUIS_APP SET CHATBOT_ID = NULL WHERE APP_ID = '" + removeData[i].APP_ID.trim() + "'; \n" ;
+        //removeDataStr += " UPDATE TBL_LUIS_APP SET CHATBOT_ID = NULL WHERE APP_ID = '" + removeData[i].APP_ID.trim() + "'; \n" ;
     }
                         
                    
