@@ -985,6 +985,87 @@ router.post('/addEntityValue', function (req, res) {
     
 });
 
+//엔티티 삭제
+/*
+router.post('/deleteEntity', function (req, res) {
+    
+    var delEntityDefine = req.body.delEntityDefine;
+
+    var client = new Client();
+    
+    var options = {
+        headers: {
+            'Ocp-Apim-Subscription-Key': req.session.subsKey
+        }
+    };
+
+    var selectAppIdQuery = "SELECT CHATBOT_ID, APP_ID, VERSION, APP_NAME,CULTURE, SUBSC_KEY \n";
+    selectAppIdQuery += "FROM TBL_LUIS_APP \n";
+    selectAppIdQuery += "WHERE CHATBOT_ID = (SELECT CHATBOT_NUM FROM TBL_CHATBOT_APP WHERE CHATBOT_NAME=@chatName)\n";
+
+    (async () => {
+        try {
+
+            let pool = await dbConnect.getConnection(sql);
+            let selectAppId = await pool.request()
+                .input('chatName', sql.NVarChar, appName)
+                .query(selectAppIdQuery);
+
+            var appCount = false;
+            var useLuisAppId;
+
+            for(var i = 0 ; i < selectAppId.recordset.length; i++) {
+                var luisAppId = selectAppId.recordset[i].APP_ID;
+                var luisVerId = selectAppId.recordset[i].VERSION;
+                //luis intent count check
+                var intentCountRes = syncClient.get(HOST + '/luis/api/v2.0/apps/' + luisAppId + '/versions/' + luisVerId + '/examples?take=500' , options);
+                
+                if( !(intentCountRes.body.length >= 280) ) {
+                    useLuisAppId = luisAppId;
+                    appCount = true;
+                }
+            }
+
+
+            if(appCount == false) {
+                //create luis app 
+                res.send({result:402});
+            }else{
+                
+            }
+
+
+
+            var intentList = syncClient.get(HOST + '/luis/api/v2.0/apps/' + luisAppId + '/versions/0.1/intents' , options);
+
+
+
+            var insertQueryString1 = "insert into TBL_COMMON_ENTITY_DEFINE(ENTITY, ENTITY_VALUE, API_GROUP) values(@entityDefine, @addEntityValue, @apiGroup)";
+                      
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
+
+            let result1 = await pool.request()
+                .input('entityDefine', sql.NVarChar, entityDefine)
+                .input('addEntityValue', sql.NVarChar, addEntityValue)
+                .input('apiGroup', sql.NVarChar, apiGroup)
+                .query(insertQueryString1);  
+            
+            res.send({status:200 , message:'insert Success'});
+        
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'insert Entity Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
+    })
+    
+});
+*/
+
 //엔티티 추가
 router.post('/insertEntity', function (req, res) {
     

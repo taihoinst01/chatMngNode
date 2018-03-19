@@ -142,6 +142,30 @@ $(document).on("click", ".cancelEntityValueBtn", function(e){
     $(e.target).parent().parent().parent().parent().parent().find(".board").css('visibility', 'hidden');
 });
 
+
+//엔티티 삭제
+$(document).on("click", "a[name=delEntityRow]", function(e){
+    
+    if (confirm(language.ASK_DELETE)) {
+
+        var delEntityDefine = $(this).parents('tr').children().first().text().trim();
+        $.ajax({
+            url: '/learning/deleteEntity',
+            dataType: 'json',
+            type: 'POST',
+            data: {'delEntityDefine': delEntityDefine},
+            success: function(data) {
+                if(data.status == 200){
+                    alert(language.SUCCESS);
+                    searchEntities();
+                } else {
+                    alert(language.It_failed);
+                }
+            }
+        });
+    }
+});
+
 //기존 entity 값 저장
 var originalEntityVal = {};
 $(document).on("click", "a[name=editEntityTag]", function(e){
@@ -226,7 +250,7 @@ function entitiesAjax(){
                     item += '</div>';
                     item += '</td>';
                     item += '<td>' + data.list[i].API_GROUP + '</td>';  
-                    //item += '<td>삭제자리</td>';  
+                    //item += '<td><a href="#" name="delEntityRow" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></td>';
                     item += '</tr>';
                 }
                 
@@ -362,6 +386,8 @@ function searchEntities() {
                         item += '</div>';
                         item += '</td>';
                         item += '<td>' + data.list[i].API_GROUP + '</td>';  
+                        //item += '<td><a href="#" name="delEntityRow" style="display:inline-block; margin:7px 0 0 7px; "><span class="fa fa-trash" style="font-size: 25px;"></span></a></td>';
+                        
                         item += '</tr>';
                     }
                     
