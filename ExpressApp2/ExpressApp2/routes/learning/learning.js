@@ -1140,6 +1140,59 @@ router.post('/insertEntity', function (req, res) {
     
 });
 
+//엔티티 수정
+router.post('/updateEntity', function (req, res) {
+
+    var entiey = '나이';
+    var updEntityValue = ['10대','20대','30대','60대'];
+    var oriEntityValue = [];
+
+    var selEntityQuery = "SELECT ENTITY_VALUE, ENTITY, API_GROUP, TRAIN_FLAG\n";
+    selEntityQuery += "FROM TBL_COMMON_ENTITY_DEFINE\n";
+    selEntityQuery += "WHERE TRAIN_FLAG = 'N'\n";
+    selEntityQuery += "AND ENTITY = @entity";
+
+    (async () => {
+        try {
+            let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
+
+            let selEntity = await pool.request()
+                .input('entityValue', sql.NVarChar, entity)
+                .query(selEntityQuery);
+            
+            var selEntityRecord = selEntity.recordset[0];
+
+            for(var i = 0; i < selEntityRecord.length; i++) {
+                oriEntityValue.push(selEntityRecord[i]);
+            }
+
+            for(var i = 0; i < selEntityRecord.length; i++) {
+                for(var j = 0; j < updEntityValue.length; j++) {
+                    if(oriEntityValue[i] == updEntityValue[j]) {
+                        oriEntityValue.splice(i,1,updEntityValue[j]);
+                        updEntityValue.splice(j,1,updEntityValue[j]);
+                    }
+                }
+            }
+
+            console.log(oriEntityValue);
+            console.log(updEntityValue);
+
+            res.send({"res":true});
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'insert Entity Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
+    })
+
+
+});
+
 //엔티티 검색
 router.post('/searchEntities', function (req, res) {
 
