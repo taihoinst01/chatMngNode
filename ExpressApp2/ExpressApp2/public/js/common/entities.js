@@ -209,8 +209,8 @@ function entitiesAjax(){
                 for(var i = 0; i < data.list.length; i++){
                     
                     item += '<tr>';
-                    //item += '<td><a href="#" name="editEntityTag">' + data.list[i].ENTITY + "</a></td>" ;
-                    item += '<td>' + data.list[i].ENTITY + "</td>" ;
+                    item += '<td><a href="#" name="editEntityTag">' + data.list[i].ENTITY + "</a></td>" ;
+                    //item += '<td>' + data.list[i].ENTITY + "</td>" ;
                     item += '<td><span class="fl">' + data.list[i].ENTITY_VALUE + "</span>";
                     item += '<a class="more fl"><span class="hc">+</span></a>';
                     item += '<div class="board">';
@@ -343,8 +343,8 @@ function searchEntities() {
                 if(data.list.length > 0){
                     for(var i = 0; i < data.list.length; i++){
                         item += '<tr>';
-                        //item += '<td><a href="#" name="editEntityTag">' + data.list[i].ENTITY + "</a></td>" ;
-                        item += '<td>' + data.list[i].ENTITY + "</td>" ;
+                        item += '<td><a href="#" name="editEntityTag">' + data.list[i].ENTITY + "</a></td>" ;
+                        //item += '<td>' + data.list[i].ENTITY + "</td>" ;
                         item += '<td><span class="fl">' + data.list[i].ENTITY_VALUE + "</span>";
                         item += '<a class="more fl"><span class="hc">+</span></a>';
                         item += '<input type="hidden" name="entityDefine" value="' + data.list[i].ENTITY + '">';
@@ -482,10 +482,30 @@ function updateEntity() {
         dataType: 'json',
         contentType: 'application/json',
         type: 'POST',
-        data: JSON.stringify(entityValueList), //$('#appInsertForm').serializeObject(),
+        data: JSON.stringify(originalEntityVal) //$('#appInsertForm').serializeObject(),
+        , beforeSend: function () {
+            $('.updateEntityCancel').click();
+            var width = 0;
+            var height = 0;
+            var left = 0;
+            var top = 0;
+
+            width = 50;
+            height = 50;
+
+            top = ( $(window).height() - height ) / 2 + $(window).scrollTop();
+            left = ( $(window).width() - width ) / 2 + $(window).scrollLeft();
+
+            $("#loadingBar").addClass("in");
+            $("#loadingImg").css({position:'relative'}).css({left:left,top:top});
+            $("#loadingBar").css("display","block");
+        }
+        , complete: function () {
+            $("#loadingBar").removeClass("in");
+            $("#loadingBar").css("display","none");      
+        },
         success: function(data) {
             if(data.status == 200){
-                $('.updateEntityCancel').click();
                 alert(language.Added);
                 entitiesAjax();
             } else if(data.status == 'Duplicate') {
