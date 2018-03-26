@@ -207,7 +207,7 @@ function mkAppRow(rows, checkedApp) {
         
         var j=0;
         for (; j<checkedApp.length; j++) {
-            if (rows[i].CHATBOT_ID === Number(checkedApp[j].CHAT_ID)) {
+            if (rows[i].APP_ID === checkedApp[j].APP_ID) {
                 appHtml += '<td><input type="checkbox" class="flat-red" checked name="tableCheckBox"></td>';
                 break;
             } 

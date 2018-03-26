@@ -52,11 +52,12 @@
                             <!-- 단어 설정 테이블 --> 
                             <div class="Tbl_wrap">
                                 <table class="Tbl" summary="단어 설정">
-                                    <colgroup><col width="34%"/><col width="33%"/><col width="33%"/></colgroup>
+                                    <colgroup><col width="25%"/><col width="35%"/><col width="20%"/><col width="5%"/></colgroup>
                                         <tr>
                                             <th><%= __('Entity definition') %></th>
                                             <th><%= __('Entity value') %></th>
                                             <th>API_GROUP</th>
+                                            <th></th>
                                         </tr>
                                         <tbody id="entitiesTbltbody">
                                         </tbody>
@@ -70,7 +71,10 @@
             </div>
     </section>
     <!-- //Main content -->
-
+<!-- 로딩바 -->
+<div class="modal fade" id="loadingBar" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <img src="/image/ajax_loader.gif" style="width:50px; height:50px;" id="loadingImg">
+</div>
 
 </div>
 <!-- //Content Wrapper  -->

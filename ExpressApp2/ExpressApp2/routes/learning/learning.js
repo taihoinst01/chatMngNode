@@ -1,5 +1,7 @@
 ﻿'use strict';
 var express = require('express');
+var Client = require('node-rest-client').Client;
+const syncClient = require('sync-rest-client');
 var sql = require('mssql');
 var dbConfig = require('../../config/dbConfig');
 var dbConnect = require('../../config/dbConnect');
@@ -33,18 +35,25 @@ router.post('/recommend', function (req, res) {
 
     (async () => {
         try {
-            var entitiesQueryString = "SELECT TBZ.* \n"+
-            "FROM (SELECT TBY.* \n"+
-            "FROM (SELECT ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) AS NUM, \n"+
-            "COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"+
-            "CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX, \n"+
-            "TBX.* \n"+
-            "FROM ( \n"+
-            "SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES \n" +
-            "  FROM TBL_QUERY_ANALYSIS_RESULT \n" + 
-            " WHERE RESULT NOT IN ('H') \n"+
-            "   AND TRAIN_FLAG = 'N' \n";
-            
+            var entitiesQueryString = ""+
+            "SELECT TBZ.* \n"+
+            "  FROM ( \n"+
+            "        SELECT TBY.*  \n"+
+            "          FROM ( \n"+
+            "		        SELECT ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) AS NUM,  \n"+
+            "                       COUNT('1') OVER(PARTITION BY '1') AS TOTCNT,  \n"+
+            "                       CEILING((ROW_NUMBER() OVER(ORDER BY TBX.SEQ DESC) )/ convert(numeric ,10)) PAGEIDX,  \n"+
+            "                       TBX.*  \n"+
+            "                 FROM (  \n"+
+            "                        SELECT SEQ,QUERY,CONVERT(CHAR(19), UPD_DT, 20) AS UPD_DT,(SELECT RESULT FROM dbo.FN_ENTITY_ORDERBY_ADD(QUERY)) AS ENTITIES, TBH.QUERY_KR \n"+
+            "                          FROM TBL_QUERY_ANALYSIS_RESULT, ( \n"+
+            "						                                     SELECT CUSTOMER_COMMENT_KR AS QUERY_KR \n"+
+            "						                                       FROM TBL_HISTORY_QUERY \n"+
+            "						                                      GROUP BY CUSTOMER_COMMENT_KR ) TBH \n"+
+            "                         WHERE RESULT NOT IN ('H')  \n"+
+            "                           AND TRAIN_FLAG = 'N'  \n"+
+            "                           AND QUERY = dbo.fn_replace_regex(TBH.QUERY_KR)  \n";
+
             if(selectType == 'yesterday'){
                 entitiesQueryString += " AND (CONVERT(CHAR(10), UPD_DT, 23)) like '%'+(select CONVERT(CHAR(10), (select dateadd(day,-1,getdate())), 23)) + '%'";
             }else if(selectType == 'lastWeek'){
@@ -59,9 +68,14 @@ router.post('/recommend', function (req, res) {
                 
                 entitiesQueryString += " AND QUERY LIKE '%" + searchRecommendText + "%' "; 
             }
-            entitiesQueryString += " ) TBX) TBY) TBZ";
-            entitiesQueryString += " WHERE PAGEIDX = @currentPage";
-            entitiesQueryString += " ORDER BY NUM";
+
+            entitiesQueryString += ""+
+            "                       ) TBX \n"+
+            "			   ) TBY \n"+
+            "	     ) TBZ \n"+
+            " WHERE 1=1  \n"+
+            "   AND PAGEIDX = @currentPage  \n" +
+            " ORDER BY NUM \n";
 
             let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1 = await pool.request()
@@ -73,7 +87,7 @@ router.post('/recommend', function (req, res) {
             var result = [];
             for(var i = 0; i < rows.length; i++){
                 var item = {};
-                var query = rows[i].QUERY;
+                var query = rows[i].QUERY_KR;
                 var seq = rows[i].SEQ;
                 var entities = rows[i].ENTITIES;
                 var updDt = rows[i].UPD_DT;
@@ -991,6 +1005,164 @@ router.post('/addEntityValue', function (req, res) {
     })
     
 });
+
+
+
+//엔티티 삭제
+router.post('/deleteEntity', function (req, res) {
+    
+    var delEntityDefine = req.body.delEntityDefine;
+    var appName = req.session.appName;
+
+    var delUtterId;
+    var delEntityId;
+    var delChildId;
+
+    var saveLuisVerId;
+    var findEntityName = '';
+    //var client = new Client();
+    
+    var options = {
+        headers: {
+            'Ocp-Apim-Subscription-Key': req.session.subsKey
+        }
+    };
+
+    var selectAppIdQuery = "SELECT CHATBOT_ID, APP_ID, VERSION, APP_NAME,CULTURE, SUBSC_KEY \n";
+    selectAppIdQuery += "FROM TBL_LUIS_APP \n";
+    selectAppIdQuery += "WHERE CHATBOT_ID = (SELECT CHATBOT_NUM FROM TBL_CHATBOT_APP WHERE CHATBOT_NAME=@chatName)\n";
+
+    (async () => {
+        try {
+
+            let pool = await dbConnect.getConnection(sql);
+            let selectAppId = await pool.request()
+                .input('chatName', sql.NVarChar, appName)
+                .query(selectAppIdQuery);
+
+            var appCount = false;
+            var useLuisAppId;
+
+            for(var i = 0 ; i < selectAppId.recordset.length; i++) {
+                var luisAppId = selectAppId.recordset[i].APP_ID;
+                var luisVerId = selectAppId.recordset[i].VERSION;
+                //luis intent count check
+                var intentCountRes = syncClient.get(HOST + '/luis/api/v2.0/apps/' + luisAppId + '/versions/' + luisVerId + '/examples?take=500' , options);
+                
+                for(var k = 0; k < intentCountRes.body.length; k++) {
+                    //text
+                    if (intentCountRes.body[k].text.trim() === delEntityDefine) {
+                        useLuisAppId = luisAppId;
+                        delUtterId = intentCountRes.body[k].id;
+                        saveLuisVerId = luisVerId;
+                        appCount = true;
+
+                        var compareEntity = intentCountRes.body[k].entityLabels[0].entityName.split('::');
+                        if (delEntityDefine == compareEntity[1]) {
+                            findEntityName = compareEntity[0];
+                        }
+                    }
+                }
+            }
+
+            if(appCount == false) {
+                //create luis app 
+                res.send({result:402});
+            }else{
+                
+                var entityListRes = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/' + saveLuisVerId + '/hierarchicalentities?take=500' , options);
+                appCount = false;
+                for(var k = 0; k < entityListRes.body.length; k++) {
+                    if( entityListRes.body[k].name == findEntityName ) {
+                        
+                        for(var j = 0 ; j < entityListRes.body[k].children.length; j++) {
+                            if (entityListRes.body[k].children[j].name == delEntityDefine) {
+                                delEntityId = entityListRes.body[k].id;
+                                delChildId = entityListRes.body[k].children[j].id;
+                                appCount = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (appCount) {
+                        break;
+                    }
+                }
+
+            }
+
+            if(appCount == false) {
+                //create luis app 
+                res.send({result:403});
+            }else{
+                //삭제
+                var delUtterRes = syncClient.del(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/' + saveLuisVerId + '/examples/' + delUtterId , options);
+
+                if (delUtterRes.statusCode > 200) {
+                    res.send({result:406});
+                } else {
+                    var delHierarChyChild = '';
+                    delHierarChyChild += HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/' + saveLuisVerId;
+                    delHierarChyChild += '/hierarchicalentities/' + delEntityId + '/children/' + delChildId;
+
+                    var delUtterRes = syncClient.del(delHierarChyChild, options);
+
+                    if (delUtterRes.statusCode > 200) {
+                        res.send({result:407});
+                    } else {
+                        
+
+                        var client = new Client();
+
+                        syncClient.post(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train', options, function (data, response) {
+                        
+                        /*
+                            var repeat = setInterval(function(){
+                                var count = 0;
+                                var traninResultGet = syncClient.get(HOST + '/luis/api/v2.0/apps/' + useLuisAppId + '/versions/0.1/train' , options);
+
+                                for(var trNum = 0; trNum < traninResultGet.body.length; trNum++) {
+                                    if(traninResultGet.body[trNum].details.status == "Fail") {
+                                        res.send({result:400});
+                                    }
+                                    if(traninResultGet.body[trNum].details.status == "InProgress") {
+                                        break;
+                                    }
+                                    count++;
+                                    if(traninResultGet.body.length == count) {
+                                        clearInterval(repeat);
+
+                                        res.send({status:200 , message:'delete Success'});
+                                    }
+                                }
+                            },1000);
+                        */              
+                            
+                        });
+                        
+                        var deleteAppStr = "DELETE FROM TBL_COMMON_ENTITY_DEFINE WHERE ENTITY = '" + delEntityDefine + "'; \n";
+                        let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
+
+                        let result1 = await pool.request().query(deleteAppStr);  
+                        
+                    }
+                }
+
+            }
+        } catch (err) {
+            console.log(err);
+            res.send({status:500 , message:'delete Entity Error'});
+        } finally {
+            sql.close();
+        }
+    })()
+    
+    sql.on('error', err => {
+    })
+    
+});
+
+
 
 //엔티티 추가
 router.post('/insertEntity', function (req, res) {
