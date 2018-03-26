@@ -1,7 +1,6 @@
 ﻿'use strict';
 var express = require('express');
 var Client = require('node-rest-client').Client;
-const syncClient = require('sync-rest-client');
 var sql = require('mssql');
 var dbConfig = require('../../config/dbConfig');
 var dbConnect = require('../../config/dbConnect');
