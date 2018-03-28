@@ -1501,14 +1501,16 @@ router.post('/selectDlgListAjax', function (req, res) {
                      + "WHERE 1=1\n";
     if(Array.isArray(entity)){
         for(var i = 0; i < entity.length; i++) {
+            relationText += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+            /*
             if(i == 0) {
                 relationText += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
             } else {
                 relationText += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
-            }      
+            } */    
         }
     } else {
-        relationText += "AND LUIS_ENTITIES LIKE '%" + entity +"%'\n";
+        relationText += "AND LUIS_ENTITIES = '" + entity +"'\n";
     }
     
     relationText += "GROUP BY LUIS_ENTITIES, DLG_ID, LUIS_ID, LUIS_INTENT \n"
@@ -1526,14 +1528,16 @@ router.post('/selectDlgListAjax', function (req, res) {
                   + "WHERE 1=1\n";
     if(Array.isArray(entity)){
         for(var i = 0; i < entity.length; i++) {
+            dlgText += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+            /*
             if(i == 0) {
                 dlgText += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
             } else {
                 dlgText += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
-            }
+            }*/
         }
     } else {
-        dlgText += "AND LUIS_ENTITIES LIKE '%" + entity +"%'\n";
+        dlgText += "AND LUIS_ENTITIES = '" + entity +"'\n";
     }
 
     dlgText += ") \n ORDER BY DLG_ID";
@@ -1552,14 +1556,16 @@ router.post('/selectDlgListAjax', function (req, res) {
                   + "WHERE 1=1\n";
     if(Array.isArray(entity)){
         for(var i = 0; i < entity.length; i++) {
+            dlgCard += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+            /*
             if(i == 0) {
                 dlgCard += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
             } else {
                 dlgCard += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
-            }
+            }*/
         }
     } else{
-        dlgCard += "AND LUIS_ENTITIES LIKE '%" + entity +"%'\n";
+        dlgCard += "AND LUIS_ENTITIES = '" + entity +"'\n";
     }
 
     dlgCard += ") \n ORDER BY DLG_ID";
@@ -1579,14 +1585,16 @@ router.post('/selectDlgListAjax', function (req, res) {
     
     if(Array.isArray(entity)){
         for(var i = 0; i < entity.length; i++) {
+            dlgMedia += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
+            /*
             if(i == 0) {
                 dlgMedia += "AND LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
             } else {
                 dlgMedia += "OR LUIS_ENTITIES LIKE '%" + entity[i] +"%'\n";
-            }
+            }*/
         }
     } else {
-        dlgMedia += "AND LUIS_ENTITIES LIKE '%" + entity +"%'\n";
+        dlgMedia += "AND LUIS_ENTITIES = '" + entity +"'\n";
     }
 
     dlgMedia += ") \n ORDER BY DLG_ID";
