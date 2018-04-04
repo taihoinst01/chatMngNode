@@ -1322,7 +1322,7 @@ function selectDlgListAjax(entity) {
                         inputUttrHtml += '</li>';
                         
                         //다이얼로그가 한개일때에는 오른쪽 버튼 x
-                        if(tmp.dlg.length == 2 && j == 1) {
+                        if((tmp.dlg.length == 2 && j == 1) || (tmp.dlg.length == 1 && j == 0)) {
                             inputUttrHtml += '</ul>';
                             inputUttrHtml += '</div>';
                             inputUttrHtml += '</div>';
@@ -1852,10 +1852,13 @@ function searchDialog() {
                             inputUttrHtml += '<li class="wc-carousel-item">';
                             inputUttrHtml += '<div class="wc-card hero">';
                             inputUttrHtml += '<div class="wc-container imgContainer" >';
-                            inputUttrHtml += '<img src="' + tmp.dlg[j].IMG_URL +'">';
+                            if(tmp.dlg[j].IMG_URL != null) {
+
+                                inputUttrHtml += '<img src="' + tmp.dlg[j].IMG_URL +'">';
+                            }
                             inputUttrHtml += '</div>';
                             if(tmp.dlg[j].CARD_TITLE != null) {
-                                inputUttrHtml += '<h1>' + /*cardtitle*/ tmp.dlg[j].CARD_TITLE + '</h1>';
+                                inputUttrHtml += '<h1 style="margin-top: 0px;">' + /*cardtitle*/ tmp.dlg[j].CARD_TITLE + '</h1>';
                             }
                             if(tmp.dlg[j].CARD_TEXT != null) {
 

@@ -9,7 +9,17 @@
 <%include  ./common/commonLib.html%>
 
 <script type="text/javascript" src="/js/common/userMng.js"></script>
+<style>
+    #tableBodyId td {
+        padding-right: 5px;
+        padding-left: 5px;
+    }
 
+    .editable-cell {
+        cursor: pointer;
+    }
+
+</style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -57,20 +67,21 @@
                                                 <!-- 사용자관리 테이블 --> 
                                                 <div class="Tbl_wrap">
                                                     <table class="Tbl" summary="사용자관리">
-                                                        <colgroup><col width="5%"/><col width="5%"/><col width="10%"/><col width="10%"/><col width="5%"/>
-                                                                  <col width="13%"/><col width="10%"/><col width="13%"/><col width="13%"/><col width="10%"/>
+                                                        <colgroup>
+                                                            <col width="5%"/><col width="3%"/><col width="19%"/><col width="19%"/><col width="19%"/>
+                                                            <col width="10%"/><col width="10%"/><col width="10%"/><col width="5%"/>
                                                         </colgroup>
-                                                        <thead><tr>
+                                                        <thead>
+                                                            <tr>
                                                                 <th></th>
                                                                 <th><input type="checkbox" class="flat-red" id="check-all"></th>   <!-- <th><input type="checkbox" class="flat-red" checked id="check-all"></th> -->
                                                                 <th><%= __('USER_ID') %></th>
                                                                 <th><%= __('USER_NAME') %></th>
                                                                 <th><%= __('PASSWOARD') %></th>
                                                                 <th><%= __('REGIST_DATE') %></th>
-                                                                <th><%= __('REGIST_ID') %></th>
                                                                 <th><%= __('MODIFIED_DATE') %></th>                                                                  
                                                                 <th><%= __('LAST_LOGIN_DATE') %></th>
-                                                                <th><%= __('LOGIN_FAIL_CNT') %></th>    
+                                                                <th><%= __('LOGIN') %></br><%= __('FAIL_CNT') %></th>      
                                                             </tr>
                                                         </thead>
                                                         <tbody id="tableBodyId">

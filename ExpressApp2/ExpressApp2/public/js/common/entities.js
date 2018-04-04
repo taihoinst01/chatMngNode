@@ -554,7 +554,7 @@ function updateEntity() {
         },
         success: function(data) {
             if(data.status == 200){
-                alert(language.Added);
+                alert(language.DELETE + " " + language.SUCCESS);
                 entitiesAjax();
             } else if(data.status == 'Duplicate') {
                 alert(language.DUPLICATE_ENTITIES_EXIST);

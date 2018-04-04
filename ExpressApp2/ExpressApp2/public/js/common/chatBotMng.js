@@ -203,7 +203,7 @@ function mkAppRow(rows, checkedApp) {
 
     for (var i=0;i<rows.length;i++) { 
         
-        appHtml += '<tr><td>' + Number(i+1) + '</td>';
+        appHtml += '<tr><td>' + Number(i+1) + '</td><td></td>';
         
         var j=0;
         for (; j<checkedApp.length; j++) {
@@ -216,9 +216,10 @@ function mkAppRow(rows, checkedApp) {
             appHtml += '<td><input type="checkbox" class="flat-red" name="tableCheckBox"></td>';
         }
 
-        appHtml += '<td>' + rows[i].APP_NAME + '</td>';
-        appHtml += '<td>' + rows[i].APP_ID + '</td>';
-        appHtml += '<td>' + rows[i].OWNER_EMAIL + '</td></tr>';
+        appHtml += '<td></td><td>' + rows[i].APP_NAME + '</td>';
+        appHtml += '<td></td><td>' + rows[i].SUBSC_KEY + '</td>'
+        appHtml += '<td></td><td>' + rows[i].APP_ID + '</td>';
+        appHtml += '<td></td><td>' + rows[i].OWNER_EMAIL + '</td></tr>';
     }
 
     $('#appTableBodyId').html(appHtml);
@@ -242,7 +243,7 @@ function saveChatApp() {
         var saveArr = new Array();
         $('tr div[class*=checked]').each(function() {
             //var rowId = $(this).parent().parent().attr("id");
-            var appId = $(this).parents('tr').children().eq(3).text().trim();
+            var appId = $(this).parents('tr').children().eq(8).text().trim();
             //추가로 체크한 app, 체크 취소한 app 구분
             var rememberLen = initAppCheck.length;
             for (var i=0; i<rememberLen; i++) {

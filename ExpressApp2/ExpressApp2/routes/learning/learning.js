@@ -1397,7 +1397,6 @@ router.post('/updateEntity', function (req, res) {
                                     .query(delEntityQuery);
 
                                 //console.log(delInfo);
-                            
                             }
                         }
                     }

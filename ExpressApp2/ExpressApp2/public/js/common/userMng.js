@@ -68,12 +68,21 @@ $(document).on('click','.editable-cell',function(e){
     if($(this).find('input').length > 0){
         
     } else {
-        editCellText = $(this).text();
-        var inputHtml = '<input type="text" id="editCell" spellcheck="false" spellcheck="false" autocomplete="off" value="' + $(this).text() + '"/>';
-        $(this).html(inputHtml);
-        $(this).attr('class', 'edit-cell');     
+        if($(this).hasClass('editPwTd')) {
+            editCellText = $(this).text();
+            var inputHtml = '<input type="text" class="form-control editPwInput" id="editCell" spellcheck="false" spellcheck="false" autocomplete="off"/>';
+            $(this).html(inputHtml);
+            $(this).attr('class', 'edit-cell');
+            $(this).children().focus().val('');
+        } else {
 
-        $(this).children().focus().val('').val(editCellText);
+            editCellText = $(this).text();
+            var inputHtml = '<input type="text" class="form-control" id="editCell" spellcheck="false" spellcheck="false" autocomplete="off" value="' + $(this).text() + '"/>';
+            $(this).html(inputHtml);
+            $(this).attr('class', 'edit-cell');     
+    
+            $(this).children().focus().val('').val(editCellText);
+        }
     }
 });
 
@@ -81,35 +90,75 @@ $(document).on('click','.editable-cell',function(e){
 $(document).ready(function() {
     $('html').click(function(e) { 
         if ($('.edit-cell').length > 0) {
+
             if ( !$('.edit-cell, #editCell').has(e.target).length ) { 
                 //영역 밖
-                var changeVal = $('#editCell').val();
-                $('.edit-cell').html(editCellText);
-                $('.edit-cell').text(changeVal);
-                if (editCellText !== changeVal) {
-                    $('.edit-cell').parent().children().eq(0).text('EDIT');
-                    $('.edit-cell').parent().find('div').iCheck('check'); 
+
+                if($('.edit-cell, #editCell').hasClass('editPwInput')) {
+
+                    var changeVal = $('#editCell').val().trim();           
+                    if (changeVal == "") {
+                        $('.edit-cell').html(editCellText);
+                    } else {
+                        $('.edit-cell').html(changeVal);
+                        $('.edit-cell').parent().children().eq(0).text('EDIT');
+                        $('.edit-cell').parent().find('div').iCheck('check'); 
+                        $('.edit-cell').attr('data-changeflag', "true");
+                    }
+                    $('.edit-cell').attr('class', 'editable-cell editPwTd'); 
+                } else {
+
+                    var changeVal = $('#editCell').val();
+                    $('.edit-cell').html(editCellText);
+                    $('.edit-cell').text(changeVal);
+                    if (editCellText !== changeVal) {
+                        $('.edit-cell').parent().children().eq(0).text('EDIT');
+                        $('.edit-cell').parent().find('div').iCheck('check'); 
+                    }
+                    $('.edit-cell').attr('class', 'editable-cell');
                 }
-                $('.edit-cell').attr('class', 'editable-cell');
             } 
         }
     });
 });
+
 //수정시 엔터로 저장, esc 취소
 $(document).on('keyup','#editCell',function(e){
     if(e.keyCode === 13){
-        var changeVal = $('#editCell').val();
-        //$('.edit-cell').html(editCellText);
-        $('.edit-cell').text(changeVal);
-        if (editCellText !== changeVal) {
-            $('.edit-cell').parent().children().eq(0).text('EDIT');
-            $('.edit-cell').parent().find('div').iCheck('check'); 
+        if($(this).hasClass('editPwInput') ) { 
+                
+            var changeVal = $('#editCell').val();           
+            if (changeVal.trim() == "") {
+                $('.edit-cell').html(editCellText);
+            } else {
+                $('.edit-cell').html(changeVal);
+                $('.edit-cell').parent().children().eq(0).text('EDIT');
+                $('.edit-cell').parent().find('div').iCheck('check'); 
+                $('.edit-cell').attr('data-changeflag', "true"); 
+            }
+            $('.edit-cell').attr('class', 'editable-cell editPwTd'); 
+        } else {
+
+            var changeVal = $('#editCell').val();
+            //$('.edit-cell').html(editCellText);
+            $('.edit-cell').text(changeVal);
+            if (editCellText !== changeVal) {
+                $('.edit-cell').parent().children().eq(0).text('EDIT');
+                $('.edit-cell').parent().find('div').iCheck('check'); 
+            }
+            $('.edit-cell').attr('class', 'editable-cell');
         }
-        $('.edit-cell').attr('class', 'editable-cell');
     } else if(e.keyCode === 27){
-        var changeVal = $('#editCell').val();
-        $('.edit-cell').html(editCellText);
-        $('.edit-cell').attr('class', 'editable-cell');
+        if($(this).hasClass('editPwInput') ) { 
+
+            $('.edit-cell').html(editCellText);
+            $('.edit-cell').attr('class', 'editable-cell editPwTd');
+        } else {
+
+            var changeVal = $('#editCell').val();
+            $('.edit-cell').html(editCellText);
+            $('.edit-cell').attr('class', 'editable-cell');
+        }
     }
 });
 var saveTableHtml = "";
@@ -135,14 +184,13 @@ function makeUserTable() {
                 for (var i=0;i<data.rows.length;i++) { 
                     tableHtml += '<tr><td>' + data.rows[i].SEQ + '</td>';
                     tableHtml += '<td><input type="checkbox" class="flat-red" name="tableCheckBox"></td>';
-                    tableHtml += '<td>' + data.rows[i].USER_ID + '</td>'
-                    tableHtml += '<td class="editable-cell">' + data.rows[i].EMP_NM + '</td>'
-                    tableHtml += '<td>' + '<a href="javascript://" class="" onclick="initPassword(\''+ data.rows[i].USER_ID +'\');">' + '초기화'+ '</a>' + '</td>'
-                    tableHtml += '<td>' + data.rows[i].REG_DT + '</td>'
-                    tableHtml += '<td>' + data.rows[i].REG_ID + '</td>'
-                    tableHtml += '<td>' + data.rows[i].MOD_DT + '</td>'
-                    tableHtml += '<td>' + data.rows[i].LAST_LOGIN_DT + '</td>'
-                    tableHtml += '<td>' + data.rows[i].LOGIN_FAIL_CNT + '</td></tr>'
+                    tableHtml += '<td>' + data.rows[i].USER_ID + '</td>';
+                    tableHtml += '<td class="editable-cell">' + data.rows[i].EMP_NM + '</td>';
+                    tableHtml += '<td class="editable-cell editPwTd" data-changeflag="false">' + language['EDIT']+ '</td>';
+                    tableHtml += '<td>' + data.rows[i].REG_DT + '</td>';
+                    tableHtml += '<td>' + data.rows[i].MOD_DT + '</td>';
+                    tableHtml += '<td>' + (data.rows[i].LAST_LOGIN_DT).split(" ")[0] + '</br>' + (data.rows[i].LAST_LOGIN_DT).split(" ")[1] +'</td>';
+                    tableHtml += '<td>' + data.rows[i].LOGIN_FAIL_CNT + '</td></tr>';
                 }
     
                 saveTableHtml = tableHtml;
@@ -184,7 +232,8 @@ function addUser() {
     addHtml = '<tr><td>NEW</td><td><input type="checkbox" class="flat-red" name="tableCheckBox"></td>'
     addHtml += '<td><input type="text" name="new_user_id" spellcheck="false" autocomplete="off" value="" /></td>';
     addHtml += '<td><input type="text" name="new_user_name" spellcheck="false" autocomplete="off" value="" /></td> ';
-    addHtml += '<td></td>   <td></td>  <td></td>  <td></td>  <td></td>  <td></td></tr>'
+    addHtml += '<td><input type="text" name="new_user_password" spellcheck="false" autocomplete="off" value="" /></td>';   
+    addHtml += '<td></td>  <td></td>  <td></td>  <td></td></tr>'
 
     $('#tableBodyId').prepend(addHtml);
 
@@ -221,7 +270,8 @@ function saveUser() {
 
     var chkEmptyInput = false;
     for (var i=0; i<$('input[name=new_user_id]').length; i++) {
-        if ( ($.trim($('input[name=new_user_id]').eq(i).val()) === "") || ($.trim($('input[name=new_user_name]').eq(i).val()) === "") ) {
+        if ( ($.trim($('input[name=new_user_id]').eq(i).val()) === "") || ($.trim($('input[name=new_user_name]').eq(i).val()) === "")
+                || ($.trim($('input[name=new_user_password]').eq(i).val()) === "") ) {
             chkEmptyInput = true;
             break;
         }
@@ -241,6 +291,8 @@ function saveUser() {
         $('.edit-cell').attr('class', 'editable-cell');
     }
 
+    // changeFlag - 유저정보 변경사항이 있는지 체크하는 함수
+    var changeFlag = false;
     var saveArr = new Array();
     $('#tableBodyId tr').each(function() {
         if ( $(this).find('div').hasClass('checked') ) {
@@ -250,18 +302,25 @@ function saveUser() {
             if (statusFlag === 'EDIT') {
                 
                 var data = new Object() ;
-                data.statusFlag = statusFlag;
+                data.statusFlag = statusFlag;            
                 data.USER_ID = $(this).children().eq(2).text();
                 data.EMP_NM = $(this).children().eq(3).text();
-                saveArr.push(data);
+                //비밀번호가 변경이 이루어 졌는지 체크
+                if($(this).children().eq(4).attr('data-changeflag') == "true") {
 
+                    data.EMP_PASSWORD = $(this).children().eq(4).text();
+                }
+                saveArr.push(data);
+                changeFlag = true;
             } else if (statusFlag === 'NEW' ) {
 
                 var data = new Object() ;
                 data.statusFlag = statusFlag;
                 data.USER_ID = $(this).find('input[name=new_user_id]').val();
                 data.EMP_NM = $(this).find('input[name=new_user_name]').val();
+                data.EMP_PASSWORD = $(this).find('input[name=new_user_password]').val();
                 saveArr.push(data);
+                changeFlag = true;
             } else if (statusFlag === 'DEL') {
 
                 var data = new Object() ;
@@ -269,30 +328,38 @@ function saveUser() {
                 data.USER_ID = $(this).children().eq(2).text();
                 data.EMP_NM = $(this).children().eq(3).text();
                 saveArr.push(data);
+                changeFlag = true;
             }
         }
         
     });
     
-    var jsonData = JSON.stringify(saveArr);
-    var params = {
-        'saveArr' : jsonData
-    };
-    $.ajax({
-        type: 'POST',
-        datatype: "JSON",
-        data: params,
-        url: '/users/saveUserInfo',
-        success: function(data) {
-            console.log(data);
-            if (data.status === 200) {
-                alert(language['REGIST_SUCC']);
-                window.location.reload();
-            } else {
-                alert(language['It_failed']);
+    if(changeFlag == false) {
+
+        alert("아무런 변경사항이 없습니다. 추가, 수정, 삭제 등 변경사항이 생겼을시 저장 버튼을 눌러주세요.");
+    } else {
+        
+        var jsonData = JSON.stringify(saveArr);
+        var params = {
+            'saveArr' : jsonData
+        };
+        $.ajax({
+            type: 'POST',
+            datatype: "JSON",
+            data: params,
+            url: '/users/saveUserInfo',
+            success: function(data) {
+                console.log(data);
+                if (data.status === 200) {
+                    alert(language['REGIST_SUCC']);
+                    window.location.reload();
+                } else {
+                    alert(language['It_failed']);
+                }
             }
-        }
-    });    
+        });  
+        
+    }  
 }
 
 

@@ -45,11 +45,13 @@ function recommendAjax(){
 
             if(data.list.length > 0){
                 for(var i = 0; i < data.list.length; i++){
+                    
+                    var utterance = encodeURI(data.list[i].QUERY);
                     item += '<tr>' +
                             '<td><input type="checkbox" class="flat-red" name="tableCheckBox"><input type="hidden" class="seq" value="'+data.list[i].SEQ+'"></td>' +
                             '<td class="txt_left">' +
 
-                            '<a href="/learning/utterances?utterance='+data.list[i].QUERY + 
+                            '<a href="/learning/utterances?utterance='+ utterance + 
                                     '" class="dashLink" style="font-size:14px">';
                     var query = data.list[i].QUERY;
                     var entities = data.list[i].ENTITIES.split(',');

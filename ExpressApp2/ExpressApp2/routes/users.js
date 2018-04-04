@@ -18,12 +18,27 @@ basePW = cipher.final('base64');
 const HOST = 'https://westus.api.cognitive.microsoft.com'; // Luis api host
 /* GET users listing. */
 router.get('/', function (req, res) {
-    res.send('respond with a resource');
+    if (!req.session.sid) {
+        res.cookie('i18n', 'ko', { maxAge: 900000, httpOnly: true });
+        res.render('login');   
+    } else {
+        res.redirect("/list");
+    }
+});
+
+router.get('/login', function (req, res) {
+    if (!req.session.sid) {
+        res.cookie('i18n', 'ko', { maxAge: 900000, httpOnly: true });
+        res.render('login');   
+    } else {
+        res.redirect("/list");
+    }
 });
 
 router.post('/login', function (req, res) {  
     //req.session.sid = req.body.mLoginId;
-
+    
+    
     var userId = req.body.mLoginId;
     var userPw = req.body.mLoginPass;
 
@@ -64,9 +79,17 @@ router.post('/login', function (req, res) {
                         } else {
                             req.session.subsKey = subsList[subsList.findIndex(x => x.CNF_NM === 'admin')].CNF_VALUE;
                         }
-                        
-                        req.session.save(function(){
-                            res.redirect("/");
+
+                        dbConnect.getConnection(sql).then(pool => { 
+                            return pool.request().query( "UPDATE TB_USER_M SET LAST_LOGIN_DT = SWITCHOFFSET(getDate(), '+09:00')  WHERE USER_ID = '" + req.session.sid + "';" ); 
+                        }).then(result => {
+
+                            req.session.save(function(){
+                                res.redirect("/");
+                            });
+                        }).catch(err => {
+                            console.log(err);
+                            sql.close();
                         });
                     }).catch(err => {
                         console.log(err);
@@ -77,7 +100,11 @@ router.post('/login', function (req, res) {
 
                     
                 } else {
-                    res.send('<script>alert("비밀번호가 일치하지 않습니다.");location.href="/";</script>');
+                    dbConnect.getConnection(sql).then(pool => { 
+                        return pool.request().query( "UPDATE TB_USER_M SET LOGIN_FAIL_CNT = (ISNULL(LOGIN_FAIL_CNT, 0) + 1)  WHERE USER_ID = '" + req.body.mLoginId + "';" ); 
+                    }).then(result => {
+                        res.send('<script>alert("비밀번호가 일치하지 않습니다.");location.href="/";</script>');
+                    })
                 }
             } else {
                 res.send('<script>alert("아이디를 찾을수 없습니다.");location.href="/";</script>');
@@ -245,6 +272,17 @@ function checkNull(val, newVal) {
     }
 }
 
+//암호화
+function encryption(input_password) {
+    var key = 'taiho123!@#$';
+    /*기본 암호화 pw */
+    const cipher = crypto.createCipher('aes192', key);
+    let EMP_PASSWORD = cipher.update(input_password, 'utf8', 'base64'); 
+    EMP_PASSWORD = cipher.final('base64'); 
+
+    return EMP_PASSWORD;
+}
+
 router.post('/saveUserInfo', function (req, res) {  
     var userArr = JSON.parse(req.body.saveArr);
     var saveStr = "";
@@ -252,16 +290,25 @@ router.post('/saveUserInfo', function (req, res) {
     var deleteStr = "";
 
     
-
     for (var i=0; i<userArr.length; i++) {
         if (userArr[i].statusFlag === 'NEW') {
-            saveStr += "INSERT INTO TB_USER_M (EMP_NUM, USER_ID, SCRT_NUM, EMP_NM, USE_YN) " + 
+            
+
+            saveStr += "INSERT INTO TB_USER_M (EMP_NUM, USER_ID, SCRT_NUM, EMP_NM, USE_YN, REG_DT) " + 
                        "VALUES ( (SELECT MAX(EMP_NUM)+1 FROM TB_USER_M), ";
-            saveStr += " '" + userArr[i].USER_ID  + "', '" + basePW  + "', '" + userArr[i].EMP_NM  + "', 'Y'); ";
+            saveStr += " '" + userArr[i].USER_ID  + "', '" + encryption(userArr[i].EMP_PASSWORD)  + "', '" + userArr[i].EMP_NM  + "', 'Y', SWITCHOFFSET(getDate(), '+09:00'));\n";
         } else if (userArr[i].statusFlag === 'EDIT') {
-            updateStr += "UPDATE TB_USER_M SET EMP_NM = '" + userArr[i].EMP_NM  + "' WHERE USER_ID = '" + userArr[i].USER_ID + "'; ";
+
+            updateStr += "UPDATE TB_USER_M SET EMP_NM = '" + userArr[i].EMP_NM  + "'";
+            if(userArr[i].EMP_PASSWORD) {
+                updateStr += ", SCRT_NUM= '" + encryption(userArr[i].EMP_PASSWORD) + "'";
+            }
+            updateStr += "WHERE USER_ID = '" + userArr[i].USER_ID + "';\n";
+
+            updateStr += "UPDATE TB_USER_M SET MOD_DT = SWITCHOFFSET(getDate(), '+09:00') WHERE USER_ID = '" + userArr[i].USER_ID + "';\n";
         } else { //DEL
             deleteStr += "UPDATE TB_USER_M SET USE_YN = 'N' WHERE USER_ID = '" + userArr[i].USER_ID + "' AND EMP_NM = '" + userArr[i].EMP_NM + "'; ";
+            deleteStr += "UPDATE TB_USER_M SET MOD_DT = SWITCHOFFSET(getDate(), '+09:00') WHERE USER_ID = '" + userArr[i].USER_ID + "';\n";
         }
     }
 
@@ -539,7 +586,7 @@ router.post('/selectChatAppList', function (req, res) {
                             " (SELECT ROW_NUMBER() OVER(ORDER BY APP_NAME DESC) AS NUM, \n" +
                             "         COUNT('1') OVER(PARTITION BY '1') AS TOTCNT, \n"  +
                             "         CEILING((ROW_NUMBER() OVER(ORDER BY APP_NAME DESC))/ convert(numeric ,10)) PAGEIDX, \n" +
-                            "         APP_NAME, APP_ID,  LEFT(OWNER_EMAIL, CHARINDEX('@', OWNER_EMAIL)-1) OWNER_EMAIL, CHATBOT_ID \n" +
+                            "         APP_NAME, APP_ID,  LEFT(OWNER_EMAIL, CHARINDEX('@', OWNER_EMAIL)-1) OWNER_EMAIL, CHATBOT_ID, SUBSC_KEY \n" +
                            "          FROM TBL_LUIS_APP ) tbp \n" +
                            " WHERE 1=1 \n" +
                            "   AND PAGEIDX = " + currentPage + "; \n";
