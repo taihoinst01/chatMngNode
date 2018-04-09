@@ -191,7 +191,8 @@ $(document).on("click", "a[name=delEntityRow]", function(e){
 //기존 entity 값 저장
 var originalEntityVal = {};
 $(document).on("click", "a[name=editEntityTag]", function(e){
-
+    $('.board').hide();
+    $('.fl.close').addClass('more').removeClass('close');  
     originalEntityVal.entityDefine = $(this).text().trim();
     originalEntityVal.api_group = $(this).parents('tr').find('td:last').text().trim();
     
@@ -490,7 +491,6 @@ function dialogValidation(){
         $('#btnAddDlg').attr("disabled", "disabled");
         $('#btnAddDlg').addClass("disable");
     }
-       
 }
 
 //엔티티 업데이트
