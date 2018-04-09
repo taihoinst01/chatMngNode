@@ -250,5 +250,6 @@
 	"Up_to_10_cards_can_be_added": "Up to 10 cards can be added",
 	"You_must_have_one_dialog_by_default": "You must have one dialog by default",
 	"You_must_have_at_least_one_card": "You must have at least one card. If you want to delete the card completely, press the Delete Dialog button",
-	"ASKTRAIN": "It takes 1 to 2 minutes depending on the LUIS condition. Do you want to proceed?"
+	"ASKTRAIN": "It takes 1 to 2 minutes depending on the LUIS condition. Do you want to proceed?",
+	"ASKENTITYSAVE": "It takes 20 to 50 seconds depending on the LUIS condition. Do you want to proceed?"
 }

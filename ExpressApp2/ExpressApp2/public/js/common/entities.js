@@ -496,7 +496,10 @@ function dialogValidation(){
 //엔티티 업데이트
 //originalEntityVal
 function updateEntity() {
-    
+
+    if (!confirm(language.ASKENTITYSAVE)) {
+        return;
+    }
 
     var valueText = false;
     $('.updateEntityValDiv input[name=entityValue]').each(function() {
