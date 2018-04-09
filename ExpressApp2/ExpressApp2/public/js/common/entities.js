@@ -262,6 +262,11 @@ function entitiesAjax(){
                     item += '<div class="board">';
                     item += '<ul>';
                     item += '<form action="" method="post" onsubmit="return false;" autocomplete="off" name="entityForm">';
+                    //submit 방지 안쓰이는 input
+                    item += ' <div style="display:none">';
+                    item += ' <input type="submit" onclick="return false;" />';
+                    item += ' <input type="text"/></div>';
+
                     item += ' <li class="inp"><input name="entityValue" type="text" class="form-control fl"  style="width:60%;">';
                     item += '<button type="button" class="btn btn_01 mb05 addEntityValueBtn">저장</button> <button type="button" class="btn btn-default mb05 cancelEntityValueBtn">취소</button>';
                     item += '</li>';
@@ -356,7 +361,7 @@ function addEntityValueAjax(addValues) {
         success: function(data) {
             if(data.status == 200){
                 alert(language.Added);
-                $("#iptentities").val(addValues.entityValue);
+                //$("#iptentities").val(addValues.entityValue);
                 searchEntities();
             } else if(data.status == 'Duplicate') {
                 alert(language.DUPLICATE_ENTITIES_EXIST);
