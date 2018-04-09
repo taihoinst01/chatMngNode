@@ -1,7 +1,8 @@
 <!-- Left Menu Side -->
 <aside class="main-sidebar">
     <section class="sidebar">
-        <input type="hidden" id="askLearnHidden" value="<%= __('ASK_LEARNING') %> "/>
+        <input type="hidden" id="askLearnHidden1" value="<%= __('ASK_LEARNING1') %> "/>
+        <input type="hidden" id="askLearnHidden2" value="<%= __('ASK_LEARNING2') %> "/>
         <input type="hidden" id="successHidden" value="<%= __('SUCCESS') %> "/>
         <input type="hidden" id="failHidden" value="<%= __('FAIL') %> "/>
         <input type="hidden" id="simulURL" value="<%=simul_url%>" />
@@ -224,7 +225,7 @@
         //train --start
         $('#trainBtn').click(function() {
             
-            if (confirm($('#askLearnHidden').val())) {
+            if (confirm($('#askLearnHidden1').val() + $('#askLearnHidden2').val())) {
 
                 $.ajax({
                 url: "/admin/trainApp",
