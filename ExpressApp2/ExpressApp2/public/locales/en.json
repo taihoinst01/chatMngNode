@@ -106,8 +106,6 @@
 	"Enter_entity_value_to_save": "Enter entity value to save",
 	"Enter_entity_deifne_to_save": "Enter entity deifne to save",
 	"DUPLICATE_ENTITIES_EXIST": "[IT FAILED]DUPLICATE ENTITIES EXIST",
-	"ASK_TRAIN1": "It takes 1 to 2 minutes depending on the LUIS condition.",
-	"ASK_TRAIN2": "Do you want to proceed?",
 	"============= setting  =============": "",
 	"ADMIN_SETTING": "ADMIN PAGE",
 	"NO_DATA": "There is no data.",
@@ -251,5 +249,6 @@
 	"Up_to_4_buttons_can_be_added" : "Up to 4 buttons can be added",
 	"Up_to_10_cards_can_be_added": "Up to 10 cards can be added",
 	"You_must_have_one_dialog_by_default": "You must have one dialog by default",
-	"You_must_have_at_least_one_card": "You must have at least one card. If you want to delete the card completely, press the Delete Dialog button"
+	"You_must_have_at_least_one_card": "You must have at least one card. If you want to delete the card completely, press the Delete Dialog button",
+	"ASKTRAIN": "It takes 1 to 2 minutes depending on the LUIS condition. Do you want to proceed?"
 }

@@ -3,8 +3,7 @@
     <section class="sidebar">
         <input type="hidden" id="successHidden" value="<%= __('SUCCESS') %> "/>
         <input type="hidden" id="failHidden" value="<%= __('FAIL') %> "/>
-        <input type="hidden" id="askLearnHidden1" value="<%= __('ASK_TRAIN1') %> "/>
-        <input type="hidden" id="askLearnHidden2" value="<%= __('ASK_TRAIN2') %> "/>
+        <input type="hidden" id="askLearnHidden" value="<%= __('ASKTRAIN') %> "/>
         <input type="hidden" id="simulURL" value="<%=simul_url%>" />
                            <div class="sidebar-form"><%= __('CHATBOT') %> 
                             <% 
@@ -225,7 +224,7 @@
         //train --start
         $('#trainBtn').click(function() {
             
-            if (confirm($('#askLearnHidden1').val() + $('#askLearnHidden2').val())) {
+            if (confirm($('#askLearnHidden').val())) {
 
                 $.ajax({
                 url: "/admin/trainApp",
