@@ -1655,7 +1655,7 @@ function selectDlgByFilter(group){
                         item += '<tr>' +
                                 '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
                                 '<td>-</td>' +
-                                '<td class="txt_left tex01">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                                '<td class="txt_left tex01" style="color: #fd0000;">' + data.list[i].DLG_DESCRIPTION + '</td>' +
                                 '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
                                 '<td><a href="#" onclick="deleteAPI('+ data.list[i].RELATION_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
                                 '</tr>' ;
@@ -1983,9 +1983,9 @@ function selectDlgByTxt(groupType, sourceType){
                         item += '<tr>' +
                                 '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
                                 '<td>-</td>' +
-                                '<td class="txt_left tex01">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                                '<td class="txt_left tex01" style="color: #fd0000;">' + data.list[i].DLG_DESCRIPTION + '</td>' +
                                 '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
-                                '<td><a href="#" onclick="deleteAPI('+ data.list[i].RELATION_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
+                                '<td ><a href="#" onclick="deleteAPI('+ data.list[i].RELATION_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
                                 '</tr>' ;
     
                     }
