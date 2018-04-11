@@ -3404,7 +3404,7 @@ router.post('/createApiRelation', function (req, res) {
             }
 
             var queryText = "INSERT INTO TBL_DLG_RELATION_LUIS(LUIS_ID,LUIS_INTENT,LUIS_ENTITIES,DLG_API_DEFINE,USE_YN) \n"
-                          + "VALUES( @luisId, @luisIntent, @entities, @dlgApiDefine, 'Y' ); \n";
+                          + "VALUES( @luisId, @luisIntent, (SELECT * from FN_ENTITYSUM_ORDERBY_ADD(@entities)), @dlgApiDefine, 'Y' ); \n";
 
             let result2 = await pool.request()
             .input('luisId', sql.NVarChar, luisId)
