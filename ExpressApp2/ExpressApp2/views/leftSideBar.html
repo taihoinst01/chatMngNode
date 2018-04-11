@@ -100,7 +100,8 @@
                                     <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i> </span>
                                   </a>
                                 </li>
-                                <a href="#" class="spmenu" id="trainBtnHidden" data-toggle="modal" data-target="#myModal" style="visibility: hidden;"><%= __('TRAIN') %></a>
+                            <!-- <a href="#" class="spmenu" id="trainBtnHidden" data-toggle="modal" data-target="#myModal" style="visibility: hidden;"><%= __('TRAIN') %></a> -->
+                            <button id="trainBtnHidden" type="button" data-toggle="modal" data-target="#myModal" style="visibility: hidden;"><%= __('TRAIN') %></button>
                           </ul>
                           <!--// left Menu-->
                         <%
@@ -116,7 +117,8 @@
 
 
  <!--  Footer -->
- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+ <!--<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
                 <div class="modal-content">
                         <div class="modal-header">

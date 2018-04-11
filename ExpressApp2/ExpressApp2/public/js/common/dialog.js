@@ -1592,24 +1592,24 @@ var searchGroups; // 페이징을 위해서 검색 후 그룹들을 담아둘 �
 function selectDlgByFilter(group){
     
     sourceType2 = $('#sourceType2').val();
-    searchGroupL = $('#searchGroupL').val();
+    //searchGroupL = $('#searchGroupL').val();
     searchGroupM = $('#searchGroupM').val();
     searchGroupS = $('#searchGroupS').val();
     
     params = {
         //'searchTxt':$('#iptDialog').val(),
         'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
-        'searchGroupL': group.searchGroupL,
+        //'searchGroupL': group.searchGroupL,
         'searchGroupM': group.searchGroupM,
         'searchGroupS': group.searchGroupS,
         'sourceType2': group.sourceType2
     };
     if (searchText !== '') {
         params.searchText = searchText;
-    }
+    }/*
     if (searchGroupL !== '') {
         params.upperGroupL = searchGroupL;
-    }
+    }*/
     if (searchGroupM !== '') {
         params.upperGroupM =searchGroupM;
     }
@@ -1628,27 +1628,39 @@ function selectDlgByFilter(group){
             var item = '';
             if(data.list.length > 0){
                 
-                for(var i = 0; i < data.list.length; i++){
-                    if(data.list[i].DLG_API_DEFINE == 'D'){
-                        data.list[i].DLG_API_DEFINE = 'Common';
+                if (sourceType2 == 'D')
+                {
+                    for(var i = 0; i < data.list.length; i++){
+                        if(data.list[i].DLG_API_DEFINE == 'D'){
+                            data.list[i].DLG_API_DEFINE = 'Common';
+                        }
+                        item += '<tr>' +
+                                '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
+                                '<td>' + data.list[i].GroupS +'</td>' +
+                                '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#myModal2"   onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                                '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
+                                '<td><a href="#" onclick="deleteDialog('+ data.list[i].DLG_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
+                                '</tr>';
                     }
-                    item += '<tr>' +
-                            '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
-                            '<td>' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#myModal2"   onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
-                            '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
-                            '<td><a href="#" onclick="deleteDialog('+ data.list[i].DLG_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
-                            '</tr>';
-                }
-
-                
-                
-                if (searchGroupL !== '') {
-                    if (!$('#selBoxBody').find('label[for=' + searchGroupL + ']').parent().hasClass('active')) {
-                        $('#selBoxBody').find('label[for=' + searchGroupL + ']').next().trigger('click');
+    
+                    if (searchGroupL !== '') {
+                        if (!$('#selBoxBody').find('label[for=' + searchGroupL + ']').parent().hasClass('active')) {
+                            $('#selBoxBody').find('label[for=' + searchGroupL + ']').next().trigger('click');
+                        }
                     }
                 }
-                
+                else
+                {
+                    for(var i = 0; i < data.list.length; i++){
+                        item += '<tr>' +
+                                '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
+                                '<td>-</td>' +
+                                '<td class="txt_left tex01">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                                '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
+                                '<td><a href="#" onclick="deleteAPI('+ data.list[i].RELATION_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
+                                '</tr>' ;
+                    }
+                }
 
             } else {
                 item += '<tr style="height: 175px;">' +
@@ -1907,7 +1919,7 @@ function searchMidGroup(groupName) {
 
 //dialog 페이지 첫 로딩때도 실행
 var sourceType2 = $('#sourceType2').val();
-var searchGroupL = '';
+//var searchGroupL = '';
 var searchGroupM = '';
 var searchGroupS = '';
 var searchText = '';
@@ -1917,7 +1929,7 @@ function selectDlgByTxt(groupType, sourceType){
     }
     params = {
         'sourceType2': sourceType2,
-        'searchGroupL': searchGroupL,
+        //'searchGroupL': searchGroupL,
         'searchGroupM': searchGroupM,
         'searchGroupS': searchGroupS,
         'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
@@ -1935,41 +1947,55 @@ function selectDlgByTxt(groupType, sourceType){
             searchText = $('#iptDialog').val();
             $('#dialogTbltbody').html('');
             var item = '';
+            var item2 = '';
             if(data.list.length > 0){
+                if (sourceType == "D")
+                {
+                    for(var i = 0; i < data.list.length; i++){
+                        item += '<tr>' +
+                                '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
+                                '<td>' + data.list[i].GroupS +'</td>' +
+                                '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#myModal2"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
+                                '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
+                                '<td><a href="#" onclick="deleteDialog('+ data.list[i].DLG_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
+                                '</tr>' ;
+    
+                    }
+    
+                    if(data.groupList.length > 0) {
+                        item2 = '<label for="all" class="allGroup selectArea">View all</label>';
+                        for(var i = 0; i <data.groupList.length; i++) {
+                            item2 += '<ul class="checkouter selectArea">' +
+                                    '<li class="selectArea">' +
+                                    '<div class="heading selectArea">' +
+                                    '<label class="groupL selectArea" for="' + data.groupList[i].largeGroup + '">' + data.groupList[i].largeGroup + '</label>' +
+                                    '<span class="checktoggle largeGroup selectArea"></span></div>' +
+                                    '<ul class="checklist selectArea" id="' + data.groupList[i].largeGroup + '">' +
+                                    '</ul>' +
+                                    '</li>' +
+                                    '</ul>';
+                        }
+                    }
+                } 
+                else
+                {
+                    for(var i = 0; i < data.list.length; i++){
+                        item += '<tr>' +
+                                '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
+                                '<td>-</td>' +
+                                '<td class="txt_left tex01">' + data.list[i].DLG_DESCRIPTION + '</td>' +
+                                '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
+                                '<td><a href="#" onclick="deleteAPI('+ data.list[i].RELATION_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
+                                '</tr>' ;
+    
+                    }
+                }
                 
-                for(var i = 0; i < data.list.length; i++){
-                    if(data.list[i].DLG_API_DEFINE == 'D'){
-                        data.list[i].DLG_API_DEFINE = 'Common';
-                    }
-                    item += '<tr>' +
-                            '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
-                            '<td>' + data.list[i].GroupS +'</td>' +
-                            '<td class="txt_left tex01"><a href="#"  data-toggle="modal" data-target="#myModal2"  onclick="searchDialog('+ data.list[i].DLG_ID +');return false;">' + data.list[i].DLG_DESCRIPTION + '</a></td>' +
-                            '<td>' + data.list[i].LUIS_ENTITIES +'</td>' +
-                            '<td><a href="#" onclick="deleteDialog('+ data.list[i].DLG_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
-                            '</tr>' ;
-
-                }
-
-                if(data.groupList.length > 0) {
-                    var item2 = '';
-                    item2 = '<label for="all" class="allGroup selectArea">View all</label>';
-                    for(var i = 0; i <data.groupList.length; i++) {
-                        item2 += '<ul class="checkouter selectArea">' +
-                                '<li class="selectArea">' +
-                                '<div class="heading selectArea">' +
-                                '<label class="groupL selectArea" for="' + data.groupList[i].largeGroup + '">' + data.groupList[i].largeGroup + '</label>' +
-                                '<span class="checktoggle largeGroup selectArea"></span></div>' +
-                                '<ul class="checklist selectArea" id="' + data.groupList[i].largeGroup + '">' +
-                                '</ul>' +
-                                '</li>' +
-                                '</ul>';
-                    }
-                    $('.selectOptionsbox').html("");
-                    $('.selectOptionsbox').append(item2);
-                    $('.checklist').hide();
-                    saveSelectDivHtml = item2;
-                }
+                $('.selectOptionsbox').html("");
+                $('.selectOptionsbox').append(item2);
+                $('.checklist').hide();
+                saveSelectDivHtml = item2;
+                
             } else {
                 item += '<tr style="height: 175px;">' +
                             '<td colspan="4">' + language.NO_DATA + '</td>' +
@@ -2835,21 +2861,50 @@ function updateDialog() {
 }
 
 function deleteDialog(dlgId) {
-    $.ajax({
-        url: '/learning/deleteDialog',                //주소
-        dataType: 'json',                  //데이터 형식
-        type: 'POST',                      //전송 타입
-        data: {'dlgId':dlgId},      //데이터를 json 형식, 객체형식으로 전송
+    if (confirm(language.ASK_DELETE)) {
+        $.ajax({
+            url: '/learning/deleteDialog',                //주소
+            dataType: 'json',                  //데이터 형식
+            type: 'POST',                      //전송 타입
+            data: {'dlgId':dlgId},      //데이터를 json 형식, 객체형식으로 전송
+    
+            success: function(result) {
+                if (result.res) {
+                    alert(language.DELETE + language.SUCCESS);
+                    $('.createDlgModalClose').click();
+                    var groupType =  $('.selected').text();
+                    var sourceType = $('#tblSourceType').val();
+                    selectDlgByTxt(groupType, sourceType);
+                } else {
+                    alert(language.DELETE + language.FAIL);
+                }
+            }
+        });
+    }
+}
 
-        success: function(result) {
-            alert('delele complete');
-            $('.createDlgModalClose').click();
-            var groupType =  $('.selected').text();
-            var sourceType = $('#tblSourceType').val();
-            selectDlgByTxt(groupType, sourceType);
-        }
+function deleteAPI(relationId) {
+    
+    if (confirm(language.ASK_DELETE)) {
+        $.ajax({
+            url: '/learning/deleteAPI',                //주소
+            dataType: 'json',                  //데이터 형식
+            type: 'POST',                      //전송 타입
+            data: {'relationId':relationId},      //데이터를 json 형식, 객체형식으로 전송
 
-    });
+            success: function(result) {
+                if (result.res) {
+                    alert(language.DELETE + language.SUCCESS);
+                    $('.createDlgModalClose').click();
+                    var groupType =  $('.selected').text();
+                    var sourceType = $('#tblSourceType').val();
+                    selectDlgByTxt(groupType, sourceType);
+                } else {
+                    alert(language.DELETE + language.FAIL);
+                }
+            }
+        });
+    }
 }
 
 //다이얼로그 생성 모달창 - 중그룹 신규버튼

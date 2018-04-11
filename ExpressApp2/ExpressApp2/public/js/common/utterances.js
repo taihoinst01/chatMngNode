@@ -1039,6 +1039,7 @@ function entityValidation(){
 }
 
 //엔티티 추가 group selbox 설정
+var globalApiGroupStr;
 function selectApiGroup() {
     $.ajax({
         type: 'POST',
@@ -1052,7 +1053,9 @@ function selectApiGroup() {
                 for (var i=0; i<groupList.length; i++) {
                     optionStr += '<option value="' + groupList[i].API_GROUP + '">' + groupList[i].API_GROUP + '</option>'
                 }
+                globalApiGroupStr = optionStr;
                 $('#apiGroup').append(optionStr);
+                $('#apiGroupRelation').append(optionStr);
             }
         }
     });
@@ -2077,7 +2080,7 @@ $(document).on('click', '.carouseBtn',function(e){
 
 
     } else {
-        alert("버튼은 4개까지 추가할 수 있습니다.");
+        alert(language.ALERT_BUUTON_CNT);
     }
 
 });
@@ -2384,6 +2387,78 @@ function getGroupSeelectBox() {
         }
     });
 }
+
+
+function openApiMordal() {
+    var entitiyCheckFlag = true;  
+    var entitiyCheckCount = 0;
+    $('input[name=tableCheckBox]').each(function() {
+        if($(this).parent().hasClass('checked') == true) {               
+            entitiyCheckCount++; 
+            if($(this).parents('tr').find('input[name=entity]').val() == "") {
+                entitiyCheckFlag = false;
+            } 
+        }
+    })
+    
+    if(entitiyCheckCount == 0) {
+        alert(language.ALERT_SELECTED_UTTER);
+    } else if(entitiyCheckCount > 1) {
+        alert(language.ALERT_CHOOSE_ONE_UTTER); 
+    } else if(entitiyCheckCount == 1) {
+
+        if(entitiyCheckFlag == false) {
+            alert(language.ALERT_NO_ENTITIES);
+        } else {
+
+            //$('#utterTableBody').find('.checked').length
+            var entitiesStr = "";
+            $('#utterTableBody').find('.checked').parents('tr').find('.highlight').each(function(){
+                entitiesStr += "," + $(this).text();
+            });
+            $('#inputEntity').text(entitiesStr.substr(1, entitiesStr.length));
+
+            $('#apiGroupRelation').html(globalApiGroupStr);
+
+            $('#apiAddBtnHidden').trigger('click');
+        }
+    }
+}
+
+function createApiRelation() {
+    if ($('#apiGroupRelation').val().trim() === "") {
+        alert(language.ALERT_SEL_API_GROUP);
+        //alert(language.Please_enter);
+        return;
+    }
+    if ($('#inputEntity').text().trim() === "") {
+        alert(language.ALERT_SEL_RELATION_UTTER);
+        return;
+    }
+    var params = {
+        'inputEntity' : $('#inputEntity').text().trim(),
+        'apiGroupRelation' : $('#apiGroupRelation').val().trim()
+    };
+    
+    $.ajax({
+        type: 'POST',
+        data: params,
+        url: '/learning/createApiRelation',
+        success: function(data) {
+            if(data.status == 200){
+                $('.addApiCancel').click();
+                alert(language.Added);
+            } else if(data.status == 'Duplicate') {
+                alert(language.DUPLICATE_ENTITIES_EXIST);
+            } else {
+                alert(language.It_failed);
+            }
+        }
+    });
+}
+
+
+
 
 /*
 //TBL_DLG_RELATION_LUIS 테이블에서 LUIS_INTENT 가져오기

@@ -515,7 +515,7 @@ function updateEntity() {
     }
 
     //
-    var apiGroupVal = $('#apiGroup :selected').val();
+    var apiGroupVal = $('#updateApiGroup :selected').val();
     var entityValueList = [];
     $('.updateEntityValDiv input[name=entityValue]').each(function() {
         
@@ -532,6 +532,7 @@ function updateEntity() {
         return ;
     }
     originalEntityVal.entityValue = entityValueList;
+    originalEntityVal.api_group = apiGroupVal;
 
     $.ajax({
         url: '/learning/updateEntity',
@@ -562,7 +563,15 @@ function updateEntity() {
         },
         success: function(data) {
             if(data.status == 200){
-                alert(language.DELETE + " " + language.SUCCESS);
+
+                if(data.insCheck > 0 && data.delCheck > 0) {
+                    alert(language.ADD + "," + language.DELETE + " " + language.SUCCESS);
+                } else if(data.insCheck > 0) {
+                    alert(language.ADD +  " " + language.SUCCESS);
+                } else if(data.delCheck > 0) {
+                    alert(language.DELETE + " " + language.SUCCESS);
+                }
+                
                 entitiesAjax();
             } else if(data.status == 'Duplicate') {
                 alert(language.DUPLICATE_ENTITIES_EXIST);
