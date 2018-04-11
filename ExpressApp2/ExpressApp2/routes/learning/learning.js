@@ -1289,6 +1289,8 @@ router.post('/insertEntity', function (req, res) {
                         // add hierarchicalentities list, entity
                         var entityListResult = syncClient.post(HOST + '/luis/api/v2.0/apps/' + appId + '/versions/0.1/hierarchicalentities', options);
                     }
+		    
+		    getEntity = syncClient.get(HOST + '/luis/api/v2.0/apps/' + appId + '/versions/0.1/hierarchicalentities' , options);
                 }
 
                 for(var entityNum = 0 ; entityNum < entityList.length; entityNum++) {
