@@ -1597,7 +1597,7 @@ function selectDlgByFilter(group){
     searchGroupS = $('#searchGroupS').val();
     
     params = {
-        //'searchTxt':$('#iptDialog').val(),
+        'searchTxt':$('#iptDialog').val(),
         'currentPage' : ($('#currentPage').val()== '')? 1 : $('#currentPage').val(),
         //'searchGroupL': group.searchGroupL,
         'searchGroupM': group.searchGroupM,
@@ -1631,9 +1631,9 @@ function selectDlgByFilter(group){
                 if (sourceType2 == 'D')
                 {
                     for(var i = 0; i < data.list.length; i++){
-                        if(data.list[i].DLG_API_DEFINE == 'D'){
-                            data.list[i].DLG_API_DEFINE = 'Common';
-                        }
+                        //if(data.list[i].DLG_API_DEFINE == 'D'){
+                        //    data.list[i].DLG_API_DEFINE = 'Common';
+                        //}
                         item += '<tr>' +
                                 '<td>' + data.list[i].DLG_API_DEFINE +'</td>' +
                                 '<td>' + data.list[i].GroupS +'</td>' +
@@ -1642,12 +1642,13 @@ function selectDlgByFilter(group){
                                 '<td><a href="#" onclick="deleteDialog('+ data.list[i].DLG_ID +');return false;"><span class="fa fa-trash"></span></a></td>' +
                                 '</tr>';
                     }
-    
-                    if (searchGroupL !== '') {
+                    /*
+                    if (searchGroupL) {
                         if (!$('#selBoxBody').find('label[for=' + searchGroupL + ']').parent().hasClass('active')) {
                             $('#selBoxBody').find('label[for=' + searchGroupL + ']').next().trigger('click');
                         }
                     }
+                    */
                 }
                 else
                 {
@@ -1674,6 +1675,18 @@ function selectDlgByFilter(group){
             $('#pagination').html('').append(data.pageList);
             currentSearchNum = 1;
             searchGroups = group;
+
+            //$('#sourceType2').children().removeAttr('selected');
+
+            //$('#tblSourceType').unbind();
+            $('#tblSourceType').children().each(function() {
+                if ($('#sourceType2').val() == $(this).val()) {
+                    $(this).prop('selected', true);
+                } else {
+                    $(this).prop('selected', false);
+                }
+            });
+            //$('#tblSourceType').bind('onchange');
         }
     });
 
@@ -2012,6 +2025,15 @@ function selectDlgByTxt(groupType, sourceType){
             if (rememberSelBoxHtml !== '') {
                 $('#selBoxBody').html(rememberSelBoxHtml);
             }
+            
+            //$('#tblSourceType').children().removeAttr('selected');
+            $('#sourceType2').children().each(function() {
+                if ($('#tblSourceType').val() == $(this).val()) {
+                    $(this).prop('selected', true);
+                } else {
+                    $(this).prop('selected', false);
+                }
+            });
 
         }
     });
