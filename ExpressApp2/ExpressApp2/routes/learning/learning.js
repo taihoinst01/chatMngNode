@@ -670,8 +670,8 @@ router.post('/dialogs2', function (req, res) {
                 dlg_desQueryString += "AND DLG_API_DEFINE like '%" + sourceType2 + "%') tbp \n" +
                                         "WHERE PAGEIDX = @currentPage";
             }
-            
 
+            dlg_desQueryString += "\n ORDER BY LUIS_ENTITIES ASC;";
                 
             let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1 = await pool.request()
@@ -803,7 +803,7 @@ router.post('/dialogs', function (req, res) {
                                         "WHERE PAGEIDX = @currentPage";
 
             }
-            
+            dlg_desQueryString += "\n ORDER BY LUIS_ENTITIES ASC;";
             let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
             let result1 = await pool.request()
             .input('currentPage', sql.Int, currentPage)

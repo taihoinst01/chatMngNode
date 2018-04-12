@@ -1,3 +1,18 @@
+//가장 먼저 실행.
+var language;
+;(function($) {
+    $.ajax({
+        url: '/jsLang',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data) {
+            language= data.lang;
+        }
+    });
+})(jQuery);
+
+
+
 (function() {
     // Your base, I'm in it!
     var originalAddClassMethod = jQuery.fn.addClass;
@@ -30,7 +45,8 @@ $(document).ready(function () {
     $('#mLoginId').focus();
 
     $('#sendLoginBtn').click(function () {
-        $('#loginfrm').submit();
+        //$('#loginfrm').submit();
+        loginCheck();
     });
 
     $('#mLoginPass, #mLoginId').keyup(function(e) {
@@ -57,6 +73,21 @@ $(document).ready(function () {
         }
     });
 });
+
+function loginCheck() {
+
+    if ($.trim( $('#mLoginId').val() ) == '') {
+        alert (language['ALERT_FILL_OUT_ID']);
+        
+    } else if ($.trim( $('#mLoginPass').val() ) == '') {
+        alert (language['ALERT_FILL_OUT_PW']);
+
+    } else {
+        $('#loginfrm').submit();
+    }
+}
+
+
 
 function setCookie(cookieName, value, exdays) {
     var exdate = new Date();

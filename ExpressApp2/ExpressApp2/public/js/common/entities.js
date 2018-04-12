@@ -191,10 +191,11 @@ $(document).on("click", "a[name=delEntityRow]", function(e){
 //기존 entity 값 저장
 var originalEntityVal = {};
 $(document).on("click", "a[name=editEntityTag]", function(e){
+
     $('.board').hide();
     $('.fl.close').addClass('more').removeClass('close');  
     originalEntityVal.entityDefine = $(this).text().trim();
-    originalEntityVal.api_group = $(this).parents('tr').find('td:last').text().trim();
+    originalEntityVal.api_group = $(this).parents('tr').find('td').eq(2).text().trim();
     
     var entityValArr = [];
 
@@ -234,7 +235,9 @@ function editEntityFnc(originalEntityVal) {
     }
     $('.updateEntityValDiv').append(inputEntityStr);
     $('.updateEntityValDiv  input[name=entityValue]').eq($('.updateEntityValDiv  input[name=entityValue]').length-1).focus();
-    
+
+    $('#updateEntityForm')[0].reset();
+
     $('#updateEntityBtn').trigger('click');
 
 }
@@ -333,6 +336,10 @@ $(document).on('click', '.closeAddInput', function() {
 //엔티티 밸류 저장 버튼
 $(document).on('click', '.addEntityValueBtn', function() {
     
+    if (!confirm(language.ASKENTITYSAVE)) {
+        return;
+    }
+
     //form submit 방지
     var submitAction = function(e) {
         e.preventDefault();
@@ -347,13 +354,108 @@ $(document).on('click', '.addEntityValueBtn', function() {
     } else {
 
         var addValues = $(this).parent().parent().serializeObject();
-        addEntityValueAjax(addValues);
+        //addEntityValueAjax(addValues);
+
+        originalEntityVal.entityDefine = $(this).parents('tr').find('td').eq(0).text().trim();
+        originalEntityVal.api_group = $(this).parents('tr').find('td').eq(2).text().trim();
+        
+        var entityValArr = [];
+
+        var allEntities = $(this).parents('td').find('span').text().trim();
+            
+        var entityValTxt = allEntities.substring(0, allEntities.length-1).split('[');
+        for (var i=1; i<entityValTxt.length; i++) {
+            
+            var valueTmp = entityValTxt[i].substring(0, entityValTxt[i].length-1);
+            entityValArr.push(valueTmp);
+        }
+
+        //체크포인트
+        
+
+        var valueText = false;
+        for (var inx=0; inx<entityValArr.length; inx++) {
+            if (entityValArr[inx] === "") {
+                valueText = true;
+                return;
+            }
+        }
+
+        if (valueText) {
+            alert(language.Please_enter);
+            return ;
+        }
+
+        //$('.updateEntityValDiv input[name=entityValue]').each(function() {
+        for (var jnx=0; jnx<entityValArr.length; jnx++) {    
+            if ( $(this).prev().val() === entityValArr[jnx]) {
+                valueText = true;
+            }
+        }
+
+        if (valueText) {
+            alert(language.DUPLICATE_ENTITIES_EXIST);
+            return ;
+        } else {
+            entityValArr.push($(this).prev().val());
+        }
+
+        originalEntityVal.entityValue = entityValArr;
+
+        $.ajax({
+            url: '/learning/updateEntity',
+            dataType: 'json',
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify(originalEntityVal) //$('#appInsertForm').serializeObject(),
+            , beforeSend: function () {
+                $('.cancelEntityValueBtn').click();
+                var width = 0;
+                var height = 0;
+                var left = 0;
+                var top = 0;
+
+                width = 50;
+                height = 50;
+
+                top = ( $(window).height() - height ) / 2 + $(window).scrollTop();
+                left = ( $(window).width() - width ) / 2 + $(window).scrollLeft();
+
+                $("#loadingBar").addClass("in");
+                $("#loadingImg").css({position:'relative'}).css({left:left,top:top});
+                $("#loadingBar").css("display","block");
+            }
+            , complete: function () {
+                $("#loadingBar").removeClass("in");
+                $("#loadingBar").css("display","none");      
+            },
+            success: function(data) {
+                if(data.status == 200){
+
+                    if(data.insCheck > 0 && data.delCheck > 0) {
+                        alert(language.ADD + "," + language.DELETE + " " + language.SUCCESS);
+                    } else if(data.insCheck > 0) {
+                        alert(language.ADD +  " " + language.SUCCESS);
+                    } else if(data.delCheck > 0) {
+                        alert(language.DELETE + " " + language.SUCCESS);
+                    }
+                    
+                    entitiesAjax();
+                } else if(data.status == 'Duplicate') {
+                    alert(language.DUPLICATE_ENTITIES_EXIST);
+                } else {
+                    alert(language.It_failed);
+                }
+            }
+        });
     }
 })
 
 //엔티티 밸류 저장(추가) ajax
 function addEntityValueAjax(addValues) {
 
+
+    /*
     $.ajax({
         url: '/learning/insertEntity',
         dataType: 'json',
@@ -371,6 +473,7 @@ function addEntityValueAjax(addValues) {
             }
         }
     });
+    */
 }
 
 //엔티티 검색

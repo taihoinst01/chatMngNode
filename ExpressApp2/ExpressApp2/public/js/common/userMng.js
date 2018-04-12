@@ -292,6 +292,7 @@ function saveUser() {
     }
 
     // changeFlag - 유저정보 변경사항이 있는지 체크하는 함수
+    var passWordChk = false;
     var changeFlag = false;
     var saveArr = new Array();
     $('#tableBodyId tr').each(function() {
@@ -312,6 +313,9 @@ function saveUser() {
                 }
                 saveArr.push(data);
                 changeFlag = true;
+                if (!passWordChk) {
+                    passWordChk = fn_passWordChk($(this).children().eq(4).text(),  $(this).children().eq(2).text());
+                }
             } else if (statusFlag === 'NEW' ) {
 
                 var data = new Object() ;
@@ -321,6 +325,9 @@ function saveUser() {
                 data.EMP_PASSWORD = $(this).find('input[name=new_user_password]').val();
                 saveArr.push(data);
                 changeFlag = true;
+                if (!passWordChk) {
+                    passWordChk = fn_passWordChk($(this).children().eq(4).text(),  $(this).children().eq(2).text());
+                }
             } else if (statusFlag === 'DEL') {
 
                 var data = new Object() ;
@@ -336,8 +343,10 @@ function saveUser() {
     
     if(changeFlag == false) {
 
-        alert("아무런 변경사항이 없습니다. 추가, 수정, 삭제 등 변경사항이 생겼을시 저장 버튼을 눌러주세요.");
-    } else {
+        alert(language['ALERT_NO_CHANGE']);
+    } else if (passWordChk) {
+        //위에서 alert띄움
+    }else {
         
         var jsonData = JSON.stringify(saveArr);
         var params = {
@@ -362,6 +371,37 @@ function saveUser() {
     }  
 }
 
+function fn_passWordChk(inputPW, inputID) {
+    var pw = inputPW;
+    var id = inputID;
+
+    var num = pw.search(/[0-9]/g);
+    var eng = pw.search(/[a-z]/ig);
+    var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+   
+    if(id.search(/₩s/) != -1){
+
+        alert(language['ALERT_ID_NO_BLANK']);
+        return true;
+    } 
+
+    if(pw.length < 8 || pw.length > 20){
+        alert(language['ALERT_PW_LENGTH']);
+        return true;
+    }
+   
+    if(pw.search(/₩s/) != -1){
+
+        alert(language['ALERT_PW_NO_BLANK']);
+        return true;
+    } 
+    
+    if(num < 0 || eng < 0 || spe < 0 ){
+   
+        alert(language['ALERT_PW_MIX']);
+        return true;
+    }
+}
 
 function iCheckBoxTrans() {
     $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
